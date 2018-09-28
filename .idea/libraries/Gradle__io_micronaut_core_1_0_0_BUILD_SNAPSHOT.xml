@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: io.micronaut:core:1.0.0.BUILD-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut/core/1.0.0.BUILD-SNAPSHOT/ada0ac12d2996aeb92323372ce91d29383ecc3bc/core-1.0.0.BUILD-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut/core/1.0.0.BUILD-SNAPSHOT/30e8ba47ad2b6c7ad8924b5531efba1b850c785c/core-1.0.0.BUILD-SNAPSHOT-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut/core/1.0.0.BUILD-SNAPSHOT/f70560baf64d343e72662dd9940de0c443c988ea/core-1.0.0.BUILD-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

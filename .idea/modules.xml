@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/junit5/junit5.iml" filepath="$PROJECT_DIR$/.idea/modules/junit5/junit5.iml" group="junit5" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/junit5/junit5_main.iml" filepath="$PROJECT_DIR$/.idea/modules/junit5/junit5_main.iml" group="junit5" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/junit5/junit5_test.iml" filepath="$PROJECT_DIR$/.idea/modules/junit5/junit5_test.iml" group="junit5" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/micronaut.iml" filepath="$PROJECT_DIR$/.idea/modules/micronaut.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spock/spock.iml" filepath="$PROJECT_DIR$/.idea/modules/spock/spock.iml" group="spock" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spock/spock_main.iml" filepath="$PROJECT_DIR$/.idea/modules/spock/spock_main.iml" group="spock" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spock/spock_test.iml" filepath="$PROJECT_DIR$/.idea/modules/spock/spock_test.iml" group="spock" />
+    </modules>
+  </component>
+</project>
