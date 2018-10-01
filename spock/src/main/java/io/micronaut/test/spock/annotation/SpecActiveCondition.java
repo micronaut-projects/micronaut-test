@@ -22,7 +22,9 @@ public class SpecActiveCondition implements Condition {
                 ApplicationContext applicationContext = (ApplicationContext) beanContext;
                 if (definition.isAnnotationPresent(MockBean.class) && declaringType.isPresent()) {
                     final String activeSpecName = applicationContext.get(ACTIVE_SPEC_NAME, String.class).orElse(null);
-                    return activeSpecName != null && activeSpecName.equals(declaringType.get().getName());
+                    String declaringTypeName = declaringType.get().getName();
+                    return activeSpecName != null &&
+                            (activeSpecName.equals(declaringTypeName) || declaringTypeName.startsWith(activeSpecName + "$"));
 
                 } else {
                     final String activeSpecName = applicationContext.get(ACTIVE_SPEC_NAME, String.class).orElse(null);

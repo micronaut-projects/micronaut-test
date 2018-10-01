@@ -2,12 +2,16 @@ package io.micronaut.test.spock;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
+import io.micronaut.context.ApplicationContextProvider;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.PropertySource;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.test.spock.annotation.MicronautTest;
 import io.micronaut.test.spock.annotation.SpecActiveCondition;
 import org.spockframework.runtime.extension.AbstractAnnotationDrivenExtension;
+import org.spockframework.runtime.extension.IMethodInterceptor;
+import org.spockframework.runtime.extension.IMethodInvocation;
+import org.spockframework.runtime.model.FieldInfo;
 import org.spockframework.runtime.model.SpecInfo;
 
 import java.util.Collections;
@@ -18,6 +22,11 @@ public class RunApplicationExtension extends AbstractAnnotationDrivenExtension<M
 
     private ApplicationContext applicationContext;
     private EmbeddedApplication embeddedApplication;
+
+    @Override
+    public void visitFieldAnnotation(MicronautTest annotation, FieldInfo field) {
+        super.visitFieldAnnotation(annotation, field);
+    }
 
     @Override
     public void visitSpecAnnotation(MicronautTest annotation, SpecInfo spec) {
@@ -39,18 +48,7 @@ public class RunApplicationExtension extends AbstractAnnotationDrivenExtension<M
         props.put(SpecActiveCondition.ACTIVE_SPEC_NAME, spec.getPackage() + "." + spec.getName());
         builder.properties(props);
         this.applicationContext = builder.build();
-        spec.addSetupSpecInterceptor(invocation -> {
-
-            applicationContext.start();
-            if (applicationContext.containsBean(EmbeddedApplication.class)) {
-                embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
-                embeddedApplication.start();
-            }
-            final Object sharedInstance = invocation.getSharedInstance();
-            applicationContext.inject(sharedInstance);
-
-            invocation.proceed();
-        });
+        spec.addSetupSpecInterceptor(new SetupInterceptor());
 
         spec.addCleanupSpecInterceptor(invocation -> {
             if (embeddedApplication != null) {
@@ -69,4 +67,23 @@ public class RunApplicationExtension extends AbstractAnnotationDrivenExtension<M
     }
 
 
+    private class SetupInterceptor implements IMethodInterceptor, ApplicationContextProvider {
+        @Override
+        public void intercept(IMethodInvocation invocation) throws Throwable {
+            applicationContext.start();
+            if (applicationContext.containsBean(EmbeddedApplication.class)) {
+                embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
+                embeddedApplication.start();
+            }
+            final Object sharedInstance = invocation.getSharedInstance();
+            applicationContext.inject(sharedInstance);
+
+            invocation.proceed();
+        }
+
+        @Override
+        public ApplicationContext getApplicationContext() {
+            return applicationContext;
+        }
+    }
 }
