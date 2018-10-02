@@ -16,7 +16,7 @@ if [[ $EXIT_STATUS -eq 0 ]]; then
         ./gradlew testClasses --no-daemon || EXIT_STATUS=$?
 
         ./gradlew --stop
-        ./gradlew check --no-daemon -x licenseTest || EXIT_STATUS=$?
+        ./gradlew check --no-daemon || EXIT_STATUS=$?
     fi
 fi
 
