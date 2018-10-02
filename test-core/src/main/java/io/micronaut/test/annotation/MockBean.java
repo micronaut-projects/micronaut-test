@@ -35,11 +35,14 @@ import java.lang.annotation.Target;
  * @since 1.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Bean
 @Requires(condition = TestActiveCondition.class)
 @Refreshable(TestActiveCondition.ACTIVE_MOCKS)
 public @interface MockBean {
+    /**
+     * @return The bean this mock replaces
+     */
     @AliasFor(annotation = Replaces.class, member = "value")
     Class value() default void.class;
 }
