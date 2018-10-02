@@ -26,6 +26,12 @@ import io.micronaut.test.annotation.MockBean;
 
 import java.util.Optional;
 
+/**
+ * A custom {@link Condition} that enables inner classes and {@link MockBean} instances only for the scope of the test.
+ *
+ * @author graemerocher
+ * @since 1.0
+ */
 public class TestActiveCondition implements Condition {
 
     public static final String ACTIVE_MOCKS = "micronaut.test.spock.active.mocks";
