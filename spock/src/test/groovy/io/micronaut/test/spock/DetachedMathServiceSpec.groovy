@@ -1,15 +1,17 @@
 package io.micronaut.test.spock
 
-
+import io.micronaut.context.annotation.Factory
 import io.micronaut.test.spock.annotation.MicronautTest
 import io.micronaut.test.spock.annotation.MockBean
 import spock.lang.Specification
 import spock.lang.Unroll
+import spock.mock.DetachedMockFactory
 
 import javax.inject.Inject
 
 @MicronautTest
-class MathServiceSpec extends Specification {
+class DetachedMathServiceSpec extends Specification {
+
 
     @Inject
     MathService mathService
@@ -29,8 +31,14 @@ class MathServiceSpec extends Specification {
         3   || 9
     }
 
-    @MockBean(MathServiceImpl)
-    MathService mathService() {
-        Mock(MathService)
+
+    @Factory
+    static class Mocks {
+        DetachedMockFactory mockFactory = new DetachedMockFactory()
+
+        @MockBean(MathServiceImpl)
+        MathService mathService() {
+            mockFactory.Mock(MathService)
+        }
     }
 }

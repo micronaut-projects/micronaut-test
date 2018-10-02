@@ -1,6 +1,6 @@
 package io.micronaut.test.spock
 
-import io.micronaut.context.annotation.Replaces
+
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
@@ -9,7 +9,6 @@ import io.micronaut.test.spock.annotation.MockBean
 import spock.lang.Specification
 
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @MicronautTest
 class ApplicationRunAnotherSpec extends Specification {
