@@ -60,11 +60,6 @@ public class RunApplicationExtension extends AbstractAnnotationDrivenExtension<M
     private Map<String, Object> specProperties = new LinkedHashMap<>();
 
     @Override
-    public void visitFieldAnnotation(MicronautTest annotation, FieldInfo field) {
-        super.visitFieldAnnotation(annotation, field);
-    }
-
-    @Override
     public void visitSpecAnnotation(MicronautTest annotation, SpecInfo spec) {
 
         final ApplicationContextBuilder builder = ApplicationContext.build();

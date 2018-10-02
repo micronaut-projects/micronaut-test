@@ -20,3 +20,7 @@ dependencies {
     testCompile "io.micronaut:http-client:$micronautVersion"
     testCompile 'org.mockito:mockito-junit-jupiter:2.22.0'
 }
+
+test {
+    useJUnitPlatform()
+}
