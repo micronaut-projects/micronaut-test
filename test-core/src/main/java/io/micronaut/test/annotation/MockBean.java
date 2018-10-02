@@ -14,26 +14,32 @@
  * limitations under the License.
  */
 
-package io.micronaut.test.junit5.annotation;
+package io.micronaut.test.annotation;
 
-import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.AliasFor;
+import io.micronaut.context.annotation.Bean;
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.test.junit5.extensions.RunApplicationExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
+import io.micronaut.runtime.context.scope.Refreshable;
+import io.micronaut.test.condition.TestActiveCondition;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation that can be applied on the method level in a test to define a Mock bean using Spock's mocking API.
+ *
+ * @author graemerocher
+ * @since 1.0
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
-@ExtendWith(RunApplicationExtension.class)
-@Factory
+@Target({ElementType.METHOD})
+@Bean
 @Requires(condition = TestActiveCondition.class)
-public @interface MicronautTest {
-    /**
-     * @return The application class of the application
-     */
-    Class<?> application() default void.class;
+@Refreshable(TestActiveCondition.ACTIVE_MOCKS)
+public @interface MockBean {
+    @AliasFor(annotation = Replaces.class, member = "value")
+    Class value() default void.class;
 }

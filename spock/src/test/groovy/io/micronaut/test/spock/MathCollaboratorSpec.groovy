@@ -3,8 +3,8 @@ package io.micronaut.test.spock
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.spock.annotation.MicronautTest
-import io.micronaut.test.spock.annotation.MockBean
+import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.annotation.MockBean
 import spock.lang.Specification
 import spock.lang.Unroll
 

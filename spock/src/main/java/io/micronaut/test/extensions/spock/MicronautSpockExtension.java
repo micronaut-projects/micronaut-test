@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.micronaut.test.spock.extensions;
+package io.micronaut.test.extensions.spock;
 
 import io.micronaut.aop.InterceptedProxy;
 import io.micronaut.context.ApplicationContext;
@@ -22,19 +22,16 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.ApplicationContextProvider;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.PropertySource;
-import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.type.Argument;
-import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.inject.BeanDefinition;
-import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
-import io.micronaut.test.spock.annotation.MicronautTest;
-import io.micronaut.test.spock.annotation.MockBean;
-import io.micronaut.test.spock.annotation.SpecActiveCondition;
+import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.condition.TestActiveCondition;
 import org.spockframework.mock.MockUtil;
 import org.spockframework.runtime.extension.AbstractAnnotationDrivenExtension;
 import org.spockframework.runtime.extension.IMethodInterceptor;
@@ -47,9 +44,8 @@ import spock.lang.Specification;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentSkipListSet;
 
-public class RunApplicationExtension extends AbstractAnnotationDrivenExtension<MicronautTest> {
+public class MicronautSpockExtension extends AbstractAnnotationDrivenExtension<MicronautTest> {
 
     private ApplicationContext applicationContext;
     private EmbeddedApplication embeddedApplication;
@@ -76,7 +72,7 @@ public class RunApplicationExtension extends AbstractAnnotationDrivenExtension<M
                 specProperties.put(property.name(), property.value());
             }
         }
-        specProperties.put(SpecActiveCondition.ACTIVE_SPEC_NAME, spec.getPackage() + "." + spec.getName());
+        specProperties.put(TestActiveCondition.ACTIVE_SPEC_NAME, spec.getPackage() + "." + spec.getName());
         final Class<?> application = annotation.application();
         if (application != void.class) {
             builder.mainClass(application);
@@ -124,7 +120,7 @@ public class RunApplicationExtension extends AbstractAnnotationDrivenExtension<M
             if (applicationContext != null) {
                 if (refreshScope != null) {
                     refreshScope.onApplicationEvent(new RefreshEvent(Collections.singletonMap(
-                            SpecActiveCondition.ACTIVE_MOCKS, "changed"
+                            TestActiveCondition.ACTIVE_MOCKS, "changed"
                     )));
                 }
                 applicationContext.inject(instance);

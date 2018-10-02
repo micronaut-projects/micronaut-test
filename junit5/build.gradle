@@ -1,7 +1,5 @@
-ext {
-    junitVersion = '5.1.0'
-}
 dependencies {
+    compile project(":test-core")
     compileOnly "io.micronaut:inject:$micronautVersion"
     implementation "io.micronaut:inject:$micronautVersion"
     implementation "io.micronaut:runtime:$micronautVersion"

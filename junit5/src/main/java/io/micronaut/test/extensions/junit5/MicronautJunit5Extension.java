@@ -1,20 +1,4 @@
-/*
- * Copyright 2017-2018 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package io.micronaut.test.junit5.extensions;
+package io.micronaut.test.extensions.junit5;
 
 import io.micronaut.aop.InterceptedProxy;
 import io.micronaut.context.ApplicationContext;
@@ -25,9 +9,9 @@ import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
-import io.micronaut.test.junit5.annotation.MicronautTest;
-import io.micronaut.test.junit5.annotation.MockBean;
-import io.micronaut.test.junit5.annotation.TestActiveCondition;
+import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.condition.TestActiveCondition;
 import org.junit.jupiter.api.extension.*;
 
 import java.lang.reflect.AnnotatedElement;
@@ -37,13 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Extension implementation for JUnit 5.
- *
- * @author graemerocher
- * @since 1.0
- */
-public class RunApplicationExtension implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition {
+public class MicronautJunit5Extension implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition {
 
     private Map<String, Object> testProperties = new LinkedHashMap<>();
     private ApplicationContext applicationContext;

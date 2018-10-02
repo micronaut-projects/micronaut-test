@@ -1,0 +1,16 @@
+dependencies {
+    compileOnly("org.spockframework:spock-core:$spockVersion") {
+        exclude group: "org.codehaus.groovy", module: "groovy-all"
+    }
+
+    compileOnly(
+            "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    )
+
+    implementation "io.micronaut:inject:$micronautVersion"
+    implementation "io.micronaut:runtime:$micronautVersion"
+}
+jar {
+    exclude "io/micronaut/test/extensions/spock/*"
+    exclude "io/micronaut/test/extensions/junit5/*"
+}

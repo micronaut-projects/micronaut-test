@@ -1,4 +1,5 @@
 dependencies {
+    compile project(":test-core")
     compileOnly "io.micronaut:inject-groovy:$micronautVersion"
     implementation "io.micronaut:inject:$micronautVersion"
     implementation "io.micronaut:runtime:$micronautVersion"
@@ -9,6 +10,6 @@ dependencies {
     testCompile "io.micronaut:inject-groovy:$micronautVersion"
     testCompile "io.micronaut:http-server-netty:$micronautVersion"
     testCompile "io.micronaut:http-client:$micronautVersion"
-    
-    
+
+
 }

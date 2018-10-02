@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.micronaut.test.spock.annotation;
+package io.micronaut.test.condition;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.BeanContext;
@@ -22,10 +22,11 @@ import io.micronaut.context.condition.Condition;
 import io.micronaut.context.condition.ConditionContext;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.inject.BeanDefinition;
+import io.micronaut.test.annotation.MockBean;
 
 import java.util.Optional;
 
-public class SpecActiveCondition implements Condition {
+public class TestActiveCondition implements Condition {
 
     public static final String ACTIVE_MOCKS = "micronaut.test.spock.active.mocks";
     public static final String ACTIVE_SPEC_NAME = "micronaut.test.active.spec";

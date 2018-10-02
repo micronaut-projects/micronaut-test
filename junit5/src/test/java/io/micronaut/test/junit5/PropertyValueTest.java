@@ -1,7 +1,7 @@
 package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
-import io.micronaut.test.junit5.annotation.MicronautTest;
+import io.micronaut.test.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
