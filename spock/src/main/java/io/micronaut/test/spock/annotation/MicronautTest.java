@@ -18,7 +18,7 @@ package io.micronaut.test.spock.annotation;
 
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.test.spock.RunApplicationExtension;
+import io.micronaut.test.spock.extensions.RunApplicationExtension;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

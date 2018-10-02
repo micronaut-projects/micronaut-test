@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.micronaut.test.spock;
+package io.micronaut.test.spock.extensions;
 
 import io.micronaut.aop.InterceptedProxy;
 import io.micronaut.context.ApplicationContext;
@@ -70,6 +70,7 @@ public class RunApplicationExtension extends AbstractAnnotationDrivenExtension<M
         final ApplicationContextBuilder builder = ApplicationContext.build();
         final Property p = spec.getAnnotation(Property.class);
 
+        builder.packages(spec.getPackage());
 
         if (p != null) {
             specProperties.put(p.name(), p.value());

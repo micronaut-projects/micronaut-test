@@ -1,8 +1,22 @@
+ext {
+    junitVersion = '5.1.0'
+}
 dependencies {
-	implementation(
-            'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    compileOnly "io.micronaut:inject:$micronautVersion"
+    implementation "io.micronaut:inject:$micronautVersion"
+    implementation "io.micronaut:runtime:$micronautVersion"
+
+    implementation(
+            "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     )
+    testCompileOnly "io.micronaut:inject:$micronautVersion"
     testRuntimeOnly(
-            'org.junit.jupiter:junit-jupiter-engine:5.1.0'
+            "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     )
+
+    testCompile "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+    testCompile "io.micronaut:inject-java:$micronautVersion"
+    testCompile "io.micronaut:http-server-netty:$micronautVersion"
+    testCompile "io.micronaut:http-client:$micronautVersion"
+    testCompile 'org.mockito:mockito-junit-jupiter:2.22.0'
 }
