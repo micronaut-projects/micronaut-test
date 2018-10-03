@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":test-core")
+    compile project(":core")
     compileOnly "io.micronaut:inject-groovy:$micronautVersion"
     implementation "io.micronaut:inject:$micronautVersion"
     implementation "io.micronaut:runtime:$micronautVersion"

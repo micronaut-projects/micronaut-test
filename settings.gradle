@@ -1,5 +1,5 @@
-rootProject.name = 'micronaut'
+rootProject.name = 'micronaut-test'
 
-include 'test-core'
+include 'core'
 include "spock"
 include "junit5"
