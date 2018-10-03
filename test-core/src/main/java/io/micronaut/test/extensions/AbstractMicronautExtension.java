@@ -72,6 +72,8 @@ public abstract class AbstractMicronautExtension<C> {
             if (application != void.class) {
                 builder.mainClass(application);
             }
+            builder.packages(testAnnotation.packages())
+                   .environments(testAnnotation.environments());
 
             builder.propertySources(io.micronaut.context.env.PropertySource.of(testProperties));
             this.applicationContext = builder.build();

@@ -22,7 +22,7 @@ repositories {
 }
 
 version project.projectVersion
-apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-core/ae8c52a65b4315d0f36edf362295d645559f496e/gradle/docs.gradle"
+
 
 ext {
     distInstallDir = file("$buildDir/dist-tmp")
@@ -57,20 +57,6 @@ subprojects { Project subproject ->
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
     apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-core/ae8c52a65b4315d0f36edf362295d645559f496e/gradle/publishing.gradle"
-    apply plugin: 'checkstyle'
-    
-    checkstyle {
-        toolVersion = 8.10
-        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-
-        // Per submodule
-        maxErrors = 5
-        maxWarnings = 10
-
-        showViolations = true
-    }
-
-    checkstyleTest.enabled = false
         
     jar {
         manifest {
@@ -92,13 +78,6 @@ subprojects { Project subproject ->
         reports.html.enabled = !System.getenv("TRAVIS")
         reports.junitXml.enabled = !System.getenv("TRAVIS")
 
-    }
-
-    tasks.withType(Checkstyle) {
-        reports {
-            xml.enabled = !System.getenv("TRAVIS")
-            html.enabled = !System.getenv("TRAVIS")
-        }
     }
 
     configurations {
@@ -133,5 +112,5 @@ subprojects { Project subproject ->
     task allDeps(type: DependencyReportTask) {}
 }
 
-
+apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-core/ae8c52a65b4315d0f36edf362295d645559f496e/gradle/docs.gradle"
 

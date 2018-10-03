@@ -1,35 +1,26 @@
 package io.micronaut.test.spock
 
 import io.micronaut.test.annotation.MicronautTest
-import io.micronaut.test.annotation.MockBean
-import spock.lang.Specification
-import spock.lang.Unroll
-
+import spock.lang.*
 import javax.inject.Inject
 
-@MicronautTest
+@MicronautTest // <1>
 class MathServiceSpec extends Specification {
 
     @Inject
-    MathService mathService
+    MathService mathService // <2>
 
     @Unroll
-    void "should compute #num to #square"() {
+    void "should compute #num times 4"() { // <3>
         when:
         def result = mathService.compute(num)
 
         then:
-        1 * mathService.compute(_) >> { Math.pow(num, 2) }
         result == square
 
         where:
         num || square
-        2   || 4
-        3   || 9
-    }
-
-    @MockBean(MathServiceImpl)
-    MathService mathService() {
-        Mock(MathService)
+        2   || 8
+        3   || 12
     }
 }

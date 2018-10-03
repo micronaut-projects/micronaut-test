@@ -7,6 +7,6 @@ class MathServiceImpl implements MathService {
 
     @Override
     Integer compute(Integer num) {
-        throw new UnsupportedOperationException("The method compute should be never called :-)")
+        return num * 4 // should never be called
     }
 }

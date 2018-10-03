@@ -1,26 +1,19 @@
 package io.micronaut.test.spock
 
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
-import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.*
 import spock.lang.*
 import javax.inject.Inject
 
 @MicronautTest
-class MathCollaboratorSpec extends Specification {
+class MathMockServiceSpec extends Specification {
 
     @Inject
-    MathService mathService // <2>
-
-    @Inject
-    @Client('/')
-    RxHttpClient client // <3>
+    MathService mathService // <3>
 
     @Unroll
     void "should compute #num to #square"() {
         when:
-        def result = client.toBlocking().retrieve(HttpRequest.GET('/math/compute/10'), Integer) // <3>
+        def result = mathService.compute(num)
 
         then:
         1 * mathService.compute(_) >> { Math.pow(num, 2) } // <4>
@@ -34,7 +27,6 @@ class MathCollaboratorSpec extends Specification {
 
     @MockBean(MathServiceImpl) // <1>
     MathService mathService() {
-        Mock(MathService)
+        Mock(MathService) // <2>
     }
-
 }

@@ -45,4 +45,14 @@ public @interface MicronautTest {
      * @return The application class of the application
      */
     Class<?> application() default void.class;
+
+    /**
+     * @return The environments to use.
+     */
+    String[] environments() default {};
+
+    /**
+     * @return The packages to consider for scanning.
+     */
+    String[] packages() default {};
 }

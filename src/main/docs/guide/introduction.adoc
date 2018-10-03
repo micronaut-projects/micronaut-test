@@ -1,26 +1,26 @@
-Micronaut is a modern, JVM-based, full stack microservices framework designed for building modular, easily testable microservice applications.
+This project features utilities for helping test Micronaut applications.
 
-Micronaut is developed by the creators of the Grails framework and takes inspiration from lessons learnt over the years building real-world applications from monoliths to microservices using Spring, Spring Boot and Grails.
+It is generally pretty easy to start Micronaut in a unit test and one of the goals of Micronaut was to as much as possible not require a test framework to test Micronaut. For example in http://spockframework.org[Spock] you can simply do:
 
-Micronaut aims to provide all the tools necessary to build full-featured microservice applications, including:
+[source,groovy]
+----
+@Shared // <1>
+@AutoCleanup // <2>
+EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)
+----
 
-* Dependency Injection and Inversion of Control (IoC)
-* Sensible Defaults and Auto-Configuration
-* Configuration and Configuration Sharing
-* Service Discovery
-* HTTP Routing
-* HTTP Client with client-side load-balancing
+<1> The field is declared as shared so to server is started only once for all methods in the class
+<2> The `@AutoCleanup` annotation ensures the server is shutdown after the test suite completes.
 
-At the same time Micronaut aims to avoid the downsides of frameworks like Spring, Spring Boot and Grails by providing:
+However, there are cases where having some tools to test Micronaut come in handy, such as mocking bean definitions and so on.
 
-* Fast startup time
-* Reduced memory footprint
-* Minimal use of reflection
-* Minimal use of proxies
-* Easy unit testing
+This project includes a pretty simply set of extensions for JUnit 5, Spock and Spek (TODO), that allow you to:
 
-Historically, frameworks such as Spring and Grails were not designed to run in scenarios such as server-less functions, Android apps, or low memory-footprint microservices. In contrast, Micronaut is designed to be suitable for all of these scenarios.
+* Automatically start and stop the server for the scope of a test suite
+* Use mocks to replace existing beans for the scope of a test suite
+* Allow dependency injection into a test instance
 
-This goal is achieved through the use of Java's https://docs.oracle.com/javase/8/docs/api/javax/annotation/processing/Processor.html[annotation processors], which are usable on any JVM language that supports them, as well as an HTTP Server and Client built on https://netty.io/[Netty]. In order to provide a similar programming model to Spring and Grails, these annotation processors precompile the necessary metadata in order to perform DI, define AOP proxies and configure your application to run in a microservices environment.
+This is achieved through a set of annotations found in the `io.micronaut.test.annotation` package:
 
-Many of the APIs within Micronaut are heavily inspired by Spring and Grails. This is by design, and aids in bringing developers up to speed quickly.
+* `@MicronautTest` - Can be added to any Spock, JUnit 5 or Spek test to indicate the test is a Micronaut test.
+* `@MockBean` - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.
