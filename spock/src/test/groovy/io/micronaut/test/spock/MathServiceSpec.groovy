@@ -16,11 +16,11 @@ class MathServiceSpec extends Specification {
         def result = mathService.compute(num)
 
         then:
-        result == square
+        result == expected
 
         where:
-        num || square
-        2   || 8
-        3   || 12
+        num | expected
+        2   | 8
+        3   | 12
     }
 }

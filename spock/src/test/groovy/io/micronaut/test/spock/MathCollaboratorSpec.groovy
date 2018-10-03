@@ -20,16 +20,16 @@ class MathCollaboratorSpec extends Specification {
     @Unroll
     void "should compute #num to #square"() {
         when:
-        def result = client.toBlocking().retrieve(HttpRequest.GET('/math/compute/10'), Integer) // <3>
+        Integer result = client.toBlocking().retrieve(HttpRequest.GET('/math/compute/10'), Integer) // <3>
 
         then:
-        1 * mathService.compute(_) >> { Math.pow(num, 2) } // <4>
+        1 * mathService.compute(10) >> Math.pow(num, 2)  // <4>
         result == square
 
         where:
-        num || square
-        2   || 4
-        3   || 9
+        num | square
+        2   | 4
+        3   | 9
     }
 
     @MockBean(MathServiceImpl) // <1>
