@@ -101,14 +101,14 @@ public abstract class AbstractMicronautExtension<C> {
 
             if (!oldValues.isEmpty()) {
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
-                refreshScope.onApplicationEvent(new RefreshEvent(diff));
+                refreshScope.onRefreshEvent(new RefreshEvent(diff));
             }
         }
 
         if (testInstance != null) {
             if (applicationContext != null) {
                 if (refreshScope != null) {
-                    refreshScope.onApplicationEvent(new RefreshEvent(Collections.singletonMap(
+                    refreshScope.onRefreshEvent(new RefreshEvent(Collections.singletonMap(
                             TestActiveCondition.ACTIVE_MOCKS, "changed"
                     )));
                 }
@@ -144,7 +144,7 @@ public abstract class AbstractMicronautExtension<C> {
             if (!oldValues.isEmpty()) {
                 testProperties.putAll(oldValues);
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
-                refreshScope.onApplicationEvent(new RefreshEvent(diff));
+                refreshScope.onRefreshEvent(new RefreshEvent(diff));
             }
         }
         oldValues.clear();
