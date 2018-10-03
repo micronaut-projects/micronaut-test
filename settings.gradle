@@ -1,4 +1,4 @@
-rootProject.name = 'micronaut-test'
+rootProject.name = 'test'
 
 include 'core'
 include "spock"
