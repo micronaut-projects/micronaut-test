@@ -2,7 +2,7 @@
 
 This project provides testing extension for JUnit 5 and Spock to make it easier to test Micronaut applications.
 
-The project has not been released yet. For more information see the https://micronaut-projects.github.io/micronaut-test/snapshot/guide/index.html[Snapshot Documentation].
+The project has not been released yet. For more information see the [Snapshot Documentation](https://micronaut-projects.github.io/micronaut-test/snapshot/guide/index.html).
 
 Example Spock Test:
 
