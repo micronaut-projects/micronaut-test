@@ -131,7 +131,15 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathService Interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathService.java[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock;
+
+import javax.inject.Singleton;
+
+@Singleton
+interface MathService {
+
+    Integer compute(Integer num);
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -140,7 +148,18 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathService implementation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathServiceImpl.groovy[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+
+import javax.inject.Singleton
+
+@Singleton
+class MathServiceImpl implements MathService {
+
+    @Override
+    Integer compute(Integer num) {
+        return num * 4 // should never be called
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -149,7 +168,32 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathServiceSpec.groovy[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+
+import io.micronaut.test.annotation.MicronautTest
+import spock.lang.*
+import javax.inject.Inject
+
+@MicronautTest <i class="conum" data-value="1"></i><b>(1)</b>
+class MathServiceSpec extends Specification {
+
+    @Inject
+    MathService mathService <i class="conum" data-value="2"></i><b>(2)</b>
+
+    @Unroll
+    void "should compute #num times 4"() { <i class="conum" data-value="3"></i><b>(3)</b>
+        when:
+        def result = mathService.compute(num)
+
+        then:
+        result == expected
+
+        where:
+        num | expected
+        2   | 8
+        3   | 12
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -177,7 +221,38 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathMockServiceSpec.groovy[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+
+import io.micronaut.test.annotation.*
+import spock.lang.*
+import javax.inject.Inject
+
+@MicronautTest
+class MathMockServiceSpec extends Specification {
+
+    @Inject
+    MathService mathService <i class="conum" data-value="3"></i><b>(3)</b>
+
+    @Unroll
+    void "should compute #num to #square"() {
+        when:
+        def result = mathService.compute(num)
+
+        then:
+        1 * mathService.compute(num) &gt;&gt; Math.pow(num, 2)  <i class="conum" data-value="4"></i><b>(4)</b>
+        result == square
+
+        where:
+        num | square
+        2   | 4
+        3   | 9
+    }
+
+    @MockBean(MathServiceImpl) <i class="conum" data-value="1"></i><b>(1)</b>
+    MathService mathService() {
+        Mock(MathService) <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -209,7 +284,27 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathController</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathController.groovy[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+
+import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Get
+
+
+@Controller('/math')
+class MathController {
+
+    MathService mathService
+
+    MathController(MathService mathService) {
+        this.mathService = mathService
+    }
+
+    @Get(uri = '/compute/{number}', processes = MediaType.TEXT_PLAIN)
+    String compute(Integer number) {
+        return mathService.compute(number)
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -218,7 +313,46 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathCollaboratorSpec.groovy[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.annotation.*
+import spock.lang.*
+import javax.inject.Inject
+
+@MicronautTest
+class MathCollaboratorSpec extends Specification {
+
+    @Inject
+    MathService mathService <i class="conum" data-value="2"></i><b>(2)</b>
+
+    @Inject
+    @Client('/')
+    RxHttpClient client <i class="conum" data-value="3"></i><b>(3)</b>
+
+    @Unroll
+    void "should compute #num to #square"() {
+        when:
+        Integer result = client.toBlocking().retrieve(HttpRequest.GET('/math/compute/10'), Integer) <i class="conum" data-value="3"></i><b>(3)</b>
+
+        then:
+        1 * mathService.compute(10) &gt;&gt; Math.pow(num, 2)  <i class="conum" data-value="4"></i><b>(4)</b>
+        result == square
+
+        where:
+        num | square
+        2   | 4
+        3   | 9
+    }
+
+    @MockBean(MathServiceImpl) <i class="conum" data-value="1"></i><b>(1)</b>
+    MathService mathService() {
+        Mock(MathService)
+    }
+
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">

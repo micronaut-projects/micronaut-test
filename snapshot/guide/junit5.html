@@ -163,7 +163,12 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathService Interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathService.java[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+interface MathService {
+
+    Integer compute(Integer num);
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -172,7 +177,18 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathService implementation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathServiceImpl.java[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import javax.inject.Singleton;
+
+@Singleton
+class MathServiceImpl implements MathService {
+
+    @Override
+    public Integer compute(Integer num) {
+        return num * 4;
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -181,7 +197,34 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathServiceTest.java[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.junit5;
+
+import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import javax.inject.Inject;
+
+
+@MicronautTest <i class="conum" data-value="1"></i><b>(1)</b>
+class MathServiceTest {
+
+    @Inject
+    MathService mathService; <i class="conum" data-value="2"></i><b>(2)</b>
+
+
+    @ParameterizedTest
+    @CsvSource({"2,8", "3,12"})
+    void testComputeNumToSquare(Integer num, Integer square) {
+        final Integer result = mathService.compute(num); <i class="conum" data-value="3"></i><b>(3)</b>
+
+        Assertions.assertEquals(
+                square,
+                result
+        );
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -209,7 +252,48 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathMockServiceTest.java[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.annotation.MockBean;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.stubbing.Answer;
+
+import javax.inject.Inject;
+
+import static org.mockito.Mockito.*;
+
+@MicronautTest
+class MathMockServiceTest {
+
+    @Inject
+    MathService mathService; <i class="conum" data-value="3"></i><b>(3)</b>
+
+
+    @ParameterizedTest
+    @CsvSource({"2,4", "3,9"})
+    void testComputeNumToSquare(Integer num, Integer square) {
+
+        when(mathService.compute(10))
+            .then(invocation -&gt; Long.valueOf(Math.round(Math.pow(num, 2))).intValue()); <i class="conum" data-value="4"></i><b>(4)</b>
+
+        final Integer result = mathService.compute(10);
+
+        Assertions.assertEquals(
+                square,
+                result
+        );
+        verify(mathService).compute(10); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+
+    @MockBean(MathServiceImpl.class) <i class="conum" data-value="1"></i><b>(1)</b>
+    MathService mathService() {
+        return mock(MathService.class); <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -244,7 +328,25 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathController</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathController.java[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Get;
+
+@Controller("/math")
+public class MathController {
+    MathService mathService;
+
+    MathController(MathService mathService) {
+        this.mathService = mathService;
+    }
+
+    @Get(uri = "/compute/{number}", processes = MediaType.TEXT_PLAIN)
+    String compute(Integer number) {
+        return String.valueOf(mathService.compute(number));
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -253,7 +355,53 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathCollaboratorTest.java[]</code></pre>
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.client.RxHttpClient;
+import io.micronaut.http.client.annotation.Client;
+import io.micronaut.test.annotation.*;
+import io.micronaut.test.annotation.MockBean;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.mockito.Mockito.*;
+import javax.inject.Inject;
+
+@MicronautTest
+class MathCollaboratorTest {
+
+    @Inject
+    MathService mathService;
+
+    @Inject
+    @Client("/")
+    RxHttpClient client; <i class="conum" data-value="2"></i><b>(2)</b>
+
+
+    @ParameterizedTest
+    @CsvSource({"2,4", "3,9"})
+    void testComputeNumToSquare(Integer num, Integer square) {
+
+        when( mathService.compute(num) )
+            .then(invocation -&gt; Long.valueOf(Math.round(Math.pow(num, 2))).intValue());
+
+        final Integer result = client.toBlocking().retrieve(HttpRequest.GET("/math/compute/" + num), Integer.class); <i class="conum" data-value="3"></i><b>(3)</b>
+
+        assertEquals(
+                square,
+                result
+        );
+        verify(mathService).compute(num); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+
+    @MockBean(MathServiceImpl.class) <i class="conum" data-value="1"></i><b>(1)</b>
+    MathService mathService() {
+        return mock(MathService.class);
+    }
+
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
