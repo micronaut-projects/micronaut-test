@@ -40,6 +40,7 @@ import java.util.Map;
  * @param <C> The extension context
  */
 public abstract class AbstractMicronautExtension<C> {
+    public static final String DISABLED_MESSAGE = "Test is not bean. Either the test does not satisfy requirements defined by @Requires or annotation processing is not enabled. If the latter ensure annotation processing is enabled in your IDE.";
     protected ApplicationContext applicationContext;
     protected EmbeddedApplication embeddedApplication;
     protected RefreshScope refreshScope;

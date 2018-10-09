@@ -63,14 +63,14 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             if (applicationContext.containsBean(requiredTestClass)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
-                return ConditionEvaluationResult.disabled("Test does not meet bean requirements");
+                return ConditionEvaluationResult.disabled(DISABLED_MESSAGE);
             }
         } else {
             final Class<?> testClass = extensionContext.getRequiredTestClass();
             if (testClass.isAnnotationPresent(MicronautTest.class)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
-                return ConditionEvaluationResult.disabled("Not a Micronaut test");
+                return ConditionEvaluationResult.disabled(DISABLED_MESSAGE);
             }
         }
     }
