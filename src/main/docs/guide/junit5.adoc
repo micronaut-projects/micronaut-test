@@ -3,11 +3,11 @@
 To get started using JUnit 5 you need the following dependencies in your build configuration:
 
 .build.gradle
-[subs="attributes"]
+[source,groovy,subs="attributes"]
 ----
 dependencies {
     ...
-    testCompile "io.micronaut.test:test-junit5:{version}
+    testCompile "io.micronaut.test:test-junit5:{version}"
     testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
 }
 
