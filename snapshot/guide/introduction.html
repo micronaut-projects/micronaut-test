@@ -19,7 +19,7 @@ function addJsClass() {
 <div id="navigation">
     <div class="navTitle">
         
-        Micronaut Test Utilities
+        Micronaut Test
     </div>
     <div class="navLinks">
         <ul>
@@ -36,9 +36,6 @@ function addJsClass() {
                         </div>
                         
                         <div class="toc-item" style="margin-left:0"><a href="../guide/junit5.html"><strong>3</strong><span>Testing with JUnit 5</span></a>
-                        </div>
-                        
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/spek.html"><strong>4</strong><span>Testing with Spek</span></a>
                         </div>
                         
                     </div>
@@ -87,10 +84,10 @@ function addJsClass() {
 
 
 <div class="paragraph">
-<p>This project features utilities for helping test Micronaut applications.</p>
+<p>One of the design goals of Micronaut was to eliminate the artificial separation imposed by traditional frameworks between function and unit tests due to slow startup times and memory consumption.</p>
 </div>
 <div class="paragraph">
-<p>It is generally pretty easy to start Micronaut in a unit test and one of the goals of Micronaut was to as much as possible not require a test framework to test Micronaut. For example in <a href="http://spockframework.org">Spock</a> you can simply do:</p>
+<p>With that in mind it is generally pretty easy to start Micronaut in a unit test and one of the goals of Micronaut was to as much as possible not require a test framework to test Micronaut. For example in <a href="http://spockframework.org">Spock</a> you can simply do:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -112,10 +109,10 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></p
 </table>
 </div>
 <div class="paragraph">
-<p>However, there are cases where having some tools to test Micronaut come in handy, such as mocking bean definitions and so on.</p>
+<p>However, there are cases where having some additional features to test Micronaut come in handy, such as mocking bean definitions and so on.</p>
 </div>
 <div class="paragraph">
-<p>This project includes a pretty simply set of extensions for JUnit 5, Spock and Spek (TODO), that allow you to:</p>
+<p>This project includes a pretty simple set of extensions for JUnit 5 and Spock:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -136,12 +133,15 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></p
 <div class="ulist">
 <ul>
 <li>
-<p><code>@MicronautTest</code> - Can be added to any Spock, JUnit 5 or Spek test to indicate the test is a Micronaut test.</p>
+<p><code>@MicronautTest</code> - Can be added to any Spock or JUnit 5 test.</p>
 </li>
 <li>
 <p><code>@MockBean</code> - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within <code>@MicronautTest</code> it is running your real application.</p>
 </div>
 
 

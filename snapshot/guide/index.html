@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>Micronaut Test Utilities</title>
+    <title>Micronaut Test</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
     <link rel="stylesheet" href="../css/custom.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
@@ -47,8 +47,6 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#junit5"><strong>3</strong><span>Testing with JUnit 5</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#spek"><strong>4</strong><span>Testing with Spek</span></a></div>
-                                
                             </div>
                         </div>
                     </li>
@@ -78,14 +76,12 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-junit5"><a href="#junit5"><strong>3</strong><span>Testing with JUnit 5</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-spek"><a href="#spek"><strong>4</strong><span>Testing with Spek</span></a></div>
-        
         </div>
     </div>
     
     <div class="docs-content">
     <div class="project">
-        <h1>Micronaut Test Utilities</h1>
+        <h1>Micronaut Test</h1>
         <p></p>
         <p>Testing Support Projects for Micronuat</p>
         <p><strong>Version:</strong> 1.0.0.BUILD-SNAPSHOT</p>
@@ -102,10 +98,10 @@
 
 
 <div class="paragraph">
-<p>This project features utilities for helping test Micronaut applications.</p>
+<p>One of the design goals of Micronaut was to eliminate the artificial separation imposed by traditional frameworks between function and unit tests due to slow startup times and memory consumption.</p>
 </div>
 <div class="paragraph">
-<p>It is generally pretty easy to start Micronaut in a unit test and one of the goals of Micronaut was to as much as possible not require a test framework to test Micronaut. For example in <a href="http://spockframework.org">Spock</a> you can simply do:</p>
+<p>With that in mind it is generally pretty easy to start Micronaut in a unit test and one of the goals of Micronaut was to as much as possible not require a test framework to test Micronaut. For example in <a href="http://spockframework.org">Spock</a> you can simply do:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -127,10 +123,10 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></p
 </table>
 </div>
 <div class="paragraph">
-<p>However, there are cases where having some tools to test Micronaut come in handy, such as mocking bean definitions and so on.</p>
+<p>However, there are cases where having some additional features to test Micronaut come in handy, such as mocking bean definitions and so on.</p>
 </div>
 <div class="paragraph">
-<p>This project includes a pretty simply set of extensions for JUnit 5, Spock and Spek (TODO), that allow you to:</p>
+<p>This project includes a pretty simple set of extensions for JUnit 5 and Spock:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -151,12 +147,15 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></p
 <div class="ulist">
 <ul>
 <li>
-<p><code>@MicronautTest</code> - Can be added to any Spock, JUnit 5 or Spek test to indicate the test is a Micronaut test.</p>
+<p><code>@MicronautTest</code> - Can be added to any Spock or JUnit 5 test.</p>
 </li>
 <li>
 <p><code>@MockBean</code> - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within <code>@MicronautTest</code> it is running your real application.</p>
 </div>
 
 
@@ -169,41 +168,62 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></p
 </div>
 
 
+<div class="sect2">
+<h3 id="_setting_up_spock">Setting up Spock</h3>
+<div class="paragraph">
+<p>To get started using Spock you need the following dependencies in your build configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre>testCompile "io.micronaut.test:test-spock:1.0.0.BUILD-SNAPSHOT</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you plan to define mock beans you will also need <code>inject-groovy</code> on your <code>testCompile</code> classpath or <code>inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Or for Maven:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
+    &lt;artifactId&gt;test-spock&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_writing_a_micronaut_test_with_spock">Writing a Micronaut Test with Spock</h3>
 <div class="paragraph">
 <p>Let&#8217;s take a look at an example using Spock. Consider you have the following interface:</p>
 </div>
 <div class="listingblock">
 <div class="title">The MathService Interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock;
-
-import javax.inject.Singleton;
-
-@Singleton
-interface MathService {
-
-    Integer compute(Integer num);
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathService.java[]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>And a simply implementation that computes the value times 4 and is defined as Micronaut bean:</p>
+<p>And a simple implementation that computes the value times 4 and is defined as Micronaut bean:</p>
 </div>
 <div class="listingblock">
 <div class="title">The MathService implementation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
-
-import javax.inject.Singleton
-
-@Singleton
-class MathServiceImpl implements MathService {
-
-    @Override
-    Integer compute(Integer num) {
-        return num * 4 // should never be called
-    }
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathServiceImpl.groovy[]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -212,32 +232,7 @@ class MathServiceImpl implements MathService {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
-
-import io.micronaut.test.annotation.MicronautTest
-import spock.lang.*
-import javax.inject.Inject
-
-@MicronautTest <i class="conum" data-value="1"></i><b>(1)</b>
-class MathServiceSpec extends Specification {
-
-    @Inject
-    MathService mathService <i class="conum" data-value="2"></i><b>(2)</b>
-
-    @Unroll
-    void "should compute #num times 4"() { <i class="conum" data-value="3"></i><b>(3)</b>
-        when:
-        def result = mathService.compute(num)
-
-        then:
-        result == expected
-
-        where:
-        num | expected
-        2   | 8
-        3   | 12
-    }
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathServiceSpec.groovy[]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -256,6 +251,7 @@ class MathServiceSpec extends Specification {
 </tr>
 </table>
 </div>
+</div>
 <div class="sect2">
 <h3 id="_using_spock_mocks">Using Spock Mocks</h3>
 <div class="paragraph">
@@ -264,38 +260,7 @@ class MathServiceSpec extends Specification {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
-
-import io.micronaut.test.annotation.*
-import spock.lang.*
-import javax.inject.Inject
-
-@MicronautTest
-class MathMockServiceSpec extends Specification {
-
-    @Inject
-    MathService mathService <i class="conum" data-value="3"></i><b>(3)</b>
-
-    @Unroll
-    void "should compute #num to #square"() {
-        when:
-        def result = mathService.compute(num)
-
-        then:
-        1 * mathService.compute(num) &gt;&gt; Math.pow(num, 2)  <i class="conum" data-value="4"></i><b>(4)</b>
-        result == square
-
-        where:
-        num | square
-        2   | 4
-        3   | 9
-    }
-
-    @MockBean(MathServiceImpl) <i class="conum" data-value="1"></i><b>(1)</b>
-    MathService mathService() {
-        Mock(MathService) <i class="conum" data-value="2"></i><b>(2)</b>
-    }
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathMockServiceSpec.groovy[]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -327,27 +292,7 @@ class MathMockServiceSpec extends Specification {
 <div class="listingblock">
 <div class="title">The MathController</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
-
-import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
-
-
-@Controller('/math')
-class MathController {
-
-    MathService mathService
-
-    MathController(MathService mathService) {
-        this.mathService = mathService
-    }
-
-    @Get(uri = '/compute/{number}', processes = MediaType.TEXT_PLAIN)
-    String compute(Integer number) {
-        return mathService.compute(number)
-    }
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathController.groovy[]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -356,46 +301,7 @@ class MathController {
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
-
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
-import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.annotation.*
-import spock.lang.*
-import javax.inject.Inject
-
-@MicronautTest
-class MathCollaboratorSpec extends Specification {
-
-    @Inject
-    MathService mathService <i class="conum" data-value="2"></i><b>(2)</b>
-
-    @Inject
-    @Client('/')
-    RxHttpClient client <i class="conum" data-value="3"></i><b>(3)</b>
-
-    @Unroll
-    void "should compute #num to #square"() {
-        when:
-        Integer result = client.toBlocking().retrieve(HttpRequest.GET('/math/compute/10'), Integer) <i class="conum" data-value="3"></i><b>(3)</b>
-
-        then:
-        1 * mathService.compute(10) &gt;&gt; Math.pow(num, 2)  <i class="conum" data-value="4"></i><b>(4)</b>
-        result == square
-
-        where:
-        num | square
-        2   | 4
-        3   | 9
-    }
-
-    @MockBean(MathServiceImpl) <i class="conum" data-value="1"></i><b>(1)</b>
-    MathService mathService() {
-        Mock(MathService)
-    }
-
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::spock/src/test/groovy/io/micronaut/test/spock/MathCollaboratorSpec.groovy[]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -433,19 +339,203 @@ class MathCollaboratorSpec extends Specification {
 </div>
 
 
-
-
-
-<h1 id="spek">4 Testing with Spek</h1>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/spek.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
+<div class="sect2">
+<h3 id="_setting_up_junit_5">Setting up JUnit 5</h3>
+<div class="paragraph">
+<p>To get started using JUnit 5 you need the following dependencies in your build configuration:</p>
 </div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+    ...
+    testCompile "io.micronaut.test:test-junit5:1.0.0.BUILD-SNAPSHOT"
+    testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
+}
 
-
-
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you plan to define mock beans you will also need <code>inject-groovy</code> on your <code>testCompile</code> classpath or <code>inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Or for Maven:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
+    &lt;artifactId&gt;test-junit5&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that for Maven you will also need to configure the Surefire plugin to use JUnit platform:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.19.1&lt;/version&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.junit.platform&lt;/groupId&gt;
+            &lt;artifactId&gt;junit-platform-surefire-provider&lt;/artifactId&gt;
+            &lt;version&gt;1.1.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+            &lt;artifactId&gt;junit-jupiter-engine&lt;/artifactId&gt;
+            &lt;version&gt;5.1.0&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_writing_a_micronaut_test_with_junit_5">Writing a Micronaut Test with JUnit 5</h3>
+<div class="paragraph">
+<p>Let&#8217;s take a look at an example using JUnit 5. Consider you have the following interface:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService Interface</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathService.java[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And a simple implementation that computes the value times 4 and is defined as Micronaut bean:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService implementation</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathServiceImpl.java[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can define the following test to test the implementation:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService specification</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathServiceTest.java[]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The test is declared as Micronaut test with <code>@MicronautTest</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>@Inject</code> annotation is used to inject the bean</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The test itself tests the injected bean</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_mockito_mocks">Using Mockito Mocks</h3>
+<div class="paragraph">
+<p>Now let&#8217;s say you want to replace the implementation with a Mockito Mock. You can do so by defining a method that returns a mock and is annotated with <code>@MockBean</code>, for example:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService specification</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathMockServiceTest.java[]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>@MockBean</code> annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Mockito&#8217;s <code>mock(..)</code> method creates the actual mock</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The Mock is injected into the test</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Mockito is used to verify the mock is called</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note that because the bean is an inner class of the test, it will be active only for the scope of the test. This approach allows you to define beans that are isolated per test class.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mocking_collaborators">Mocking Collaborators</h3>
+<div class="paragraph">
+<p>Note that in most cases you won&#8217;t define a <code>@MockBean</code> and then inject it only to verify interaction with the Mock directly, instead the Mock will be a collaborator within your application. For example say you have a <code>MathController</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathController</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathController.java[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above controller uses the <code>MathService</code> to expose a <code>/math/compute/{number}</code> endpoint. See the following example for a test that tests interaction with the mock collaborator:</p>
+</div>
+<div class="listingblock">
+<div class="title">Mocking Collaborators</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Unresolved directive in &lt;stdin&gt; - include::junit5/src/test/java/io/micronaut/test/junit5/MathCollaboratorTest.java[]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Like the previous example a Mock is defined using <code>@MockBean</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This time we inject an instance of <code>RxHttpClient</code> to test the controller.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We invoke the controller and retrieve the result</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The interaction with mock collaborator is verified.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The way this works is that <code>@MicronautTest</code> will inject the <code>Mock(..)</code> instance into the test, but the controller will have a proxy that points to the <code>Mock(..)</code> instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
+</div>
+</div>
 
     </div>
 </div>
