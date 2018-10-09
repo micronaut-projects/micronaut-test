@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":core")
+    compile project(":test-core")
     compileOnly "io.micronaut:inject-groovy:$micronautVersion"
     implementation "io.micronaut:inject:$micronautVersion"
     implementation "io.micronaut:runtime:$micronautVersion"
@@ -13,4 +13,3 @@ dependencies {
 
 
 }
-compileTestGroovy.groovyOptions.forkOptions.jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
