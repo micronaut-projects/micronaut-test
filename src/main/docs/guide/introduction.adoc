@@ -1,6 +1,7 @@
-This project features utilities for helping test Micronaut applications.
+One of the design goals of Micronaut was to eliminate the artificial separation imposed by traditional frameworks between function and unit tests due to slow startup times and memory consumption.
 
-It is generally pretty easy to start Micronaut in a unit test and one of the goals of Micronaut was to as much as possible not require a test framework to test Micronaut. For example in http://spockframework.org[Spock] you can simply do:
+
+With that in mind it is generally pretty easy to start Micronaut in a unit test and one of the goals of Micronaut was to as much as possible not require a test framework to test Micronaut. For example in http://spockframework.org[Spock] you can simply do:
 
 [source,groovy]
 ----
@@ -12,9 +13,9 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)
 <1> The field is declared as shared so to server is started only once for all methods in the class
 <2> The `@AutoCleanup` annotation ensures the server is shutdown after the test suite completes.
 
-However, there are cases where having some tools to test Micronaut come in handy, such as mocking bean definitions and so on.
+However, there are cases where having some additional features to test Micronaut come in handy, such as mocking bean definitions and so on.
 
-This project includes a pretty simply set of extensions for JUnit 5, Spock and Spek (TODO), that allow you to:
+This project includes a pretty simple set of extensions for JUnit 5 and Spock:
 
 * Automatically start and stop the server for the scope of a test suite
 * Use mocks to replace existing beans for the scope of a test suite
@@ -22,5 +23,7 @@ This project includes a pretty simply set of extensions for JUnit 5, Spock and S
 
 This is achieved through a set of annotations found in the `io.micronaut.test.annotation` package:
 
-* `@MicronautTest` - Can be added to any Spock, JUnit 5 or Spek test to indicate the test is a Micronaut test.
+* `@MicronautTest` - Can be added to any Spock or JUnit 5 test.
 * `@MockBean` - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.
+
+These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within `@MicronautTest` it is running your real application.

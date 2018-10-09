@@ -2,4 +2,4 @@ introduction:
   title: Introduction
 spock: Testing with Spock
 junit5: Testing with JUnit 5
-spek: Testing with Spek
+#spek: Testing with Spek

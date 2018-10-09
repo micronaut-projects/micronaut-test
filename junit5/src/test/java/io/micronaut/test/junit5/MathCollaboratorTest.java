@@ -3,12 +3,11 @@ package io.micronaut.test.junit5;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.annotation.*;
 import io.micronaut.test.annotation.MockBean;
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.stubbing.Answer;
 
 import static org.mockito.Mockito.*;
 import javax.inject.Inject;
@@ -21,23 +20,26 @@ class MathCollaboratorTest {
 
     @Inject
     @Client("/")
-    RxHttpClient client;
+    RxHttpClient client; // <2>
 
 
     @ParameterizedTest
     @CsvSource({"2,4", "3,9"})
     void testComputeNumToSquare(Integer num, Integer square) {
-        when(mathService.compute(10)).then((Answer<Integer>) invocation -> Long.valueOf(Math.round(Math.pow(num, 2))).intValue());
-        final Integer result = client.toBlocking().retrieve(HttpRequest.GET("/math/compute/10"), Integer.class);
 
-        Assertions.assertEquals(
+        when( mathService.compute(num) )
+            .then(invocation -> Long.valueOf(Math.round(Math.pow(num, 2))).intValue());
+
+        final Integer result = client.toBlocking().retrieve(HttpRequest.GET("/math/compute/" + num), Integer.class); // <3>
+
+        assertEquals(
                 square,
                 result
         );
-        verify(mathService).compute(10);
+        verify(mathService).compute(num); // <4>
     }
 
-    @MockBean(MathServiceImpl.class)
+    @MockBean(MathServiceImpl.class) // <1>
     MathService mathService() {
         return mock(MathService.class);
     }

@@ -1,0 +1,132 @@
+=== Setting up JUnit 5
+
+To get started using JUnit 5 you need the following dependencies in your build configuration:
+
+.build.gradle
+[subs="attributes"]
+----
+dependencies {
+    ...
+    testCompile "io.micronaut.test:test-junit5:{version}
+    testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
+}
+
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
+}
+----
+
+NOTE: If you plan to define mock beans you will also need `inject-groovy` on your `testCompile` classpath or `inject-java` for Java or Kotlin (this should already be configured if you used `mn create-app`).
+
+Or for Maven:
+
+.pom.xml
+[source,xml]
+----
+<dependency>
+    <groupId>io.micronaut.test</groupId>
+    <artifactId>test-junit5</artifactId>
+    <version>{version}</version>
+    <scope>test</scope>
+</dependency>
+----
+
+Note that for Maven you will also need to configure the Surefire plugin to use JUnit platform:
+
+.pom.xml
+[source,xml]
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.19.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+    </dependencies>
+</plugin>
+----
+
+
+
+
+=== Writing a Micronaut Test with JUnit 5
+
+Let's take a look at an example using JUnit 5. Consider you have the following interface:
+
+.The MathService Interface
+[source,java]
+----
+include::{junit5tests}/MathService.java[]
+----
+
+And a simple implementation that computes the value times 4 and is defined as Micronaut bean:
+
+.The MathService implementation
+[source,java]
+----
+include::{junit5tests}/MathServiceImpl.java[]
+----
+
+You can define the following test to test the implementation:
+
+.The MathService specification
+[source,groovy]
+----
+include::{junit5tests}/MathServiceTest.java[]
+----
+
+<1> The test is declared as Micronaut test with `@MicronautTest`
+<2> The `@Inject` annotation is used to inject the bean
+<3> The test itself tests the injected bean
+
+=== Using Mockito Mocks
+
+Now let's say you want to replace the implementation with a Mockito Mock. You can do so by defining a method that returns a mock and is annotated with `@MockBean`, for example:
+
+.The MathService specification
+[source,java]
+----
+include::{junit5tests}/MathMockServiceTest.java[]
+----
+
+<1> The `@MockBean` annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.
+<2> Mockito's `mock(..)` method creates the actual mock
+<3> The Mock is injected into the test
+<4> Mockito is used to verify the mock is called
+
+Note that because the bean is an inner class of the test, it will be active only for the scope of the test. This approach allows you to define beans that are isolated per test class.
+
+=== Mocking Collaborators
+
+Note that in most cases you won't define a `@MockBean` and then inject it only to verify interaction with the Mock directly, instead the Mock will be a collaborator within your application. For example say you have a `MathController`:
+
+.The MathController
+[source,java]
+----
+include::{junit5tests}/MathController.java[]
+----
+
+The above controller uses the `MathService` to expose a `/math/compute/{number}` endpoint. See the following example for a test that tests interaction with the mock collaborator:
+
+.Mocking Collaborators
+[source,java]
+----
+include::{junit5tests}/MathCollaboratorTest.java[]
+----
+
+<1> Like the previous example a Mock is defined using `@MockBean`
+<2> This time we inject an instance of `RxHttpClient` to test the controller.
+<3> We invoke the controller and retrieve the result
+<4> The interaction with mock collaborator is verified.
+
+The way this works is that `@MicronautTest` will inject the `Mock(..)` instance into the test, but the controller will have a proxy that points to the `Mock(..)` instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut's built in `RefreshScope`).
