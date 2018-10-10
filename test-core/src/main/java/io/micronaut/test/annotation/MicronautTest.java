@@ -55,4 +55,11 @@ public @interface MicronautTest {
      * @return The packages to consider for scanning.
      */
     String[] packages() default {};
+
+    /**
+     * One or many references to classpath. For example: "classpath:mytest.yml"
+     *
+     * @return The property sources
+     */
+    String[] propertySources() default {};
 }

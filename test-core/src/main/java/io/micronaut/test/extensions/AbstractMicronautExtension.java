@@ -19,6 +19,14 @@ package io.micronaut.test.extensions;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.annotation.Property;
+import io.micronaut.context.env.PropertySource;
+import io.micronaut.context.env.PropertySourceLoader;
+import io.micronaut.core.io.ResourceResolver;
+import io.micronaut.core.io.service.ServiceDefinition;
+import io.micronaut.core.io.service.SoftServiceLoader;
+import io.micronaut.core.naming.NameUtils;
+import io.micronaut.core.util.ArrayUtils;
+import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
@@ -27,10 +35,10 @@ import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.condition.TestActiveCondition;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.AnnotatedElement;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Abstract base class for both JUnit 5 and Spock.
@@ -41,6 +49,7 @@ import java.util.Map;
  */
 public abstract class AbstractMicronautExtension<C> {
     public static final String DISABLED_MESSAGE = "Test is not bean. Either the test does not satisfy requirements defined by @Requires or annotation processing is not enabled. If the latter ensure annotation processing is enabled in your IDE.";
+    private static Map<String, PropertySourceLoader> loaderMap;
     protected ApplicationContext applicationContext;
     protected EmbeddedApplication embeddedApplication;
     protected RefreshScope refreshScope;
@@ -68,6 +77,44 @@ public abstract class AbstractMicronautExtension<C> {
                     testProperties.put(property.name(), property.value());
                 }
             }
+
+            String[] propertySources = testAnnotation.propertySources();
+            if (ArrayUtils.isNotEmpty(propertySources)) {
+
+                Map<String, PropertySourceLoader> loaderMap = readPropertySourceLoaderMap();
+                ResourceResolver resourceResolver = new ResourceResolver();
+
+                for (String propertySource : propertySources) {
+                    String ext = NameUtils.extension(propertySource);
+                    if (StringUtils.isNotEmpty(ext)) {
+
+                        String filename = NameUtils.filename(propertySource);
+                        PropertySourceLoader loader = loaderMap.get(ext);
+
+                        if (loader != null) {
+                            Optional<InputStream> resourceAsStream = resourceResolver.getResourceAsStream(propertySource);
+                            InputStream inputStream = resourceAsStream.orElse(testClass.getResourceAsStream(propertySource));
+
+                            if (inputStream != null) {
+                                Map<String, Object> properties;
+                                try {
+                                    properties = loader.read(filename, inputStream);
+                                    builder.propertySources(PropertySource.of(filename, properties));
+                                } catch (IOException e) {
+                                    throw new RuntimeException("Error loading property source reference for @MicronautTest: " + filename);
+                                } finally {
+                                    try {
+                                        inputStream.close();
+                                    } catch (IOException e) {
+                                        // ignore
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             testProperties.put(TestActiveCondition.ACTIVE_SPEC_NAME, aPackage.getName() + "." + testClass.getSimpleName());
             final Class<?> application = testAnnotation.application();
             if (application != void.class) {
@@ -156,4 +203,23 @@ public abstract class AbstractMicronautExtension<C> {
     }
 
     protected abstract void alignMocks(C context, Object instance);
+
+    private Map<String, PropertySourceLoader> readPropertySourceLoaderMap() {
+        Map<String, PropertySourceLoader> loaderMap = AbstractMicronautExtension.loaderMap;
+        if (loaderMap == null) {
+            loaderMap = new HashMap<>();
+            AbstractMicronautExtension.loaderMap = loaderMap;
+            SoftServiceLoader<PropertySourceLoader> loaders = SoftServiceLoader.load(PropertySourceLoader.class);
+            for (ServiceDefinition<PropertySourceLoader> loader : loaders) {
+                if (loader.isPresent()) {
+                    PropertySourceLoader psl = loader.load();
+                    Set<String> extensions = psl.getExtensions();
+                    for (String extension : extensions) {
+                        loaderMap.put(extension, psl);
+                    }
+                }
+            }
+        }
+        return loaderMap;
+    }
 }

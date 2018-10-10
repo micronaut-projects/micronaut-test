@@ -92,3 +92,46 @@ include::{spocktests}/MathCollaboratorSpec.groovy[]
 <4> The interaction with mock collaborator is verified.
 
 The way this works is that `@MicronautTest` will inject the `Mock(..)` instance into the test, but the controller will have a proxy that points to the `Mock(..)` instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut's built in `RefreshScope`).
+
+
+=== Using @Requires on Tests
+
+Since `@MicronautTest` turns tests into beans themselves, it means you can use the `@Requires` annotation on the test to enable/disable tests. For example:
+
+[source,java]
+----
+@MicronautTest
+@Requires(env = "my-env")
+class RequiresSpec extends Specification {
+    ...
+}
+----
+
+The above test will only run if `my-env` is active (you can active it by passing the system property `micronaut.environments`).
+
+=== Defining Additional Test Specific Properties
+
+You can define additional test specific properties using the `@Property` annotation. The following example demonstrates usage:
+
+.Using `@Property`
+[source,java]
+----
+include::{spocktests}/PropertySpec.groovy[]
+----
+
+Note that when a `@Property` is defined at the test method level, it causes a `RefreshEvent` to be triggered which will update any `@ConfigurationProperties` related  to the property.
+
+
+Alternatively you can specify additional `propertySources` in any supported format (YAML, JSON, Java properties file etc.) using the `@MicronautTest` annotation:
+
+.Using `propertySources` stored in files
+[source,java]
+----
+include::{spocktests}/PropertySourceSpec.groovy[]
+----
+
+The above example expects a file located at `src/test/resources/io/micronaut/spock/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
+
+* `file:myprops.properties` - A relative path to a file somewhere on the file system
+* `classpath:myprops.properties` - A file relative to the root of the classpath
+* `myprops.properties` - A file relative on the classpath relative to the test being run.
