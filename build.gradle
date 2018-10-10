@@ -58,11 +58,16 @@ subprojects { Project subproject ->
     targetCompatibility = '1.8'
     apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-core/ae8c52a65b4315d0f36edf362295d645559f496e/gradle/publishing.gradle"
         
+
     jar {
         manifest {
             attributes('Automatic-Module-Name': "${subproject.group}.${subproject.name}".replaceAll('[^\\w\\.\\$_]', "_"))
+            attributes('Implementation-Version': projectVersion)
+            attributes('Implementation-Title': 'Micronaut Test')
         }
     }
+
+    bintray.publish = true
 
     tasks.withType(Test) {
         jvmArgs '-Duser.country=US'
