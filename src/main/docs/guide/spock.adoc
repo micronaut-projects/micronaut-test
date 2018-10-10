@@ -53,6 +53,28 @@ include::{spocktests}/MathServiceSpec.groovy[]
 <2> The `@Inject` annotation is used to inject the bean
 <3> The test itself tests the injected bean
 
+=== Environments, Classpath Scanning etc.
+
+The `@MicronautTest` annotation supports specifying the environment names the test should run with:
+
+```java
+@MicronautTest(environments=["foo", "bar"])
+```
+
+In addition, although Micronaut itself doesn't scan the classpath, some integrations do (such as JPA and GORM), for these cases you may wish to specify either the application class:
+
+```java
+@MicronautTest(application=Application.class)
+```
+
+Or the packages:
+
+```java
+@MicronautTest(packages="foo.bar")
+```
+
+To ensure that entities can be found during classpath scanning.
+
 === Using Spock Mocks
 
 Now let's say you want to replace the implementation with a Spock Mock. You can do so by defining a method that returns a Spock mock and is annotated with `@MockBean`, for example:
