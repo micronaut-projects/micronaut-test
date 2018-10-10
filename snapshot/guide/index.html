@@ -462,6 +462,115 @@ class MathCollaboratorSpec extends Specification {
 <p>The way this works is that <code>@MicronautTest</code> will inject the <code>Mock(..)</code> instance into the test, but the controller will have a proxy that points to the <code>Mock(..)</code> instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_using_requires_on_tests">Using @Requires on Tests</h3>
+<div class="paragraph">
+<p>Since <code>@MicronautTest</code> turns tests into beans themselves, it means you can use the <code>@Requires</code> annotation on the test to enable/disable tests. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest
+@Requires(env = "my-env")
+class RequiresSpec extends Specification {
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above test will only run if <code>my-env</code> is active (you can active it by passing the system property <code>micronaut.environments</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_additional_test_specific_properties">Defining Additional Test Specific Properties</h3>
+<div class="paragraph">
+<p>You can define additional test specific properties using the <code>@Property</code> annotation. The following example demonstrates usage:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>@Property</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.spock
+
+import io.micronaut.context.annotation.Property
+import io.micronaut.context.annotation.Value
+import io.micronaut.test.annotation.MicronautTest
+import spock.lang.Specification
+import spock.lang.Stepwise
+
+@MicronautTest
+@Property(name = "foo.bar", value = "stuff")
+@Stepwise
+class PropertySpec extends Specification {
+
+
+    @Value('${foo.bar}')
+    String val
+
+    void "test value"() {
+        expect:
+        val == 'stuff'
+    }
+
+    @Property(name = "foo.bar", value = "changed")
+    void "test value changed"() {
+        expect:
+        val == 'changed'
+    }
+
+    void "test value restored"() {
+        expect:
+        val == 'stuff'
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that when a <code>@Property</code> is defined at the test method level, it causes a <code>RefreshEvent</code> to be triggered which will update any <code>@ConfigurationProperties</code> related  to the property.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively you can specify additional <code>propertySources</code> in any supported format (YAML, JSON, Java properties file etc.) using the <code>@MicronautTest</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>propertySources</code> stored in files</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.spock
+
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.annotation.MicronautTest
+import spock.lang.Specification
+
+import javax.inject.Inject
+
+@MicronautTest(propertySources = "myprops.properties")
+class PropertySourceSpec extends Specification {
+
+    @Property(name = "foo.bar")
+    @Inject
+    String val
+
+    void "test property source"() {
+        expect:
+        val == 'foo'
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above example expects a file located at <code>src/test/resources/io/micronaut/spock/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>file:myprops.properties</code> - A relative path to a file somewhere on the file system</p>
+</li>
+<li>
+<p><code>classpath:myprops.properties</code> - A file relative to the root of the classpath</p>
+</li>
+<li>
+<p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
+</li>
+</ul>
+</div>
+</div>
 
 
 <h1 id="junit5">3 Testing with JUnit 5</h1>
@@ -816,6 +925,112 @@ class MathCollaboratorTest {
 </div>
 <div class="paragraph">
 <p>The way this works is that <code>@MicronautTest</code> will inject the <code>Mock(..)</code> instance into the test, but the controller will have a proxy that points to the <code>Mock(..)</code> instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_requires_on_tests">Using @Requires on Tests</h3>
+<div class="paragraph">
+<p>Since <code>@MicronautTest</code> turns tests into beans themselves, it means you can use the <code>@Requires</code> annotation on the test to enable/disable tests. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest
+@Requires(env = "my-env")
+class RequiresTest {
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above test will only run if <code>my-env</code> is active (you can active it by passing the system property <code>micronaut.environments</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_additional_test_specific_properties">Defining Additional Test Specific Properties</h3>
+<div class="paragraph">
+<p>You can define additional test specific properties using the <code>@Property</code> annotation. The following example demonstrates usage:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>@Property</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@MicronautTest
+@Property(name = "foo.bar", value = "stuff")
+class PropertyValueTest {
+
+    @Property(name = "foo.bar")
+    String val;
+
+    @Test
+    void testInitialValue() {
+        assertEquals("stuff", val);
+    }
+
+    @Property(name = "foo.bar", value = "changed")
+    @Test
+    void testValueChanged() {
+        assertEquals("changed", val);
+    }
+
+    @Test
+    void testValueRestored() {
+        assertEquals("stuff", val);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that when a <code>@Property</code> is defined at the test method level, it causes a <code>RefreshEvent</code> to be triggered which will update any <code>@ConfigurationProperties</code> related  to the property.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively you can specify additional <code>propertySources</code> in any supported format (YAML, JSON, Java properties file etc.) using the <code>@MicronautTest</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>propertySources</code> stored in files</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+@MicronautTest(propertySources = "myprops.properties")
+class PropertySourceTest {
+
+    @Property(name = "foo.bar")
+    String val;
+
+
+    @Test
+    void testPropertySource() {
+        Assertions.assertEquals("foo", val);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above example expects a file located at <code>src/test/resources/io/micronaut/junit5/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>file:myprops.properties</code> - A relative path to a file somewhere on the file system</p>
+</li>
+<li>
+<p><code>classpath:myprops.properties</code> - A file relative to the root of the classpath</p>
+</li>
+<li>
+<p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
+</li>
+</ul>
 </div>
 </div>
 
