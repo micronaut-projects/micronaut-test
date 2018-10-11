@@ -140,6 +140,12 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <div class="block">One or many references to classpath.</div>
 </td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#rollback--">rollback</a></span></code>
+<div class="block">Whether to rollback (if possible) any data access code between each test execution.</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -218,7 +224,7 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <li class="blockList"><a name="propertySources--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>propertySources</h4>
 <pre>public abstract&nbsp;java.lang.String[]&nbsp;propertySources</pre>
@@ -230,6 +236,27 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <dl>
 <dt>Default:</dt>
 <dd>{}</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="rollback--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>rollback</h4>
+<pre>public abstract&nbsp;boolean&nbsp;rollback</pre>
+<div class="block">Whether to rollback (if possible) any data access code between each test execution.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>True if changes should be rolled back</dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>true</dd>
 </dl>
 </li>
 </ul>

@@ -3,3 +3,5 @@ io.micronaut.test.condition
 io.micronaut.test.extensions
 io.micronaut.test.extensions.junit5
 io.micronaut.test.extensions.spock
+io.micronaut.test.transaction
+io.micronaut.test.transaction.spring
