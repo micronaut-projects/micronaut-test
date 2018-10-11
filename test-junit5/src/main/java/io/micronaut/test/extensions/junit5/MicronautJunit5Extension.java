@@ -33,7 +33,7 @@ import java.util.Optional;
  * @author graemerocher
  * @since 1.0
  */
-public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition {
+public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) {
@@ -96,5 +96,16 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 }
             }
         }
+    }
+
+    @Override
+    public void afterTestExecution(ExtensionContext context) throws Exception {
+        commit();
+        rollback();
+    }
+
+    @Override
+    public void beforeTestExecution(ExtensionContext context) throws Exception {
+        begin();
     }
 }

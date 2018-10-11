@@ -33,6 +33,7 @@ import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.condition.TestActiveCondition;
+import io.micronaut.test.transaction.TestTransactionInterceptor;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -47,7 +48,7 @@ import java.util.*;
  * @since 1.0
  * @param <C> The extension context
  */
-public abstract class AbstractMicronautExtension<C> {
+public abstract class AbstractMicronautExtension<C> implements TestTransactionInterceptor  {
     public static final String DISABLED_MESSAGE = "Test is not bean. Either the test does not satisfy requirements defined by @Requires or annotation processing is not enabled. If the latter ensure annotation processing is enabled in your IDE.";
     private static Map<String, PropertySourceLoader> loaderMap;
     protected ApplicationContext applicationContext;
@@ -56,6 +57,33 @@ public abstract class AbstractMicronautExtension<C> {
     protected BeanDefinition<?> specDefinition;
     protected Map<String, Object> testProperties = new LinkedHashMap<>();
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
+    private boolean rollback = true;
+
+    @Override
+    public void begin() {
+        if (applicationContext != null) {
+            final TestTransactionInterceptor testTransactionInterceptor = applicationContext.getBean(TestTransactionInterceptor.class);
+            testTransactionInterceptor.begin();
+        }
+    }
+
+    @Override
+    public void commit() {
+        if (applicationContext != null && !rollback) {
+            final TestTransactionInterceptor testTransactionInterceptor = applicationContext.getBean(TestTransactionInterceptor.class);
+            testTransactionInterceptor.commit();
+        }
+
+    }
+
+    @Override
+    public void rollback() {
+        if (applicationContext != null && rollback) {
+            final TestTransactionInterceptor testTransactionInterceptor = applicationContext.getBean(TestTransactionInterceptor.class);
+            testTransactionInterceptor.rollback();
+        }
+
+    }
 
     /**
      * Executed before tests within a class are run.
@@ -66,6 +94,7 @@ public abstract class AbstractMicronautExtension<C> {
      */
     protected void beforeClass(C context, Class<?> testClass, @Nullable MicronautTest testAnnotation) {
         if (testAnnotation != null) {
+            this.rollback = testAnnotation.rollback();
 
             final ApplicationContextBuilder builder = ApplicationContext.build();
             final Package aPackage = testClass.getPackage();

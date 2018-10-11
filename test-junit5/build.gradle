@@ -1,6 +1,5 @@
 dependencies {
     compile project(":test-core")
-    compileOnly "io.micronaut:inject:$micronautVersion"
     implementation "io.micronaut:inject:$micronautVersion"
     implementation "io.micronaut:runtime:$micronautVersion"
 
@@ -17,6 +16,10 @@ dependencies {
     testCompile "io.micronaut:http-server-netty:$micronautVersion"
     testCompile "io.micronaut:http-client:$micronautVersion"
     testCompile 'org.mockito:mockito-junit-jupiter:2.22.0'
+
+    testCompile "io.micronaut.configuration:hibernate-jpa:$micronautVersion"
+    testRuntime "io.micronaut.configuration:jdbc-tomcat:$micronautVersion"
+    testRuntime "com.h2database:h2:1.4.196"
 }
 
 test {

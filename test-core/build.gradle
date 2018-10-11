@@ -1,4 +1,6 @@
 dependencies {
+    compileOnly "io.micronaut:inject-java:$micronautVersion"
+    compileOnly "io.micronaut:spring:$micronautVersion"
     compileOnly("org.spockframework:spock-core:$spockVersion") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }

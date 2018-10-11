@@ -1,6 +1,5 @@
 dependencies {
     compile project(":test-core")
-    compileOnly "io.micronaut:inject-groovy:$micronautVersion"
     implementation "io.micronaut:inject:$micronautVersion"
     implementation "io.micronaut:runtime:$micronautVersion"
     implementation("org.spockframework:spock-core:1.2-groovy-2.4") {

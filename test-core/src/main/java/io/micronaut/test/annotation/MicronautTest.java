@@ -62,4 +62,11 @@ public @interface MicronautTest {
      * @return The property sources
      */
     String[] propertySources() default {};
+
+    /**
+     * Whether to rollback (if possible) any data access code between each test execution.
+     *
+     * @return True if changes should be rolled back
+     */
+    boolean rollback() default true;
 }

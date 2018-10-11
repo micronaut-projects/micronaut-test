@@ -73,6 +73,7 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             for (Object createdMock : createdMocks) {
                 mockUtil.attachMock(createdMock, (Specification) instance);
             }
+            begin();
         });
 
         spec.addCleanupInterceptor(invocation -> {
@@ -81,6 +82,8 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             }
             createdMocks.clear();
             afterEach(invocation);
+            commit();
+            rollback();
         });
     }
 
