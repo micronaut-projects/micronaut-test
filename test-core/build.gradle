@@ -1,6 +1,6 @@
 dependencies {
-    compileOnly "io.micronaut:inject-java:$micronautVersion"
-    compileOnly "io.micronaut:spring:$micronautVersion"
+    compileOnly "io.micronaut:micronaut-inject-java:$micronautVersion"
+    compileOnly "io.micronaut:micronaut-spring:$micronautVersion"
     compileOnly("org.spockframework:spock-core:$spockVersion") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
@@ -9,8 +9,8 @@ dependencies {
             "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     )
 
-    implementation "io.micronaut:inject:$micronautVersion"
-    implementation "io.micronaut:runtime:$micronautVersion"
+    implementation "io.micronaut:micronaut-inject:$micronautVersion"
+    implementation "io.micronaut:micronaut-runtime:$micronautVersion"
 }
 jar {
     exclude "io/micronaut/test/extensions/spock/*"
