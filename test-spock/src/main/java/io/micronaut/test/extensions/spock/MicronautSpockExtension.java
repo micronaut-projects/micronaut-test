@@ -61,6 +61,7 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
                         feature.setSkipped(true);
                     }
                 }
+                invocation.proceed();
             }
         );
 
@@ -74,6 +75,7 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
                 mockUtil.attachMock(createdMock, (Specification) instance);
             }
             begin();
+            invocation.proceed();
         });
 
         spec.addCleanupInterceptor(invocation -> {
@@ -84,6 +86,7 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             afterEach(invocation);
             commit();
             rollback();
+            invocation.proceed();
         });
     }
 
