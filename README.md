@@ -1,3 +1,6 @@
+Spock: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-spock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-spock)
+JUnit 5: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-junit5/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-junit5)
+
 # Micronaut Test
 
 This project provides testing extension for JUnit 5 and Spock to make it easier to test Micronaut applications.
