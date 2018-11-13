@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>Micronaut for Spring</title>
+    <title>Micronaut Test</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
     <link rel="stylesheet" href="../css/custom.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
@@ -43,9 +43,9 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#springToMicronaut"><strong>2</strong><span>Compile Time Spring Annotation Support</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#spock"><strong>2</strong><span>Testing with Spock</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#springParentContext"><strong>3</strong><span>Using Micronaut Parent Context</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#junit5"><strong>3</strong><span>Testing with JUnit 5</span></a></div>
                                 
                             </div>
                         </div>
@@ -72,34 +72,18 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-introduction"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-springToMicronaut"><a href="#springToMicronaut"><strong>2</strong><span>Compile Time Spring Annotation Support</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-spock"><a href="#spock"><strong>2</strong><span>Testing with Spock</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-springToMicronautStart"><a href="#springToMicronautStart"><strong>2.1</strong><span>Build Configuration</span></a></div>
-        
-        <div class="toc-item" style="margin-left:10px" id="toc-item-springAnnotations"><a href="#springAnnotations"><strong>2.2</strong><span>Supported Spring Annotations</span></a></div>
-        
-        <div class="toc-item" style="margin-left:10px" id="toc-item-springInterfaces"><a href="#springInterfaces"><strong>2.3</strong><span>Supported Spring Interfaces</span></a></div>
-        
-        <div class="toc-item" style="margin-left:10px" id="toc-item-springEvents"><a href="#springEvents"><strong>2.4</strong><span>Supported Spring Events</span></a></div>
-        
-        <div class="toc-item" style="margin-left:10px" id="toc-item-springMvc"><a href="#springMvc"><strong>2.5</strong><span>Writing Spring MVC Controllers</span></a></div>
-        
-        <div class="toc-item" style="margin-left:10px" id="toc-item-springBoot"><a href="#springBoot"><strong>2.6</strong><span>Supported Spring Boot Annotations</span></a></div>
-        
-        <div class="toc-item" style="margin-left:10px" id="toc-item-springLimitations"><a href="#springLimitations"><strong>2.7</strong><span>Unsupported Spring Features</span></a></div>
-        
-        <div class="toc-item" style="margin-left:10px" id="toc-item-micronautClient"><a href="#micronautClient"><strong>2.8</strong><span>Using Micronaut's HTTP Client</span></a></div>
-        
-        <div class="toc-item" style="margin-left:0px" id="toc-item-springParentContext"><a href="#springParentContext"><strong>3</strong><span>Using Micronaut Parent Context</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-junit5"><a href="#junit5"><strong>3</strong><span>Testing with JUnit 5</span></a></div>
         
         </div>
     </div>
     
     <div class="docs-content">
     <div class="project">
-        <h1>Micronaut for Spring</h1>
+        <h1>Micronaut Test</h1>
         <p></p>
-        <p>Extensions to integrate Micronaut and Spring </p>
+        <p>Testing Framework Extensions for Micronaut</p>
         <p><strong>Version:</strong> 1.0.0.BUILD-SNAPSHOT</p>
     </div>
     
@@ -107,72 +91,93 @@
 <h1 id="introduction">1 Introduction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/introduction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/introduction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>Micronaut uses Ahead of Time (AOT) compilation to pre-compute your applications requirements at compile time. The result of this is significantly lower memory requirements, faster startup time, and reflection free framework infrastructure.</p>
+<p>One of the design goals of Micronaut was to eliminate the artificial separation imposed by traditional frameworks between function and unit tests due to slow startup times and memory consumption.</p>
 </div>
 <div class="paragraph">
-<p>This project consists of various components that make it easier to:</p>
+<p>With that in mind it is generally pretty easy to start Micronaut in a unit test and one of the goals of Micronaut was to as much as possible not require a test framework to test Micronaut. For example in <a href="http://spockframework.org">Spock</a> you can simply do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">@Shared <i class="conum" data-value="1"></i><b>(1)</b>
+@AutoCleanup <i class="conum" data-value="2"></i><b>(2)</b>
+EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The field is declared as shared so to server is started only once for all methods in the class</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>@AutoCleanup</code> annotation ensures the server is shutdown after the test suite completes.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>However, there are cases where having some additional features to test Micronaut come in handy, such as mocking bean definitions and so on.</p>
+</div>
+<div class="paragraph">
+<p>This project includes a pretty simple set of extensions for JUnit 5 and Spock:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Integrate Spring components into a Micronaut application</p>
+<p>Automatically start and stop the server for the scope of a test suite</p>
 </li>
 <li>
-<p>Run Spring applications as Micronaut applications</p>
+<p>Use mocks to replace existing beans for the scope of a test suite</p>
 </li>
 <li>
-<p>Expose Micronaut Beans to a Spring Application</p>
+<p>Allow dependency injection into a test instance</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>To achieve this the project provides the ability to use a subset of the Spring Annotation-Based programming model to build Micronaut applications. The goal is not necessarily to provide an alternative runtime for Spring, but instead to enable the ability to build libraries that work with both Spring and Micronaut.</p>
+<p>This is achieved through a set of annotations found in the <code>io.micronaut.test.annotation</code> package:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>@MicronautTest</code> - Can be added to any Spock or JUnit 5 test.</p>
+</li>
+<li>
+<p><code>@MockBean</code> - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within <code>@MicronautTest</code> it is running your real application.</p>
 </div>
 
 
-<h1 id="springToMicronaut">2 Compile Time Spring Annotation Support</h1>
+<h1 id="spock">2 Testing with Spock</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/springToMicronaut.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/spock.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
+<div class="sect2">
+<h3 id="_setting_up_spock">Setting up Spock</h3>
 <div class="paragraph">
-<p>Micronaut for Spring allows you to use traditional Spring annotations which are mapped to Micronaut annotations at compilation time. This allows you to write an application that can be imported to another Spring or Micronaut application without change.</p>
+<p>To get started using Spock you need the following dependencies in your build configuration:</p>
 </div>
-<div class="paragraph">
-<p>Unlikely traditional runtime reflection based frameworks Micronaut uses Ahead of Time (AOT) compilation, hence there is no runtime overhead to supporting an additional set of annotations (in this case Spring&#8217;s annotation programming model).</p>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">testCompile "io.micronaut.test:micronaut-test-spock:1.0.0.BUILD-SNAPSHOT"</code></pre>
 </div>
-<div class="paragraph">
-<p>As part of this project an <a href="https://github.com/micronaut-projects/micronaut-spring/tree/master/examples/greeting-service">Example Application</a> is provided that includes no dependencies on Micronaut itself in the source code (only Spring dependencies) but is computed into a Micronaut application at compilation time.</p>
-</div>
-<div class="paragraph">
-<p>The value in this as follows:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>You can take the compiled application and include it into another Spring or Micronaut application without change, which is a huge win for library authors.</p>
-</li>
-<li>
-<p>If you have an existing team of Spring developers they can be up and running with Micronaut without learning a new annotation DSL.</p>
-</li>
-<li>
-<p>Existing tooling like IntelliJ IDEA and STS 4.0 "Just Work" with Micronaut</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Note that Spring is huge and only a subset of Spring is supported, but enough to build real applications and libraries that work with either Micronaut or Spring. The following documentation covers the annotations and Spring interfaces that are supported.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -181,43 +186,449 @@
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If an annotation or interface of Spring is not mentioned in this documentation consider it unsupported.
+If you plan to define mock beans you will also need <code>inject-groovy</code> on your <code>testCompile</code> classpath or <code>inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>).
 </td>
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>Or for Maven:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-test-spock&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_writing_a_micronaut_test_with_spock">Writing a Micronaut Test with Spock</h3>
+<div class="paragraph">
+<p>Let&#8217;s take a look at an example using Spock. Consider you have the following interface:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService Interface</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock;
+
+import javax.inject.Singleton;
+
+@Singleton
+interface MathService {
+
+    Integer compute(Integer num);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And a simple implementation that computes the value times 4 and is defined as Micronaut bean:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService implementation</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+
+import javax.inject.Singleton
+
+@Singleton
+class MathServiceImpl implements MathService {
+
+    @Override
+    Integer compute(Integer num) {
+        return num * 4 // should never be called
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can define the following test to test it:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService specification</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+
+import io.micronaut.test.annotation.MicronautTest
+import spock.lang.*
+import javax.inject.Inject
+
+@MicronautTest <i class="conum" data-value="1"></i><b>(1)</b>
+class MathServiceSpec extends Specification {
+
+    @Inject
+    MathService mathService <i class="conum" data-value="2"></i><b>(2)</b>
+
+    @Unroll
+    void "should compute #num times 4"() { <i class="conum" data-value="3"></i><b>(3)</b>
+        when:
+        def result = mathService.compute(num)
+
+        then:
+        result == expected
+
+        where:
+        num | expected
+        2   | 8
+        3   | 12
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The test is declared as Micronaut test with <code>@MicronautTest</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>@Inject</code> annotation is used to inject the bean</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The test itself tests the injected bean</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_environments_classpath_scanning_etc">Environments, Classpath Scanning etc.</h3>
+<div class="paragraph">
+<p>The <code>@MicronautTest</code> annotation supports specifying the environment names the test should run with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(environments=["foo", "bar"])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition, although Micronaut itself doesn&#8217;t scan the classpath, some integrations do (such as JPA and GORM), for these cases you may wish to specify either the application class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or the packages:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To ensure that entities can be found during classpath scanning.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_spock_mocks">Using Spock Mocks</h3>
+<div class="paragraph">
+<p>Now let&#8217;s say you want to replace the implementation with a Spock Mock. You can do so by defining a method that returns a Spock mock and is annotated with <code>@MockBean</code>, for example:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService specification</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+
+import io.micronaut.test.annotation.*
+import spock.lang.*
+import javax.inject.Inject
+
+@MicronautTest
+class MathMockServiceSpec extends Specification {
+
+    @Inject
+    MathService mathService <i class="conum" data-value="3"></i><b>(3)</b>
+
+    @Unroll
+    void "should compute #num to #square"() {
+        when:
+        def result = mathService.compute(num)
+
+        then:
+        1 * mathService.compute(num) &gt;&gt; Math.pow(num, 2)  <i class="conum" data-value="4"></i><b>(4)</b>
+        result == square
+
+        where:
+        num | square
+        2   | 4
+        3   | 9
+    }
+
+    @MockBean(MathServiceImpl) <i class="conum" data-value="1"></i><b>(1)</b>
+    MathService mathService() {
+        Mock(MathService) <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>@MockBean</code> annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Spock&#8217;s <code>Mock(..)</code> method creates the actual mock</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The Mock is injected into the test</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Spock is used to verify the mock is called</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mocking_collaborators">Mocking Collaborators</h3>
+<div class="paragraph">
+<p>Note that in most cases you won&#8217;t define a <code>@MockBean</code> and then inject it only to verify interaction with the Mock directly, instead the Mock will be a collaborator within your application. For example say you have a <code>MathController</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathController</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+
+import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Get
 
 
-<h2 id="springToMicronautStart">2.1 Build Configuration</h2>
+@Controller('/math')
+class MathController {
+
+    MathService mathService
+
+    MathController(MathService mathService) {
+        this.mathService = mathService
+    }
+
+    @Get(uri = '/compute/{number}', processes = MediaType.TEXT_PLAIN)
+    String compute(Integer number) {
+        return mathService.compute(number)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above controller uses the <code>MathService</code> to expose a <code>/math/compute/{number]</code> endpoint. See the following example for a test that tests interaction with the mock collaborator:</p>
+</div>
+<div class="listingblock">
+<div class="title">Mocking Collaborators</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.annotation.*
+import spock.lang.*
+import javax.inject.Inject
+
+@MicronautTest
+class MathCollaboratorSpec extends Specification {
+
+    @Inject
+    MathService mathService <i class="conum" data-value="2"></i><b>(2)</b>
+
+    @Inject
+    @Client('/')
+    RxHttpClient client <i class="conum" data-value="3"></i><b>(3)</b>
+
+    @Unroll
+    void "should compute #num to #square"() {
+        when:
+        Integer result = client.toBlocking().retrieve(HttpRequest.GET('/math/compute/10'), Integer) <i class="conum" data-value="3"></i><b>(3)</b>
+
+        then:
+        1 * mathService.compute(10) &gt;&gt; Math.pow(num, 2)  <i class="conum" data-value="4"></i><b>(4)</b>
+        result == square
+
+        where:
+        num | square
+        2   | 4
+        3   | 9
+    }
+
+    @MockBean(MathServiceImpl) <i class="conum" data-value="1"></i><b>(1)</b>
+    MathService mathService() {
+        Mock(MathService)
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Like the previous example a Mock is defined using <code>@MockBean</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This time we inject an instance of <code>RxHttpClient</code> to test the controller.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We invoke the controller and retrieve the result</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The interaction with mock collaborator is verified.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The way this works is that <code>@MicronautTest</code> will inject the <code>Mock(..)</code> instance into the test, but the controller will have a proxy that points to the <code>Mock(..)</code> instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_requires_on_tests">Using @Requires on Tests</h3>
+<div class="paragraph">
+<p>Since <code>@MicronautTest</code> turns tests into beans themselves, it means you can use the <code>@Requires</code> annotation on the test to enable/disable tests. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest
+@Requires(env = "my-env")
+class RequiresSpec extends Specification {
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above test will only run if <code>my-env</code> is active (you can active it by passing the system property <code>micronaut.environments</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_additional_test_specific_properties">Defining Additional Test Specific Properties</h3>
+<div class="paragraph">
+<p>You can define additional test specific properties using the <code>@Property</code> annotation. The following example demonstrates usage:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>@Property</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.spock
+
+import io.micronaut.context.annotation.Property
+import io.micronaut.context.annotation.Value
+import io.micronaut.test.annotation.MicronautTest
+import spock.lang.Specification
+import spock.lang.Stepwise
+
+@MicronautTest
+@Property(name = "foo.bar", value = "stuff")
+@Stepwise
+class PropertySpec extends Specification {
+
+
+    @Value('${foo.bar}')
+    String val
+
+    void "test value"() {
+        expect:
+        val == 'stuff'
+    }
+
+    @Property(name = "foo.bar", value = "changed")
+    void "test value changed"() {
+        expect:
+        val == 'changed'
+    }
+
+    void "test value restored"() {
+        expect:
+        val == 'stuff'
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that when a <code>@Property</code> is defined at the test method level, it causes a <code>RefreshEvent</code> to be triggered which will update any <code>@ConfigurationProperties</code> related  to the property.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively you can specify additional <code>propertySources</code> in any supported format (YAML, JSON, Java properties file etc.) using the <code>@MicronautTest</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>propertySources</code> stored in files</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.spock
+
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.annotation.MicronautTest
+import spock.lang.Specification
+
+import javax.inject.Inject
+
+@MicronautTest(propertySources = "myprops.properties")
+class PropertySourceSpec extends Specification {
+
+    @Property(name = "foo.bar")
+    @Inject
+    String val
+
+    void "test property source"() {
+        expect:
+        val == 'foo'
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above example expects a file located at <code>src/test/resources/io/micronaut/spock/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>file:myprops.properties</code> - A relative path to a file somewhere on the file system</p>
+</li>
+<li>
+<p><code>classpath:myprops.properties</code> - A file relative to the root of the classpath</p>
+</li>
+<li>
+<p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+<h1 id="junit5">3 Testing with JUnit 5</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/springToMicronaut/springToMicronautStart.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/junit5.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
+<div class="sect2">
+<h3 id="_setting_up_junit_5">Setting up JUnit 5</h3>
 <div class="paragraph">
-<p>Micronaut 1.0.1 or above is required and the following is a minimal build to get this working for Spring (a non-web application):</p>
+<p>To get started using JUnit 5 you need the following dependencies in your build configuration:</p>
 </div>
 <div class="listingblock">
+<div class="title">build.gradle</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id "java"
-    id "org.springframework.boot" version "2.1.0.RELEASE"
-    id "io.spring.dependency-management" version "1.0.6.RELEASE"
-    id "net.ltgt.apt" version "0.19"
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+    ...
+    testCompile "io.micronaut.test:micronaut-test-junit5:1.0.0.BUILD-SNAPSHOT"
+    testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
 }
 
-dependencies {
-    annotationProcessor "io.micronaut:micronaut-inject-java:1.0.1"
-    annotationProcessor "io.micronaut:micronaut-validation::1.0.1"
-    annotationProcessor "io.micronaut.spring:micronaut-spring-annotation:1.0.0.BUILD-SNAPSHOT"
-
-    compile "io.micronaut:micronaut-inject::1.0.1"
-    compile("org.springframework.boot:spring-boot-starter")
-    ...
-
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
 }</code></pre>
 </div>
 </div>
@@ -228,724 +639,458 @@ dependencies {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you are only going to references Spring annotations and not Spring classes or interfaces then <code>org.springframework.boot:spring-boot-starter</code> can be <code>compileOnly</code>
+If you plan to define mock beans you will also need <code>inject-groovy</code> on your <code>testCompile</code> classpath or <code>inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>).
 </td>
 </tr>
 </table>
 </div>
-
-
-<h2 id="springAnnotations">2.2 Supported Spring Annotations</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/springToMicronaut/springAnnotations.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
 <div class="paragraph">
-<p>The following table summarizes the annotations that Micronaut for Spring supports and the Micronaut annotation that they map to at compilation time:</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Supported Spring Annotations</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Spring Annotation</th>
-<th class="tableblock halign-left valign-top">Target Annotation</th>
-<th class="tableblock halign-left valign-top">Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/stereotype/Component.html">@Component</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Bean.html">@Bean</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Component("myBean")</code>. Requires <code>micronaut-runtime</code> dependency.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/stereotype/Service.html">@Service</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Bean.html">@Bean</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Service("myBean")</code>. Requires <code>micronaut-runtime</code> dependency.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/stereotype/Repository.html">@Repository</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Bean.html">@Bean</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Repository("myBean")</code>. Requires <code>micronaut-runtime</code> dependency.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/beans/factory/annotation/Autowired.html">@Autowired</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@javax.inject.Inject</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Autowired</code>. <code>required=false</code> adds <code>@Nullable</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/beans/factory/annotation/Value.html">@Value</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Value.html">@Value</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Value("${foo.bar}")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/beans/factory/annotation/Qualifier.html">@Qualifier</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@javax.inject.Named</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Qualifier("myBean")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/annotation/Configuration.html">@Configuration</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Factory.html">@Factory</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Configuration</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/annotation/Bean.html">@Bean</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Bean.html">@Bean</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Bean</code>. Requires <code>micronaut-runtime</code> dependency.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/annotation/Primary.html">@Primary</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Primary.html">@Primary</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Primary</code>. Requires <code>micronaut-runtime</code> dependency.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/event/EventListener.html">@EventListener</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/runtime/event/annotation/EventListener.html">@EventListener</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@EventListener</code>. Requires <code>micronaut-inject</code> dependency.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/scheduling/annotation/Async.html">@Async</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/scheduling/annotation/Async.html">@Async</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Async</code>. Requires <code>micronaut-runtime</code> dependency.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/scheduling/annotation/Scheduled.html">@Scheduled</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/scheduling/annotation/Scheduled.html">@Scheduled</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Scheduled</code>. Requires <code>micronaut-runtime</code> dependency.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/transaction/annotation/Transactional.html">@Transactional</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/spring/tx/annotation/Transactional.html">@Transactional</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Transactional</code>. Requires <code>micronaut-spring</code> dependency.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/cache/annotation/Cacheable.html">@Cacheable</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/cache/annotation/Cacheable.html">@Cacheable</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Requires <code>micronaut-runtime</code> and configured cache. Only <code>cacheNames</code> member supported.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/cache/annotation/CacheEvict.html">@CacheEvict</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/cache/annotation/CacheInvalidate.html">@CacheInvalidate</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Requires <code>micronaut-runtime</code> and configured cache. Only <code>cacheNames</code> member supported.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/cache/annotation/Cacheable.html">@CachePut</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/cache/annotation/CachePut.html">@CachePut</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Requires <code>micronaut-runtime</code> and configured cache. Only <code>cacheNames</code> member supported.</p></td>
-</tr>
-</tbody>
-</table>
-
-
-<h2 id="springInterfaces">2.3 Supported Spring Interfaces</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/springToMicronaut/springInterfaces.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>The following Spring interfaces are supported and can be injected into any bean:</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Supported Injectable Interfaces</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Spring Interface</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Adapted Target</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/core/env/Environment.html">Environment</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/env/Environment.html">Environment</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Application Environment</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/core/convert/ConversionService.html">ConversionService</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/core/convert/ConversionService.html">ConversionService</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For Converting Types</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/ApplicationEventPublisher.html.html">ApplicationEventPublisher</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/event/ApplicationEventPublisher.html">ApplicationEventPublisher</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For Publishing Events</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/ApplicationContext.html">ApplicationContext</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/ApplicationContext.html">ApplicationContext</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The application context</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/bean/factory/BeanFactory.html">BeanFactory</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/BeanContext.html">BeanContext</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The bean context</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>For compatibility the following <code>Aware</code> interfaces are supported:</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 2. Supported <code>Aware</code> Interfaces</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Spring Interface</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/EnvironmentAware.html.html">EnvironmentAware</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For looking up the <code>Environment</code> (but prefer <code>@Autowired</code>)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/ApplicationContextAware.html.html">ApplicationContextAware</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For looking up the <code>ApplicationContext</code> (but prefer <code>@Autowired</code>)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/bean/factory/BeanFactoryAware.html.html">BeanFactoryAware</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For looking up the <code>BeanFactory</code> (but prefer <code>@Autowired</code>)</p></td>
-</tr>
-</tbody>
-</table>
-
-
-<h2 id="springEvents">2.4 Supported Spring Events</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/springToMicronaut/springEvents.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>For compatibility the following <code>ApplicationEvent</code> instances are supported:</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Supported Spring Events</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Spring Event</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/event/ContextStartedEvent.html.html">ContextStartedEvent</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fired when the application context is started</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/event/ContextClosedEvent.html.html">ContextClosedEvent</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fired when the application context is shut down</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>You can write methods annotated with <a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/context/event/EventListener.html">@EventListener</a> to receive the events in either framework.</p>
-</div>
-
-
-<h2 id="springMvc">2.5 Writing Spring MVC Controllers</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/springToMicronaut/springMvc.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>You can write Spring MVC controllers that are computed into Micronaut controllers at compilation time. The programming model is largely compatible with Spring Web Reactive.</p>
-</div>
-<div class="paragraph">
-<p>To get started you should modify your dependencies as following:</p>
+<p>Or for Maven:</p>
 </div>
 <div class="listingblock">
-<div class="title">Including <code>spring-web</code> processing</div>
+<div class="title">pom.xml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-test-junit5&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that for Maven you will also need to configure the Surefire plugin to use JUnit platform:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.19.1&lt;/version&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.junit.platform&lt;/groupId&gt;
+            &lt;artifactId&gt;junit-platform-surefire-provider&lt;/artifactId&gt;
+            &lt;version&gt;1.1.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+            &lt;artifactId&gt;junit-jupiter-engine&lt;/artifactId&gt;
+            &lt;version&gt;5.1.0&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_writing_a_micronaut_test_with_junit_5">Writing a Micronaut Test with JUnit 5</h3>
+<div class="paragraph">
+<p>Let&#8217;s take a look at an example using JUnit 5. Consider you have the following interface:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService Interface</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
 
-    ...
-    // additional Spring web dependencies
-    annotationProcessor "io.micronaut.spring:micronaut-spring-web-annotation:1.0.0.BUILD-SNAPSHOT"
-    compile("org.springframework.boot:spring-boot-starter-web")
+interface MathService {
 
-
-    // additional web dependencies for Micronaut
-    compile("io.micronaut:micronaut-http-server:1.0.1")
-    runtime("io.micronaut.spring:micronaut-spring-web:1.0.0.BUILD-SNAPSHOT")
-    runtime("io.micronaut:micronaut-http-server-netty:1.0.1")
-
+    Integer compute(Integer num);
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Only <code>@RestController</code> semantics are supported, which is fine for most Microservice use cases. Special support is provided by the <code>micronaut-spring-web</code> dependency to allowing returning a <a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/http/ResponseEntity.html">ResponseEntity</a>.</p>
+<p>And a simple implementation that computes the value times 4 and is defined as Micronaut bean:</p>
 </div>
-<div class="admonitionblock tip">
+<div class="listingblock">
+<div class="title">The MathService implementation</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import javax.inject.Singleton;
+
+@Singleton
+class MathServiceImpl implements MathService {
+
+    @Override
+    public Integer compute(Integer num) {
+        return num * 4;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can define the following test to test the implementation:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService specification</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.junit5;
+
+import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import javax.inject.Inject;
+
+
+@MicronautTest <i class="conum" data-value="1"></i><b>(1)</b>
+class MathServiceTest {
+
+    @Inject
+    MathService mathService; <i class="conum" data-value="2"></i><b>(2)</b>
+
+
+    @ParameterizedTest
+    @CsvSource({"2,8", "3,12"})
+    void testComputeNumToSquare(Integer num, Integer square) {
+        final Integer result = mathService.compute(num); <i class="conum" data-value="3"></i><b>(3)</b>
+
+        Assertions.assertEquals(
+                square,
+                result
+        );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-See the <a href="https://github.com/micronaut-projects/micronaut-spring/tree/master/examples/greeting-service">Example application</a> for a demonstration on how to build a Spring MVC application computable to Micronaut.
-</td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The test is declared as Micronaut test with <code>@MicronautTest</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>@Inject</code> annotation is used to inject the bean</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The test itself tests the injected bean</td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>The binding semantics as described in the <a href="https://docs.micronaut.io/latest/guide/index.html#binding">Micronaut documentation</a> and are generally equivalent to how Spring MVC behaves.</p>
 </div>
+<div class="sect2">
+<h3 id="_environments_classpath_scanning_etc">Environments, Classpath Scanning etc.</h3>
 <div class="paragraph">
-<p>The following additional, Spring specific, method argument types are supported:</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Supported Method Argument Types</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/http/server/reactive/ServerHttpRequest.html.html">ServerHttpRequest</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For receiving the whole reactive request</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.security.Principal</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Requires the <code>micronaut-security</code> module</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/http/HttpMethod.html">HttpMethod</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The HTTP method</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/ui/ModelMap.html">ModelMap</a>, <a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/ui/Model.html">Model</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">With <code>micronaut-views</code> module. See <a href="https://docs.micronaut.io/latest/guide/index.html#views">Server Side View Rendering</a>.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The following return types are supported:</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 2. Supported Return Types</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/http/HttpEntity.html">HttpEntity</a>, <a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/http/ResponseEntity.html">ResponseEntity</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For customizing the response</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/http/HttpHeaders.html">HttpHeaders</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For sending back only headers</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.lang.String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A view name when combined with <code>Model</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Any reactive or POJO return type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Computed to appropriate JSON response</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The following Spring MVC annotations are supported:</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 3. Supported Spring MVC Annotations</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Spring Annotation</th>
-<th class="tableblock halign-left valign-top">Target Annotation</th>
-<th class="tableblock halign-left valign-top">Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/RestController.html">@RestController</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Controller.html">@Controller</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@RestController</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/RequestMapping.html">@RequestMapping</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/UriMapping.html">@UriMapping</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@RequestMapping("/foo/bar")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/GetMapping.html">@GetMapping</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Get.html">@Get</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@GetMapping("/foo/bar")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/PostMapping.html">@PostMapping</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Post.html">@Post</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@PostMapping("/foo/bar")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/DeleteMapping.html">@DeleteMapping</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Delete.html">@Delete</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@DeleteMapping("/foo/bar")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/PatchMapping.html">@PatchMapping</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Patch.html">@Patch</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@PatchMapping("/foo/bar")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/PutMapping.html">@PutMapping</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Put.html">@Put</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@PutMapping("/foo/bar")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/RequestHeader.html">@RequestHeader</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Header.html">@Header</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@RequestHeader("Accept")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/RequestAttribute.html">@RequestAttribute</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No equivalent</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@RequestAttribute("Accept")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/RequestBody.html">@RequestBody</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Body.html">@Body</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@RequestBody</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/RequestParam.html">@RequestParam</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/QueryValue.html">@QueryValue</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@RequestParam("myParam")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/ResponseStatus.html">@ResponseStatus</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Status.html">@Status</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@ResponseStatus(value=HttpStatus.NOT_FOUND)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/ExceptionHandler.html">@ExceptionHandler</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/Error.html">@Error</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@ExceptionHandler</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring/docs/current/javadoc-api//org/springframework/web/bind/annotation/CookieValue.html">@CookieValue</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/http/annotation/CookieValue.html">@CookieValue</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example: <code>@CookieValue("myCookie")</code></p></td>
-</tr>
-</tbody>
-</table>
-
-
-<h2 id="springBoot">2.6 Supported Spring Boot Annotations</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/springToMicronaut/springBoot.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>For additional support for Spring Boot you should add the following dependencies:</p>
+<p>The <code>@MicronautTest</code> annotation supports specifying the environment names the test should run with:</p>
 </div>
 <div class="listingblock">
-<div class="title">Including <code>spring-boot</code> processing</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(environments={"foo", "bar"})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition, although Micronaut itself doesn&#8217;t scan the classpath, some integrations do (such as JPA and GORM), for these cases you may wish to specify either the application class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or the packages:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To ensure that entities can be found during classpath scanning.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_mockito_mocks">Using Mockito Mocks</h3>
+<div class="paragraph">
+<p>Now let&#8217;s say you want to replace the implementation with a Mockito Mock. You can do so by defining a method that returns a mock and is annotated with <code>@MockBean</code>, for example:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService specification</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
 
-    ...
-    // additional Spring Boot dependencies
-    annotationProcessor "io.micronaut.spring:micronaut-spring-boot:1.0.0.BUILD-SNAPSHOT"
-    compile("org.springframework.boot:spring-boot-starter-web")
+import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.annotation.MockBean;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.stubbing.Answer;
 
-    // additional Spring Boot dependencies for Micronaut
-    runtime("io.micronaut.spring:micronaut-spring-boot:1.0.0.BUILD-SNAPSHOT")
+import javax.inject.Inject;
+
+import static org.mockito.Mockito.*;
+
+@MicronautTest
+class MathMockServiceTest {
+
+    @Inject
+    MathService mathService; <i class="conum" data-value="3"></i><b>(3)</b>
+
+
+    @ParameterizedTest
+    @CsvSource({"2,4", "3,9"})
+    void testComputeNumToSquare(Integer num, Integer square) {
+
+        when(mathService.compute(10))
+            .then(invocation -&gt; Long.valueOf(Math.round(Math.pow(num, 2))).intValue()); <i class="conum" data-value="4"></i><b>(4)</b>
+
+        final Integer result = mathService.compute(10);
+
+        Assertions.assertEquals(
+                square,
+                result
+        );
+        verify(mathService).compute(10); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+
+    @MockBean(MathServiceImpl.class) <i class="conum" data-value="1"></i><b>(1)</b>
+    MathService mathService() {
+        return mock(MathService.class); <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>@MockBean</code> annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Mockito&#8217;s <code>mock(..)</code> method creates the actual mock</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The Mock is injected into the test</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Mockito is used to verify the mock is called</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note that because the bean is an inner class of the test, it will be active only for the scope of the test. This approach allows you to define beans that are isolated per test class.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mocking_collaborators">Mocking Collaborators</h3>
+<div class="paragraph">
+<p>Note that in most cases you won&#8217;t define a <code>@MockBean</code> and then inject it only to verify interaction with the Mock directly, instead the Mock will be a collaborator within your application. For example say you have a <code>MathController</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathController</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Get;
+
+@Controller("/math")
+public class MathController {
+    MathService mathService;
+
+    MathController(MathService mathService) {
+        this.mathService = mathService;
+    }
+
+    @Get(uri = "/compute/{number}", processes = MediaType.TEXT_PLAIN)
+    String compute(Integer number) {
+        return String.valueOf(mathService.compute(number));
+    }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>With the above dependencies in place the following Spring Boot specific annotations are supported:</p>
+<p>The above controller uses the <code>MathService</code> to expose a <code>/math/compute/{number}</code> endpoint. See the following example for a test that tests interaction with the mock collaborator:</p>
 </div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Supported Spring Boot Annotations</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
+<div class="listingblock">
+<div class="title">Mocking Collaborators</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.client.RxHttpClient;
+import io.micronaut.http.client.annotation.Client;
+import io.micronaut.test.annotation.*;
+import io.micronaut.test.annotation.MockBean;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.mockito.Mockito.*;
+import javax.inject.Inject;
+
+@MicronautTest
+class MathCollaboratorTest {
+
+    @Inject
+    MathService mathService;
+
+    @Inject
+    @Client("/")
+    RxHttpClient client; <i class="conum" data-value="2"></i><b>(2)</b>
+
+
+    @ParameterizedTest
+    @CsvSource({"2,4", "3,9"})
+    void testComputeNumToSquare(Integer num, Integer square) {
+
+        when( mathService.compute(num) )
+            .then(invocation -&gt; Long.valueOf(Math.round(Math.pow(num, 2))).intValue());
+
+        final Integer result = client.toBlocking().retrieve(HttpRequest.GET("/math/compute/" + num), Integer.class); <i class="conum" data-value="3"></i><b>(3)</b>
+
+        assertEquals(
+                square,
+                result
+        );
+        verify(mathService).compute(num); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+
+    @MockBean(MathServiceImpl.class) <i class="conum" data-value="1"></i><b>(1)</b>
+    MathService mathService() {
+        return mock(MathService.class);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
 <tr>
-<th class="tableblock halign-left valign-top">Spring Boot Annotation</th>
-<th class="tableblock halign-left valign-top">Target Annotation</th>
-<th class="tableblock halign-left valign-top">Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/context/properties/ConfigurationProperties.html">@ConfigurationProperties</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/ConfigurationProperties.html">@ConfigurationProperties</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@ConfigurationProperties("foo.bar")</code></p></td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Like the previous example a Mock is defined using <code>@MockBean</code></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/autoconfigure/condition/ConditionalOnBean.html.html">@ConditionalOnBean</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Requires.html">@Requires</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maps to <code>@Requires(beans=Foo.class)</code></p></td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This time we inject an instance of <code>RxHttpClient</code> to test the controller.</td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/autoconfigure/condition/ConditionalOnClass.html.html">@ConditionalOnClass</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Requires.html">@Requires</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maps to <code>@Requires(classes=Foo.class)</code></p></td>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We invoke the controller and retrieve the result</td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/autoconfigure/condition/ConditionalOnMissingBean.html.html">@ConditionalOnMissingBean</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Requires.html">@Requires</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maps to <code>@Requires(missingBeans=Foo.class)</code></p></td>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The interaction with mock collaborator is verified.</td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/autoconfigure/condition/ConditionalOnMissingClass.html.html">@ConditionalOnMissingClass</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Requires.html">@Requires</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maps to <code>@Requires(missing=Foo.class)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/autoconfigure/condition/ConditionalOnNotWebApplication.html.html">@ConditionalOnNotWebApplication</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Requires.html">@Requires</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maps to <code>@Requires(missingBeans=EmbeddedServer.class)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/autoconfigure/condition/ConditionalOnProperty.html.html">@ConditionalOnProperty</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Requires.html">@Requires</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maps to <code>@Requires(property="foo.bar")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/autoconfigure/condition/ConditionalOnSingleCandidate.html.html">@ConditionalOnSingleCandidate</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@RequiresSingleCandidateCondition</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maps to <code>@RequiresSingleCandidateCondition(Foo.class)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/autoconfigure/condition/ConditionalOnWebApplication.html.html">@ConditionalOnWebApplication</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/context/annotation/Requires.html">@Requires</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maps to <code>@Requires(beans=EmbeddedServer.class)</code></p></td>
-</tr>
-</tbody>
 </table>
-<div class="paragraph">
-<p>With support for <code>@Configuration</code> and the majority of Spring Boot conditions it is possible to build auto configurations that work with both Spring Boot and Micronaut.</p>
 </div>
 <div class="paragraph">
-<p>In addition the following Spring Boot Actuator annotations are supported:</p>
+<p>The way this works is that <code>@MicronautTest</code> will inject the <code>Mock(..)</code> instance into the test, but the controller will have a proxy that points to the <code>Mock(..)</code> instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
 </div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 2. Supported Spring Boot Actuator Annotations</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Spring Actuator Boot Annotation</th>
-<th class="tableblock halign-left valign-top">Target Annotation</th>
-<th class="tableblock halign-left valign-top">Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/actuate/endpoint/annotation/Endpoint.html">@Endpoint</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/management/endpoint/annotation/Endpoint.html">@Endpoint</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Endpoint("features")</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/actuate/endpoint/annotation/ReadOperation.html">@ReadOperation</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/management/endpoint/annotation/Read.html">@Read</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@ReadOperation</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/actuate/endpoint/annotation/WriteOperation.html">@WriteOperation</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/management/endpoint/annotation/Write.html">@Write</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@WriteOperation</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/actuate/endpoint/annotation/DeleteOperation.html">@DeleteOperation</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/management/endpoint/annotation/Delete.html">@Delete</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@DeleteOperation</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/actuate/endpoint/annotation/Selector.html">@Selector</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://docs.micronaut.io/latest/api/io/micronaut/management/endpoint/annotation/Selector.html">@Selector</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Example <code>@Selector</code></p></td>
-</tr>
-</tbody>
-</table>
+</div>
+<div class="sect2">
+<h3 id="_using_requires_on_tests">Using @Requires on Tests</h3>
 <div class="paragraph">
-<p>What this enables is the ability to write management endpoints that work with both Spring Boot and Micronaut.</p>
+<p>Since <code>@MicronautTest</code> turns tests into beans themselves, it means you can use the <code>@Requires</code> annotation on the test to enable/disable tests. For example:</p>
 </div>
-
-
-<h2 id="springLimitations">2.7 Unsupported Spring Features</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/springToMicronaut/springLimitations.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest
+@Requires(env = "my-env")
+class RequiresTest {
+    ...
+}</code></pre>
 </div>
-
-
-<div class="paragraph">
-<p>As mentioned previously only a subset of Spring is implementated, but enough to build real applications. The question you have to ask yourself coming from Spring is how much Spring do you need?</p>
 </div>
 <div class="paragraph">
-<p>The following notable features are currently not supported in Micronaut for Spring either and in general if a feature is not documented here consider it unsupported:</p>
+<p>The above test will only run if <code>my-env</code> is active (you can active it by passing the system property <code>micronaut.environments</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_additional_test_specific_properties">Defining Additional Test Specific Properties</h3>
+<div class="paragraph">
+<p>You can define additional test specific properties using the <code>@Property</code> annotation. The following example demonstrates usage:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>@Property</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@MicronautTest
+@Property(name = "foo.bar", value = "stuff")
+class PropertyValueTest {
+
+    @Property(name = "foo.bar")
+    String val;
+
+    @Test
+    void testInitialValue() {
+        assertEquals("stuff", val);
+    }
+
+    @Property(name = "foo.bar", value = "changed")
+    @Test
+    void testValueChanged() {
+        assertEquals("changed", val);
+    }
+
+    @Test
+    void testValueRestored() {
+        assertEquals("stuff", val);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that when a <code>@Property</code> is defined at the test method level, it causes a <code>RefreshEvent</code> to be triggered which will update any <code>@ConfigurationProperties</code> related  to the property.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively you can specify additional <code>propertySources</code> in any supported format (YAML, JSON, Java properties file etc.) using the <code>@MicronautTest</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>propertySources</code> stored in files</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+@MicronautTest(propertySources = "myprops.properties")
+class PropertySourceTest {
+
+    @Property(name = "foo.bar")
+    String val;
+
+
+    @Test
+    void testPropertySource() {
+        Assertions.assertEquals("foo", val);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above example expects a file located at <code>src/test/resources/io/micronaut/junit5/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>AspectJ</strong> - Spring&#8217;s AOP implementation is not supported, you can however use <a href="https://docs.micronaut.io/latest/guide/index.html#aop">Micronaut AOP</a> which is compilation time and reflection free.</p>
+<p><code>file:myprops.properties</code> - A relative path to a file somewhere on the file system</p>
 </li>
 <li>
-<p><strong>Spring Expression Language (SpEL)</strong> - SpEL expressions are not supported, property placeholders are however.</p>
+<p><code>classpath:myprops.properties</code> - A file relative to the root of the classpath</p>
 </li>
 <li>
-<p><strong>The Servlet API</strong> - Any reference to the Servlet API is not supported</p>
+<p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
 </li>
 </ul>
-</div>
-
-
-<h2 id="micronautClient">2.8 Using Micronaut's HTTP Client</h2>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/springToMicronaut/micronautClient.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>Since annotations values are mapped at compilation time, this also impacts the authoring of Micronaut&#8217;s compile-time declarative HTTP client.</p>
-</div>
-<div class="paragraph">
-<p>You can essentially use Spring annotations to a define a compilation-time HTTP client:</p>
-</div>
-<div class="listingblock">
-<div class="title">Spring <code>@Client</code> Implementation</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.spring.web.annotation;
-
-import io.micronaut.http.HttpResponse;
-import io.micronaut.http.annotation.Header;
-import io.micronaut.http.client.annotation.Client;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Nullable;
-
-@Client("/")
-public interface GreetingClient {
-
-    @GetMapping("/")
-    String home();
-
-    @PostMapping("/request")
-    @Header(name = "Foo", value = "Bar")
-    Greeting requestTest(@RequestBody Greeting greeting);
-
-    @GetMapping("/greeting{?name}")
-    Greeting greet(@Nullable String name);
-
-    @PostMapping("/greeting")
-    Greeting greetByPost(@RequestBody Greeting greeting);
-
-    @DeleteMapping("/greeting")
-    HttpResponse&lt;?&gt; deletePost();
-
-    @GetMapping("/nested/greeting{?name}")
-    Greeting nestedGreet(@Nullable String name);
-
-
-    @GetMapping("/greeting-status{?name}")
-    HttpResponse&lt;Greeting&gt; greetWithStatus(@Nullable String name);
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This also means you can define a common interface between client and server of a Spring application and compute the client at compilation name.</p>
-</div>
-
-
-<h1 id="springParentContext">3 Using Micronaut Parent Context</h1>
-
-<div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/springParentContext.adoc"'>
-        <i class='fa fa-pencil-square-o'></i> Improve this doc
-    </button>
-</div>
-
-
-<div class="paragraph">
-<p>You can also use Micronaut for Spring as the parent application context to a regular Spring application.</p>
-</div>
-<div class="paragraph">
-<p>This has a number of benefits, you can for example define beans using Micronaut and consume any Micronaut beans into a Spring application, resulting in Spring using less memory and having reflection free infrastructure.</p>
-</div>
-<div class="paragraph">
-<p>You can also use any Micronaut feature from a regular Spring Boot or Spring application including the <a href="https://docs.micronaut.io/latest/guide/index.html#clientAnnotation">declaring clients for HTTP</a> and <a href="https://docs.micronaut.io/latest/guide/index.html#kafkaClient">Kafka</a>.</p>
-</div>
-<div class="paragraph">
-<p>You can also use any compilation time tools from Micronaut with Spring such as Micronaut&#8217;s support for <a href="https://docs.micronaut.io/latest/guide/index.html#openapi">Swagger</a>.</p>
-</div>
-<div class="paragraph">
-<p>The following example shows how to Configure your Spring Boot application with a Micronaut powered parent application context using <code>SpringApplicationBuilder</code>:</p>
-</div>
-<div class="listingblock">
-<div class="title">Using the Micronaut Parent Context</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">SpringApplicationBuilder builder = new SpringApplicationBuilder();
-MicronautApplicationContext context = new MicronautApplicationContext();
-context.start();
-builder.parent(context);
-builder.sources(Application);
-builder.build().application.run();</code></pre>
 </div>
 </div>
 

@@ -19,7 +19,7 @@ function addJsClass() {
 <div id="navigation">
     <div class="navTitle">
         
-        Micronaut for Spring
+        Micronaut Test
     </div>
     <div class="navLinks">
         <ul>
@@ -32,10 +32,10 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/springToMicronaut.html"><strong>2</strong><span>Compile Time Spring Annotation Support</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/spock.html"><strong>2</strong><span>Testing with Spock</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/springParentContext.html"><strong>3</strong><span>Using Micronaut Parent Context</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/junit5.html"><strong>3</strong><span>Testing with JUnit 5</span></a>
                         </div>
                         
                     </div>
@@ -60,7 +60,7 @@ function addJsClass() {
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/springToMicronaut.html"><strong>2</strong><span>Compile Time Spring Annotation Support</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/spock.html"><strong>2</strong><span>Testing with Spock</span> >></a></div>
                 
 
 
@@ -77,39 +77,77 @@ function addJsClass() {
 <h1 id="introduction">1 Introduction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-spring/edit/master/src/main/docs/guide/introduction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/introduction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>Micronaut uses Ahead of Time (AOT) compilation to pre-compute your applications requirements at compile time. The result of this is significantly lower memory requirements, faster startup time, and reflection free framework infrastructure.</p>
+<p>One of the design goals of Micronaut was to eliminate the artificial separation imposed by traditional frameworks between function and unit tests due to slow startup times and memory consumption.</p>
 </div>
 <div class="paragraph">
-<p>This project consists of various components that make it easier to:</p>
+<p>With that in mind it is generally pretty easy to start Micronaut in a unit test and one of the goals of Micronaut was to as much as possible not require a test framework to test Micronaut. For example in <a href="http://spockframework.org">Spock</a> you can simply do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">@Shared <i class="conum" data-value="1"></i><b>(1)</b>
+@AutoCleanup <i class="conum" data-value="2"></i><b>(2)</b>
+EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The field is declared as shared so to server is started only once for all methods in the class</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>@AutoCleanup</code> annotation ensures the server is shutdown after the test suite completes.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>However, there are cases where having some additional features to test Micronaut come in handy, such as mocking bean definitions and so on.</p>
+</div>
+<div class="paragraph">
+<p>This project includes a pretty simple set of extensions for JUnit 5 and Spock:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Integrate Spring components into a Micronaut application</p>
+<p>Automatically start and stop the server for the scope of a test suite</p>
 </li>
 <li>
-<p>Run Spring applications as Micronaut applications</p>
+<p>Use mocks to replace existing beans for the scope of a test suite</p>
 </li>
 <li>
-<p>Expose Micronaut Beans to a Spring Application</p>
+<p>Allow dependency injection into a test instance</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>To achieve this the project provides the ability to use a subset of the Spring Annotation-Based programming model to build Micronaut applications. The goal is not necessarily to provide an alternative runtime for Spring, but instead to enable the ability to build libraries that work with both Spring and Micronaut.</p>
+<p>This is achieved through a set of annotations found in the <code>io.micronaut.test.annotation</code> package:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>@MicronautTest</code> - Can be added to any Spock or JUnit 5 test.</p>
+</li>
+<li>
+<p><code>@MockBean</code> - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within <code>@MicronautTest</code> it is running your real application.</p>
 </div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/springToMicronaut.html"><strong>2</strong><span>Compile Time Spring Annotation Support</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/spock.html"><strong>2</strong><span>Testing with Spock</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
