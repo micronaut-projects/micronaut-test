@@ -27,3 +27,14 @@ This is achieved through a set of annotations found in the `io.micronaut.test.an
 * `@MockBean` - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.
 
 These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within `@MicronautTest` it is running your real application.
+
+In some tests you may need a reference to the `ApplicationContext` and/or the `EmbeddedServer` (for example, to create an instance of an `HttpClient`). Rather than defining these as properties of the test (such as a `@Shared` property in Spock), when using `@MicronautTest` you can reference the server/context that was started up for you, and inject them directly in your test.  
+
+[source,groovy]
+----
+@Inject 
+EmbeddedServer server //refers to the server that was started up for this test suite
+
+@Inject 
+ApplicationContext context //refers to the current application context within the scope of the test
+----
