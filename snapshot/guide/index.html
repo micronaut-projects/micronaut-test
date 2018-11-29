@@ -155,6 +155,9 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></p
 </ul>
 </div>
 <div class="paragraph">
+<p>If you have either of the libraries for spock or JUnit 5 in your dependencies, you must include the appropriate dependency for the <code>@MicronautTest</code> annotation to work. It is not enough to have just <code>micronaut-test-spock</code> if you have JUnit 5 libraries loaded, you must also include <code>micronaut-test-junit5</code> and vice versa, or remove the references to JUnit 5 completely.</p>
+</div>
+<div class="paragraph">
 <p>These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within <code>@MicronautTest</code> it is running your real application.</p>
 </div>
 <div class="paragraph">
