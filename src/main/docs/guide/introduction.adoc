@@ -26,6 +26,8 @@ This is achieved through a set of annotations found in the `io.micronaut.test.an
 * `@MicronautTest` - Can be added to any Spock or JUnit 5 test.
 * `@MockBean` - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.
 
+If you have either of the libraries for spock or JUnit 5 in your dependencies, you must include the appropriate dependency for the `@MicronautTest` annotation to work. It is not enough to have just `micronaut-test-spock` if you have JUnit 5 libraries loaded, you must also include `micronaut-test-junit5` and vice versa, or remove the references to JUnit 5 completely.
+
 These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within `@MicronautTest` it is running your real application.
 
 In some tests you may need a reference to the `ApplicationContext` and/or the `EmbeddedServer` (for example, to create an instance of an `HttpClient`). Rather than defining these as properties of the test (such as a `@Shared` property in Spock), when using `@MicronautTest` you can reference the server/context that was started up for you, and inject them directly in your test.  
