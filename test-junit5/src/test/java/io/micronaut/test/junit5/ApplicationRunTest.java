@@ -12,8 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 import javax.inject.Inject;
 
-@MicronautTest
-@ExtendWith(MockitoExtension.class)
+@MicronautAndMockitoTest
 class ApplicationRunTest {
 
     @Inject
