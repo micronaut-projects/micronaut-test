@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>1 Introduction 1.0.0.RC2</title>
+    <title>1 Introduction 1.0.0</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -67,7 +67,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>1 Introduction</h1>
 
-                    <p><strong>Version:</strong> 1.0.0.RC2</p>
+                    <p><strong>Version:</strong> 1.0.0</p>
                 </div>
 
                 
@@ -141,7 +141,22 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></p
 </ul>
 </div>
 <div class="paragraph">
+<p>If you have either of the libraries for spock or JUnit 5 in your dependencies, you must include the appropriate dependency for the <code>@MicronautTest</code> annotation to work. It is not enough to have just <code>micronaut-test-spock</code> if you have JUnit 5 libraries loaded, you must also include <code>micronaut-test-junit5</code> and vice versa, or remove the references to JUnit 5 completely.</p>
+</div>
+<div class="paragraph">
 <p>These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within <code>@MicronautTest</code> it is running your real application.</p>
+</div>
+<div class="paragraph">
+<p>In some tests you may need a reference to the <code>ApplicationContext</code> and/or the <code>EmbeddedServer</code> (for example, to create an instance of an <code>HttpClient</code>). Rather than defining these as properties of the test (such as a <code>@Shared</code> property in Spock), when using <code>@MicronautTest</code> you can reference the server/context that was started up for you, and inject them directly in your test.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">@Inject
+EmbeddedServer server //refers to the server that was started up for this test suite
+
+@Inject
+ApplicationContext context //refers to the current application context within the scope of the test</code></pre>
+</div>
 </div>
 
 
