@@ -22,6 +22,7 @@ import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import org.junit.jupiter.api.extension.*;
+import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -38,7 +39,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     @Override
     public void beforeAll(ExtensionContext extensionContext) {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
-        final MicronautTest micronautTest = testClass.getAnnotation(MicronautTest.class);
+        final MicronautTest micronautTest = AnnotationSupport.findAnnotation(testClass, MicronautTest.class).orElse(null);
         beforeClass(extensionContext, testClass, micronautTest);
     }
 
@@ -67,7 +68,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         } else {
             final Class<?> testClass = extensionContext.getRequiredTestClass();
-            if (testClass.isAnnotationPresent(MicronautTest.class)) {
+            if (AnnotationSupport.isAnnotated(testClass, MicronautTest.class)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
                 return ConditionEvaluationResult.disabled(DISABLED_MESSAGE);
