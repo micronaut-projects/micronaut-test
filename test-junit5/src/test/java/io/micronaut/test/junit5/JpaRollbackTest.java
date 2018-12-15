@@ -19,8 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @MicronautTest
-@Property(name = "datasources.default.name", value = "testdb")
-@Property(name = "jpa.default.properties.hibernate.hbm2ddl.auto", value = "update")
+@DbProperties
 public class JpaRollbackTest {
 
     @Inject
