@@ -31,6 +31,7 @@ import io.micronaut.inject.BeanDefinition;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
+import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.condition.TestActiveCondition;
 import io.micronaut.test.transaction.TestTransactionInterceptor;
@@ -100,11 +101,9 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
             final Package aPackage = testClass.getPackage();
             builder.packages(aPackage.getName());
 
-            final Property[] ps = testClass.getAnnotationsByType(Property.class);
-            if (ps != null) {
-                for (Property property : ps) {
-                    testProperties.put(property.name(), property.value());
-                }
+            final List<Property> ps = AnnotationUtils.findRepeatableAnnotations(testClass, Property.class);
+            for (Property property : ps) {
+                testProperties.put(property.name(), property.value());
             }
 
             String[] propertySources = testAnnotation.propertySources();
