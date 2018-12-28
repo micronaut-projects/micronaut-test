@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
+    <title>3 GRPC Server 1.0.0.BUILD-SNAPSHOT</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Micronaut GRPC
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/gettingStarted.html"><strong>2</strong><span>Getting Started</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/server.html"><strong>3</strong><span>GRPC Server</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/client.html"><strong>4</strong><span>GRPC Clients</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/serviceDiscovery.html"><strong>5</strong><span>Service Discovery</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/tracing.html"><strong>6</strong><span>Distributed Tracing</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/gettingStarted.html">&lt;&lt; <strong>2</strong><span>Getting Started</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/client.html"><strong>4</strong><span>GRPC Clients</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3 GRPC Server</h1>
+
+                    <p><strong>Version:</strong> 1.0.0.BUILD-SNAPSHOT</p>
+                </div>
+
+                
+
+                
+
+<h1 id="server">3 GRPC Server</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-grpc/edit/master/src/main/docs/guide/server.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="sect2">
+<h3 id="_writing_a_simple_grpc_server">Writing a Simple GRPC Server</h3>
+<div class="paragraph">
+<p>To implement a GRPC server for the previously defined <code>helloworld.proto</code> definition you first need to generate the Java stubs using Gradle or Maven then create a class that extends from <code>GreeterGrpc.GreeterImplBase</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">GreeterGrpc.GreeterImplBase Example</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">import io.grpc.stub.StreamObserver;
+import javax.inject.Singleton;
+
+@Singleton
+public class GreetingEndpoint extends GreeterGrpc.GreeterImplBase { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    private final GreetingService greetingService;
+
+    <i class="conum" data-value="2"></i><b>(2)</b>
+    public GreetingEndpoint(GreetingService greetingService) {
+        this.greetingService = greetingService;
+    }
+
+    @Override
+    public void sayHello(HelloRequest request, StreamObserver&lt;HelloReply&gt; responseObserver) {
+        <i class="conum" data-value="3"></i><b>(3)</b>
+        final String message = greetingService.sayHello(request.getName());
+        HelloReply reply = HelloReply.newBuilder().setMessage(message).build();
+        responseObserver.onNext(reply);
+        responseObserver.onCompleted();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The class extends from <code>GreeterGrpc.GreeterImplBase</code> and is annotated with <code>javax.inject.Singleton</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>You can dependency inject other beans into the implementation. In this case <code>GreetingService</code> is dependency injected.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>StreamObserver</code> is used to send a response to the client.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_running_the_grpc_server">Running the GRPC Server</h3>
+<div class="paragraph">
+<p>To run the server use the <code>Application</code> class or run <code>./gradlew run</code> for Gradle or <code>./mvnw compile exec:exec</code> for Maven.</p>
+</div>
+<div class="paragraph">
+<p>The server by default runs on port 50051, however you can configure which port the server runs on by setting <code>grpc.server.port</code> to whichever value you wish (a value of -1 will use a random port).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuring_the_grpc_server">Configuring the GRPC Server</h3>
+<div class="paragraph">
+<p>The server can be be configured in a number of different ways. You can use the <code>io.micronaut.grpc.server.GrpcServerConfiguration</code> type to configure any property of GRPC&#8217;s <code>NettyServerBuilder</code> class via <code>application.yml</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Configuring the GRPC server</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">grpc:
+    server:
+        port: 8080
+        keep-alive-time: 3h
+        max-inbound-message-size: 1024
+        cert-chain: '/path/to/my.cert'
+        private-key: '/path/to/my.key'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively if you prefer programmatic configuration you can write a <code>BeanCreationListener</code> for example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Configuring the ServerBuilder</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.grpc;
+
+import io.grpc.ServerBuilder;
+import io.micronaut.context.event.BeanCreatedEvent;
+import io.micronaut.context.event.BeanCreatedEventListener;
+
+import javax.inject.Singleton;
+
+@Singleton
+public class ServerBuilderListener implements BeanCreatedEventListener&lt;ServerBuilder&lt;?&gt;&gt; {
+    @Override
+    public ServerBuilder&lt;?&gt; onCreated(BeanCreatedEvent&lt;ServerBuilder&lt;?&gt;&gt; event) {
+        final ServerBuilder&lt;?&gt; builder = event.getBean();
+        builder.maxInboundMessageSize(1024);
+        return builder;
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/gettingStarted.html">&lt;&lt; <strong>2</strong><span>Getting Started</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/client.html"><strong>4</strong><span>GRPC Clients</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

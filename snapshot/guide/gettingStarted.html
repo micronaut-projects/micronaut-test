@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
+    <title>2 Getting Started 1.0.0.BUILD-SNAPSHOT</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Micronaut GRPC
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/gettingStarted.html"><strong>2</strong><span>Getting Started</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/server.html"><strong>3</strong><span>GRPC Server</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/client.html"><strong>4</strong><span>GRPC Clients</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/serviceDiscovery.html"><strong>5</strong><span>Service Discovery</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/tracing.html"><strong>6</strong><span>Distributed Tracing</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/server.html"><strong>3</strong><span>GRPC Server</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2 Getting Started</h1>
+
+                    <p><strong>Version:</strong> 1.0.0.BUILD-SNAPSHOT</p>
+                </div>
+
+                
+
+                
+
+<h1 id="gettingStarted">2 Getting Started</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-grpc/edit/master/src/main/docs/guide/gettingStarted.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To get started you need first create a Micronaut project. The easiest way to do this is with the CLI:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ mn create-app helloworld</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuring_gradle">Configuring Gradle</h3>
+<div class="paragraph">
+<p>To configure Gradle, first apply the <code>com.google.protobuf</code> plugin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    ...
+    id 'com.google.protobuf' version '0.8.5'
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then configure the GRPC and protobuf plugins:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">ext {
+    protocVersion="3.5.1"
+    grpcVersion="1.17.1"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}
+
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+    }
+    generateProtoTasks {
+        all()*.plugins { grpc {} }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally add the following dependencies to your build:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">compile "io.micronaut.grpc:micronaut-grpc-runtime:1.0.0.BUILD-SNAPSHOT"</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Ifyou wish to use GRPC standalone without the Micronaut HTTP server you should comment ouf the <code>micronaut-http-server-netty</code> dependency.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can then run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ ./gradlew generateProto</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To generate the Java sources from protobuf definitions in <code>src/main/proto</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuring_maven">Configuring Maven</h3>
+<div class="paragraph">
+<p>For Maven create a maven project first:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ mn create-app helloworld --build</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then configure the Protobuf plugin appropriately:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+  &lt;groupId&gt;com.github.os72&lt;/groupId&gt;
+  &lt;artifactId&gt;protoc-jar-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;3.6.0.2&lt;/version&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;phase&gt;generate-sources&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;run&lt;/goal&gt;
+      &lt;/goals&gt;
+      &lt;configuration&gt;
+          &lt;addProtoSources&gt;all&lt;/addProtoSources&gt;
+          &lt;includeMavenTypes&gt;direct&lt;/includeMavenTypes&gt;
+          &lt;inputDirectories&gt;
+            &lt;include&gt;src/main/proto&lt;/include&gt;
+          &lt;/inputDirectories&gt;
+          &lt;outputTargets&gt;
+              &lt;outputTarget&gt;
+                      &lt;type&gt;java&lt;/type&gt;
+              &lt;/outputTarget&gt;
+              &lt;outputTarget&gt;
+                      &lt;type&gt;grpc-java&lt;/type&gt;
+                      &lt;pluginArtifact&gt;io.grpc:protoc-gen-grpc-java:1.17.1&lt;/pluginArtifact&gt;
+              &lt;/outputTarget&gt;
+          &lt;/outputTargets&gt;
+        &lt;/configuration&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can then run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash" data-lang="bash">$ ./mvnw generate-sources</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To generate the Java sources from protobuf definitions in <code>src/main/proto</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_a_protobuf_file">Defining a Protobuf File</h3>
+<div class="paragraph">
+<p>Once you have the build setup you can define a Protobuf file for your GRPC service. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/main/proto/helloworld.proto</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-protobuf" data-lang="protobuf">// Copyright 2015 The gRPC Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "helloworld";
+option java_outer_classname = "HelloWorldProto";
+option objc_class_prefix = "HLW";
+
+package helloworld;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}</code></pre>
+</div>
+</div>
+</div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/server.html"><strong>3</strong><span>GRPC Server</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
