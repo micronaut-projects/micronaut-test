@@ -53,7 +53,8 @@ public class TestActiveCondition implements Condition {
                         if (definition.isProxy()) {
                             final String packageName = NameUtils.getPackageName(activeSpecName);
                             final String simpleName = NameUtils.getSimpleName(activeSpecName);
-                            return declaringTypeName.startsWith(packageName + ".$" + simpleName);
+                            final String rootName = packageName + ".$" + simpleName;
+                            return declaringTypeName.equals(rootName) || declaringTypeName.startsWith(rootName + "$");
                         } else {
                             return activeSpecName.equals(declaringTypeName) || declaringTypeName.startsWith(activeSpecName + "$");
                         }
