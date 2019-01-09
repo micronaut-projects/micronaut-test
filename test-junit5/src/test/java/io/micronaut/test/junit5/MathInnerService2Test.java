@@ -8,16 +8,25 @@ import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
 
 @MicronautTest
-class MathInnerServiceTest {
+class MathInnerService2Test {
 
     @Inject
     MathService mathService;
 
+    @Inject
+    MathService[] services;
 
+    /**
+     * Tests that it is possible to have 2 mock beans
+     */
     @Test
-    void testInnerMock() {
+    void testInnerMockAgain() {
         final int result = mathService.compute(10);
 
+        Assertions.assertEquals(
+                1,
+                services.length
+        );
         Assertions.assertEquals(
                 50,
                 result
@@ -34,3 +43,4 @@ class MathInnerServiceTest {
         }
     }
 }
+
