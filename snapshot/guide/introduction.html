@@ -2,16 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'UA-82213539-2');
-    </script>
-    <title>1 Introduction 1.0.0.BUILD-SNAPSHOT</title>
+    <title>1 Introduction 1.0.2.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -28,7 +19,7 @@ function addJsClass() {
 <div id="navigation">
     <div class="navTitle">
         
-        Micronaut GRPC
+        Micronaut Test
     </div>
     <div class="navLinks">
         <ul>
@@ -41,19 +32,10 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/gettingStarted.html"><strong>2</strong><span>Getting Started</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/spock.html"><strong>2</strong><span>Testing with Spock</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/server.html"><strong>3</strong><span>GRPC Server</span></a>
-                        </div>
-                        
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/client.html"><strong>4</strong><span>GRPC Clients</span></a>
-                        </div>
-                        
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/serviceDiscovery.html"><strong>5</strong><span>Service Discovery</span></a>
-                        </div>
-                        
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/tracing.html"><strong>6</strong><span>Distributed Tracing</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/junit5.html"><strong>3</strong><span>Testing with JUnit 5</span></a>
                         </div>
                         
                     </div>
@@ -78,14 +60,14 @@ function addJsClass() {
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/gettingStarted.html"><strong>2</strong><span>Getting Started</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/spock.html"><strong>2</strong><span>Testing with Spock</span> >></a></div>
                 
 
 
                 <div class="project">
                     <h1>1 Introduction</h1>
 
-                    <p><strong>Version:</strong> 1.0.0.BUILD-SNAPSHOT</p>
+                    <p><strong>Version:</strong> 1.0.2.BUILD-SNAPSHOT</p>
                 </div>
 
                 
@@ -95,39 +77,92 @@ function addJsClass() {
 <h1 id="introduction">1 Introduction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-grpc/edit/master/src/main/docs/guide/introduction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/introduction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="paragraph">
-<p>This project allows building GRPC servers and clients with Micronaut.</p>
+<p>One of the design goals of Micronaut was to eliminate the artificial separation imposed by traditional frameworks between function and unit tests due to slow startup times and memory consumption.</p>
 </div>
 <div class="paragraph">
-<p>Micronaut add the following features to the GRPC experience:</p>
+<p>With that in mind it is generally pretty easy to start Micronaut in a unit test and one of the goals of Micronaut was to as much as possible not require a test framework to test Micronaut. For example in <a href="http://spockframework.org">Spock</a> you can simply do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">@Shared <i class="conum" data-value="1"></i><b>(1)</b>
+@AutoCleanup <i class="conum" data-value="2"></i><b>(2)</b>
+EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The field is declared as shared so to server is started only once for all methods in the class</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>@AutoCleanup</code> annotation ensures the server is shutdown after the test suite completes.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>However, there are cases where having some additional features to test Micronaut come in handy, such as mocking bean definitions and so on.</p>
+</div>
+<div class="paragraph">
+<p>This project includes a pretty simple set of extensions for JUnit 5 and Spock:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Compile Time Dependency Injection (DI) and Aspect Oriented Programming (AOP)</p>
+<p>Automatically start and stop the server for the scope of a test suite</p>
 </li>
 <li>
-<p>Service Discovery and Registrations</p>
+<p>Use mocks to replace existing beans for the scope of a test suite</p>
 </li>
 <li>
-<p>Distributed Tracing</p>
-</li>
-<li>
-<p>Cloud Native Configuration</p>
+<p>Allow dependency injection into a test instance</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>This is achieved through a set of annotations found in the <code>io.micronaut.test.annotation</code> package:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>@MicronautTest</code> - Can be added to any Spock or JUnit 5 test.</p>
+</li>
+<li>
+<p><code>@MockBean</code> - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you have either of the libraries for spock or JUnit 5 in your dependencies, you must include the appropriate dependency for the <code>@MicronautTest</code> annotation to work. It is not enough to have just <code>micronaut-test-spock</code> if you have JUnit 5 libraries loaded, you must also include <code>micronaut-test-junit5</code> and vice versa, or remove the references to JUnit 5 completely.</p>
+</div>
+<div class="paragraph">
+<p>These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within <code>@MicronautTest</code> it is running your real application.</p>
+</div>
+<div class="paragraph">
+<p>In some tests you may need a reference to the <code>ApplicationContext</code> and/or the <code>EmbeddedServer</code> (for example, to create an instance of an <code>HttpClient</code>). Rather than defining these as properties of the test (such as a <code>@Shared</code> property in Spock), when using <code>@MicronautTest</code> you can reference the server/context that was started up for you, and inject them directly in your test.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">@Inject
+EmbeddedServer server //refers to the server that was started up for this test suite
+
+@Inject
+ApplicationContext context //refers to the current application context within the scope of the test</code></pre>
+</div>
 </div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/gettingStarted.html"><strong>2</strong><span>Getting Started</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/spock.html"><strong>2</strong><span>Testing with Spock</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>

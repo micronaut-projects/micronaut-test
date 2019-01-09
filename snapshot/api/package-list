@@ -1,5 +1,7 @@
-io.micronaut.grpc.annotation
-io.micronaut.grpc.channels
-io.micronaut.grpc.discovery
-io.micronaut.grpc.server
-io.micronaut.grpc.tracing
+io.micronaut.test.annotation
+io.micronaut.test.condition
+io.micronaut.test.extensions
+io.micronaut.test.extensions.junit5
+io.micronaut.test.extensions.spock
+io.micronaut.test.transaction
+io.micronaut.test.transaction.spring
