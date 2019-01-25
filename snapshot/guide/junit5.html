@@ -92,6 +92,7 @@ function addJsClass() {
 <div class="title">build.gradle</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
     testCompile "io.micronaut.test:micronaut-test-junit5:1.0.2.BUILD-SNAPSHOT"
     testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
@@ -110,7 +111,7 @@ test {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you plan to define mock beans you will also need <code>inject-groovy</code> on your <code>testCompile</code> classpath or <code>inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>).
+If you plan to define mock beans you will also need <code>inject-groovy</code> on your <code>testCompile</code> classpath or <code>inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>) and the <code>testAnnotationProcessor</code>.
 </td>
 </tr>
 </table>
