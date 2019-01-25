@@ -6,6 +6,7 @@ To get started using JUnit 5 you need the following dependencies in your build c
 [source,groovy,subs="attributes"]
 ----
 dependencies {
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
     testCompile "io.micronaut.test:micronaut-test-junit5:{version}"
     testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
@@ -17,7 +18,7 @@ test {
 }
 ----
 
-NOTE: If you plan to define mock beans you will also need `inject-groovy` on your `testCompile` classpath or `inject-java` for Java or Kotlin (this should already be configured if you used `mn create-app`).
+NOTE: If you plan to define mock beans you will also need `inject-groovy` on your `testCompile` classpath or `inject-java` for Java or Kotlin (this should already be configured if you used `mn create-app`) and the `testAnnotationProcessor`.
 
 Or for Maven:
 
