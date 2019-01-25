@@ -27,7 +27,7 @@ if [[ $EXIT_STATUS -eq 0 ]]; then
       echo "Publishing archives"
       ./gradlew --stop
       if [[ -n $TRAVIS_TAG ]]; then
-          # ./gradlew bintrayUpload --no-daemon --stacktrace || EXIT_STATUS=$?
+          ./gradlew bintrayUpload --no-daemon --stacktrace || EXIT_STATUS=$?
       else
           ./gradlew publish --no-daemon --stacktrace || EXIT_STATUS=$?
       fi
