@@ -25,6 +25,7 @@ import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.core.io.service.ServiceDefinition;
 import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.naming.NameUtils;
+import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
@@ -51,6 +52,7 @@ import java.util.*;
  */
 public abstract class AbstractMicronautExtension<C> implements TestTransactionInterceptor  {
     public static final String DISABLED_MESSAGE = "Test is not bean. Either the test does not satisfy requirements defined by @Requires or annotation processing is not enabled. If the latter ensure annotation processing is enabled in your IDE.";
+    public static final String MISCONFIGURED_MESSAGE = "@MicronautTest used on test but no bean definition for the test present. This error indicates a misconfigured build or IDE. Please add the 'micronaut-inject-java' annotation processor to your test processor path (for Java this is the testAnnotationProcessor scope, for Kotlin kaptTest and for Groovy testCompile). See the documentation for reference: https://micronaut-projects.github.io/micronaut-test/latest/guide/";
     private static Map<String, PropertySourceLoader> loaderMap;
     protected ApplicationContext applicationContext;
     protected EmbeddedApplication embeddedApplication;
@@ -228,6 +230,10 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
 
     protected void startApplicationContext() {
         applicationContext.start();
+    }
+
+    protected boolean isTestSuiteBeanPresent(Class<?> requiredTestClass) {
+        return ClassUtils.isPresent(requiredTestClass.getPackage().getName() + ".$" + requiredTestClass.getSimpleName() + "Definition", requiredTestClass.getClassLoader());
     }
 
     protected abstract void alignMocks(C context, Object instance);

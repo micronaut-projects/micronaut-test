@@ -56,9 +56,13 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         spec.addSetupSpecInterceptor(invocation -> {
                 beforeClass(invocation, spec.getReflection(), spec.getAnnotation(MicronautTest.class));
                 if (specDefinition == null) {
-                    final List<FeatureInfo> features = invocation.getSpec().getFeatures();
-                    for (FeatureInfo feature : features) {
-                        feature.setSkipped(true);
+                    if (!isTestSuiteBeanPresent(spec.getReflection())) {
+                        throw new InvalidSpecException(MISCONFIGURED_MESSAGE);
+                    } else {
+                        final List<FeatureInfo> features = invocation.getSpec().getFeatures();
+                        for (FeatureInfo feature : features) {
+                            feature.setSkipped(true);
+                        }
                     }
                 }
                 invocation.proceed();
