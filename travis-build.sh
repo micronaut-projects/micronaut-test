@@ -78,7 +78,7 @@ if [[ $EXIT_STATUS -eq 0 ]]; then
             if [[ $EXIT_STATUS -eq 0 ]]; then
               ./gradlew synchronizeWithMavenCentral --no-daemon
             fi
-        else        
+        fi        
       fi
  
 
