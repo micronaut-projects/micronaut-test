@@ -1,5 +1,6 @@
 package io.micronaut.test.junit5;
 
+import io.micronaut.context.BeanContext;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
@@ -23,6 +24,9 @@ class ApplicationRunAnotherTest {
 
     @Inject
     TestService testService;
+
+    @Inject
+    BeanContext beanContext;
 
     @Test
     void testPingServer() {

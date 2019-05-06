@@ -4,13 +4,27 @@ import io.kotlintest.Spec
 import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.kotlintest.extensions.ConstructorExtension
+import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
+import io.micronaut.aop.InterceptedProxy
 import io.micronaut.test.annotation.MicronautTest
 import org.junit.platform.commons.support.AnnotationSupport
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
-object MicornautKotlinTestExtension: TestListener, ConstructorExtension {
+object MicornautKotlinTestExtension: TestListener, ConstructorExtension, TestCaseExtension {
+
+
+    override suspend fun intercept(testCase: TestCase,
+                                   execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
+                                   complete: suspend (TestResult) -> Unit) {
+        val context = contexts[testCase.spec]
+        if (context?.getSpecDefinition() == null) {
+            complete(TestResult.Ignored)
+        } else {
+            execute(testCase, complete)
+        }
+    }
 
     val contexts: MutableMap<Spec, MicronautKotlinTestContext> = mutableMapOf()
 
@@ -46,4 +60,11 @@ object MicornautKotlinTestExtension: TestListener, ConstructorExtension {
         }
     }
 
+    fun <T> Spec.getMock(obj: T): T {
+        return if (obj is InterceptedProxy<*>) {
+            obj.interceptedTarget() as T
+        } else {
+            obj
+        }
+    }
 }
