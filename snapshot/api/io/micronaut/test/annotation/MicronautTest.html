@@ -146,6 +146,12 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <div class="block">Whether to rollback (if possible) any data access code between each test execution.</div>
 </td>
 </tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#transactional--">transactional</a></span></code>
+<div class="block">Allow disabling or enabling of automatic transaction wrapping.</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -245,7 +251,7 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <li class="blockList"><a name="rollback--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>rollback</h4>
 <pre>public abstract&nbsp;boolean&nbsp;rollback</pre>
@@ -253,6 +259,27 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>True if changes should be rolled back</dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>true</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="transactional--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>transactional</h4>
+<pre>public abstract&nbsp;boolean&nbsp;transactional</pre>
+<div class="block">Allow disabling or enabling of automatic transaction wrapping.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether to wrap a test in a transaction.</dd>
 </dl>
 <dl>
 <dt>Default:</dt>
