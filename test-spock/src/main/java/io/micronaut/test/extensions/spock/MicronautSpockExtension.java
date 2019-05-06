@@ -33,6 +33,7 @@ import org.spockframework.runtime.model.MethodInfo;
 import org.spockframework.runtime.model.SpecInfo;
 import spock.lang.Specification;
 
+import javax.inject.Inject;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
@@ -54,19 +55,27 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
     public void visitSpecAnnotation(MicronautTest annotation, SpecInfo spec) {
 
         spec.addSetupSpecInterceptor(invocation -> {
-                beforeClass(invocation, spec.getReflection(), spec.getAnnotation(MicronautTest.class));
-                if (specDefinition == null) {
-                    if (!isTestSuiteBeanPresent(spec.getReflection())) {
-                        throw new InvalidSpecException(MISCONFIGURED_MESSAGE);
+                    beforeClass(invocation, spec.getReflection(), spec.getAnnotation(MicronautTest.class));
+                    if (specDefinition == null) {
+                        if (!isTestSuiteBeanPresent(spec.getReflection())) {
+                            throw new InvalidSpecException(MISCONFIGURED_MESSAGE);
+                        } else {
+                            final List<FeatureInfo> features = invocation.getSpec().getFeatures();
+                            for (FeatureInfo feature : features) {
+                                feature.setSkipped(true);
+                            }
+                        }
                     } else {
-                        final List<FeatureInfo> features = invocation.getSpec().getFeatures();
-                        for (FeatureInfo feature : features) {
-                            feature.setSkipped(true);
+                        List<FieldInfo> fields = spec.getFields();
+                        for (FieldInfo field : fields) {
+                            if (field.isShared() && field.getAnnotation(Inject.class) != null) {
+                                applicationContext.inject(invocation.getSharedInstance());
+                                break;
+                            }
                         }
                     }
+                    invocation.proceed();
                 }
-                invocation.proceed();
-            }
         );
 
         spec.addCleanupSpecInterceptor(this::afterClass);

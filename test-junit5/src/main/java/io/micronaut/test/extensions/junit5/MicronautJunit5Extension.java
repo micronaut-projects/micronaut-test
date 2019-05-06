@@ -21,6 +21,7 @@ import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
@@ -41,6 +42,13 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         final MicronautTest micronautTest = AnnotationSupport.findAnnotation(testClass, MicronautTest.class).orElse(null);
         beforeClass(extensionContext, testClass, micronautTest);
+        if (specDefinition != null) {
+            TestInstance ti = AnnotationSupport.findAnnotation(testClass, TestInstance.class).orElse(null);
+            if (ti != null && ti.value() == TestInstance.Lifecycle.PER_CLASS) {
+                Object testInstance = extensionContext.getRequiredTestInstance();
+                applicationContext.inject(testInstance);
+            }
+        }
     }
 
     @Override
