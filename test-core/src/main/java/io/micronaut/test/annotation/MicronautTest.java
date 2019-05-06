@@ -69,4 +69,10 @@ public @interface MicronautTest {
      * @return True if changes should be rolled back
      */
     boolean rollback() default true;
+
+    /**
+     * Allow disabling or enabling of automatic transaction wrapping.
+     * @return Whether to wrap a test in a transaction.
+     */
+    boolean transactional() default true;
 }

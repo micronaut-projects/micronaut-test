@@ -61,10 +61,11 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
     protected Map<String, Object> testProperties = new LinkedHashMap<>();
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
     private boolean rollback = true;
+    private boolean transactional = true;
 
     @Override
     public void begin() {
-        if (applicationContext != null) {
+        if (transactional && applicationContext != null) {
             final TestTransactionInterceptor testTransactionInterceptor = applicationContext.getBean(TestTransactionInterceptor.class);
             testTransactionInterceptor.begin();
         }
@@ -72,7 +73,7 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
 
     @Override
     public void commit() {
-        if (applicationContext != null && !rollback) {
+        if (transactional && applicationContext != null && !rollback) {
             final TestTransactionInterceptor testTransactionInterceptor = applicationContext.getBean(TestTransactionInterceptor.class);
             testTransactionInterceptor.commit();
         }
@@ -81,7 +82,7 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
 
     @Override
     public void rollback() {
-        if (applicationContext != null && rollback) {
+        if (transactional && applicationContext != null && rollback) {
             final TestTransactionInterceptor testTransactionInterceptor = applicationContext.getBean(TestTransactionInterceptor.class);
             testTransactionInterceptor.rollback();
         }
@@ -98,6 +99,7 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
     protected void beforeClass(C context, Class<?> testClass, @Nullable MicronautTest testAnnotation) {
         if (testAnnotation != null) {
             this.rollback = testAnnotation.rollback();
+            this.transactional = testAnnotation.transactional();
 
             final ApplicationContextBuilder builder = ApplicationContext.build();
             final Package aPackage = testClass.getPackage();
