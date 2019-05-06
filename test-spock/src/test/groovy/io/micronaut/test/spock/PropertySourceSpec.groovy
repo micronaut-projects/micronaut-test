@@ -10,7 +10,6 @@ import javax.inject.Inject
 class PropertySourceSpec extends Specification {
 
     @Property(name = "foo.bar")
-    @Inject
     String val
 
     void "test property source"() {
