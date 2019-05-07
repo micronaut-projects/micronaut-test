@@ -152,8 +152,12 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
             if (application != void.class) {
                 builder.mainClass(application);
             }
+            String[] environments = testAnnotation.environments();
+            if (environments.length == 0) {
+                environments = new String[]{"test"};
+            }
             builder.packages(testAnnotation.packages())
-                   .environments(testAnnotation.environments());
+                   .environments(environments);
 
             builder.propertySources(io.micronaut.context.env.PropertySource.of(testProperties));
             this.applicationContext = builder.build();
