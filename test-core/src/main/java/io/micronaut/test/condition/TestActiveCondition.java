@@ -59,7 +59,10 @@ public class TestActiveCondition implements Condition {
                             return activeSpecName.equals(declaringTypeName) || declaringTypeName.startsWith(activeSpecName + "$");
                         }
                     } else {
-                        return true;
+                        context.fail(
+                                "@MockBean of type " + definition.getBeanType() + " not within scope of parent test."
+                        );
+                        return false;
                     }
                 } else {
                     final String activeSpecName = applicationContext.get(ACTIVE_SPEC_NAME, String.class).orElse(null);
