@@ -28,20 +28,16 @@ object MicornautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
 
     val contexts: MutableMap<Spec, MicronautKotlinTestContext> = mutableMapOf()
 
-    override fun afterSpec(spec: Spec) {
-        contexts[spec]?.afterSpec(spec)
-    }
-
     override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
         contexts[spec]?.afterSpecClass(spec)
     }
 
-    override fun beforeSpec(spec: Spec) {
-        contexts[spec]?.beforeSpec(spec)
-    }
-
     override fun beforeTest(testCase: TestCase) {
         contexts[testCase.spec]?.beforeTest(testCase)
+    }
+
+    override fun afterTest(testCase: TestCase, result: TestResult) {
+        contexts[testCase.spec]?.afterTest(testCase)
     }
 
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {

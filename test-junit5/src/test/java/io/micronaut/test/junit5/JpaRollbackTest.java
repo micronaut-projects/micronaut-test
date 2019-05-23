@@ -25,19 +25,6 @@ public class JpaRollbackTest {
     @Inject
     EntityManager entityManager;
 
-    @Inject
-    PlatformTransactionManager transactionManager;
-
-    @BeforeEach
-    void setup() {
-        final TransactionStatus tx = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaDelete<Book> delete = criteriaBuilder.createCriteriaDelete(Book.class);
-        delete.from(Book.class);
-        entityManager.createQuery(delete).executeUpdate();
-        transactionManager.commit(tx);
-    }
-
     @Test
     void testPersistOne() {
         final Book book = new Book();

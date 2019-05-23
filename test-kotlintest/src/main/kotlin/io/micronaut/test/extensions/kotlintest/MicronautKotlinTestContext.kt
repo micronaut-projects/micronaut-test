@@ -23,21 +23,18 @@ class MicronautKotlinTestContext(testClass: Class<Any>, micronautTest: Micronaut
     override fun alignMocks(context: Spec?, instance: Any) {
     }
 
-    fun afterSpec(spec: Spec) {
-        commit()
-        rollback()
-    }
-
     fun afterSpecClass(spec: Spec) {
         afterClass(spec)
     }
 
-    fun beforeSpec(spec: Spec) {
+    fun beforeTest(testCase: TestCase) {
+        beforeEach(testCase.spec, testCase.spec, testCase.test.javaClass)
         begin()
     }
 
-    fun beforeTest(testCase: TestCase) {
-        beforeEach(testCase.spec, testCase.spec, testCase.test.javaClass)
+    fun afterTest(testCase: TestCase) {
+        commit()
+        rollback()
     }
 
     fun getSpecDefinition() = specDefinition

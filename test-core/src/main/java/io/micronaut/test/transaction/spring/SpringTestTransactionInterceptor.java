@@ -23,6 +23,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
+
 /**
  * Integrates Spring's transaction management if it is available.
  *
@@ -34,7 +37,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 public class SpringTestTransactionInterceptor implements TestTransactionInterceptor {
 
     private final PlatformTransactionManager transactionManager;
-    private TransactionStatus tx;
+    private LinkedList<TransactionStatus> tx = new LinkedList<>();
 
     public SpringTestTransactionInterceptor(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
@@ -42,16 +45,31 @@ public class SpringTestTransactionInterceptor implements TestTransactionIntercep
 
     @Override
     public void begin() {
-        this.tx = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {
+            TransactionStatus status = tx.getLast();
+            if (status != null && status.isCompleted()) {
+                tx.add(transactionManager.getTransaction(new DefaultTransactionDefinition()));
+            } else {
+                tx.add(null);
+            }
+        } catch (NoSuchElementException e) {
+            tx.add(transactionManager.getTransaction(new DefaultTransactionDefinition()));
+        }
     }
 
     @Override
     public void commit() {
-        transactionManager.commit(tx);
+        TransactionStatus status = tx.removeLast();
+        if (status != null) {
+            transactionManager.commit(status);
+        }
     }
 
     @Override
     public void rollback() {
-        transactionManager.rollback(tx);
+        TransactionStatus status = tx.removeLast();
+        if (status != null) {
+            transactionManager.rollback(status);
+        }
     }
 }

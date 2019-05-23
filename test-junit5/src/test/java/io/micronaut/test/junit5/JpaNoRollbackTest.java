@@ -2,10 +2,17 @@ package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 
 import static org.junit.Assert.assertEquals;
@@ -17,6 +24,19 @@ public class JpaNoRollbackTest {
 
     @Inject
     EntityManager entityManager;
+
+    @Inject
+    PlatformTransactionManager transactionManager;
+
+    @AfterAll
+    void cleanup() {
+        final TransactionStatus tx = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaDelete<Book> delete = criteriaBuilder.createCriteriaDelete(Book.class);
+        delete.from(Book.class);
+        entityManager.createQuery(delete).executeUpdate();
+        transactionManager.commit(tx);
+    }
 
     @Test
     void testPersistOne() {
@@ -41,7 +61,6 @@ public class JpaNoRollbackTest {
                 entityManager.getCriteriaBuilder().createQuery(Book.class);
         query.from(Book.class);
         assertEquals(2, entityManager.createQuery(query).getResultList().size());
-
     }
 }
 
