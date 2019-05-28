@@ -12,7 +12,7 @@ class MathServiceTest(
     given("the math service") {
 
         `when`("the service is called with 2") {
-            val result = mathService.compute(2)
+            val result = mathService.compute(2) // <3>
             then("the result is 8") {
                 result shouldBe 8
             }

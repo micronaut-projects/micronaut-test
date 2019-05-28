@@ -5,6 +5,7 @@ import io.micronaut.test.annotation.MicronautTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 @MicronautTest(rollback = false)
 @DbProperties
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class JpaNoRollbackTest {
 
     @Inject

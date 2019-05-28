@@ -2,4 +2,5 @@ introduction:
   title: Introduction
 spock: Testing with Spock
 junit5: Testing with JUnit 5
+kotlintest: Testing with KotlinTest
 #spek: Testing with Spek
