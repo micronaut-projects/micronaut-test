@@ -25,6 +25,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Integrates Spring's transaction management if it is available.
@@ -37,7 +38,8 @@ import java.util.NoSuchElementException;
 public class SpringTestTransactionInterceptor implements TestTransactionInterceptor {
 
     private final PlatformTransactionManager transactionManager;
-    private LinkedList<TransactionStatus> tx = new LinkedList<>();
+    private TransactionStatus tx;
+    private final AtomicInteger counter = new AtomicInteger();
 
     public SpringTestTransactionInterceptor(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
@@ -45,31 +47,22 @@ public class SpringTestTransactionInterceptor implements TestTransactionIntercep
 
     @Override
     public void begin() {
-        try {
-            TransactionStatus status = tx.getLast();
-            if (status != null && status.isCompleted()) {
-                tx.add(transactionManager.getTransaction(new DefaultTransactionDefinition()));
-            } else {
-                tx.add(null);
-            }
-        } catch (NoSuchElementException e) {
-            tx.add(transactionManager.getTransaction(new DefaultTransactionDefinition()));
+        if (counter.getAndIncrement() == 0) {
+            tx = transactionManager.getTransaction(new DefaultTransactionDefinition());
         }
     }
 
     @Override
     public void commit() {
-        TransactionStatus status = tx.removeLast();
-        if (status != null) {
-            transactionManager.commit(status);
+        if (counter.decrementAndGet() == 0) {
+            transactionManager.commit(tx);
         }
     }
 
     @Override
     public void rollback() {
-        TransactionStatus status = tx.removeLast();
-        if (status != null) {
-            transactionManager.rollback(status);
+        if (counter.decrementAndGet() == 0) {
+            transactionManager.rollback(tx);
         }
     }
 }
