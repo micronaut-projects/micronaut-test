@@ -35,7 +35,13 @@ import java.util.Optional;
 public class TestActiveCondition implements Condition {
 
     public static final String ACTIVE_MOCKS = "micronaut.test.spock.active.mocks";
+    /**
+     * Deprecated please use {@link #ACTIVE_SPEC_CLAZZ} instead.
+     */
+    @Deprecated
     public static final String ACTIVE_SPEC_NAME = "micronaut.test.active.spec";
+
+    public static final String ACTIVE_SPEC_CLAZZ = "micronaut.test.active.spec.clazz";
 
     @Override
     public boolean matches(ConditionContext context) {
@@ -45,18 +51,19 @@ public class TestActiveCondition implements Condition {
             if (beanContext instanceof ApplicationContext) {
                 final Optional<Class<?>> declaringType = definition.getDeclaringType();
                 ApplicationContext applicationContext = (ApplicationContext) beanContext;
+                final Class activeSpecClazz = applicationContext.get(ACTIVE_SPEC_CLAZZ, Class.class).orElse(null);
+                final String activeSpecName = Optional.ofNullable(activeSpecClazz).map(clazz-> clazz.getPackage().getName() + "." + clazz.getSimpleName()).orElse(null);
                 if (definition.isAnnotationPresent(MockBean.class) && declaringType.isPresent()) {
-                    final String activeSpecName = applicationContext.get(ACTIVE_SPEC_NAME, String.class).orElse(null);
                     final Class<?> declaringTypeClass = declaringType.get();
                     String declaringTypeName = declaringTypeClass.getName();
-                    if (activeSpecName != null) {
+                    if (activeSpecClazz != null) {
                         if (definition.isProxy()) {
                             final String packageName = NameUtils.getPackageName(activeSpecName);
                             final String simpleName = NameUtils.getSimpleName(activeSpecName);
                             final String rootName = packageName + ".$" + simpleName;
-                            return declaringTypeName.equals(rootName) || declaringTypeName.startsWith(rootName + "$");
+                            return declaringTypeClass.isAssignableFrom(activeSpecClazz) || declaringTypeName.equals(rootName) || declaringTypeName.startsWith(rootName + "$");
                         } else {
-                            return activeSpecName.equals(declaringTypeName) || declaringTypeName.startsWith(activeSpecName + "$");
+                            return declaringTypeClass.isAssignableFrom(activeSpecClazz) || activeSpecName.equals(declaringTypeName) || declaringTypeName.startsWith(activeSpecName + "$");
                         }
                     } else {
                         context.fail(
@@ -65,7 +72,6 @@ public class TestActiveCondition implements Condition {
                         return false;
                     }
                 } else {
-                    final String activeSpecName = applicationContext.get(ACTIVE_SPEC_NAME, String.class).orElse(null);
                     return activeSpecName != null && activeSpecName.equals(definition.getBeanType().getName());
                 }
             } else {
