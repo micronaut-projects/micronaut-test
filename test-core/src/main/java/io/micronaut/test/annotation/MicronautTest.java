@@ -23,10 +23,7 @@ import io.micronaut.test.extensions.junit5.MicronautJunit5Extension;
 import io.micronaut.test.extensions.spock.MicronautSpockExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation that can be applied to any Spock spec to make it a Micronaut test.
@@ -39,6 +36,7 @@ import java.lang.annotation.Target;
 @org.spockframework.runtime.extension.ExtensionAnnotation(MicronautSpockExtension.class)
 @ExtendWith(MicronautJunit5Extension.class)
 @Factory
+@Inherited
 @Requires(condition = TestActiveCondition.class)
 public @interface MicronautTest {
     /**
