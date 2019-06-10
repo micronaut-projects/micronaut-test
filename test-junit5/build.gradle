@@ -17,8 +17,8 @@ dependencies {
     testCompile "io.micronaut:micronaut-http-client:$micronautVersion"
     testCompile 'org.mockito:mockito-junit-jupiter:2.22.0'
 
-    testCompile "io.micronaut.configuration:micronaut-hibernate-jpa:$micronautVersion"
-    testRuntime "io.micronaut.configuration:micronaut-jdbc-tomcat:$micronautVersion"
+    testCompile "io.micronaut.configuration:micronaut-hibernate-jpa:$micronautHibernateJpaVersion"
+    testRuntime "io.micronaut.configuration:micronaut-jdbc-tomcat:$micronautJdbcTomcatVersion"
     testRuntime "com.h2database:h2:1.4.196"
 }
 

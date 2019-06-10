@@ -146,8 +146,8 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
                     }
                 }
             }
-
             testProperties.put(TestActiveCondition.ACTIVE_SPEC_NAME, aPackage.getName() + "." + testClass.getSimpleName());
+            testProperties.put(TestActiveCondition.ACTIVE_SPEC_CLAZZ, testClass);
             final Class<?> application = testAnnotation.application();
             if (application != void.class) {
                 builder.mainClass(application);
