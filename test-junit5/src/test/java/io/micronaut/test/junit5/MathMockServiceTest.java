@@ -23,7 +23,7 @@ class MathMockServiceTest {
     void testComputeNumToSquare(Integer num, Integer square) {
 
         when(mathService.compute(10))
-            .then(invocation -> Long.valueOf(Math.round(Math.pow(num, 2))).intValue()); // <4>
+            .then(invocation -> Long.valueOf(Math.round(Math.pow(num, 2))).intValue());
 
         final Integer result = mathService.compute(10);
 

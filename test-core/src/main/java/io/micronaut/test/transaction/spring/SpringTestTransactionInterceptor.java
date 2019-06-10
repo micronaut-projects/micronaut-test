@@ -23,6 +23,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Integrates Spring's transaction management if it is available.
  *
@@ -35,6 +39,7 @@ public class SpringTestTransactionInterceptor implements TestTransactionIntercep
 
     private final PlatformTransactionManager transactionManager;
     private TransactionStatus tx;
+    private final AtomicInteger counter = new AtomicInteger();
 
     public SpringTestTransactionInterceptor(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
@@ -42,16 +47,22 @@ public class SpringTestTransactionInterceptor implements TestTransactionIntercep
 
     @Override
     public void begin() {
-        this.tx = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        if (counter.getAndIncrement() == 0) {
+            tx = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        }
     }
 
     @Override
     public void commit() {
-        transactionManager.commit(tx);
+        if (counter.decrementAndGet() == 0) {
+            transactionManager.commit(tx);
+        }
     }
 
     @Override
     public void rollback() {
-        transactionManager.rollback(tx);
+        if (counter.decrementAndGet() == 0) {
+            transactionManager.rollback(tx);
+        }
     }
 }
