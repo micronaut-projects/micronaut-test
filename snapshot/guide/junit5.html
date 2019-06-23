@@ -38,6 +38,9 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/junit5.html"><strong>3</strong><span>Testing with JUnit 5</span></a>
                         </div>
                         
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span></a>
+                        </div>
+                        
                     </div>
                 </div>
             </li>
@@ -61,6 +64,8 @@ function addJsClass() {
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
+                
+                    <div class="toc-item next-right"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span> >></a></div>
                 
 
 
@@ -309,7 +314,7 @@ class MathMockServiceTest {
     void testComputeNumToSquare(Integer num, Integer square) {
 
         when(mathService.compute(10))
-            .then(invocation -&gt; Long.valueOf(Math.round(Math.pow(num, 2))).intValue()); <i class="conum" data-value="4"></i><b>(4)</b>
+            .then(invocation -&gt; Long.valueOf(Math.round(Math.pow(num, 2))).intValue());
 
         final Integer result = mathService.compute(10);
 
@@ -571,6 +576,8 @@ class PropertySourceTest {
                 <div style="clear:both;margin-top:15px;"></div>
                 
                     <div class="toc-item prev-left"><a href="../guide/spock.html">&lt;&lt; <strong>2</strong><span>Testing with Spock</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
