@@ -17,11 +17,13 @@
 package io.micronaut.test.extensions.junit5;
 
 import io.micronaut.aop.InterceptedProxy;
+import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
+import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -29,6 +31,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import javax.inject.Named;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -89,6 +92,17 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
                 return ConditionEvaluationResult.disabled(DISABLED_MESSAGE);
+            }
+        }
+    }
+
+    @Override
+    protected void resolveTestProperties(ExtensionContext context, MicronautTest testAnnotation, Map<String, Object> testProperties) {
+        Object o = context.getTestInstance().orElse(null);
+        if (o instanceof TestPropertyProvider) {
+            Map<String, String> properties = ((TestPropertyProvider) o).getProperties();
+            if (CollectionUtils.isNotEmpty(properties)) {
+                testProperties.putAll(properties);
             }
         }
     }

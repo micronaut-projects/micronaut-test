@@ -35,6 +35,7 @@ import io.micronaut.runtime.context.scope.refresh.RefreshScope;
 import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.condition.TestActiveCondition;
+import io.micronaut.test.support.TestPropertyProvider;
 import io.micronaut.test.transaction.TestTransactionInterceptor;
 
 import javax.annotation.Nullable;
@@ -146,6 +147,9 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
                     }
                 }
             }
+            if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
+                resolveTestProperties(context, testAnnotation, testProperties);
+            }
             testProperties.put(TestActiveCondition.ACTIVE_SPEC_NAME, aPackage.getName() + "." + testClass.getSimpleName());
             testProperties.put(TestActiveCondition.ACTIVE_SPEC_CLAZZ, testClass);
             final Class<?> application = testAnnotation.application();
@@ -170,6 +174,11 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
             refreshScope = applicationContext.findBean(RefreshScope.class).orElse(null);
         }
     }
+
+    /**
+     * Resolves any test properties.
+     */
+    protected abstract void resolveTestProperties(C context, MicronautTest testAnnotation, Map<String, Object> testProperties);
 
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method) {
         if (method != null) {
