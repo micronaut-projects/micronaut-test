@@ -16,12 +16,15 @@
 
 package io.micronaut.test.transaction;
 
+import io.micronaut.core.annotation.Indexed;
+
 /**
  * Test interceptor interface for rolling back data access.
  *
  * @author graemerocher
  * @since 1.0
  */
+@Indexed(TestTransactionInterceptor.class)
 public interface TestTransactionInterceptor {
 
     /**

@@ -16,17 +16,12 @@
 
 package io.micronaut.test.transaction;
 
-import io.micronaut.context.annotation.Primary;
-
-import javax.inject.Singleton;
-
 /**
  * A test transaction interceptor.
  *
  * @author graemerocher
  */
-@Singleton
-@Primary
+@Deprecated
 public class CompositeTestTransactionInterceptor implements TestTransactionInterceptor {
     private final TestTransactionInterceptor[] interceptors;
 
