@@ -66,16 +66,20 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
     @Override
     public void begin() {
         if (transactional && applicationContext != null) {
-            final TestTransactionInterceptor testTransactionInterceptor = applicationContext.getBean(TestTransactionInterceptor.class);
-            testTransactionInterceptor.begin();
+            Collection<TestTransactionInterceptor> interceptors = applicationContext.getBeansOfType(TestTransactionInterceptor.class);
+            for (TestTransactionInterceptor interceptor : interceptors) {
+                interceptor.begin();
+            }
         }
     }
 
     @Override
     public void commit() {
         if (transactional && applicationContext != null && !rollback) {
-            final TestTransactionInterceptor testTransactionInterceptor = applicationContext.getBean(TestTransactionInterceptor.class);
-            testTransactionInterceptor.commit();
+            Collection<TestTransactionInterceptor> interceptors = applicationContext.getBeansOfType(TestTransactionInterceptor.class);
+            for (TestTransactionInterceptor interceptor : interceptors) {
+                interceptor.commit();
+            }
         }
 
     }
@@ -83,8 +87,10 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
     @Override
     public void rollback() {
         if (transactional && applicationContext != null && rollback) {
-            final TestTransactionInterceptor testTransactionInterceptor = applicationContext.getBean(TestTransactionInterceptor.class);
-            testTransactionInterceptor.rollback();
+            Collection<TestTransactionInterceptor> interceptors = applicationContext.getBeansOfType(TestTransactionInterceptor.class);
+            for (TestTransactionInterceptor interceptor : interceptors) {
+                interceptor.rollback();
+            }
         }
 
     }
