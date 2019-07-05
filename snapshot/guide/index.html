@@ -1144,6 +1144,61 @@ class PropertySourceTest {
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>If you need more dynamic property definition or the property you want to define requires some setup then you can implement the api:test.support.TestPropertyProvider[] interface in your test and do whatever setup is necessary then return the properties you want to expose the the application.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using the <code>TestPropertyProvider</code> interface</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.core.util.CollectionUtils;
+import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
+import org.junit.jupiter.api.*;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
+
+@MicronautTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class PropertySourceMapTest implements TestPropertyProvider {
+
+    @Property(name = "foo.bar")
+    String val;
+
+    @Test
+    void testPropertySource() {
+        Assertions.assertEquals("one", val);
+    }
+
+    @Nonnull
+    @Override
+    public Map&lt;String, String&gt; getProperties() {
+        return CollectionUtils.mapOf(
+                "foo.bar", "one",
+                "foo.baz", "two"
+        );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using <code>TestPropertyProvider</code> you test must be declared with JUnit&#8217;s <code>@TestInstance(TestInstance.Lifecycle.PER_CLASS)</code> annotation.
+</td>
+</tr>
+</table>
+</div>
 </div>
 
 
