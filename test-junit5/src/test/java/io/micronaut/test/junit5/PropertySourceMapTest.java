@@ -4,9 +4,7 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 
 import javax.annotation.Nonnull;
 import java.util.Map;

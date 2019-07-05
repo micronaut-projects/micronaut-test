@@ -197,3 +197,15 @@ The above example expects a file located at `src/test/resources/io/micronaut/jun
 * `file:myprops.properties` - A relative path to a file somewhere on the file system
 * `classpath:myprops.properties` - A file relative to the root of the classpath
 * `myprops.properties` - A file relative on the classpath relative to the test being run.
+
+If you need more dynamic property definition or the property you want to define requires some setup then you can implement the api:test.support.TestPropertyProvider[] interface in your test and do whatever setup is necessary then return the properties you want to expose the the application.
+
+For example:
+
+.Using the `TestPropertyProvider` interface
+[source,java]
+----
+include::{junit5tests}/PropertySourceMapTest.java[]
+----
+
+NOTE: When using `TestPropertyProvider` you test must be declared with JUnit's `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` annotation.
