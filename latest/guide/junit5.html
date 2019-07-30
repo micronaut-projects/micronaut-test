@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>3 Testing with JUnit 5 1.0.5</title>
+    <title>3 Testing with JUnit 5 1.1.0</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -38,6 +38,9 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/junit5.html"><strong>3</strong><span>Testing with JUnit 5</span></a>
                         </div>
                         
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span></a>
+                        </div>
+                        
                     </div>
                 </div>
             </li>
@@ -62,12 +65,14 @@ function addJsClass() {
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
+                    <div class="toc-item next-right"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span> >></a></div>
+                
 
 
                 <div class="project">
                     <h1>3 Testing with JUnit 5</h1>
 
-                    <p><strong>Version:</strong> 1.0.5</p>
+                    <p><strong>Version:</strong> 1.1.0</p>
                 </div>
 
                 
@@ -94,7 +99,7 @@ function addJsClass() {
 <pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
-    testCompile "io.micronaut.test:micronaut-test-junit5:1.0.5"
+    testCompile "io.micronaut.test:micronaut-test-junit5:1.1.0"
     testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:5.1.0"
 }
@@ -309,7 +314,7 @@ class MathMockServiceTest {
     void testComputeNumToSquare(Integer num, Integer square) {
 
         when(mathService.compute(10))
-            .then(invocation -&gt; Long.valueOf(Math.round(Math.pow(num, 2))).intValue()); <i class="conum" data-value="4"></i><b>(4)</b>
+            .then(invocation -&gt; Long.valueOf(Math.round(Math.pow(num, 2))).intValue());
 
         final Integer result = mathService.compute(10);
 
@@ -565,12 +570,69 @@ class PropertySourceTest {
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>If you need more dynamic property definition or the property you want to define requires some setup then you can implement the api:test.support.TestPropertyProvider[] interface in your test and do whatever setup is necessary then return the properties you want to expose the the application.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using the <code>TestPropertyProvider</code> interface</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.core.util.CollectionUtils;
+import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
+import org.junit.jupiter.api.*;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
+
+@MicronautTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class PropertySourceMapTest implements TestPropertyProvider {
+
+    @Property(name = "foo.bar")
+    String val;
+
+    @Test
+    void testPropertySource() {
+        Assertions.assertEquals("one", val);
+    }
+
+    @Nonnull
+    @Override
+    public Map&lt;String, String&gt; getProperties() {
+        return CollectionUtils.mapOf(
+                "foo.bar", "one",
+                "foo.baz", "two"
+        );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using <code>TestPropertyProvider</code> you test must be declared with JUnit&#8217;s <code>@TestInstance(TestInstance.Lifecycle.PER_CLASS)</code> annotation.
+</td>
+</tr>
+</table>
+</div>
 </div>
 
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
                     <div class="toc-item prev-left"><a href="../guide/spock.html">&lt;&lt; <strong>2</strong><span>Testing with Spock</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
