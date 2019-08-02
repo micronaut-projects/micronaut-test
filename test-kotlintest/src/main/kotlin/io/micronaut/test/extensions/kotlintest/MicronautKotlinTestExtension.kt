@@ -12,7 +12,7 @@ import org.junit.platform.commons.support.AnnotationSupport
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
-object MicornautKotlinTestExtension: TestListener, ConstructorExtension, TestCaseExtension {
+object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCaseExtension {
 
 
     override suspend fun intercept(testCase: TestCase,
