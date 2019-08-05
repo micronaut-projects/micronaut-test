@@ -64,3 +64,6 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
         }
     }
 }
+
+@Deprecated(message = "MicornautKotlinTestExtension is deprecated", replaceWith = ReplaceWith("MicronautKotlinTestExtension"))
+typealias MicornautKotlinTestExtension = MicronautKotlinTestExtension
