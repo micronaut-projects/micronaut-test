@@ -1,9 +1,9 @@
 package io.kotlintest.provided
 
 import io.kotlintest.AbstractProjectConfig
-import io.micronaut.test.extensions.kotlintest.MicornautKotlinTestExtension
+import io.micronaut.test.extensions.kotlintest.MicronautKotlinTestExtension
 
 object ProjectConfig : AbstractProjectConfig() {
-    override fun listeners() = listOf(MicornautKotlinTestExtension)
-    override fun extensions() = listOf(MicornautKotlinTestExtension)
+    override fun listeners() = listOf(MicronautKotlinTestExtension)
+    override fun extensions() = listOf(MicronautKotlinTestExtension)
 }

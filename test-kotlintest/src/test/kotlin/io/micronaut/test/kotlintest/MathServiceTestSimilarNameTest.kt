@@ -4,7 +4,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
-import io.micronaut.test.extensions.kotlintest.MicornautKotlinTestExtension.getMock
+import io.micronaut.test.extensions.kotlintest.MicronautKotlinTestExtension.getMock
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

@@ -2,18 +2,16 @@ package io.micronaut.test.kotlintest
 
 import io.kotlintest.data.forall
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
-import io.micronaut.test.extensions.kotlintest.MicornautKotlinTestExtension.getMock
+import io.micronaut.test.extensions.kotlintest.MicronautKotlinTestExtension.getMock
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifyAll
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
