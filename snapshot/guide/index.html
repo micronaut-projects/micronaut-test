@@ -1221,8 +1221,9 @@ When using <code>TestPropertyProvider</code> you test must be declared with JUni
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
-    testCompile "io.micronaut.test:micronaut-test-kotlintest:1.1.1.BUILD-SNAPSHOT"
-    testCompile "io.mockk:mockk:1.9.3"
+    testImplementation "io.micronaut.test:micronaut-test-kotlintest:1.1.1.BUILD-SNAPSHOT"
+    testImplementation "io.mockk:mockk:1.9.3"
+    testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
 }
 
 // use JUnit 5 platform
@@ -1248,6 +1249,12 @@ test {
     &lt;artifactId&gt;mockk&lt;/artifactId&gt;
     &lt;version&gt;1.9.3&lt;/version&gt;
     &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.kotlintest&lt;/groupId&gt;
+    &lt;artifactId&gt;kotlintest-runner-junit5&lt;/artifactId&gt;
+    &lt;version&gt;3.3.2&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1260,17 +1267,12 @@ test {
 <pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
     &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
     &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
-    &lt;version&gt;2.19.1&lt;/version&gt;
+    &lt;version&gt;2.22.2&lt;/version&gt;
     &lt;dependencies&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.junit.platform&lt;/groupId&gt;
-            &lt;artifactId&gt;junit-platform-surefire-provider&lt;/artifactId&gt;
-            &lt;version&gt;1.1.0&lt;/version&gt;
-        &lt;/dependency&gt;
         &lt;dependency&gt;
             &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
             &lt;artifactId&gt;junit-jupiter-engine&lt;/artifactId&gt;
-            &lt;version&gt;5.1.0&lt;/version&gt;
+            &lt;version&gt;5.3.1&lt;/version&gt;
         &lt;/dependency&gt;
     &lt;/dependencies&gt;
 &lt;/plugin&gt;
@@ -1294,7 +1296,7 @@ test {
             &lt;/goals&gt;
             &lt;configuration&gt;
                 &lt;sourceDirs&gt;
-                    &lt;sourceDir&gt;src/main/kotlin&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.baseDir}/src/main/kotlin&lt;/sourceDir&gt;
                 &lt;/sourceDirs&gt;
                 &lt;annotationProcessorPaths&gt;
                     &lt;annotationProcessorPath&gt;
@@ -1317,8 +1319,8 @@ test {
             &lt;/goals&gt;
             &lt;configuration&gt;
                 &lt;sourceDirs&gt;
-                    &lt;sourceDir&gt;src/main/kotlin&lt;/sourceDir&gt;
-                    &lt;sourceDir&gt;src/main/java&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.basedir}/src/main/kotlin&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.basedir}/src/main/java&lt;/sourceDir&gt;
                 &lt;/sourceDirs&gt;
             &lt;/configuration&gt;
         &lt;/execution&gt;
@@ -1347,8 +1349,8 @@ test {
             &lt;/goals&gt;
             &lt;configuration&gt;
                 &lt;sourceDirs&gt;
-                    &lt;sourceDir&gt;src/test/kotlin&lt;/sourceDir&gt;
-                    &lt;sourceDir&gt;target/generated-sources/kapt/test&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.basedir}/src/test/kotlin&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.basedir}/target/generated-sources/kapt/test&lt;/sourceDir&gt;
                 &lt;/sourceDirs&gt;
             &lt;/configuration&gt;
         &lt;/execution&gt;
