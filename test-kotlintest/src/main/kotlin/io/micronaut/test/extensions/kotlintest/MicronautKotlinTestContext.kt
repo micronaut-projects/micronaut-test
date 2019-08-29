@@ -8,10 +8,16 @@ import io.micronaut.inject.BeanDefinition
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.AbstractMicronautExtension
+import io.micronaut.test.support.TestPropertyProvider
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
 
 class MicronautKotlinTestContext(testClass: Class<Any>, micronautTest: MicronautTest) : AbstractMicronautExtension<Spec>() {
+    override fun resolveTestProperties(context: Spec?, testAnnotation: MicronautTest?, testProperties: MutableMap<String, Any>?) {
+        if (context is TestPropertyProvider) {
+            testProperties?.putAll(context.properties)
+        }
+    }
 
     val bean : Spec
 

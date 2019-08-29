@@ -40,3 +40,16 @@ EmbeddedServer server //refers to the server that was started up for this test s
 @Inject 
 ApplicationContext context //refers to the current application context within the scope of the test
 ----
+
+=== Release History
+
+==== 1.1.x
+
+* Micronaut 1.1.x or above required
+* Upgrade to JUnit 5.5
+* Support for Dependency Injection in Constructors and Method Parameters for JUnit 5
+* Support for Kotlin Test
+
+==== 1.0.x
+
+* Initial Version with support for JUnit 5 and Spock

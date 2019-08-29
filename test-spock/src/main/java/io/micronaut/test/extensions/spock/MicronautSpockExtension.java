@@ -19,10 +19,12 @@ package io.micronaut.test.extensions.spock;
 import io.micronaut.aop.InterceptedProxy;
 import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.type.Argument;
+import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
+import io.micronaut.test.support.TestPropertyProvider;
 import org.spockframework.mock.MockUtil;
 import org.spockframework.runtime.InvalidSpecException;
 import org.spockframework.runtime.extension.IAnnotationDrivenExtension;
@@ -36,6 +38,7 @@ import spock.lang.Specification;
 import javax.inject.Inject;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -126,6 +129,17 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
     @Override
     public void visitSpec(SpecInfo spec) {
         // no-op
+    }
+
+    @Override
+    protected void resolveTestProperties(IMethodInvocation context, MicronautTest testAnnotation, Map<String, Object> testProperties) {
+        Object sharedInstance = context.getSharedInstance();
+        if (sharedInstance instanceof TestPropertyProvider) {
+            Map<String, String> properties = ((TestPropertyProvider) sharedInstance).getProperties();
+            if (CollectionUtils.isNotEmpty(properties)) {
+                testProperties.putAll(properties);
+            }
+        }
     }
 
     @Override

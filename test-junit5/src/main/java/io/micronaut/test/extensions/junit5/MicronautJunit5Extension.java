@@ -17,16 +17,21 @@
 package io.micronaut.test.extensions.junit5;
 
 import io.micronaut.aop.InterceptedProxy;
+import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.FieldInjectionPoint;
+import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
+import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import javax.inject.Named;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -35,7 +40,7 @@ import java.util.Optional;
  * @author graemerocher
  * @since 1.0
  */
-public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback {
+public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver {
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) {
@@ -92,6 +97,17 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     @Override
+    protected void resolveTestProperties(ExtensionContext context, MicronautTest testAnnotation, Map<String, Object> testProperties) {
+        Object o = context.getTestInstance().orElse(null);
+        if (o instanceof TestPropertyProvider) {
+            Map<String, String> properties = ((TestPropertyProvider) o).getProperties();
+            if (CollectionUtils.isNotEmpty(properties)) {
+                testProperties.putAll(properties);
+            }
+        }
+    }
+
+    @Override
     protected void alignMocks(ExtensionContext context, Object instance) {
         if (specDefinition != null) {
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
@@ -123,5 +139,20 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
         begin();
+    }
+
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return applicationContext != null && applicationContext.containsBean(parameterContext.getParameter().getType());
+    }
+
+    @Override
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        Named named = parameterContext.findAnnotation(Named.class).orElse(null);
+        if (named != null) {
+            return applicationContext.getBean(parameterContext.getParameter().getType(), Qualifiers.byName(named.value()));
+        } else {
+            return applicationContext.getBean(parameterContext.getParameter().getType());
+        }
     }
 }

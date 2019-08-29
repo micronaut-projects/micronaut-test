@@ -45,4 +45,18 @@ public @interface MockBean {
      */
     @AliasFor(annotation = Replaces.class, member = "value")
     Class value() default void.class;
+
+    /**
+     * @return The bean this mock replaces
+     */
+    @AliasFor(annotation = Replaces.class, member = "value")
+    Class bean() default void.class;
+
+    /**
+     * The name of the bean to replace in the case of multiple beans.
+     *
+     * @return The qualifier
+     */
+    @AliasFor(annotation = Replaces.class, member = "named")
+    String named() default "";
 }
