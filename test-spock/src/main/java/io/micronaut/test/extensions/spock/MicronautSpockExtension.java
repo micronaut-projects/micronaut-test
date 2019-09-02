@@ -81,7 +81,10 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
                 }
         );
 
-        spec.addCleanupSpecInterceptor(this::afterClass);
+        spec.addCleanupSpecInterceptor(invocation -> {
+            afterClass(invocation);
+            invocation.proceed();
+        });
 
         spec.addSetupInterceptor(invocation -> {
             final Object instance = invocation.getInstance();

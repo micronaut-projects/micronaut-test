@@ -1,6 +1,9 @@
 package io.micronaut.test.spock
 
 import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.spock.MicronautSpockExtension
+import org.spockframework.runtime.extension.IMethodInvocation
+import org.spockframework.runtime.model.SpecInfo
 import spock.lang.Specification
 
 @MicronautTest
@@ -52,4 +55,21 @@ class FixtureWithAnnotationSpec extends Specification {
         firstTestPassed = true
     }
 
+    def "CleanupSpec should work"() {
+        given:
+        SpecInfo specInfo = new SpecInfo()
+        IMethodInvocation invocation = Mock()
+
+        and:
+        MicronautSpockExtension micronautSpockExtension = new MicronautSpockExtension()
+
+        when: "cleanup spec interceptor is registered"
+        micronautSpockExtension.visitSpecAnnotation((MicronautTest) null, specInfo)
+
+        and: "interceptor is executed"
+        specInfo.cleanupSpecInterceptors[0].intercept(invocation)
+
+        then:
+        1 * invocation.proceed()
+    }
 }
