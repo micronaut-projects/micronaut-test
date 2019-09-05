@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4 Testing with KotlinTest 1.1.0</title>
+    <title>4 Testing with KotlinTest 1.1.1</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -70,7 +70,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>4 Testing with KotlinTest</h1>
 
-                    <p><strong>Version:</strong> 1.1.0</p>
+                    <p><strong>Version:</strong> 1.1.1</p>
                 </div>
 
                 
@@ -96,8 +96,9 @@ function addJsClass() {
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
-    testCompile "io.micronaut.test:micronaut-test-kotlintest:1.1.0"
-    testCompile "io.mockk:mockk:1.9.3"
+    testImplementation "io.micronaut.test:micronaut-test-kotlintest:1.1.1"
+    testImplementation "io.mockk:mockk:1.9.3"
+    testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
 }
 
 // use JUnit 5 platform
@@ -123,6 +124,12 @@ test {
     &lt;artifactId&gt;mockk&lt;/artifactId&gt;
     &lt;version&gt;1.9.3&lt;/version&gt;
     &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.kotlintest&lt;/groupId&gt;
+    &lt;artifactId&gt;kotlintest-runner-junit5&lt;/artifactId&gt;
+    &lt;version&gt;3.3.2&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -135,17 +142,12 @@ test {
 <pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
     &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
     &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
-    &lt;version&gt;2.19.1&lt;/version&gt;
+    &lt;version&gt;2.22.2&lt;/version&gt;
     &lt;dependencies&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.junit.platform&lt;/groupId&gt;
-            &lt;artifactId&gt;junit-platform-surefire-provider&lt;/artifactId&gt;
-            &lt;version&gt;1.1.0&lt;/version&gt;
-        &lt;/dependency&gt;
         &lt;dependency&gt;
             &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
             &lt;artifactId&gt;junit-jupiter-engine&lt;/artifactId&gt;
-            &lt;version&gt;5.1.0&lt;/version&gt;
+            &lt;version&gt;5.3.1&lt;/version&gt;
         &lt;/dependency&gt;
     &lt;/dependencies&gt;
 &lt;/plugin&gt;
@@ -169,7 +171,7 @@ test {
             &lt;/goals&gt;
             &lt;configuration&gt;
                 &lt;sourceDirs&gt;
-                    &lt;sourceDir&gt;src/main/kotlin&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.baseDir}/src/main/kotlin&lt;/sourceDir&gt;
                 &lt;/sourceDirs&gt;
                 &lt;annotationProcessorPaths&gt;
                     &lt;annotationProcessorPath&gt;
@@ -192,8 +194,8 @@ test {
             &lt;/goals&gt;
             &lt;configuration&gt;
                 &lt;sourceDirs&gt;
-                    &lt;sourceDir&gt;src/main/kotlin&lt;/sourceDir&gt;
-                    &lt;sourceDir&gt;src/main/java&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.basedir}/src/main/kotlin&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.basedir}/src/main/java&lt;/sourceDir&gt;
                 &lt;/sourceDirs&gt;
             &lt;/configuration&gt;
         &lt;/execution&gt;
@@ -222,8 +224,8 @@ test {
             &lt;/goals&gt;
             &lt;configuration&gt;
                 &lt;sourceDirs&gt;
-                    &lt;sourceDir&gt;src/test/kotlin&lt;/sourceDir&gt;
-                    &lt;sourceDir&gt;target/generated-sources/kapt/test&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.basedir}/src/test/kotlin&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.basedir}/target/generated-sources/kapt/test&lt;/sourceDir&gt;
                 &lt;/sourceDirs&gt;
             &lt;/configuration&gt;
         &lt;/execution&gt;
@@ -249,11 +251,11 @@ test {
 <pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package io.kotlintest.provided
 
 import io.kotlintest.AbstractProjectConfig
-import io.micronaut.test.extensions.kotlintest.MicornautKotlinTestExtension
+import io.micronaut.test.extensions.kotlintest.MicronautKotlinTestExtension
 
 object ProjectConfig : AbstractProjectConfig() {
-    override fun listeners() = listOf(MicornautKotlinTestExtension)
-    override fun extensions() = listOf(MicornautKotlinTestExtension)
+    override fun listeners() = listOf(MicronautKotlinTestExtension)
+    override fun extensions() = listOf(MicronautKotlinTestExtension)
 }</code></pre>
 </div>
 </div>
@@ -390,7 +392,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
-import io.micronaut.test.extensions.kotlintest.MicornautKotlinTestExtension.getMock
+import io.micronaut.test.extensions.kotlintest.MicronautKotlinTestExtension.getMock
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -501,18 +503,16 @@ class MathController internal constructor(internal var mathService: MathService)
 
 import io.kotlintest.data.forall
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
-import io.micronaut.test.extensions.kotlintest.MicornautKotlinTestExtension.getMock
+import io.micronaut.test.extensions.kotlintest.MicronautKotlinTestExtension.getMock
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifyAll
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
