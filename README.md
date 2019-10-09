@@ -14,14 +14,14 @@ import io.micronaut.test.annotation.MicronautTest
 import spock.lang.*
 import javax.inject.Inject
 
-@MicronautTest 
+@MicronautTest // Declares the test as a micronaut test
 class MathServiceSpec extends Specification {
 
     @Inject
-    MathService mathService // 
+    MathService mathService // Dependency injection is used to supply the system under test
 
     @Unroll
-    void "should compute #num times 4"() { 
+    void "should compute #num times 4"() { // This is the test case. #num will be replaces by the values defined in the where: block
         when:
         def result = mathService.compute(num)
 
@@ -47,17 +47,17 @@ import org.junit.jupiter.params.provider.CsvSource;
 import javax.inject.Inject;
 
 
-@MicronautTest // <1>
+@MicronautTest // Declares the test as a micronaut test
 class MathServiceTest {
 
     @Inject
-    MathService mathService; // <2>
+    MathService mathService; // Dependency injection is used to supply the system under test
 
 
     @ParameterizedTest
     @CsvSource({"2,8", "3,12"})
     void testComputeNumToSquare(Integer num, Integer square) {
-        final Integer result = mathService.compute(num); // <3>
+        final Integer result = mathService.compute(num); // Injected bean can be used in test case
 
         Assertions.assertEquals(
                 square,
