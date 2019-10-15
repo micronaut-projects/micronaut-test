@@ -19,7 +19,7 @@ dependencies {
 
     testCompile "io.micronaut.configuration:micronaut-hibernate-jpa:$micronautHibernateJpaVersion"
     testRuntime "io.micronaut.configuration:micronaut-jdbc-tomcat:$micronautJdbcTomcatVersion"
-    testRuntime "com.h2database:h2:1.4.199"
+    testRuntime "com.h2database:h2:1.4.200"
 }
 
 test {
