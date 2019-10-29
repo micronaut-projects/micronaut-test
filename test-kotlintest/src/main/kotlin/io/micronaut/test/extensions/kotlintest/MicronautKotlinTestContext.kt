@@ -19,11 +19,11 @@ class MicronautKotlinTestContext(testClass: Class<Any>, micronautTest: Micronaut
         }
     }
 
-    val bean : Spec
+    val bean : Spec?
 
     init {
         beforeClass(null, testClass, micronautTest)
-        bean = applicationContext.getBean(testClass) as Spec
+        bean = applicationContext.findBean(testClass).orElse(null) as Spec?
     }
 
     override fun alignMocks(context: Spec?, instance: Any) {

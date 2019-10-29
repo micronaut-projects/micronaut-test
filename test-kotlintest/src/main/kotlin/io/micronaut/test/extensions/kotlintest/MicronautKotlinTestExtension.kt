@@ -10,6 +10,7 @@ import io.micronaut.aop.InterceptedProxy
 import io.micronaut.test.annotation.MicronautTest
 import org.junit.platform.commons.support.AnnotationSupport
 import kotlin.reflect.KClass
+import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.primaryConstructor
 
 object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCaseExtension {
@@ -18,26 +19,28 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
     override suspend fun intercept(testCase: TestCase,
                                    execute: suspend (TestCase, suspend (TestResult) -> Unit) -> Unit,
                                    complete: suspend (TestResult) -> Unit) {
-        val context = contexts[testCase.spec]
-        if (context?.getSpecDefinition() == null) {
+        val context = contexts[testCase.spec.javaClass.name]
+        if (context != null && context.getSpecDefinition() == null) {
+            //Its a MicronautTest test where the bean doesn't exist
             complete(TestResult.Ignored)
         } else {
+            //Not a MicronautTest test or the bean exists
             execute(testCase, complete)
         }
     }
 
-    val contexts: MutableMap<Spec, MicronautKotlinTestContext> = mutableMapOf()
+    val contexts: MutableMap<String, MicronautKotlinTestContext> = mutableMapOf()
 
     override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
-        contexts[spec]?.afterSpecClass(spec)
+        contexts[spec.javaClass.name]?.afterSpecClass(spec)
     }
 
     override fun beforeTest(testCase: TestCase) {
-        contexts[testCase.spec]?.beforeTest(testCase)
+        contexts[testCase.spec.javaClass.name]?.beforeTest(testCase)
     }
 
     override fun afterTest(testCase: TestCase, result: TestResult) {
-        contexts[testCase.spec]?.afterTest(testCase)
+        contexts[testCase.spec.javaClass.name]?.afterTest(testCase)
     }
 
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
@@ -46,12 +49,13 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
         val micronautTest = AnnotationSupport.findAnnotation<MicronautTest>(testClass, MicronautTest::class.java).orElse(null)
-        return if (constructor == null || constructor.parameters.isEmpty() && micronautTest != null) {
+
+        return if (micronautTest == null) {
             null
         } else {
             val context = MicronautKotlinTestContext(testClass, micronautTest)
-            val bean: Spec = context.bean
-            contexts[bean] = context
+            val bean: Spec? = context.bean
+            contexts[testClass.name] = context
             bean
         }
     }
