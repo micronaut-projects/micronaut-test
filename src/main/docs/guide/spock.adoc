@@ -8,7 +8,7 @@ To get started using Spock you need the following dependencies in your build con
 testCompile "io.micronaut.test:micronaut-test-spock:{version}"
 ----
 
-NOTE: If you plan to define mock beans you will also need `inject-groovy` on your `testCompile` classpath or `inject-java` for Java or Kotlin (this should already be configured if you used `mn create-app`).
+NOTE: If you plan to define mock beans you will also need `micronaut-inject-groovy` on your `testCompile` classpath or `micronaut-inject-java` for Java or Kotlin (this should already be configured if you used `mn create-app`).
 
 Or for Maven:
 
