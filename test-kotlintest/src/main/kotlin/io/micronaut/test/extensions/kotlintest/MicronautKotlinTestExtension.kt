@@ -6,6 +6,7 @@ import io.kotlintest.TestResult
 import io.kotlintest.extensions.ConstructorExtension
 import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
+import io.kotlintest.extensions.TopLevelTest
 import io.micronaut.aop.InterceptedProxy
 import io.micronaut.test.annotation.MicronautTest
 import org.junit.platform.commons.support.AnnotationSupport
@@ -31,6 +32,10 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
 
     val contexts: MutableMap<String, MicronautKotlinTestContext> = mutableMapOf()
 
+    override fun beforeSpecClass(spec: Spec, tests: List<TopLevelTest>) {
+        contexts[spec.javaClass.name]?.beforeSpecClass(spec)
+    }
+
     override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
         contexts[spec.javaClass.name]?.afterSpecClass(spec)
     }
@@ -53,10 +58,14 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
         return if (micronautTest == null) {
             null
         } else {
-            val context = MicronautKotlinTestContext(testClass, micronautTest)
-            val bean: Spec? = context.bean
+            val createBean = constructor != null && constructor.parameters.isNotEmpty()
+            val context = MicronautKotlinTestContext(testClass, micronautTest, createBean)
             contexts[testClass.name] = context
-            bean
+            if (createBean) {
+                context.bean
+            } else {
+                null
+            }
         }
     }
 

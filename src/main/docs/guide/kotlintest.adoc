@@ -289,3 +289,11 @@ The above example expects a file located at `src/test/resources/io/micronaut/kot
 * `myprops.properties` - A file relative on the classpath relative to the test being run.
 
 NOTE: Because Kotlin doesn't support multiple annotations, the `@PropertySource` annotation must be used to define multiple properties.
+
+=== Constructor Injection Caveats
+
+There are a couple caveats to using constructor injection to be aware of.
+
+1. In order for `TestPropertyProvider` to work, test classes must have not have any constructor arguments. This is because the class needs constructed prior to bean creation in order to add the properties to the context. Fields and methods will still be injected.
+
+1. `@Requires()` cannot be used with constructor injection because Kotlintest requires the instance to be created regardless if the test should be ignored or not. If the requirements disable the bean, it cannot be created from the context and thus construction responsibility will be delegated to the default behavior.

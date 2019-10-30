@@ -12,7 +12,10 @@ import io.micronaut.test.support.TestPropertyProvider
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
 
-class MicronautKotlinTestContext(testClass: Class<Any>, micronautTest: MicronautTest) : AbstractMicronautExtension<Spec>() {
+class MicronautKotlinTestContext(private val testClass: Class<Any>,
+                                 private val micronautTest: MicronautTest,
+                                 private val createBean: Boolean) : AbstractMicronautExtension<Spec>() {
+
     override fun resolveTestProperties(context: Spec?, testAnnotation: MicronautTest?, testProperties: MutableMap<String, Any>?) {
         if (context is TestPropertyProvider) {
             testProperties?.putAll(context.properties)
@@ -22,11 +25,22 @@ class MicronautKotlinTestContext(testClass: Class<Any>, micronautTest: Micronaut
     val bean : Spec?
 
     init {
-        beforeClass(null, testClass, micronautTest)
-        bean = applicationContext.findBean(testClass).orElse(null) as Spec?
+        bean = if (createBean) {
+            beforeClass(null, testClass, micronautTest)
+            applicationContext.findBean(testClass).orElse(null) as Spec?
+        } else {
+            null
+        }
     }
 
     override fun alignMocks(context: Spec?, instance: Any) {
+    }
+
+    fun beforeSpecClass(spec: Spec) {
+        if (!createBean) {
+            beforeClass(spec, testClass, micronautTest)
+            applicationContext.inject(spec)
+        }
     }
 
     fun afterSpecClass(spec: Spec) {
