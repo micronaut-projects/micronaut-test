@@ -88,7 +88,7 @@
         <h1>Micronaut Test</h1>
         <p></p>
         <p>Testing Framework Extensions for Micronaut</p>
-        <p><strong>Version:</strong> 1.1.1</p>
+        <p><strong>Version:</strong> 1.1.2</p>
     </div>
     
 
@@ -227,7 +227,7 @@ ApplicationContext context //refers to the current application context within th
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">testCompile "io.micronaut.test:micronaut-test-spock:1.1.1"</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">testCompile "io.micronaut.test:micronaut-test-spock:1.1.2"</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -237,7 +237,7 @@ ApplicationContext context //refers to the current application context within th
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you plan to define mock beans you will also need <code>inject-groovy</code> on your <code>testCompile</code> classpath or <code>inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>).
+If you plan to define mock beans you will also need <code>micronaut-inject-groovy</code> on your <code>testCompile</code> classpath or <code>micronaut-inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>).
 </td>
 </tr>
 </table>
@@ -673,7 +673,7 @@ class PropertySourceSpec extends Specification {
 <pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
-    testCompile "io.micronaut.test:micronaut-test-junit5:1.1.1"
+    testCompile "io.micronaut.test:micronaut-test-junit5:1.1.2"
     testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:5.1.0"
 }
@@ -1221,7 +1221,7 @@ When using <code>TestPropertyProvider</code> you test must be declared with JUni
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
-    testImplementation "io.micronaut.test:micronaut-test-kotlintest:1.1.1"
+    testImplementation "io.micronaut.test:micronaut-test-kotlintest:1.1.2"
     testImplementation "io.mockk:mockk:1.9.3"
     testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
 }
@@ -1775,6 +1775,22 @@ Because Kotlin doesn&#8217;t support multiple annotations, the <code>@PropertySo
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_constructor_injection_caveats">Constructor Injection Caveats</h3>
+<div class="paragraph">
+<p>There are a couple caveats to using constructor injection to be aware of.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In order for <code>TestPropertyProvider</code> to work, test classes must have not have any constructor arguments. This is because the class needs constructed prior to bean creation in order to add the properties to the context. Fields and methods will still be injected.</p>
+</li>
+<li>
+<p><code>@Requires()</code> cannot be used with constructor injection because Kotlintest requires the instance to be created regardless if the test should be ignored or not. If the requirements disable the bean, it cannot be created from the context and thus construction responsibility will be delegated to the default behavior.</p>
+</li>
+</ol>
 </div>
 </div>
 

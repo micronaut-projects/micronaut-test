@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>4 Testing with KotlinTest 1.1.1</title>
+    <title>4 Testing with KotlinTest 1.1.2</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -70,7 +70,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>4 Testing with KotlinTest</h1>
 
-                    <p><strong>Version:</strong> 1.1.1</p>
+                    <p><strong>Version:</strong> 1.1.2</p>
                 </div>
 
                 
@@ -96,7 +96,7 @@ function addJsClass() {
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
-    testImplementation "io.micronaut.test:micronaut-test-kotlintest:1.1.1"
+    testImplementation "io.micronaut.test:micronaut-test-kotlintest:1.1.2"
     testImplementation "io.mockk:mockk:1.9.3"
     testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
 }
@@ -650,6 +650,22 @@ Because Kotlin doesn&#8217;t support multiple annotations, the <code>@PropertySo
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_constructor_injection_caveats">Constructor Injection Caveats</h3>
+<div class="paragraph">
+<p>There are a couple caveats to using constructor injection to be aware of.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In order for <code>TestPropertyProvider</code> to work, test classes must have not have any constructor arguments. This is because the class needs constructed prior to bean creation in order to add the properties to the context. Fields and methods will still be injected.</p>
+</li>
+<li>
+<p><code>@Requires()</code> cannot be used with constructor injection because Kotlintest requires the instance to be created regardless if the test should be ignored or not. If the requirements disable the bean, it cannot be created from the context and thus construction responsibility will be delegated to the default behavior.</p>
+</li>
+</ol>
 </div>
 </div>
 
