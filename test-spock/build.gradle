@@ -2,7 +2,7 @@ dependencies {
     implementation project(":test-core")
     implementation "io.micronaut:micronaut-inject:$micronautVersion"
     implementation "io.micronaut:micronaut-runtime:$micronautVersion"
-    implementation("org.spockframework:spock-core:1.2-groovy-2.4") {
+    implementation("org.spockframework:spock-core:1.3-groovy-2.5") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
 
