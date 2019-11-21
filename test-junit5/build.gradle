@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":test-core")
+    implementation project(":test-core")
     implementation "io.micronaut:micronaut-inject:$micronautVersion"
     implementation "io.micronaut:micronaut-runtime:$micronautVersion"
 
@@ -12,7 +12,7 @@ dependencies {
     )
 
     testCompile "org.junit.jupiter:junit-jupiter-params:$junitVersion"
-    testCompile "io.micronaut:micronaut-inject-java:$micronautVersion"
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
     testCompile "io.micronaut:micronaut-http-server-netty:$micronautVersion"
     testCompile "io.micronaut:micronaut-http-client:$micronautVersion"
     testCompile 'org.mockito:mockito-junit-jupiter:2.22.0'

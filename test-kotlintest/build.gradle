@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    compile project(":test-core")
+    implementation project(":test-core")
     implementation "io.micronaut:micronaut-inject:$micronautVersion"
     implementation "io.micronaut:micronaut-runtime:$micronautVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
