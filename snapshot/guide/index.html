@@ -109,7 +109,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">@Shared <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@Shared <i class="conum" data-value="1"></i><b>(1)</b>
 @AutoCleanup <i class="conum" data-value="2"></i><b>(2)</b>
 EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></pre>
 </div>
@@ -169,7 +169,7 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></p
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">@Inject
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@Inject
 EmbeddedServer server //refers to the server that was started up for this test suite
 
 @Inject
@@ -227,7 +227,7 @@ ApplicationContext context //refers to the current application context within th
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">testCompile "io.micronaut.test:micronaut-test-spock:1.1.3.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">testCompile "io.micronaut.test:micronaut-test-spock:1.1.3.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -248,7 +248,7 @@ If you plan to define mock beans you will also need <code>micronaut-inject-groov
 <div class="listingblock">
 <div class="title">pom.xml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-test-spock&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
@@ -265,7 +265,7 @@ If you plan to define mock beans you will also need <code>micronaut-inject-groov
 <div class="listingblock">
 <div class="title">The MathService Interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock;
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock;
 
 import javax.inject.Singleton;
 
@@ -282,7 +282,7 @@ interface MathService {
 <div class="listingblock">
 <div class="title">The MathService implementation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import javax.inject.Singleton
 
@@ -302,7 +302,7 @@ class MathServiceImpl implements MathService {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.test.annotation.MicronautTest
 import spock.lang.*
@@ -354,7 +354,7 @@ class MathServiceSpec extends Specification {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(environments=["foo", "bar"])</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(environments=["foo", "bar"])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -362,7 +362,7 @@ class MathServiceSpec extends Specification {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -370,7 +370,7 @@ class MathServiceSpec extends Specification {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -385,7 +385,7 @@ class MathServiceSpec extends Specification {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.test.annotation.*
 import spock.lang.*
@@ -448,7 +448,7 @@ class MathMockServiceSpec extends Specification {
 <div class="listingblock">
 <div class="title">The MathController</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
@@ -477,7 +477,7 @@ class MathController {
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.RxHttpClient
@@ -550,7 +550,7 @@ class MathCollaboratorSpec extends Specification {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
 @Requires(env = "my-env")
 class RequiresSpec extends Specification {
     ...
@@ -569,7 +569,7 @@ class RequiresSpec extends Specification {
 <div class="listingblock">
 <div class="title">Using <code>@Property</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Value
@@ -613,7 +613,7 @@ class PropertySpec extends Specification {
 <div class="listingblock">
 <div class="title">Using <code>propertySources</code> stored in files</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.annotation.MicronautTest
@@ -670,7 +670,7 @@ class PropertySourceSpec extends Specification {
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
     testCompile "io.micronaut.test:micronaut-test-junit5:1.1.3.BUILD-SNAPSHOT"
@@ -702,7 +702,7 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">pom.xml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-test-junit5&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
@@ -716,7 +716,7 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">pom.xml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;plugin&gt;
     &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
     &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
     &lt;version&gt;2.19.1&lt;/version&gt;
@@ -744,7 +744,7 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <div class="listingblock">
 <div class="title">The MathService Interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
 
 interface MathService {
 
@@ -758,7 +758,7 @@ interface MathService {
 <div class="listingblock">
 <div class="title">The MathService implementation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
 
 import javax.inject.Singleton;
 
@@ -778,7 +778,7 @@ class MathServiceImpl implements MathService {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.junit5;
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.junit5;
 
 import io.micronaut.test.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
@@ -832,7 +832,7 @@ class MathServiceTest {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(environments={"foo", "bar"})</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(environments={"foo", "bar"})</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -840,7 +840,7 @@ class MathServiceTest {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -848,7 +848,7 @@ class MathServiceTest {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -863,7 +863,7 @@ class MathServiceTest {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
 
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
@@ -939,7 +939,7 @@ class MathMockServiceTest {
 <div class="listingblock">
 <div class="title">The MathController</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
 
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
@@ -966,7 +966,7 @@ public class MathController {
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.RxHttpClient;
@@ -1046,7 +1046,7 @@ class MathCollaboratorTest {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
 @Requires(env = "my-env")
 class RequiresTest {
     ...
@@ -1065,7 +1065,7 @@ class RequiresTest {
 <div class="listingblock">
 <div class="title">Using <code>@Property</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.annotation.MicronautTest;
@@ -1107,7 +1107,7 @@ class PropertyValueTest {
 <div class="listingblock">
 <div class="title">Using <code>propertySources</code> stored in files</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.annotation.MicronautTest;
@@ -1145,7 +1145,7 @@ class PropertySourceTest {
 </ul>
 </div>
 <div class="paragraph">
-<p>If you need more dynamic property definition or the property you want to define requires some setup then you can implement the api:test.support.TestPropertyProvider[] interface in your test and do whatever setup is necessary then return the properties you want to expose the the application.</p>
+<p>If you need more dynamic property definition or the property you want to define requires some setup then you can implement the <a href="../api/io/micronaut/test/support/TestPropertyProvider.html">TestPropertyProvider</a> interface in your test and do whatever setup is necessary then return the properties you want to expose the the application.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
@@ -1153,7 +1153,7 @@ class PropertySourceTest {
 <div class="listingblock">
 <div class="title">Using the <code>TestPropertyProvider</code> interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.junit5;
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.core.util.CollectionUtils;
@@ -1219,7 +1219,7 @@ When using <code>TestPropertyProvider</code> you test must be declared with JUni
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
     testImplementation "io.micronaut.test:micronaut-test-kotlintest:1.1.3.BUILD-SNAPSHOT"
     testImplementation "io.mockk:mockk:1.9.3"
@@ -1238,7 +1238,7 @@ test {
 <div class="listingblock">
 <div class="title">pom.xml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-test-kotlintest&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
@@ -1264,7 +1264,7 @@ test {
 <div class="listingblock">
 <div class="title">pom.xml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;plugin&gt;
     &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
     &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
     &lt;version&gt;2.22.2&lt;/version&gt;
@@ -1373,7 +1373,7 @@ test {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package io.kotlintest.provided
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.kotlintest.provided
 
 import io.kotlintest.AbstractProjectConfig
 import io.micronaut.test.extensions.kotlintest.MicronautKotlinTestExtension
@@ -1393,7 +1393,7 @@ object ProjectConfig : AbstractProjectConfig() {
 <div class="listingblock">
 <div class="title">The MathService Interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
 
 interface MathService {
 
@@ -1407,7 +1407,7 @@ interface MathService {
 <div class="listingblock">
 <div class="title">The MathService implementation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
 
 import javax.inject.Singleton
 
@@ -1426,7 +1426,7 @@ internal class MathServiceImpl : MathService {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.kotlintest
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
@@ -1480,7 +1480,7 @@ class MathServiceTest(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(environments={"foo", "bar"})</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(environments={"foo", "bar"})</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1488,7 +1488,7 @@ class MathServiceTest(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1496,7 +1496,7 @@ class MathServiceTest(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1511,7 +1511,7 @@ class MathServiceTest(
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
@@ -1602,7 +1602,7 @@ Because Kotlin uses constructor injection, it&#8217;s not possible to automatica
 <div class="listingblock">
 <div class="title">The MathController</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
 
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
@@ -1624,7 +1624,7 @@ class MathController internal constructor(internal var mathService: MathService)
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
 
 import io.kotlintest.data.forall
 import io.kotlintest.shouldBe
@@ -1705,7 +1705,7 @@ class MathCollaboratorTest(
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">@MicronautTest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@MicronautTest
 @Requires(env = "my-env")
 class RequiresTest {
     ...
@@ -1724,7 +1724,7 @@ class RequiresTest {
 <div class="listingblock">
 <div class="title">Using <code>propertySources</code> stored in files</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.BehaviorSpec
