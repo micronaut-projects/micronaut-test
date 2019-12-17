@@ -17,7 +17,7 @@ plugins {
 }
 
 repositories {
-
+    jcenter()
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
@@ -122,3 +122,4 @@ buildScan {
     termsOfServiceUrl = 'https://gradle.com/terms-of-service'
     termsOfServiceAgree = 'yes'
 }
+
