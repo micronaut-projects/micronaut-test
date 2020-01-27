@@ -1,3 +1,8 @@
+ext {
+    junitVersion = "5.5.0"
+    spockVersion = "1.2-groovy-2.5"
+}
+
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
     compileOnly "io.micronaut:micronaut-spring:$micronautVersion"

@@ -3,6 +3,12 @@ plugins {
     id "org.jetbrains.kotlin.kapt" version "1.3.61"
 }
 
+ext {
+    micronautHibernateJpaVersion = "1.1.0"
+    micronautJdbcTomcatVersion = "1.1.0"
+    kotlinVersion = "1.3.61"
+}
+
 dependencies {
     implementation project(":test-core")
     implementation "io.micronaut:micronaut-inject:$micronautVersion"
