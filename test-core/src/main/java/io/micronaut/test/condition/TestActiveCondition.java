@@ -48,8 +48,9 @@ public class TestActiveCondition implements Condition {
         if (context.getComponent() instanceof BeanDefinition) {
             BeanDefinition<?> definition = (BeanDefinition<?>) context.getComponent();
             final BeanContext beanContext = context.getBeanContext();
+            final Optional<Class<?>> declaringType = definition.getDeclaringType();
+
             if (beanContext instanceof ApplicationContext) {
-                final Optional<Class<?>> declaringType = definition.getDeclaringType();
                 ApplicationContext applicationContext = (ApplicationContext) beanContext;
                 final Class activeSpecClazz = applicationContext.get(ACTIVE_SPEC_CLAZZ, Class.class).orElse(null);
                 final String activeSpecName = Optional.ofNullable(activeSpecClazz).map(clazz-> clazz.getPackage().getName() + "." + clazz.getSimpleName()).orElse(null);
@@ -72,7 +73,12 @@ public class TestActiveCondition implements Condition {
                         return false;
                     }
                 } else {
-                    return activeSpecName != null && activeSpecName.equals(definition.getBeanType().getName());
+                    if (activeSpecName != null) {
+                        boolean beanTypeMatches = activeSpecName.equals(definition.getBeanType().getName());
+                        return beanTypeMatches || (declaringType.isPresent() && activeSpecClazz == declaringType.get());
+                    } else {
+                        return false;
+                    }
                 }
             } else {
                 return false;
