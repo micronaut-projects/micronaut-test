@@ -5,7 +5,7 @@ JUnit 5: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.m
 
 This project provides testing extension for JUnit 5 and Spock to make it easier to test Micronaut applications.
 
-For more information see the [Documentation](https://micronaut-projects.github.io/micronaut-test/latest/guide/index.html).
+For more information see the [Latest](https://micronaut-projects.github.io/micronaut-test/latest/guide/index.html) or [Snapshot](https://micronaut-projects.github.io/micronaut-test/snapshot/guide/index.html) Documentation.
 
 Example Spock Test:
 
@@ -67,3 +67,18 @@ class MathServiceTest {
 }
 
 ```
+
+## Snapshots and Releases
+
+Snaphots are automatically published to [JFrog OSS](https://oss.jfrog.org/artifactory/oss-snapshot-local/) using [Github Actions](https://github.com/micronaut-projects/micronaut-test/actions).
+
+See the documentation in the [Micronaut Docs](https://docs.micronaut.io/latest/guide/index.html#usingsnapshots) for how to configure your build to use snapshots.
+
+Releases are published to JCenter and Maven Central via [Github Actions](https://github.com/micronaut-projects/micronaut-test/actions).
+
+A release is performed with the following steps:
+
+* [Edit the version](https://github.com/micronaut-projects/micronaut-test/edit/master/gradle.properties) specified by `projectVersion` in `gradle.properties` to a semantic, unreleased version. Example `1.0.0`
+* [Create a new release](https://github.com/micronaut-projects/micronaut-test/releases/new). The Git Tag should start with `v`. For example `v1.0.0`.
+* [Monitor the Workflow](https://github.com/micronaut-projects/micronaut-test/actions?query=workflow%3ARelease) to check it passed successfully.
+* Celebrate!
