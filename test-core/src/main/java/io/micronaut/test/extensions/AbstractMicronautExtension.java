@@ -30,6 +30,7 @@ import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.runtime.EmbeddedApplication;
+import io.micronaut.runtime.context.scope.Refreshable;
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
 import io.micronaut.test.annotation.AnnotationUtils;
@@ -63,6 +64,7 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
     private boolean rollback = true;
     private boolean transactional = true;
+    private final ApplicationContextBuilder builder = ApplicationContext.build();
 
     @Override
     public void begin() {
@@ -108,7 +110,6 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
             this.rollback = testAnnotation.rollback();
             this.transactional = testAnnotation.transactional();
 
-            final ApplicationContextBuilder builder = ApplicationContext.build();
             final Package aPackage = testClass.getPackage();
             builder.packages(aPackage.getName());
 
@@ -206,6 +207,11 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
 
         if (testInstance != null) {
             if (applicationContext != null) {
+                if (specDefinition != null && specDefinition.findAnnotation(Refreshable.class).isPresent()) {
+                    this.applicationContext.stop();
+                    this.applicationContext = builder.build();
+                    startApplicationContext();
+                }
                 if (refreshScope != null) {
                     refreshScope.onRefreshEvent(new RefreshEvent(Collections.singletonMap(
                             TestActiveCondition.ACTIVE_MOCKS, "changed"

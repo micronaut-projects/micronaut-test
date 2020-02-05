@@ -297,3 +297,19 @@ There are a couple caveats to using constructor injection to be aware of.
 1. In order for `TestPropertyProvider` to work, test classes must have not have any constructor arguments. This is because the class needs constructed prior to bean creation in order to add the properties to the context. Fields and methods will still be injected.
 
 1. `@Requires()` cannot be used with constructor injection because Kotlintest requires the instance to be created regardless if the test should be ignored or not. If the requirements disable the bean, it cannot be created from the context and thus construction responsibility will be delegated to the default behavior.
+
+=== Refreshing injected beans based on `@Requires` upon properties changes
+
+You can use combine the use of `@Requires` and `@Property`, so that injected beans will be refreshed if there are
+configuration changes that affect their `@Requires` condition.
+
+For that to work, the test class must be annotated with `@Refreshable`. In that case, if there are changes in any
+property for a given test, the application context will be rebuilt so that `@Requires` conditions are re-evaluated again.
+
+For example:
+
+.Combining `@Requires` and `@Property` in a `@Refreshable` test class.
+[source,kotlin]
+----
+include::{kotlintesttests}/PropertyValueRequiresTest.kt[]
+----

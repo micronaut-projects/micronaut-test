@@ -157,3 +157,19 @@ The above example expects a file located at `src/test/resources/io/micronaut/spo
 * `file:myprops.properties` - A relative path to a file somewhere on the file system
 * `classpath:myprops.properties` - A file relative to the root of the classpath
 * `myprops.properties` - A file relative on the classpath relative to the test being run.
+
+=== Refreshing injected beans based on `@Requires` upon properties changes
+
+You can use combine the use of `@Requires` and `@Property`, so that injected beans will be refreshed if there are
+configuration changes that affect their `@Requires` condition.
+
+For that to work, the test class must be annotated with `@Refreshable`. In that case, if there are changes in any
+property for a given test, the application context will be rebuilt so that `@Requires` conditions are re-evaluated again.
+
+For example:
+
+.Combining `@Requires` and `@Property` in a `@Refreshable` test class.
+[source,java]
+----
+include::{spocktests}/PropertyValueRequiresSpec.groovy[]
+----
