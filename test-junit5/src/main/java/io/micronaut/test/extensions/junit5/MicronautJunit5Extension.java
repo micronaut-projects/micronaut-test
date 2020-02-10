@@ -17,6 +17,7 @@
 package io.micronaut.test.extensions.junit5;
 
 import io.micronaut.aop.InterceptedProxy;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.qualifiers.Qualifiers;
@@ -31,8 +32,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import javax.inject.Named;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Extension for JUnit 5.
@@ -65,7 +65,12 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     public void beforeEach(ExtensionContext extensionContext) {
         final Optional<Object> testInstance = extensionContext.getTestInstance();
         final Optional<? extends AnnotatedElement> testMethod = extensionContext.getTestMethod();
-        beforeEach(extensionContext, testInstance.orElse(null), testMethod.orElse(null));
+        List<Property> propertyAnnotations = null;
+        if (testMethod.isPresent()) {
+            Property[] annotationsByType = testMethod.get().getAnnotationsByType(Property.class);
+            propertyAnnotations = Arrays.asList(annotationsByType);
+        }
+        beforeEach(extensionContext, testInstance.orElse(null), testMethod.orElse(null), propertyAnnotations);
     }
 
     @Override

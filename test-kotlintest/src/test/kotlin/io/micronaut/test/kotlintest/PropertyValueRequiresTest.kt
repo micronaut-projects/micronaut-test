@@ -4,14 +4,12 @@ import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.specs.AnnotationSpec
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
-import io.micronaut.runtime.context.scope.Refreshable
 import io.micronaut.test.annotation.MicronautTest
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@MicronautTest
+@MicronautTest(rebuildContext = true)
 @Property(name = "foo.bar", value = "stuff")
-//@Refreshable
 open class PropertyValueRequiresTest: AnnotationSpec() {
 
     @Inject
@@ -24,12 +22,12 @@ open class PropertyValueRequiresTest: AnnotationSpec() {
 
     @Property(name = "foo.bar", value = "changed")
     @Test
-    @Ignore
     open fun testValueChanged() {
         myService.shouldBeInstanceOf<MyServiceChanged>()
     }
 
     @Test
+    @Ignore
     open fun testValueRestored() {
         myService.shouldBeInstanceOf<MyServiceStuff>()
     }

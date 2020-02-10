@@ -188,12 +188,11 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
      */
     protected abstract void resolveTestProperties(C context, MicronautTest testAnnotation, Map<String, Object> testProperties);
 
-    protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method) {
+    protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
         int testCount = (int) testProperties.compute("micronaut.test.count", (k, oldCount) -> (int)(oldCount != null ? oldCount : 0) + 1);
         if (method != null) {
-            final Property[] ps = method.getAnnotationsByType(Property.class);
-            if (ps != null) {
-                for (Property property : ps) {
+            if (propertyAnnotations != null) {
+                for (Property property : propertyAnnotations) {
                     final String name = property.name();
                     oldValues.put(name,
                             testProperties.put(name, property.value())
@@ -202,6 +201,7 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
             }
 
             if (testAnnotation.rebuildContext() && testCount > 1) {
+                embeddedApplication.stop();
                 applicationContext.stop();
                 applicationContext = builder.build();
                 startApplicationContext();

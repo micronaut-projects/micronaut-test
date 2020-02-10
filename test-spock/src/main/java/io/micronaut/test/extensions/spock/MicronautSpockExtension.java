@@ -17,6 +17,7 @@
 package io.micronaut.test.extensions.spock;
 
 import io.micronaut.aop.InterceptedProxy;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
@@ -37,10 +38,7 @@ import spock.lang.Specification;
 
 import javax.inject.Inject;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -89,7 +87,8 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         spec.addSetupInterceptor(invocation -> {
             final Object instance = invocation.getInstance();
             final Method method = invocation.getFeature().getFeatureMethod().getReflection();
-            beforeEach(invocation, instance, method);
+            List<Property> propertyAnnotations = Arrays.asList(method.getAnnotationsByType(Property.class));
+            beforeEach(invocation, instance, method, propertyAnnotations);
             for (Object createdMock : createdMocks) {
                 mockUtil.attachMock(createdMock, (Specification) instance);
             }
