@@ -2,7 +2,6 @@ package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.runtime.context.scope.Refreshable;
 import io.micronaut.test.annotation.MicronautTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsInstanceOf;
@@ -15,10 +14,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 // https://github.com/micronaut-projects/micronaut-test/issues/91
-@MicronautTest
+@MicronautTest(rebuildContext = true)
 @Property(name = "foo.bar", value = "stuff")
 @TestMethodOrder(OrderAnnotation.class)
-@Refreshable
 class PropertyValueRequiresTest {
 
     @Inject

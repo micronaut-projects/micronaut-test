@@ -73,4 +73,10 @@ public @interface MicronautTest {
      * @return Whether to wrap a test in a transaction.
      */
     boolean transactional() default true;
+
+    /**
+     * Whether to rebuild the application context before each test method
+     * @return true if the application context should be rebuilt for each test method
+     */
+    boolean rebuildContext() default false;
 }

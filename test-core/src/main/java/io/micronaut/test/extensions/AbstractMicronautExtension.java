@@ -30,7 +30,6 @@ import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.runtime.EmbeddedApplication;
-import io.micronaut.runtime.context.scope.Refreshable;
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
 import io.micronaut.test.annotation.AnnotationUtils;
@@ -64,6 +63,7 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
     private boolean rollback = true;
     private boolean transactional = true;
+    private MicronautTest testAnnotation;
     private final ApplicationContextBuilder builder = ApplicationContext.build();
 
     @Override
@@ -107,6 +107,7 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
      */
     protected void beforeClass(C context, Class<?> testClass, @Nullable MicronautTest testAnnotation) {
         if (testAnnotation != null) {
+            this.testAnnotation = testAnnotation;
             this.rollback = testAnnotation.rollback();
             this.transactional = testAnnotation.transactional();
 
@@ -188,6 +189,7 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
     protected abstract void resolveTestProperties(C context, MicronautTest testAnnotation, Map<String, Object> testProperties);
 
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method) {
+        int testCount = (int) testProperties.compute("micronaut.test.count", (k, oldCount) -> (int)(oldCount != null ? oldCount : 0) + 1);
         if (method != null) {
             final Property[] ps = method.getAnnotationsByType(Property.class);
             if (ps != null) {
@@ -199,7 +201,11 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
                 }
             }
 
-            if (!oldValues.isEmpty()) {
+            if (testAnnotation.rebuildContext() && testCount > 1) {
+                applicationContext.stop();
+                applicationContext = builder.build();
+                startApplicationContext();
+            } else if (!oldValues.isEmpty()) {
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));
             }
@@ -207,11 +213,6 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
 
         if (testInstance != null) {
             if (applicationContext != null) {
-                if (specDefinition != null && specDefinition.findAnnotation(Refreshable.class).isPresent()) {
-                    this.applicationContext.stop();
-                    this.applicationContext = builder.build();
-                    startApplicationContext();
-                }
                 if (refreshScope != null) {
                     refreshScope.onRefreshEvent(new RefreshEvent(Collections.singletonMap(
                             TestActiveCondition.ACTIVE_MOCKS, "changed"
