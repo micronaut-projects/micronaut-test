@@ -3,26 +3,27 @@ package io.micronaut.test.kotlintest
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AnnotationSpec
 import io.micronaut.context.annotation.Property
+import io.micronaut.context.env.Environment
 import io.micronaut.test.annotation.MicronautTest
+import javax.inject.Inject
 
 @MicronautTest
 @Property(name = "foo.bar", value = "stuff")
-class PropertyValueTest(@Property(name = "foo.bar") val value: String): AnnotationSpec() {
+class PropertyValueTest(@Inject val environment: Environment): AnnotationSpec() {
 
     @Test
     fun testInitialValue() {
-        value shouldBe "stuff"
+        environment.getProperty("foo.bar", String::class.java).get() shouldBe "stuff"
     }
 
     @Property(name = "foo.bar", value = "changed")
     @Test
-    @Ignore
     fun testValueChanged() {
-        value shouldBe "changed"
+        environment.getProperty("foo.bar", String::class.java).get() shouldBe "changed"
     }
 
     @Test
     fun testValueRestored() {
-        value shouldBe "stuff"
+        environment.getProperty("foo.bar", String::class.java).get() shouldBe "stuff"
     }
 }

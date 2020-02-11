@@ -10,25 +10,24 @@ import javax.inject.Singleton
 
 @MicronautTest(rebuildContext = true)
 @Property(name = "foo.bar", value = "stuff")
-open class PropertyValueRequiresTest: AnnotationSpec() {
+class PropertyValueRequiresTest: AnnotationSpec() {
 
     @Inject
-    open lateinit var myService: MyService
+    lateinit var myService: MyService
 
     @Test
-    open fun testInitialValue() {
+    fun testInitialValue() {
         myService.shouldBeInstanceOf<MyServiceStuff>()
     }
 
     @Property(name = "foo.bar", value = "changed")
     @Test
-    open fun testValueChanged() {
+    fun testValueChanged() {
         myService.shouldBeInstanceOf<MyServiceChanged>()
     }
 
     @Test
-    @Ignore
-    open fun testValueRestored() {
+    fun testValueRestored() {
         myService.shouldBeInstanceOf<MyServiceStuff>()
     }
 }
