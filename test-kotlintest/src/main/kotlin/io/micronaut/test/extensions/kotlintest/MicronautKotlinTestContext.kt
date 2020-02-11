@@ -2,15 +2,11 @@ package io.micronaut.test.extensions.kotlintest
 
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
-import io.kotlintest.TestCaseConfig
-import io.micronaut.aop.InterceptedProxy
-import io.micronaut.inject.BeanDefinition
+import io.micronaut.context.annotation.Property
 import io.micronaut.test.annotation.MicronautTest
-import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.TestPropertyProvider
-import java.lang.reflect.Field
-import kotlin.reflect.KClass
+import kotlin.reflect.full.memberFunctions
 
 class MicronautKotlinTestContext(private val testClass: Class<Any>,
                                  private val micronautTest: MicronautTest,
@@ -48,7 +44,12 @@ class MicronautKotlinTestContext(private val testClass: Class<Any>,
     }
 
     fun beforeTest(testCase: TestCase) {
-        beforeEach(testCase.spec, testCase.spec, testCase.test.javaClass)
+        var filter = testCase.spec::class.memberFunctions.filter { it.name == testCase.name }
+        var propertyAnnotations: List<Property>? = emptyList()
+        if (filter.isNotEmpty()) {
+            propertyAnnotations = filter.first().annotations.filter { it is Property } as? List<Property>
+        }
+        beforeEach(testCase.spec, testCase.spec, testCase.test.javaClass, propertyAnnotations)
         begin()
     }
 

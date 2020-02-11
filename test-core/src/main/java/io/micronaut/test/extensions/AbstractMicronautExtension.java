@@ -63,6 +63,8 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
     private boolean rollback = true;
     private boolean transactional = true;
+    private MicronautTest testAnnotation;
+    private final ApplicationContextBuilder builder = ApplicationContext.build();
 
     @Override
     public void begin() {
@@ -105,10 +107,10 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
      */
     protected void beforeClass(C context, Class<?> testClass, @Nullable MicronautTest testAnnotation) {
         if (testAnnotation != null) {
+            this.testAnnotation = testAnnotation;
             this.rollback = testAnnotation.rollback();
             this.transactional = testAnnotation.transactional();
 
-            final ApplicationContextBuilder builder = ApplicationContext.build();
             final Package aPackage = testClass.getPackage();
             builder.packages(aPackage.getName());
 
@@ -186,11 +188,11 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
      */
     protected abstract void resolveTestProperties(C context, MicronautTest testAnnotation, Map<String, Object> testProperties);
 
-    protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method) {
+    protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
+        int testCount = (int) testProperties.compute("micronaut.test.count", (k, oldCount) -> (int)(oldCount != null ? oldCount : 0) + 1);
         if (method != null) {
-            final Property[] ps = method.getAnnotationsByType(Property.class);
-            if (ps != null) {
-                for (Property property : ps) {
+            if (propertyAnnotations != null) {
+                for (Property property : propertyAnnotations) {
                     final String name = property.name();
                     oldValues.put(name,
                             testProperties.put(name, property.value())
@@ -198,7 +200,12 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
                 }
             }
 
-            if (!oldValues.isEmpty()) {
+            if (testAnnotation.rebuildContext() && testCount > 1) {
+                embeddedApplication.stop();
+                applicationContext.stop();
+                applicationContext = builder.build();
+                startApplicationContext();
+            } else if (!oldValues.isEmpty()) {
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));
             }

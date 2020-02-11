@@ -209,3 +209,19 @@ include::{junit5tests}/PropertySourceMapTest.java[]
 ----
 
 NOTE: When using `TestPropertyProvider` you test must be declared with JUnit's `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` annotation.
+
+=== Refreshing injected beans based on `@Requires` upon properties changes
+
+You can use combine the use of `@Requires` and `@Property`, so that injected beans will be refreshed if there are
+configuration changes that affect their `@Requires` condition.
+
+For that to work, the test class must be annotated with `@Refreshable`. In that case, if there are changes in any
+property for a given test, the application context will be rebuilt so that `@Requires` conditions are re-evaluated again.
+
+For example:
+
+.Combining `@Requires` and `@Property` in a `@Refreshable` test class.
+[source,java]
+----
+include::{junit5tests}/PropertyValueRequiresTest.java[]
+----
