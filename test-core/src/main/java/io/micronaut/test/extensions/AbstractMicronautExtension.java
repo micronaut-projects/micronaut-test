@@ -191,13 +191,15 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
         int testCount = (int) testProperties.compute("micronaut.test.count", (k, oldCount) -> (int)(oldCount != null ? oldCount : 0) + 1);
         if (method != null) {
-            if (propertyAnnotations != null) {
+            if (propertyAnnotations != null && !propertyAnnotations.isEmpty()) {
                 for (Property property : propertyAnnotations) {
                     final String name = property.name();
                     oldValues.put(name,
                             testProperties.put(name, property.value())
                     );
                 }
+            } else {
+                oldValues.forEach((k, v) -> testProperties.put(k, v));
             }
 
             if (testAnnotation.rebuildContext() && testCount > 1) {
@@ -205,6 +207,7 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
                 applicationContext.stop();
                 applicationContext = builder.build();
                 startApplicationContext();
+                embeddedApplication.start();
             } else if (!oldValues.isEmpty()) {
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));

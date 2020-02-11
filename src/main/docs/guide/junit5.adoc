@@ -59,8 +59,6 @@ Note that for Maven you will also need to configure the Surefire plugin to use J
 ----
 
 
-
-
 === Writing a Micronaut Test with JUnit 5
 
 Let's take a look at an example using JUnit 5. Consider you have the following interface:
@@ -157,7 +155,7 @@ include::{junit5tests}/MathCollaboratorTest.java[]
 
 The way this works is that `@MicronautTest` will inject the `Mock(..)` instance into the test, but the controller will have a proxy that points to the `Mock(..)` instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut's built in `RefreshScope`).
 
-=== Using @Requires on Tests
+=== Using `@Requires` on Tests
 
 Since `@MicronautTest` turns tests into beans themselves, it means you can use the `@Requires` annotation on the test to enable/disable tests. For example:
 
@@ -215,8 +213,9 @@ NOTE: When using `TestPropertyProvider` you test must be declared with JUnit's `
 You can use combine the use of `@Requires` and `@Property`, so that injected beans will be refreshed if there are
 configuration changes that affect their `@Requires` condition.
 
-For that to work, the test class must be annotated with `@Refreshable`. In that case, if there are changes in any
-property for a given test, the application context will be rebuilt so that `@Requires` conditions are re-evaluated again.
+For that to work, the test must be annotated with `@MicronautTest(rebuildContext = true)`. In that case, if there are
+changes in any property for a given test, the application context will be rebuilt so that `@Requires` conditions are
+re-evaluated again.
 
 For example:
 

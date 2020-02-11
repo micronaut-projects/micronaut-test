@@ -3,11 +3,15 @@ package io.micronaut.test.kotlintest
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.AnnotationSpec
 import io.micronaut.context.annotation.Property
+import io.micronaut.context.annotation.Value
 import io.micronaut.test.annotation.MicronautTest
 
 @MicronautTest
 @Property(name = "foo.bar", value = "stuff")
-class PropertyValueTest(@Property(name = "foo.bar") val value: String): AnnotationSpec() {
+class PropertyValueTest: AnnotationSpec() {
+
+    @Value("\${foo.bar}")
+    lateinit var value: String
 
     @Test
     fun testInitialValue() {
@@ -16,7 +20,6 @@ class PropertyValueTest(@Property(name = "foo.bar") val value: String): Annotati
 
     @Property(name = "foo.bar", value = "changed")
     @Test
-    @Ignore
     fun testValueChanged() {
         value shouldBe "changed"
     }

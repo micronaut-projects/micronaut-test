@@ -211,7 +211,6 @@ Or the packages:
 
 To ensure that entities can be found during classpath scanning.
 
-
 === Using Mockk Mocks
 
 Now let's say you want to replace the implementation with a Mockk. You can do so by defining a method that returns a mock and is annotated with `@MockBean`, for example:
@@ -257,7 +256,7 @@ include::{kotlintesttests}/MathCollaboratorTest.kt[]
 
 The way this works is that `@MicronautTest` will inject a proxy that points to the mock instance. For each iteration of the test the mock is refreshed (in fact it uses Micronaut's built in `RefreshScope`).
 
-=== Using @Requires on Tests
+=== Using `@Requires` on Tests
 
 Since `@MicronautTest` turns tests into beans themselves, it means you can use the `@Requires` annotation on the test to enable/disable tests. For example:
 
@@ -274,7 +273,15 @@ The above test will only run if `my-env` is active (you can active it by passing
 
 === Defining Additional Test Specific Properties
 
-You can define additional test specific properties using the `@Property` annotation. Alternatively you can specify additional `propertySources` in any supported format (YAML, JSON, Java properties file etc.) using the `@MicronautTest` annotation:
+You can define additional test specific properties using the `@Property` annotation. The following example demonstrates usage:
+
+.Using `@Property`
+[source,kotlin]
+----
+include::{kotlintesttests}/PropertyValueTest.kt[]
+----
+
+Alternatively you can specify additional `propertySources` in any supported format (YAML, JSON, Java properties file etc.) using the `@MicronautTest` annotation:
 
 .Using `propertySources` stored in files
 [source,kotlin]
@@ -303,8 +310,9 @@ There are a couple caveats to using constructor injection to be aware of.
 You can use combine the use of `@Requires` and `@Property`, so that injected beans will be refreshed if there are
 configuration changes that affect their `@Requires` condition.
 
-For that to work, the test class must be annotated with `@Refreshable`. In that case, if there are changes in any
-property for a given test, the application context will be rebuilt so that `@Requires` conditions are re-evaluated again.
+For that to work, the test must be annotated with `@MicronautTest(rebuildContext = true)`. In that case, if there are
+changes in any property for a given test, the application context will be rebuilt so that `@Requires` conditions are
+re-evaluated again.
 
 For example:
 
