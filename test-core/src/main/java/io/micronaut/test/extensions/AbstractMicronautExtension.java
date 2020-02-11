@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 original authors
+ * Copyright 2017-2020 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.micronaut.test.extensions;
 
 import io.micronaut.context.ApplicationContext;
@@ -185,11 +184,23 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
 
     /**
      * Resolves any test properties.
+     *
+     * @param context The test context
+     * @param testAnnotation The test annotation
+     * @param testProperties The test properties
      */
     protected abstract void resolveTestProperties(C context, MicronautTest testAnnotation, Map<String, Object> testProperties);
 
+    /**
+     * To be called by the different implementations before each test method.
+     *
+     * @param context The test context
+     * @param testInstance The test instance
+     * @param method The test method
+     * @param propertyAnnotations The {@code @Property} annotations found in the test method, if any
+     */
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
-        int testCount = (int) testProperties.compute("micronaut.test.count", (k, oldCount) -> (int)(oldCount != null ? oldCount : 0) + 1);
+        int testCount = (int) testProperties.compute("micronaut.test.count", (k, oldCount) -> (int) (oldCount != null ? oldCount : 0) + 1);
         if (method != null) {
             if (propertyAnnotations != null && !propertyAnnotations.isEmpty()) {
                 for (Property property : propertyAnnotations) {
@@ -259,14 +270,25 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
         oldValues.clear();
     }
 
+    /**
+     * Starts the application context.
+     */
     protected void startApplicationContext() {
         applicationContext.start();
     }
 
+    /**
+     * @param requiredTestClass The test class
+     * @return true if the te given class has a bean definition class in the classpath (ie: the annotation processor has been run correctly)
+     */
     protected boolean isTestSuiteBeanPresent(Class<?> requiredTestClass) {
         return ClassUtils.isPresent(requiredTestClass.getPackage().getName() + ".$" + requiredTestClass.getSimpleName() + "Definition", requiredTestClass.getClassLoader());
     }
 
+    /**
+     * @param context The context
+     * @param instance The mock instance to inject
+     */
     protected abstract void alignMocks(C context, Object instance);
 
     private Map<String, PropertySourceLoader> readPropertySourceLoaderMap() {

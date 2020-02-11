@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 original authors
+ * Copyright 2017-2020 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.micronaut.test.annotation;
 
 import io.micronaut.context.annotation.Factory;
@@ -75,7 +74,7 @@ public @interface MicronautTest {
     boolean transactional() default true;
 
     /**
-     * Whether to rebuild the application context before each test method
+     * Whether to rebuild the application context before each test method.
      * @return true if the application context should be rebuilt for each test method
      */
     boolean rebuildContext() default false;

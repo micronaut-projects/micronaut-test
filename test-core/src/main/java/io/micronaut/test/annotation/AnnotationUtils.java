@@ -1,13 +1,18 @@
 /*
- * Copyright 2015-2018 the original author or authors.
+ * Copyright 2017-2020 original authors
  *
- * All rights reserved. This program and the accompanying materials are
- * made available under the terms of the Eclipse Public License v2.0 which
- * accompanies this distribution and is available at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.eclipse.org/legal/epl-v20.html
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package io.micronaut.test.annotation;
 
 import static java.util.Arrays.asList;
@@ -60,6 +65,7 @@ public final class AnnotationUtils {
      *
      * @param element        the element to search on, potentially {@code null}
      * @param annotationType the repeatable annotation type to search for; never {@code null}
+     * @param <A>            the annotation instance
      * @return the list of all such annotations found; neither {@code null} nor mutable
      * @see java.lang.annotation.Repeatable
      * @see java.lang.annotation.Inherited
@@ -131,12 +137,9 @@ public final class AnnotationUtils {
         for (Annotation candidate : candidates) {
             Class<? extends Annotation> candidateAnnotationType = candidate.annotationType();
             if (!isInJavaLangAnnotationPackage(candidateAnnotationType) && visited.add(candidate)) {
-                // Exact match?
-                if (candidateAnnotationType.equals(annotationType)) {
+                if (candidateAnnotationType.equals(annotationType)) { // Exact match?
                     found.add(annotationType.cast(candidate));
-                }
-                // Container?
-                else if (candidateAnnotationType.equals(containerType)) {
+                } else if (candidateAnnotationType.equals(containerType)) { // Container?
                     // Note: it's not a legitimate containing annotation type if it doesn't declare
                     // a 'value' attribute that returns an array of the contained annotation type.
                     // See https://docs.oracle.com/javase/specs/jls/se8/html/jls-9.html#jls-9.6.3
@@ -147,9 +150,7 @@ public final class AnnotationUtils {
 
                     Annotation[] containedAnnotations = ReflectionUtils.invokeMethod(candidate, method);
                     found.addAll((Collection<? extends A>) asList(containedAnnotations));
-                }
-                // Otherwise search recursively through the meta-annotation hierarchy...
-                else {
+                } else { // Otherwise search recursively through the meta-annotation hierarchy...
                     findRepeatableAnnotations(candidateAnnotationType, annotationType, containerType, inherited, found, visited);
                 }
             }

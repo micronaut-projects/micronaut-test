@@ -3,21 +3,22 @@ buildscript {
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "org.grails:grails-docs:$grailsVersion"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
+        classpath "io.micronaut.docs:micronaut-docs-asciidoc-extensions:$micronautDocsVersion"
+        classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:$micronautDocsVersion"
     }
 }
 
 plugins {
     id "com.gradle.build-scan" version "3.1.1"
-    id "com.jfrog.bintray" version "1.8.4"
     id 'com.github.hierynomus.license' version '0.15.0' apply false
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
@@ -55,7 +56,7 @@ subprojects { Project subproject ->
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
-    apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/3ca806eb776b72483a4c0fda5ff1a5caebe0c281/publishing.gradle"
+    apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/v1.0.0/publishing.gradle"
         
 
     jar {
@@ -99,6 +100,10 @@ subprojects { Project subproject ->
         }
     }
     dependencies {
+        annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+        testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+        implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+
         documentation "org.codehaus.groovy:groovy-templates:$groovyVersion"
         documentation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
 
@@ -114,9 +119,36 @@ subprojects { Project subproject ->
     }
 
     task allDeps(type: DependencyReportTask) {}
+
+    apply plugin: 'checkstyle'
+
+    checkstyle {
+        toolVersion = 8.10
+        configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+
+        // Per submodule
+        maxErrors = 1
+        maxWarnings = 10
+
+        showViolations = true
+    }
+
+    checkstyleTest.enabled = false
 }
 
 apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-docs/v${micronautDocsVersion}/gradle/docs.gradle"
+
+allprojects {
+    apply plugin: 'idea'
+
+    idea {
+        module {
+            outputDir file('build/classes/java/main')
+            testOutputDir file('build/classes/groovy/test')
+        }
+    }
+    apply from: rootProject.file('gradle/license.gradle')
+}
 
 buildScan {
     termsOfServiceUrl = 'https://gradle.com/terms-of-service'

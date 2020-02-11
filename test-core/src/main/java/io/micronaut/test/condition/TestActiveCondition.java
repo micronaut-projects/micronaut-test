@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 original authors
+ * Copyright 2017-2020 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.micronaut.test.condition;
 
 import io.micronaut.context.ApplicationContext;
@@ -53,7 +52,7 @@ public class TestActiveCondition implements Condition {
             if (beanContext instanceof ApplicationContext) {
                 ApplicationContext applicationContext = (ApplicationContext) beanContext;
                 final Class activeSpecClazz = applicationContext.get(ACTIVE_SPEC_CLAZZ, Class.class).orElse(null);
-                final String activeSpecName = Optional.ofNullable(activeSpecClazz).map(clazz-> clazz.getPackage().getName() + "." + clazz.getSimpleName()).orElse(null);
+                final String activeSpecName = Optional.ofNullable(activeSpecClazz).map(clazz -> clazz.getPackage().getName() + "." + clazz.getSimpleName()).orElse(null);
                 if (definition.isAnnotationPresent(MockBean.class) && declaringType.isPresent()) {
                     final Class<?> declaringTypeClass = declaringType.get();
                     String declaringTypeName = declaringTypeClass.getName();

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.micronaut.test.extensions.kotlintest
 
 import io.kotlintest.Spec
@@ -48,6 +63,7 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
         contexts[testCase.spec.javaClass.name]?.afterTest(testCase)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
         // we only instantiate via spring if there's actually parameters in the constructor
         // otherwise there's nothing to inject there
@@ -69,6 +85,7 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T> Spec.getMock(obj: T): T {
         return if (obj is InterceptedProxy<*>) {
             obj.interceptedTarget() as T
