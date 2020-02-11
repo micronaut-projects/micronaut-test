@@ -506,29 +506,36 @@ class RequiresTest {
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @MicronautTest
 @Property(name = "foo.bar", value = "stuff")
+@TestMethodOrder(OrderAnnotation.class)
 class PropertyValueTest {
 
     @Property(name = "foo.bar")
     String val;
 
     @Test
+    @Order(1)
     void testInitialValue() {
         assertEquals("stuff", val);
     }
 
     @Property(name = "foo.bar", value = "changed")
     @Test
+    @Order(2)
     void testValueChanged() {
         assertEquals("changed", val);
     }
 
     @Test
+    @Order(3)
     void testValueRestored() {
         assertEquals("stuff", val);
     }
@@ -635,6 +642,80 @@ When using <code>TestPropertyProvider</code> you test must be declared with JUni
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_refreshing_injected_beans_based_on_code_requires_code_upon_properties_changes">Refreshing injected beans based on <code>@Requires</code> upon properties changes</h3>
+<div class="paragraph">
+<p>You can use combine the use of <code>@Requires</code> and <code>@Property</code>, so that injected beans will be refreshed if there are
+configuration changes that affect their <code>@Requires</code> condition.</p>
+</div>
+<div class="paragraph">
+<p>For that to work, the test class must be annotated with <code>@Refreshable</code>. In that case, if there are changes in any
+property for a given test, the application context will be rebuilt so that <code>@Requires</code> conditions are re-evaluated again.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Combining <code>@Requires</code> and <code>@Property</code> in a <code>@Refreshable</code> test class.</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.test.annotation.MicronautTest;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsInstanceOf;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+// https://github.com/micronaut-projects/micronaut-test/issues/91
+@MicronautTest(rebuildContext = true)
+@Property(name = "foo.bar", value = "stuff")
+@TestMethodOrder(OrderAnnotation.class)
+class PropertyValueRequiresTest {
+
+    @Inject
+    MyService myService;
+
+    @Test
+    @Order(1)
+    void testInitialValue() {
+        MatcherAssert.assertThat(myService, IsInstanceOf.instanceOf(MyServiceStuff.class));
+    }
+
+    @Property(name = "foo.bar", value = "changed")
+    @Test
+    @Order(2)
+    void testValueChanged() {
+        MatcherAssert.assertThat(myService, IsInstanceOf.instanceOf(MyServiceChanged.class));
+    }
+
+    @Test
+    @Order(3)
+    void testValueRestored() {
+        MatcherAssert.assertThat(myService, IsInstanceOf.instanceOf(MyServiceStuff.class));
+    }
+
+}
+
+interface MyService {}
+
+@Singleton
+@Requires(property = "foo.bar", value = "stuff")
+class MyServiceStuff implements MyService {}
+
+
+@Singleton
+@Requires(property = "foo.bar", value = "changed")
+class MyServiceChanged implements MyService {}</code></pre>
+</div>
 </div>
 </div>
 

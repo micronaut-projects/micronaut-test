@@ -234,9 +234,10 @@ implements <a href="../../../../io/micronaut/test/transaction/TestTransactionInt
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeEach-C-java.lang.Object-java.lang.reflect.AnnotatedElement-">beforeEach</a></span>(<a href="../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html" title="type parameter in AbstractMicronautExtension">C</a>&nbsp;context,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeEach-C-java.lang.Object-java.lang.reflect.AnnotatedElement-java.util.List-">beforeEach</a></span>(<a href="../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html" title="type parameter in AbstractMicronautExtension">C</a>&nbsp;context,
           java.lang.Object&nbsp;testInstance,
-          java.lang.reflect.AnnotatedElement&nbsp;method)</code>&nbsp;</td>
+          java.lang.reflect.AnnotatedElement&nbsp;method,
+          java.util.List&lt;io.micronaut.context.annotation.Property&gt;&nbsp;propertyAnnotations)</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -479,9 +480,9 @@ implements <a href="../../../../io/micronaut/test/transaction/TestTransactionInt
 <div class="block">Resolves any test properties.</div>
 </li>
 </ul>
-<a name="beforeEach-java.lang.Object-java.lang.Object-java.lang.reflect.AnnotatedElement-">
+<a name="beforeEach-java.lang.Object-java.lang.Object-java.lang.reflect.AnnotatedElement-java.util.List-">
 <!--   -->
-</a><a name="beforeEach-C-java.lang.Object-java.lang.reflect.AnnotatedElement-">
+</a><a name="beforeEach-C-java.lang.Object-java.lang.reflect.AnnotatedElement-java.util.List-">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -491,7 +492,8 @@ implements <a href="../../../../io/micronaut/test/transaction/TestTransactionInt
                           @Nullable
                           java.lang.Object&nbsp;testInstance,
                           @Nullable
-                          java.lang.reflect.AnnotatedElement&nbsp;method)</pre>
+                          java.lang.reflect.AnnotatedElement&nbsp;method,
+                          java.util.List&lt;io.micronaut.context.annotation.Property&gt;&nbsp;propertyAnnotations)</pre>
 </li>
 </ul>
 <a name="afterClass-java.lang.Object-">
