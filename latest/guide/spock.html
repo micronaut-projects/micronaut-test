@@ -2,7 +2,16 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-    <title>2 Testing with Spock 1.1.2</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
+    <title>2 Testing with Spock 1.1.3</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -41,6 +50,9 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span></a>
                         </div>
                         
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/repository.html"><strong>5</strong><span>Repository</span></a>
+                        </div>
+                        
                     </div>
                 </div>
             </li>
@@ -72,14 +84,13 @@ function addJsClass() {
                 <div class="project">
                     <h1>2 Testing with Spock</h1>
 
-                    <p><strong>Version:</strong> 1.1.2</p>
+                    <p><strong>Version:</strong> 1.1.3</p>
                 </div>
 
                 
 
                 
-
-<h1 id="spock">2 Testing with Spock</h1>
+<h1 id="spock"><a class="anchor" href="#spock"></a>2 Testing with Spock</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/spock.adoc"'>
@@ -96,7 +107,7 @@ function addJsClass() {
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">testCompile "io.micronaut.test:micronaut-test-spock:1.1.2"</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">testCompile "io.micronaut.test:micronaut-test-spock:1.1.3"</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -117,7 +128,7 @@ If you plan to define mock beans you will also need <code>micronaut-inject-groov
 <div class="listingblock">
 <div class="title">pom.xml</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-test-spock&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
@@ -134,11 +145,10 @@ If you plan to define mock beans you will also need <code>micronaut-inject-groov
 <div class="listingblock">
 <div class="title">The MathService Interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock;
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock;
 
 import javax.inject.Singleton;
 
-@Singleton
 interface MathService {
 
     Integer compute(Integer num);
@@ -151,7 +161,7 @@ interface MathService {
 <div class="listingblock">
 <div class="title">The MathService implementation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import javax.inject.Singleton
 
@@ -171,7 +181,7 @@ class MathServiceImpl implements MathService {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.test.annotation.MicronautTest
 import spock.lang.*
@@ -223,7 +233,7 @@ class MathServiceSpec extends Specification {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(environments=["foo", "bar"])</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(environments=["foo", "bar"])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -231,7 +241,7 @@ class MathServiceSpec extends Specification {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -239,7 +249,7 @@ class MathServiceSpec extends Specification {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -254,7 +264,7 @@ class MathServiceSpec extends Specification {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.test.annotation.*
 import spock.lang.*
@@ -317,7 +327,7 @@ class MathMockServiceSpec extends Specification {
 <div class="listingblock">
 <div class="title">The MathController</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
@@ -346,7 +356,7 @@ class MathController {
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy" data-lang="groovy">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.RxHttpClient
@@ -413,13 +423,13 @@ class MathCollaboratorSpec extends Specification {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_using_requires_on_tests">Using @Requires on Tests</h3>
+<h3 id="_using_code_requires_code_on_tests">Using <code>@Requires</code> on Tests</h3>
 <div class="paragraph">
 <p>Since <code>@MicronautTest</code> turns tests into beans themselves, it means you can use the <code>@Requires</code> annotation on the test to enable/disable tests. For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@MicronautTest
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
 @Requires(env = "my-env")
 class RequiresSpec extends Specification {
     ...
@@ -438,7 +448,7 @@ class RequiresSpec extends Specification {
 <div class="listingblock">
 <div class="title">Using <code>@Property</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Value
@@ -482,7 +492,7 @@ class PropertySpec extends Specification {
 <div class="listingblock">
 <div class="title">Using <code>propertySources</code> stored in files</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.annotation.MicronautTest
@@ -518,6 +528,71 @@ class PropertySourceSpec extends Specification {
 <p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_refreshing_injected_beans_based_on_code_requires_code_upon_properties_changes">Refreshing injected beans based on <code>@Requires</code> upon properties changes</h3>
+<div class="paragraph">
+<p>You can use combine the use of <code>@Requires</code> and <code>@Property</code>, so that injected beans will be refreshed if there are
+configuration changes that affect their <code>@Requires</code> condition.</p>
+</div>
+<div class="paragraph">
+<p>For that to work, the test must be annotated with <code>@MicronautTest(rebuildContext = true)</code>. In that case, if there are
+changes in any property for a given test, the application context will be rebuilt so that <code>@Requires</code> conditions are
+re-evaluated again.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Combining <code>@Requires</code> and <code>@Property</code> in a <code>@Refreshable</code> test class.</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.spock
+
+import io.micronaut.context.annotation.Property
+import io.micronaut.context.annotation.Requires
+import io.micronaut.test.annotation.MicronautTest
+import spock.lang.Issue
+import spock.lang.Specification
+
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Issue("https://github.com/micronaut-projects/micronaut-test/issues/91")
+@MicronautTest(rebuildContext = true)
+@Property(name = "foo.bar", value = "stuff")
+class PropertyValueRequiresSpec extends Specification {
+    @Inject
+    MyService myService
+
+    void "test initial value"() {
+        expect:
+        myService instanceof MyServiceStuff
+    }
+
+    @Property(name = "foo.bar", value = "changed")
+    void "test value changed"() {
+        expect:
+        myService instanceof MyServiceChanged
+    }
+
+    void "test value restored"() {
+        expect:
+        myService instanceof MyServiceStuff
+    }
+}
+
+interface MyService {}
+
+@Singleton
+@Requires(property = "foo.bar", value = "stuff")
+class MyServiceStuff implements MyService {}
+
+
+@Singleton
+@Requires(property = "foo.bar", value = "changed")
+class MyServiceChanged implements MyService {}</code></pre>
+</div>
 </div>
 </div>
 
