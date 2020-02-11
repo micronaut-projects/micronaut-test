@@ -477,7 +477,7 @@ class MathCollaboratorTest {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_using_requires_on_tests">Using @Requires on Tests</h3>
+<h3 id="_using_code_requires_code_on_tests">Using <code>@Requires</code> on Tests</h3>
 <div class="paragraph">
 <p>Since <code>@MicronautTest</code> turns tests into beans themselves, it means you can use the <code>@Requires</code> annotation on the test to enable/disable tests. For example:</p>
 </div>
@@ -651,8 +651,9 @@ When using <code>TestPropertyProvider</code> you test must be declared with JUni
 configuration changes that affect their <code>@Requires</code> condition.</p>
 </div>
 <div class="paragraph">
-<p>For that to work, the test class must be annotated with <code>@Refreshable</code>. In that case, if there are changes in any
-property for a given test, the application context will be rebuilt so that <code>@Requires</code> conditions are re-evaluated again.</p>
+<p>For that to work, the test must be annotated with <code>@MicronautTest(rebuildContext = true)</code>. In that case, if there are
+changes in any property for a given test, the application context will be rebuilt so that <code>@Requires</code> conditions are
+re-evaluated again.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
