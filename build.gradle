@@ -50,7 +50,7 @@ subprojects { Project subproject ->
     }
     
     apply plugin:"groovy"
-    apply plugin:"java"
+    apply plugin:"java-library"
 
 
 
