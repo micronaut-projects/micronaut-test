@@ -14,7 +14,7 @@ dependencies {
             "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     )
 
-    implementation "io.micronaut:micronaut-inject:$micronautVersion"
+    api "io.micronaut:micronaut-inject:$micronautVersion"
     implementation "io.micronaut:micronaut-runtime:$micronautVersion"
 }
 jar {
