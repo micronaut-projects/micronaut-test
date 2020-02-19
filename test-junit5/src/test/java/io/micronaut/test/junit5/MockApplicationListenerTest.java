@@ -27,5 +27,4 @@ public class MockApplicationListenerTest {
         return new MyApplicationListener("I'm the mock bean");
     }
 
-
 }
