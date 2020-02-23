@@ -1,8 +1,8 @@
 package io.micronaut.test.kotlintest
 
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.StringSpec
 import io.kotlintest.data.forall
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client

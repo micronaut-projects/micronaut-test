@@ -1,7 +1,7 @@
 package io.micronaut.test.kotlintest
 
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.specs.AnnotationSpec
+import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import io.micronaut.test.annotation.MicronautTest

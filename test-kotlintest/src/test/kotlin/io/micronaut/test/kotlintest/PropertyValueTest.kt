@@ -1,7 +1,7 @@
 package io.micronaut.test.kotlintest
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AnnotationSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.AnnotationSpec
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Value
 import io.micronaut.test.annotation.MicronautTest

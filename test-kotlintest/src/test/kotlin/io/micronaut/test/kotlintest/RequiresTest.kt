@@ -1,7 +1,7 @@
 package io.micronaut.test.kotlintest
 
-import io.kotlintest.fail
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.assertions.fail
+import io.kotest.core.spec.style.BehaviorSpec
 import io.micronaut.context.annotation.Requires
 import io.micronaut.test.annotation.MicronautTest
 

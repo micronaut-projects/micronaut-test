@@ -1,7 +1,7 @@
 package io.micronaut.test.kotlintest
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.test.annotation.MicronautTest
 import javax.inject.Inject
 

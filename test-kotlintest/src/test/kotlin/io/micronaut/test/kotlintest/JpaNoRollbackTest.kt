@@ -1,8 +1,9 @@
 package io.micronaut.test.kotlintest
 
-import io.kotlintest.*
-import io.kotlintest.extensions.TopLevelTest
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.micronaut.test.annotation.MicronautTest
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.DefaultTransactionDefinition
@@ -19,7 +20,7 @@ class JpaNoRollbackTest(private val entityManager: EntityManager,
             book.title = "The Stand"
             entityManager.persist(book)
 
-            then("the book is persisted") {
+            then("the book is persist") {
                 entityManager.find(Book::class.java, book.id) shouldNotBe null
 
                 val query = entityManager.criteriaBuilder.createQuery(Book::class.java)
@@ -35,7 +36,7 @@ class JpaNoRollbackTest(private val entityManager: EntityManager,
             book.title = "The Shining"
             entityManager.persist(book)
 
-            then("the book is persisted") {
+            then("the book is persist") {
                 entityManager.find(Book::class.java, book.id) shouldNotBe null
 
                 val query = entityManager.criteriaBuilder.createQuery(Book::class.java)
@@ -46,7 +47,7 @@ class JpaNoRollbackTest(private val entityManager: EntityManager,
     }
 }) {
 
-    override fun afterSpecClass(spec: Spec, results: Map<TestCase, TestResult>) {
+    override fun afterSpec(spec: Spec) {
         val tx = transactionManager.getTransaction(DefaultTransactionDefinition())
         val criteriaBuilder = entityManager.criteriaBuilder
         val delete = criteriaBuilder.createCriteriaDelete(Book::class.java)

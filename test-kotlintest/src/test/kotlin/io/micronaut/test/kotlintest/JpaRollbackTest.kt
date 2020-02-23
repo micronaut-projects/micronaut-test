@@ -1,15 +1,10 @@
 package io.micronaut.test.kotlintest
 
-import io.kotlintest.Spec
-import io.kotlintest.TestCase
-import io.kotlintest.extensions.TopLevelTest
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.micronaut.test.annotation.MicronautTest
 import org.springframework.transaction.PlatformTransactionManager
-import org.springframework.transaction.support.DefaultTransactionDefinition
-
 import javax.persistence.EntityManager
 
 @MicronautTest
