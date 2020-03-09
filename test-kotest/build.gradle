@@ -13,7 +13,8 @@ dependencies {
     api project(":test-core")
     implementation "io.micronaut:micronaut-inject:$micronautVersion"
     api "io.micronaut:micronaut-runtime:$micronautVersion"
-    api "io.kotest:kotest-runner-junit5-jvm:4.0.0-BETA1"
+    api "io.kotest:kotest-runner-junit5-jvm:4.0.0-BETA2"
+    api "io.kotest:kotest-assertions-core:4.0.0-BETA2"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
