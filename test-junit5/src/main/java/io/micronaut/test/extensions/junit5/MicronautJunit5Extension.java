@@ -24,6 +24,7 @@ import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.support.TestPropertyProvider;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -92,7 +93,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         } else {
             final Class<?> testClass = extensionContext.getRequiredTestClass();
-            if (AnnotationSupport.isAnnotated(testClass, MicronautTest.class)) {
+            if (AnnotationSupport.isAnnotated(testClass, MicronautTest.class) || AnnotationSupport.isAnnotated(testClass, Nested.class)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
                 return ConditionEvaluationResult.disabled(DISABLED_MESSAGE);
