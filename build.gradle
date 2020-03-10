@@ -13,7 +13,6 @@ buildscript {
 }
 
 plugins {
-    id "com.gradle.build-scan" version "3.1.1"
     id 'com.github.hierynomus.license' version '0.15.0' apply false
 }
 
@@ -151,8 +150,4 @@ allprojects {
     apply from: rootProject.file('gradle/license.gradle')
 }
 
-buildScan {
-    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-    termsOfServiceAgree = 'yes'
-}
 
