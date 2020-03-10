@@ -1,6 +1,7 @@
 package io.micronaut.test.junit5;
 
 import io.micronaut.test.annotation.MicronautTest;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -21,13 +22,10 @@ public class NestedMicronautTest {
     }
 
     @Nested
-//    @Singleton
     class WhenNotAuthenticated {
 
-//        @Inject
-//        Dependency dependency;
-
-        @Test
+//        @Test
+        //TODO https://github.com/micronaut-projects/micronaut-test/issues/56
         void ignoredTest() { // never run
             assertTrue(dependency.isTrue());
         }
