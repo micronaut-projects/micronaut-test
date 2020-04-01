@@ -4,7 +4,7 @@ plugins {
 }
 
 ext {
-    micronautHibernateJpaVersion = "1.3.0"
+    micronautHibernateJpaVersion = "1.4.0"
     micronautJdbcTomcatVersion = "1.3.0"
     kotlinVersion = "1.3.71"
 }
