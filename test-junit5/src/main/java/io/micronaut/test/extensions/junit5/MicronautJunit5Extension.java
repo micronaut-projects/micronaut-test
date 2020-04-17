@@ -16,6 +16,7 @@
 package io.micronaut.test.extensions.junit5;
 
 import io.micronaut.aop.InterceptedProxy;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.FieldInjectionPoint;
@@ -40,12 +41,14 @@ import java.util.*;
  * @since 1.0
  */
 public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver {
+    private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         final MicronautTest micronautTest = AnnotationSupport.findAnnotation(testClass, MicronautTest.class).orElse(null);
         beforeClass(extensionContext, testClass, micronautTest);
+        getStore(extensionContext).put(ApplicationContext.class, applicationContext);
         if (specDefinition != null) {
             TestInstance ti = AnnotationSupport.findAnnotation(testClass, TestInstance.class).orElse(null);
             if (ti != null && ti.value() == TestInstance.Lifecycle.PER_CLASS) {
@@ -158,5 +161,9 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         } else {
             return applicationContext.getBean(parameterContext.getParameter().getType());
         }
+    }
+
+    private static ExtensionContext.Store getStore(ExtensionContext context) {
+        return context.getRoot().getStore(NAMESPACE);
     }
 }
