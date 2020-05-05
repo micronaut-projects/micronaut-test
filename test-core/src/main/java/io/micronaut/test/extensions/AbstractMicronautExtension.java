@@ -25,6 +25,7 @@ import io.micronaut.core.io.service.ServiceDefinition;
 import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.ClassUtils;
+import io.micronaut.core.reflect.InstantiationUtils;
 import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
@@ -63,7 +64,7 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
     private boolean rollback = true;
     private boolean transactional = true;
     private MicronautTest testAnnotation;
-    private final ApplicationContextBuilder builder = ApplicationContext.build();
+    private ApplicationContextBuilder builder = ApplicationContext.build();
 
     @Override
     public void begin() {
@@ -106,6 +107,10 @@ public abstract class AbstractMicronautExtension<C> implements TestTransactionIn
      */
     protected void beforeClass(C context, Class<?> testClass, @Nullable MicronautTest testAnnotation) {
         if (testAnnotation != null) {
+            Class<? extends ApplicationContextBuilder>[] cb = testAnnotation.contextBuilder();
+            if (ArrayUtils.isNotEmpty(cb)) {
+                this.builder = InstantiationUtils.instantiate(cb[0]);
+            }
             this.testAnnotation = testAnnotation;
             this.rollback = testAnnotation.rollback();
             this.transactional = testAnnotation.transactional();

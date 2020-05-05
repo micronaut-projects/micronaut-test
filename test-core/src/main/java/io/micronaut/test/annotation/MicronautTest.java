@@ -15,6 +15,7 @@
  */
 package io.micronaut.test.annotation;
 
+import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.test.condition.TestActiveCondition;
@@ -78,4 +79,10 @@ public @interface MicronautTest {
      * @return true if the application context should be rebuilt for each test method
      */
     boolean rebuildContext() default false;
+
+    /**
+     * The application context builder to use to construct the context.
+     * @return The builder
+     */
+    Class<? extends ApplicationContextBuilder>[] contextBuilder() default {};
 }

@@ -46,6 +46,8 @@ ApplicationContext context //refers to the current application context within th
 ==== 1.2.x
 
 * Micronaut 1.3.3 or above required.
+* Support for Kotest
+* Deprecated support for Kotlin Test
 
 ==== 1.1.x
 
