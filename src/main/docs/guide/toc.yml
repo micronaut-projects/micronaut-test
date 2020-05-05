@@ -3,5 +3,6 @@ introduction:
 spock: Testing with Spock
 junit5: Testing with JUnit 5
 kotlintest: Testing with KotlinTest
+kotest: Testing with Kotest
 #spek: Testing with Spek
 repository: Repository
