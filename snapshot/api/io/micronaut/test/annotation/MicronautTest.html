@@ -128,32 +128,38 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#application--">application</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>java.lang.String[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#environments--">environments</a></span></code>&nbsp;</td>
+<td class="colFirst"><code>java.lang.Class&lt;? extends io.micronaut.context.ApplicationContextBuilder&gt;[]</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#contextBuilder--">contextBuilder</a></span></code>
+<div class="block">The application context builder to use to construct the context.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#packages--">packages</a></span></code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#environments--">environments</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>java.lang.String[]</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#packages--">packages</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#propertySources--">propertySources</a></span></code>
 <div class="block">One or many references to classpath.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#rebuildContext--">rebuildContext</a></span></code>
 <div class="block">Whether to rebuild the application context before each test method.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#rollback--">rollback</a></span></code>
 <div class="block">Whether to rollback (if possible) any data access code between each test execution.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTest.html#transactional--">transactional</a></span></code>
 <div class="block">Allow disabling or enabling of automatic transaction wrapping.</div>
@@ -300,7 +306,7 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <li class="blockList"><a name="rebuildContext--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>rebuildContext</h4>
 <pre>public abstract&nbsp;boolean&nbsp;rebuildContext</pre>
@@ -312,6 +318,27 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <dl>
 <dt>Default:</dt>
 <dd>false</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="contextBuilder--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>contextBuilder</h4>
+<pre>public abstract&nbsp;java.lang.Class&lt;? extends io.micronaut.context.ApplicationContextBuilder&gt;[]&nbsp;contextBuilder</pre>
+<div class="block">The application context builder to use to construct the context.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The builder</dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>{}</dd>
 </dl>
 </li>
 </ul>
