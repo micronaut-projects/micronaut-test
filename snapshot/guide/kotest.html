@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>4 Testing with KotlinTest 1.2.0.BUILD-SNAPSHOT</title>
+    <title>5 Testing with Kotest 1.2.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -74,18 +74,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/junit5.html">&lt;&lt; <strong>3</strong><span>Testing with JUnit 5</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/kotlintest.html">&lt;&lt; <strong>4</strong><span>Testing with KotlinTest</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/kotest.html"><strong>5</strong><span>Testing with Kotest</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/repository.html"><strong>6</strong><span>Repository</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>4 Testing with KotlinTest</h1>
+                    <h1>5 Testing with Kotest</h1>
 
                     <p><strong>Version:</strong> 1.2.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -93,28 +93,28 @@ function addJsClass() {
                 
 
                 
-<h1 id="kotlintest"><a class="anchor" href="#kotlintest"></a>4 Testing with KotlinTest</h1>
+<h1 id="kotest"><a class="anchor" href="#kotest"></a>5 Testing with Kotest</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/kotlintest.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/kotest.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
 
 
 <div class="sect2">
-<h3 id="_setting_up_kotlintest">Setting up KotlinTest</h3>
+<h3 id="_setting_up_kotest">Setting up Kotest</h3>
 <div class="paragraph">
-<p>To get started using KotlinTest you need the following dependencies in your build configuration:</p>
+<p>To get started using Kotest you need the following dependencies in your build configuration:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
-    testImplementation "io.micronaut.test:micronaut-test-kotlintest:1.2.0.BUILD-SNAPSHOT"
+    testImplementation "io.micronaut.test:micronaut-test-kotest:1.2.0.BUILD-SNAPSHOT"
     testImplementation "io.mockk:mockk:1.9.3"
-    testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
+    testImplementation "io.kotest:kotest-runner-junit5-jvm:4.0.3"
 }
 
 // use JUnit 5 platform
@@ -131,7 +131,7 @@ test {
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-test-kotlintest&lt;/artifactId&gt;
+    &lt;artifactId&gt;micronaut-test-kotest&lt;/artifactId&gt;
     &lt;version&gt;{version}&lt;/version&gt;
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;
@@ -142,9 +142,9 @@ test {
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
-    &lt;groupId&gt;io.kotlintest&lt;/groupId&gt;
-    &lt;artifactId&gt;kotlintest-runner-junit5&lt;/artifactId&gt;
-    &lt;version&gt;3.3.2&lt;/version&gt;
+    &lt;groupId&gt;io.kotest&lt;/groupId&gt;
+    &lt;artifactId&gt;kotest-runner-junit5-jvm&lt;/artifactId&gt;
+    &lt;version&gt;4.0.3&lt;/version&gt;
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -260,31 +260,31 @@ test {
 <div class="sect2">
 <h3 id="_before_you_begin">Before You Begin</h3>
 <div class="paragraph">
-<p>Before you can get started writing tests with KotlinTest, it is necessary to inform KotlinTest of the Micronaut extensions. The way to do that is by providing a <code>ProjectConfig</code> object in a specific package. Here is how to do so for Micronaut Test:</p>
+<p>Before you can get started writing tests with Kotest, it is necessary to inform Kotest of the Micronaut extensions. The way to do that is by providing a <code>ProjectConfig</code>. Here is how to do so for Micronaut Test:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.kotlintest.provided
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
 
-import io.kotlintest.AbstractProjectConfig
-import io.micronaut.test.extensions.kotlintest.MicronautKotlinTestExtension
+import io.kotest.core.config.AbstractProjectConfig
+import io.micronaut.test.extensions.kotest.MicronautKotestExtension
 
 object ProjectConfig : AbstractProjectConfig() {
-    override fun listeners() = listOf(MicronautKotlinTestExtension)
-    override fun extensions() = listOf(MicronautKotlinTestExtension)
+    override fun listeners() = listOf(MicronautKotestExtension)
+    override fun extensions() = listOf(MicronautKotestExtension)
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_writing_a_micronaut_test_with_kotlintest">Writing a Micronaut Test with KotlinTest</h3>
+<h3 id="_writing_a_micronaut_test_with_kotest">Writing a Micronaut Test with Kotest</h3>
 <div class="paragraph">
-<p>Let&#8217;s take a look at an example using KotlinTest. Consider you have the following interface:</p>
+<p>Let&#8217;s take a look at an example using Kotest. Consider you have the following interface:</p>
 </div>
 <div class="listingblock">
 <div class="title">The MathService Interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
 
 interface MathService {
 
@@ -298,7 +298,7 @@ interface MathService {
 <div class="listingblock">
 <div class="title">The MathService implementation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
 
 import javax.inject.Singleton
 
@@ -317,16 +317,16 @@ internal class MathServiceImpl : MathService {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.kotest
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.test.annotation.MicronautTest
 
 @MicronautTest <i class="conum" data-value="1"></i><b>(1)</b>
 class MathServiceTest(
-        private val mathService: MathService <i class="conum" data-value="2"></i><b>(2)</b>
-): BehaviorSpec({
+    private val mathService: MathService <i class="conum" data-value="2"></i><b>(2)</b>
+) : BehaviorSpec({
 
     given("the math service") {
 
@@ -402,13 +402,13 @@ class MathServiceTest(
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
-import io.micronaut.test.extensions.kotlintest.MicronautKotlinTestExtension.getMock
+import io.micronaut.test.extensions.kotest.MicronautKotestExtension.getMock
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -418,8 +418,8 @@ import kotlin.math.roundToInt
 
 @MicronautTest
 class MathMockServiceTest(
-        private val mathService: MathService <i class="conum" data-value="3"></i><b>(3)</b>
-): BehaviorSpec({
+    private val mathService: MathService <i class="conum" data-value="3"></i><b>(3)</b>
+) : BehaviorSpec({
 
     given("test compute num to square") {
 
@@ -493,7 +493,7 @@ Because Kotlin uses constructor injection, it&#8217;s not possible to automatica
 <div class="listingblock">
 <div class="title">The MathController</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
 
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
@@ -515,17 +515,17 @@ class MathController internal constructor(internal var mathService: MathService)
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
 
-import io.kotlintest.data.forall
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.StringSpec
-import io.kotlintest.tables.row
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.data.blocking.forAll
+import io.kotest.data.row
+import io.kotest.matchers.shouldBe
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
-import io.micronaut.test.extensions.kotlintest.MicronautKotlinTestExtension.getMock
+import io.micronaut.test.extensions.kotest.MicronautKotestExtension.getMock
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -534,9 +534,9 @@ import kotlin.math.roundToInt
 
 @MicronautTest
 class MathCollaboratorTest(
-        private val mathService: MathService,
-        @Client("/") private val client: RxHttpClient <i class="conum" data-value="2"></i><b>(2)</b>
-): StringSpec({
+    private val mathService: MathService,
+    @Client("/") private val client: RxHttpClient <i class="conum" data-value="2"></i><b>(2)</b>
+) : StringSpec({
 
     "test compute num to square" {
         val mock = getMock(mathService)
@@ -545,9 +545,9 @@ class MathCollaboratorTest(
             firstArg&lt;Int&gt;().toDouble().pow(2).roundToInt()
         }
 
-        forall(
-                row(2, 4),
-                row(3, 9)
+        forAll(
+            row(2, 4),
+            row(3, 9)
         ) { a: Int, b: Int -&gt;
             val result = client.toBlocking().retrieve("/math/compute/$a", Int::class.java) <i class="conum" data-value="3"></i><b>(3)</b>
             result shouldBe b
@@ -615,10 +615,10 @@ class RequiresTest {
 <div class="listingblock">
 <div class="title">Using <code>@Property</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.AnnotationSpec
+import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Value
 import io.micronaut.test.annotation.MicronautTest
@@ -654,10 +654,10 @@ class PropertyValueTest: AnnotationSpec() {
 <div class="listingblock">
 <div class="title">Using <code>propertySources</code> stored in files</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.BehaviorSpec
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.annotation.MicronautTest
 
@@ -679,7 +679,7 @@ class PropertySourceTest(@Property(name = "foo.bar") val value: String,
 </div>
 </div>
 <div class="paragraph">
-<p>The above example expects a file located at <code>src/test/resources/io/micronaut/kotlintest/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
+<p>The above example expects a file located at <code>src/test/resources/io/micronaut/kotest/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -718,7 +718,7 @@ Because Kotlin doesn&#8217;t support multiple annotations, the <code>@PropertySo
 <p>In order for <code>TestPropertyProvider</code> to work, test classes must have not have any constructor arguments. This is because the class needs constructed prior to bean creation in order to add the properties to the context. Fields and methods will still be injected.</p>
 </li>
 <li>
-<p><code>@Requires()</code> cannot be used with constructor injection because Kotlintest requires the instance to be created regardless if the test should be ignored or not. If the requirements disable the bean, it cannot be created from the context and thus construction responsibility will be delegated to the default behavior.</p>
+<p><code>@Requires()</code> cannot be used with constructor injection because Kotest requires the instance to be created regardless if the test should be ignored or not. If the requirements disable the bean, it cannot be created from the context and thus construction responsibility will be delegated to the default behavior.</p>
 </li>
 </ol>
 </div>
@@ -740,10 +740,10 @@ re-evaluated again.</p>
 <div class="listingblock">
 <div class="title">Combining <code>@Requires</code> and <code>@Property</code> in a <code>@Refreshable</code> test class.</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotlintest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
 
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.specs.AnnotationSpec
+import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import io.micronaut.test.annotation.MicronautTest
@@ -791,9 +791,9 @@ open class MyServiceChanged : MyService</code></pre>
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/junit5.html">&lt;&lt; <strong>3</strong><span>Testing with JUnit 5</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/kotlintest.html">&lt;&lt; <strong>4</strong><span>Testing with KotlinTest</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/kotest.html"><strong>5</strong><span>Testing with Kotest</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/repository.html"><strong>6</strong><span>Repository</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
