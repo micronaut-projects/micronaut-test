@@ -24,6 +24,7 @@ dependencies {
     kaptTest "io.micronaut:micronaut-inject-java:$micronautVersion"
 
     testImplementation "io.micronaut.configuration:micronaut-hibernate-jpa:$micronautHibernateJpaVersion"
+    testImplementation "io.micronaut.configuration:micronaut-hibernate-jpa-spring:$micronautHibernateJpaVersion"
     testRuntimeOnly "io.micronaut.configuration:micronaut-jdbc-tomcat:$micronautJdbcTomcatVersion"
     testRuntimeOnly "com.h2database:h2:1.4.200"
 }
