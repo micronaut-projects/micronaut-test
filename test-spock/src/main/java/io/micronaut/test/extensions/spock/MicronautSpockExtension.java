@@ -23,6 +23,7 @@ import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.spockframework.mock.MockUtil;
@@ -54,6 +55,30 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
     @Override
     public void visitSpecAnnotation(MicronautTest annotation, SpecInfo spec) {
 
+        spec.getAllFeatures().forEach(feature -> {
+
+            feature.addInterceptor(invocation -> {
+                try {
+                    beforeTestMethod(buildContext(invocation, null));
+                    invocation.proceed();
+                } finally {
+                    afterTestMethod(buildContext(invocation, null));
+                }
+            });
+
+            feature.getFeatureMethod().addInterceptor(invocation -> {
+                try {
+                    beforeTestExecution(buildContext(invocation, null));
+                    invocation.proceed();
+                    afterTestExecution(buildContext(invocation, null));
+                } catch (Exception e) {
+                    afterTestExecution(buildContext(invocation, e));
+                    throw e;
+                }
+            });
+
+        });
+
         spec.addSetupSpecInterceptor(invocation -> {
                     beforeClass(invocation, spec.getReflection(), spec.getAnnotation(MicronautTest.class));
                     if (specDefinition == null) {
@@ -74,11 +99,13 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
                             }
                         }
                     }
+                    beforeTestClass(buildContext(invocation, null));
                     invocation.proceed();
                 }
         );
 
         spec.addCleanupSpecInterceptor(invocation -> {
+            afterTestClass(buildContext(invocation, null));
             afterClass(invocation);
             invocation.proceed();
         });
@@ -91,7 +118,6 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             for (Object createdMock : createdMocks) {
                 mockUtil.attachMock(createdMock, (Specification) instance);
             }
-            begin();
             invocation.proceed();
         });
 
@@ -101,10 +127,17 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             }
             createdMocks.clear();
             afterEach(invocation);
-            commit();
-            rollback();
             invocation.proceed();
         });
+    }
+
+    private TestContext buildContext(IMethodInvocation invocation, Throwable exception) {
+        return new TestContext(
+            applicationContext,
+            Optional.ofNullable(invocation.getSpec()).map(SpecInfo::getReflection).orElse(null),
+            Optional.ofNullable(invocation.getFeature()).map(FeatureInfo::getFeatureMethod).map(MethodInfo::getReflection).orElse(null),
+            invocation.getInstance(),
+            exception);
     }
 
     @Override

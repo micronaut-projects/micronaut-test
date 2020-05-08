@@ -57,10 +57,16 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
     }
 
     override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-        contexts[testCase.spec.javaClass.name]?.afterTest(testCase)
+        contexts[testCase.spec.javaClass.name]?.afterTest(testCase, result)
     }
-    
-    
+
+    override suspend fun beforeInvocation(testCase: TestCase, iteration: Int) {
+        contexts[testCase.spec.javaClass.name]?.beforeInvocation(testCase)
+    }
+
+    override suspend fun afterInvocation(testCase: TestCase, iteration: Int) {
+        contexts[testCase.spec.javaClass.name]?.afterInvocation(testCase)
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {

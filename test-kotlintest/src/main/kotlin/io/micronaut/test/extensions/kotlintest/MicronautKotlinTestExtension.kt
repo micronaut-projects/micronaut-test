@@ -59,10 +59,12 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
 
     override fun beforeTest(testCase: TestCase) {
         contexts[testCase.spec.javaClass.name]?.beforeTest(testCase)
+        contexts[testCase.spec.javaClass.name]?.beforeInvocation(testCase)
     }
 
     override fun afterTest(testCase: TestCase, result: TestResult) {
-        contexts[testCase.spec.javaClass.name]?.afterTest(testCase)
+        contexts[testCase.spec.javaClass.name]?.afterInvocation(testCase)
+        contexts[testCase.spec.javaClass.name]?.afterTest(testCase, result)
     }
 
     @Suppress("UNCHECKED_CAST")

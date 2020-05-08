@@ -17,8 +17,10 @@ package io.micronaut.test.extensions.kotlintest
 
 import io.kotlintest.Spec
 import io.kotlintest.TestCase
+import io.kotlintest.TestResult
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.context.TestContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.TestPropertyProvider
 import kotlin.reflect.full.memberFunctions
@@ -52,9 +54,11 @@ class MicronautKotlinTestContext(private val testClass: Class<Any>,
             beforeClass(spec, testClass, micronautTest)
             applicationContext.inject(spec)
         }
+        beforeTestClass(buildContext(spec))
     }
 
     fun afterSpecClass(spec: Spec) {
+        afterTestClass(buildContext(spec))
         afterClass(spec)
     }
 
@@ -66,14 +70,30 @@ class MicronautKotlinTestContext(private val testClass: Class<Any>,
             propertyAnnotations = filter.first().annotations.filter { it is Property } as? List<Property>
         }
         beforeEach(testCase.spec, testCase.spec, testCase.test.javaClass, propertyAnnotations)
-        begin()
+        beforeTestMethod(buildContext(testCase, null))
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun afterTest(testCase: TestCase) {
-        commit()
-        rollback()
+    fun afterTest(testCase: TestCase, result: TestResult) {
+        afterTestMethod(buildContext(testCase, result))
+    }
+
+    fun beforeInvocation(testCase: TestCase) {
+        beforeTestExecution(buildContext(testCase, null))
+    }
+
+    fun afterInvocation(testCase: TestCase) {
+        afterTestExecution(buildContext(testCase, null))
     }
 
     fun getSpecDefinition() = specDefinition
+
+    fun buildContext(spec: Spec): TestContext {
+        return TestContext(applicationContext, spec.javaClass, null, spec, null)
+    }
+
+    fun buildContext(testCase: TestCase, result: TestResult?): TestContext {
+        return TestContext(applicationContext, testCase.spec.javaClass, testCase.test.javaClass, testCase.spec, result?.error)
+    }
+
 }

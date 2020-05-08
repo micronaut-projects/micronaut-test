@@ -23,6 +23,7 @@ import io.micronaut.core.annotation.Indexed;
  * @author graemerocher
  * @since 1.0
  */
+@Deprecated
 @Indexed(TestTransactionInterceptor.class)
 public interface TestTransactionInterceptor {
 

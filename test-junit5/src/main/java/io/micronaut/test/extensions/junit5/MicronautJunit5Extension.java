@@ -23,6 +23,7 @@ import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.TestInstance;
@@ -44,7 +45,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
 
     @Override
-    public void beforeAll(ExtensionContext extensionContext) {
+    public void beforeAll(ExtensionContext extensionContext) throws Exception {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         final MicronautTest micronautTest = AnnotationSupport.findAnnotation(testClass, MicronautTest.class).orElse(null);
         beforeClass(extensionContext, testClass, micronautTest);
@@ -56,15 +57,17 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 applicationContext.inject(testInstance);
             }
         }
+        beforeTestClass(buildContext(extensionContext));
     }
 
     @Override
-    public void afterAll(ExtensionContext extensionContext) {
+    public void afterAll(ExtensionContext extensionContext) throws Exception {
+        afterTestClass(buildContext(extensionContext));
         afterClass(extensionContext);
     }
 
     @Override
-    public void beforeEach(ExtensionContext extensionContext) {
+    public void beforeEach(ExtensionContext extensionContext) throws Exception {
         final Optional<Object> testInstance = extensionContext.getTestInstance();
         final Optional<? extends AnnotatedElement> testMethod = extensionContext.getTestMethod();
         List<Property> propertyAnnotations = null;
@@ -73,6 +76,13 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             propertyAnnotations = Arrays.asList(annotationsByType);
         }
         beforeEach(extensionContext, testInstance.orElse(null), testMethod.orElse(null), propertyAnnotations);
+        beforeTestMethod(buildContext(extensionContext));
+    }
+
+    @Override
+    public void afterEach(ExtensionContext extensionContext) throws Exception {
+        super.afterEach(extensionContext);
+        afterTestMethod(buildContext(extensionContext));
     }
 
     @Override
@@ -139,13 +149,21 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
-        commit();
-        rollback();
+        afterTestExecution(buildContext(context));
     }
 
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
-        begin();
+        beforeTestExecution(buildContext(context));
+    }
+
+    private TestContext buildContext(ExtensionContext context) {
+      return new TestContext(
+          applicationContext,
+          context.getTestClass().orElse(null),
+          context.getTestMethod().orElse(null),
+          context.getTestInstance().orElse(null),
+          context.getExecutionException().orElse(null));
     }
 
     @Override

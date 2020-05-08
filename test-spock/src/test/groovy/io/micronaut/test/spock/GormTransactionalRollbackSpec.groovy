@@ -6,7 +6,7 @@ import io.micronaut.core.util.StringUtils
 import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.spock.entities.Book
-import io.micronaut.test.transaction.spring.SpringTestTransactionInterceptor
+import io.micronaut.test.transaction.spring.SpringTransactionTestExecutionListener
 import spock.lang.Specification
 import spock.lang.Stepwise
 
@@ -29,9 +29,9 @@ class GormTransactionalRollbackSpec extends Specification {
     @Inject
     ApplicationContext applicationContext
 
-    void "bean SpringTestTransactionInterceptor exists"() {
+    void "bean SpringTransactionTestExecutionListener exists"() {
         expect:
-        applicationContext.containsBean(SpringTestTransactionInterceptor)
+        applicationContext.containsBean(SpringTransactionTestExecutionListener)
     }
 
     void "save book"() {
