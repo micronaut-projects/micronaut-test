@@ -6,9 +6,13 @@ buildscript {
         classpath "org.grails:grails-docs:$grailsVersion"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2"
+        classpath "de.marcphilipp.gradle:nexus-publish-plugin:0.4.0"
         classpath 'io.github.groovylang.groovydoc:groovydoc-gradle-plugin:1.0.1'
         classpath "io.micronaut.docs:micronaut-docs-asciidoc-extensions:$micronautDocsVersion"
         classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:$micronautDocsVersion"
+        classpath "io.spring.nohttp:nohttp-gradle:0.0.4.RELEASE"
+
     }
 }
 
@@ -17,9 +21,7 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
-    maven { url "https://repo.grails.org/grails/core" }
-    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+    jcenter()
 }
 
 version project.projectVersion
@@ -45,8 +47,7 @@ subprojects { Project subproject ->
 
     
     repositories {
-        maven { url "https://repo.grails.org/grails/core" }
-        maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local' }
+        jcenter()
     }
     
     apply plugin:"groovy"
@@ -56,7 +57,7 @@ subprojects { Project subproject ->
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
-    apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/v1.0.0/publishing.gradle"
+    apply from:"https://raw.githubusercontent.com/micronaut-projects/micronaut-build/${micronautBuildVersion}/publishing.gradle"
         
 
     jar {
