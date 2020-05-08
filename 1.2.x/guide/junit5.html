@@ -1,0 +1,758 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
+    <title>3 Testing with JUnit 5 1.2.0.RC1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Micronaut Test
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/spock.html"><strong>2</strong><span>Testing with Spock</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/junit5.html"><strong>3</strong><span>Testing with JUnit 5</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/kotest.html"><strong>5</strong><span>Testing with Kotest</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/repository.html"><strong>6</strong><span>Repository</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/spock.html">&lt;&lt; <strong>2</strong><span>Testing with Spock</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3 Testing with JUnit 5</h1>
+
+                    <p><strong>Version:</strong> 1.2.0.RC1</p>
+                </div>
+
+                
+
+                
+<h1 id="junit5"><a class="anchor" href="#junit5"></a>3 Testing with JUnit 5</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/junit5.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="sect2">
+<h3 id="_setting_up_junit_5">Setting up JUnit 5</h3>
+<div class="paragraph">
+<p>To get started using JUnit 5 you need the following dependencies in your build configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+    ...
+    testCompile "io.micronaut.test:micronaut-test-junit5:1.2.0.RC1"
+    testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.1.0"
+}
+
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you plan to define mock beans you will also need <code>inject-groovy</code> on your <code>testCompile</code> classpath or <code>inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>) and the <code>testAnnotationProcessor</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Or for Maven:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-test-junit5&lt;/artifactId&gt;
+    &lt;version&gt;{version}&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that for Maven you will also need to configure the Surefire plugin to use JUnit platform:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.19.1&lt;/version&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.junit.platform&lt;/groupId&gt;
+            &lt;artifactId&gt;junit-platform-surefire-provider&lt;/artifactId&gt;
+            &lt;version&gt;1.1.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+            &lt;artifactId&gt;junit-jupiter-engine&lt;/artifactId&gt;
+            &lt;version&gt;5.1.0&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_writing_a_micronaut_test_with_junit_5">Writing a Micronaut Test with JUnit 5</h3>
+<div class="paragraph">
+<p>Let&#8217;s take a look at an example using JUnit 5. Consider you have the following interface:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService Interface</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
+
+interface MathService {
+
+    Integer compute(Integer num);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And a simple implementation that computes the value times 4 and is defined as Micronaut bean:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService implementation</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
+
+import javax.inject.Singleton;
+
+@Singleton
+class MathServiceImpl implements MathService {
+
+    @Override
+    public Integer compute(Integer num) {
+        return num * 4;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can define the following test to test the implementation:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService specification</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.junit5;
+
+import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import javax.inject.Inject;
+
+
+@MicronautTest <i class="conum" data-value="1"></i><b>(1)</b>
+class MathServiceTest {
+
+    @Inject
+    MathService mathService; <i class="conum" data-value="2"></i><b>(2)</b>
+
+
+    @ParameterizedTest
+    @CsvSource({"2,8", "3,12"})
+    void testComputeNumToSquare(Integer num, Integer square) {
+        final Integer result = mathService.compute(num); <i class="conum" data-value="3"></i><b>(3)</b>
+
+        Assertions.assertEquals(
+                square,
+                result
+        );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The test is declared as Micronaut test with <code>@MicronautTest</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>@Inject</code> annotation is used to inject the bean</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The test itself tests the injected bean</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_environments_classpath_scanning_etc">Environments, Classpath Scanning etc.</h3>
+<div class="paragraph">
+<p>The <code>@MicronautTest</code> annotation supports specifying the environment names the test should run with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(environments={"foo", "bar"})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition, although Micronaut itself doesn&#8217;t scan the classpath, some integrations do (such as JPA and GORM), for these cases you may wish to specify either the application class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or the packages:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To ensure that entities can be found during classpath scanning.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_mockito_mocks">Using Mockito Mocks</h3>
+<div class="paragraph">
+<p>Now let&#8217;s say you want to replace the implementation with a Mockito Mock. You can do so by defining a method that returns a mock and is annotated with <code>@MockBean</code>, for example:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService specification</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.annotation.MockBean;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.stubbing.Answer;
+
+import javax.inject.Inject;
+
+import static org.mockito.Mockito.*;
+
+@MicronautTest
+class MathMockServiceTest {
+
+    @Inject
+    MathService mathService; <i class="conum" data-value="3"></i><b>(3)</b>
+
+
+    @ParameterizedTest
+    @CsvSource({"2,4", "3,9"})
+    void testComputeNumToSquare(Integer num, Integer square) {
+
+        when(mathService.compute(10))
+            .then(invocation -&gt; Long.valueOf(Math.round(Math.pow(num, 2))).intValue());
+
+        final Integer result = mathService.compute(10);
+
+        Assertions.assertEquals(
+                square,
+                result
+        );
+        verify(mathService).compute(10); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+
+    @MockBean(MathServiceImpl.class) <i class="conum" data-value="1"></i><b>(1)</b>
+    MathService mathService() {
+        return mock(MathService.class); <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>@MockBean</code> annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Mockito&#8217;s <code>mock(..)</code> method creates the actual mock</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The Mock is injected into the test</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Mockito is used to verify the mock is called</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note that because the bean is an inner class of the test, it will be active only for the scope of the test. This approach allows you to define beans that are isolated per test class.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mocking_collaborators">Mocking Collaborators</h3>
+<div class="paragraph">
+<p>Note that in most cases you won&#8217;t define a <code>@MockBean</code> and then inject it only to verify interaction with the Mock directly, instead the Mock will be a collaborator within your application. For example say you have a <code>MathController</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathController</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Get;
+
+@Controller("/math")
+public class MathController {
+    MathService mathService;
+
+    MathController(MathService mathService) {
+        this.mathService = mathService;
+    }
+
+    @Get(uri = "/compute/{number}", processes = MediaType.TEXT_PLAIN)
+    String compute(Integer number) {
+        return String.valueOf(mathService.compute(number));
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above controller uses the <code>MathService</code> to expose a <code>/math/compute/{number}</code> endpoint. See the following example for a test that tests interaction with the mock collaborator:</p>
+</div>
+<div class="listingblock">
+<div class="title">Mocking Collaborators</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.client.RxHttpClient;
+import io.micronaut.http.client.annotation.Client;
+import io.micronaut.test.annotation.*;
+import io.micronaut.test.annotation.MockBean;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.mockito.Mockito.*;
+import javax.inject.Inject;
+
+@MicronautTest
+class MathCollaboratorTest {
+
+    @Inject
+    MathService mathService;
+
+    @Inject
+    @Client("/")
+    RxHttpClient client; <i class="conum" data-value="2"></i><b>(2)</b>
+
+
+    @ParameterizedTest
+    @CsvSource({"2,4", "3,9"})
+    void testComputeNumToSquare(Integer num, Integer square) {
+
+        when( mathService.compute(num) )
+            .then(invocation -&gt; Long.valueOf(Math.round(Math.pow(num, 2))).intValue());
+
+        final Integer result = client.toBlocking().retrieve(HttpRequest.GET("/math/compute/" + num), Integer.class); <i class="conum" data-value="3"></i><b>(3)</b>
+
+        assertEquals(
+                square,
+                result
+        );
+        verify(mathService).compute(num); <i class="conum" data-value="4"></i><b>(4)</b>
+    }
+
+    @MockBean(MathServiceImpl.class) <i class="conum" data-value="1"></i><b>(1)</b>
+    MathService mathService() {
+        return mock(MathService.class);
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Like the previous example a Mock is defined using <code>@MockBean</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This time we inject an instance of <code>RxHttpClient</code> to test the controller.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We invoke the controller and retrieve the result</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The interaction with mock collaborator is verified.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The way this works is that <code>@MicronautTest</code> will inject the <code>Mock(..)</code> instance into the test, but the controller will have a proxy that points to the <code>Mock(..)</code> instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_code_requires_code_on_tests">Using <code>@Requires</code> on Tests</h3>
+<div class="paragraph">
+<p>Since <code>@MicronautTest</code> turns tests into beans themselves, it means you can use the <code>@Requires</code> annotation on the test to enable/disable tests. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
+@Requires(env = "my-env")
+class RequiresTest {
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above test will only run if <code>my-env</code> is active (you can active it by passing the system property <code>micronaut.environments</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_additional_test_specific_properties">Defining Additional Test Specific Properties</h3>
+<div class="paragraph">
+<p>You can define additional test specific properties using the <code>@Property</code> annotation. The following example demonstrates usage:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>@Property</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@MicronautTest
+@Property(name = "foo.bar", value = "stuff")
+@TestMethodOrder(OrderAnnotation.class)
+class PropertyValueTest {
+
+    @Property(name = "foo.bar")
+    String val;
+
+    @Test
+    @Order(1)
+    void testInitialValue() {
+        assertEquals("stuff", val);
+    }
+
+    @Property(name = "foo.bar", value = "changed")
+    @Test
+    @Order(2)
+    void testValueChanged() {
+        assertEquals("changed", val);
+    }
+
+    @Test
+    @Order(3)
+    void testValueRestored() {
+        assertEquals("stuff", val);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that when a <code>@Property</code> is defined at the test method level, it causes a <code>RefreshEvent</code> to be triggered which will update any <code>@ConfigurationProperties</code> related  to the property.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively you can specify additional <code>propertySources</code> in any supported format (YAML, JSON, Java properties file etc.) using the <code>@MicronautTest</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>propertySources</code> stored in files</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.test.annotation.MicronautTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+@MicronautTest(propertySources = "myprops.properties")
+class PropertySourceTest {
+
+    @Property(name = "foo.bar")
+    String val;
+
+
+    @Test
+    void testPropertySource() {
+        Assertions.assertEquals("foo", val);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above example expects a file located at <code>src/test/resources/io/micronaut/junit5/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>file:myprops.properties</code> - A relative path to a file somewhere on the file system</p>
+</li>
+<li>
+<p><code>classpath:myprops.properties</code> - A file relative to the root of the classpath</p>
+</li>
+<li>
+<p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you need more dynamic property definition or the property you want to define requires some setup then you can implement the <a href="../api/io/micronaut/test/support/TestPropertyProvider.html">TestPropertyProvider</a> interface in your test and do whatever setup is necessary then return the properties you want to expose the the application.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using the <code>TestPropertyProvider</code> interface</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.core.util.CollectionUtils;
+import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
+import org.junit.jupiter.api.*;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
+
+@MicronautTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class PropertySourceMapTest implements TestPropertyProvider {
+
+    @Property(name = "foo.bar")
+    String val;
+
+    @Test
+    void testPropertySource() {
+        Assertions.assertEquals("one", val);
+    }
+
+    @Nonnull
+    @Override
+    public Map&lt;String, String&gt; getProperties() {
+        return CollectionUtils.mapOf(
+                "foo.bar", "one",
+                "foo.baz", "two"
+        );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using <code>TestPropertyProvider</code> you test must be declared with JUnit&#8217;s <code>@TestInstance(TestInstance.Lifecycle.PER_CLASS)</code> annotation.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_refreshing_injected_beans_based_on_code_requires_code_upon_properties_changes">Refreshing injected beans based on <code>@Requires</code> upon properties changes</h3>
+<div class="paragraph">
+<p>You can use combine the use of <code>@Requires</code> and <code>@Property</code>, so that injected beans will be refreshed if there are
+configuration changes that affect their <code>@Requires</code> condition.</p>
+</div>
+<div class="paragraph">
+<p>For that to work, the test must be annotated with <code>@MicronautTest(rebuildContext = true)</code>. In that case, if there are
+changes in any property for a given test, the application context will be rebuilt so that <code>@Requires</code> conditions are
+re-evaluated again.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Combining <code>@Requires</code> and <code>@Property</code> in a <code>@Refreshable</code> test class.</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
+
+import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.test.annotation.MicronautTest;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsInstanceOf;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+// https://github.com/micronaut-projects/micronaut-test/issues/91
+@MicronautTest(rebuildContext = true)
+@Property(name = "foo.bar", value = "stuff")
+@TestMethodOrder(OrderAnnotation.class)
+class PropertyValueRequiresTest {
+
+    @Inject
+    MyService myService;
+
+    @Test
+    @Order(1)
+    void testInitialValue() {
+        MatcherAssert.assertThat(myService, IsInstanceOf.instanceOf(MyServiceStuff.class));
+    }
+
+    @Property(name = "foo.bar", value = "changed")
+    @Test
+    @Order(2)
+    void testValueChanged() {
+        MatcherAssert.assertThat(myService, IsInstanceOf.instanceOf(MyServiceChanged.class));
+    }
+
+    @Test
+    @Order(3)
+    void testValueRestored() {
+        MatcherAssert.assertThat(myService, IsInstanceOf.instanceOf(MyServiceStuff.class));
+    }
+
+}
+
+interface MyService {}
+
+@Singleton
+@Requires(property = "foo.bar", value = "stuff")
+class MyServiceStuff implements MyService {}
+
+
+@Singleton
+@Requires(property = "foo.bar", value = "changed")
+class MyServiceChanged implements MyService {}</code></pre>
+</div>
+</div>
+</div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/spock.html">&lt;&lt; <strong>2</strong><span>Testing with Spock</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
