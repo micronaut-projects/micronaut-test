@@ -65,5 +65,5 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           branch: master # Or 1.3.x etc
-          property: micronautTestVersion # Refers to the key in the BOM (gradle.properties)
-          version: ${{ steps.release_version.outputs.release_version }}
+          properties: |
+            micronautTestVersion=${{ steps.release_version.outputs.release_version }}
