@@ -67,3 +67,4 @@ jobs:
           branch: master # Or 1.3.x etc
           properties: |
             micronautTestVersion=${{ steps.release_version.outputs.release_version }}
+          version: ${{ steps.release_version.outputs.release_version }}
