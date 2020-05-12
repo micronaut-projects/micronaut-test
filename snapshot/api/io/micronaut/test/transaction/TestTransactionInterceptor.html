@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var methods = {"i0":38,"i1":38,"i2":38};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../io/micronaut/test/transaction/CompositeTestTransactionInterceptor.html" title="class in io.micronaut.test.transaction"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li>Next&nbsp;Class</li>
+<li><a href="../../../../io/micronaut/test/transaction/TestTransactionInterceptorListener.html" title="class in io.micronaut.test.transaction"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?io/micronaut/test/transaction/TestTransactionInterceptor.html" target="_top">Frames</a></li>
@@ -99,11 +99,13 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a>, <a href="../../../../io/micronaut/test/transaction/CompositeTestTransactionInterceptor.html" title="class in io.micronaut.test.transaction">CompositeTestTransactionInterceptor</a>, <a href="../../../../io/micronaut/test/transaction/spring/SpringTestTransactionInterceptor.html" title="class in io.micronaut.test.transaction.spring">SpringTestTransactionInterceptor</a></dd>
+<dd><a href="../../../../io/micronaut/test/transaction/CompositeTestTransactionInterceptor.html" title="class in io.micronaut.test.transaction">CompositeTestTransactionInterceptor</a></dd>
 </dl>
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <br>
-<pre>@Indexed(value=<a href="../../../../io/micronaut/test/transaction/TestTransactionInterceptor.html" title="interface in io.micronaut.test.transaction">TestTransactionInterceptor.class</a>)
+<pre>@Deprecated
+ @Indexed(value=<a href="../../../../io/micronaut/test/transaction/TestTransactionInterceptor.html" title="interface in io.micronaut.test.transaction">TestTransactionInterceptor.class</a>)
 public interface <span class="typeNameLabel">TestTransactionInterceptor</span></pre>
 <div class="block">Test interceptor interface for rolling back data access.</div>
 <dl>
@@ -125,7 +127,7 @@ public interface <span class="typeNameLabel">TestTransactionInterceptor</span></
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -133,18 +135,21 @@ public interface <span class="typeNameLabel">TestTransactionInterceptor</span></
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/transaction/TestTransactionInterceptor.html#begin--">begin</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Begin the transaction.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/transaction/TestTransactionInterceptor.html#commit--">commit</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Commit the transaction.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/transaction/TestTransactionInterceptor.html#rollback--">rollback</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Rollback the transaction.</div>
 </td>
 </tr>
@@ -170,6 +175,7 @@ public interface <span class="typeNameLabel">TestTransactionInterceptor</span></
 <li class="blockList">
 <h4>begin</h4>
 <pre>void&nbsp;begin()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Begin the transaction.</div>
 </li>
 </ul>
@@ -180,6 +186,7 @@ public interface <span class="typeNameLabel">TestTransactionInterceptor</span></
 <li class="blockList">
 <h4>commit</h4>
 <pre>void&nbsp;commit()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Commit the transaction.</div>
 </li>
 </ul>
@@ -190,6 +197,7 @@ public interface <span class="typeNameLabel">TestTransactionInterceptor</span></
 <li class="blockList">
 <h4>rollback</h4>
 <pre>void&nbsp;rollback()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Rollback the transaction.</div>
 </li>
 </ul>
@@ -221,7 +229,7 @@ public interface <span class="typeNameLabel">TestTransactionInterceptor</span></
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../io/micronaut/test/transaction/CompositeTestTransactionInterceptor.html" title="class in io.micronaut.test.transaction"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li>Next&nbsp;Class</li>
+<li><a href="../../../../io/micronaut/test/transaction/TestTransactionInterceptorListener.html" title="class in io.micronaut.test.transaction"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?io/micronaut/test/transaction/TestTransactionInterceptor.html" target="_top">Frames</a></li>

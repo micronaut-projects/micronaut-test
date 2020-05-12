@@ -264,7 +264,22 @@ test {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.test.kotest
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.micronaut.test.extensions.kotest.MicronautKotestExtension
@@ -284,7 +299,22 @@ object ProjectConfig : AbstractProjectConfig() {
 <div class="listingblock">
 <div class="title">The MathService Interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.test.kotest
 
 interface MathService {
 
@@ -298,7 +328,22 @@ interface MathService {
 <div class="listingblock">
 <div class="title">The MathService implementation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.test.kotest
 
 import javax.inject.Singleton
 
@@ -317,7 +362,22 @@ internal class MathServiceImpl : MathService {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.test.kotest
 
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -402,7 +462,22 @@ class MathServiceTest(
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.test.kotest
 
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -493,7 +568,22 @@ Because Kotlin uses constructor injection, it&#8217;s not possible to automatica
 <div class="listingblock">
 <div class="title">The MathController</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.test.kotest
 
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
@@ -515,7 +605,22 @@ class MathController internal constructor(internal var mathService: MathService)
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.test.kotest
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.blocking.forAll
@@ -615,7 +720,22 @@ class RequiresTest {
 <div class="listingblock">
 <div class="title">Using <code>@Property</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.test.kotest
 
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.shouldBe
@@ -654,7 +774,22 @@ class PropertyValueTest: AnnotationSpec() {
 <div class="listingblock">
 <div class="title">Using <code>propertySources</code> stored in files</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.test.kotest
 
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -740,7 +875,22 @@ re-evaluated again.</p>
 <div class="listingblock">
 <div class="title">Combining <code>@Requires</code> and <code>@Property</code> in a <code>@Refreshable</code> test class.</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">/*
+ * Copyright 2017-2020 original authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.micronaut.test.kotest
 
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.matchers.types.shouldBeInstanceOf
