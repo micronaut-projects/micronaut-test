@@ -1,6 +1,6 @@
 ext {
     junitVersion = "5.6.2"
-    micronautHibernateJpaVersion = "1.3.0"
+    micronautHibernateJpaVersion = "2.2.0"
     micronautJdbcTomcatVersion = "2.2.0"
 }
 
@@ -24,6 +24,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:3.3.3'
 
     testImplementation "io.micronaut.configuration:micronaut-hibernate-jpa:$micronautHibernateJpaVersion"
+    testImplementation "io.micronaut.configuration:micronaut-hibernate-jpa-spring:$micronautHibernateJpaVersion"
+
     testRuntimeOnly "io.micronaut.configuration:micronaut-jdbc-tomcat:$micronautJdbcTomcatVersion"
     testRuntimeOnly "com.h2database:h2:1.4.200"
 }

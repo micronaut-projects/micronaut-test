@@ -281,7 +281,6 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         applicationContext = null;
     }
 
-
     /**
      * Executed after each test completes.
      *

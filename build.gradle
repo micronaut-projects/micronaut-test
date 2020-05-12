@@ -12,6 +12,7 @@ buildscript {
         classpath "io.micronaut.docs:micronaut-docs-asciidoc-extensions:$micronautDocsVersion"
         classpath "io.micronaut.docs:micronaut-docs-gradle-plugins:$micronautDocsVersion"
         classpath "io.spring.nohttp:nohttp-gradle:0.0.4.RELEASE"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.28.0"
 
     }
 }
@@ -52,7 +53,7 @@ subprojects { Project subproject ->
     
     apply plugin:"groovy"
     apply plugin:"java-library"
-
+    apply plugin: "com.github.ben-manes.versions"
 
 
     sourceCompatibility = '1.8'
@@ -91,6 +92,9 @@ subprojects { Project subproject ->
         all {
             resolutionStrategy.eachDependency { DependencyResolveDetails details ->
                 String group = details.requested.group
+                if(group == 'io.micronaut' && details.requested.name != 'micronaut-runtime-groovy') {
+                    details.useVersion(micronautVersion)
+                }
                 if(group == 'org.codehaus.groovy') {
                     details.useVersion(groovyVersion)
                 }
@@ -100,6 +104,7 @@ subprojects { Project subproject ->
             }
         }
     }
+
     dependencies {
         annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
         testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
@@ -115,6 +120,31 @@ subprojects { Project subproject ->
         testImplementation "org.codehaus.groovy:groovy-test:$groovyVersion"
     }
 
+    dependencyUpdates {
+        rejectVersionIf { mod ->
+            mod.candidate.version ==~ /.+(-|\.?)(b|M|RC)\d.*/ ||
+                    ["alpha", "beta", "milestone"].any { mod.candidate.version.toLowerCase(Locale.ENGLISH).contains(it) } ||
+                    mod.candidate.group == 'io.micronaut' // managed by the micronaut version
+        }
+        outputFormatter = { result ->
+            if (!result.outdated.dependencies.isEmpty()) {
+                def upgradeVersions = result.outdated.dependencies
+                if (!upgradeVersions.isEmpty()) {
+                    println "\nThe following dependencies have later ${revision} versions:"
+                    upgradeVersions.each { dep ->
+                        def currentVersion = dep.version
+                        println " - ${dep.group}:${dep.name} [${currentVersion} -> ${dep.available[revision]}]"
+                        if (dep.projectUrl != null) {
+                            println "     ${dep.projectUrl}"
+                        }
+                    }
+                    throw new GradleException('Abort, there are dependencies to update.')
+                }
+            }
+        }
+    }
+    check.dependsOn('dependencyUpdates')
+
     groovydoc {
         classpath += project.configurations.documentation
     }
@@ -124,7 +154,7 @@ subprojects { Project subproject ->
     apply plugin: 'checkstyle'
 
     checkstyle {
-        toolVersion = 8.10
+        toolVersion = 8.32
         configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 
         // Per submodule

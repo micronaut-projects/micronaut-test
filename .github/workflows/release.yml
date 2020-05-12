@@ -6,25 +6,20 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v2
-
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
           ref: ${{ github.head_ref }}
-
       - name: Set the current release version
         id: release_version
         run: echo ::set-output name=release_version::${GITHUB_REF:11}
-
       - name: Run pre-release
         uses: micronaut-projects/github-actions/pre-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Publish to Bintray and Sonatype OSSRH
         env:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
@@ -35,7 +30,6 @@ jobs:
           GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
           GPG_FILE: ${{ secrets.GPG_FILE }}
         run: echo $GPG_FILE | base64 -d > secring.gpg && ./gradlew bintrayUpload docs publish closeAndReleaseRepository
-
       - name: Publish to Github Pages
         if: success()
         uses: micronaut-projects/github-pages-deploy-action@master
@@ -51,7 +45,6 @@ jobs:
         uses: micronaut-projects/github-actions/post-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Checkout micronaut-core
         uses: actions/checkout@v2
         with:
@@ -59,7 +52,6 @@ jobs:
           repository: micronaut-projects/micronaut-core
           ref: master # Or 1.3.x etc
           path: micronaut-core # Must be micronaut-core
-
       - name: Update BOM
         uses: micronaut-projects/github-actions/update-bom@master
         with:
