@@ -16,8 +16,12 @@
 package io.micronaut.test.transaction.spring;
 
 import io.micronaut.context.annotation.EachBean;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.test.transaction.TestTransactionInterceptor;
+import io.micronaut.core.util.StringUtils;
+import io.micronaut.test.context.TestContext;
+import io.micronaut.test.context.TestExecutionListener;
+import io.micronaut.test.extensions.AbstractMicronautExtension;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -32,37 +36,42 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Requires(classes = PlatformTransactionManager.class)
 @EachBean(PlatformTransactionManager.class)
-public class SpringTestTransactionInterceptor implements TestTransactionInterceptor {
+@Requires(property = AbstractMicronautExtension.TEST_TRANSACTIONAL, value = StringUtils.TRUE, defaultValue = StringUtils.TRUE)
+public class SpringTransactionTestExecutionListener implements TestExecutionListener {
 
     private final PlatformTransactionManager transactionManager;
     private TransactionStatus tx;
     private final AtomicInteger counter = new AtomicInteger();
+    private final boolean rollback;
 
     /**
      * @param transactionManager Spring's {@code PlatformTransactionManager}
+     * @param rollback {@code true} if the transaction should be rollback
      */
-    public SpringTestTransactionInterceptor(PlatformTransactionManager transactionManager) {
+    public SpringTransactionTestExecutionListener(
+        PlatformTransactionManager transactionManager,
+        @Property(name = AbstractMicronautExtension.TEST_ROLLBACK) boolean rollback) {
+
         this.transactionManager = transactionManager;
+        this.rollback = rollback;
+
     }
 
     @Override
-    public void begin() {
+    public void afterTestExecution(TestContext testContext) {
+        if (counter.decrementAndGet() == 0) {
+            if (rollback) {
+                transactionManager.rollback(tx);
+            } else {
+                transactionManager.commit(tx);
+            }
+        }
+    }
+
+    @Override
+    public void beforeTestExecution(TestContext testContext) {
         if (counter.getAndIncrement() == 0) {
             tx = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        }
-    }
-
-    @Override
-    public void commit() {
-        if (counter.decrementAndGet() == 0) {
-            transactionManager.commit(tx);
-        }
-    }
-
-    @Override
-    public void rollback() {
-        if (counter.decrementAndGet() == 0) {
-            transactionManager.rollback(tx);
         }
     }
 }
