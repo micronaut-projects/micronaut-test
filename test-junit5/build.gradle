@@ -1,5 +1,4 @@
 ext {
-    junitVersion = "5.6.2"
     micronautHibernateJpaVersion = "2.2.0"
     micronautJdbcTomcatVersion = "2.2.0"
 }

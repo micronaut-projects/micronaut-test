@@ -52,6 +52,8 @@ jobs:
           repository: micronaut-projects/micronaut-core
           ref: master # Or 1.3.x etc
           path: micronaut-core # Must be micronaut-core
+      - name: Export Gradle Properties
+        uses: micronaut-projects/github-actions/export-gradle-properties@master
       - name: Update BOM
         uses: micronaut-projects/github-actions/update-bom@master
         with:
@@ -59,4 +61,6 @@ jobs:
           branch: master # Or 1.3.x etc
           properties: |
             micronautTestVersion=${{ steps.release_version.outputs.release_version }}
+            junit5Version=${{ env.junitVersion }}
+            spockVersion=${{ env.spockVersion }}
           version: ${{ steps.release_version.outputs.release_version }}
