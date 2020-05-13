@@ -15,6 +15,7 @@ dependencies {
     api "io.micronaut:micronaut-runtime:$micronautVersion"    
     api "io.kotest:kotest-runner-junit5-jvm:$kotestVersion"
 
+    implementation project(":test-junit5")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 
