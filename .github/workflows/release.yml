@@ -35,14 +35,6 @@ jobs:
           BRANCH: gh-pages
           FOLDER: build/docs
           VERSION: ${{ steps.release_version.outputs.release_version }}
-      - name: Publish to Sonatype OSSRH
-        env:
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
-          GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
-          GPG_FILE: ${{ secrets.GPG_FILE }}
-        run: echo $GPG_FILE | base64 -d > secring.gpg && ./gradlew publish closeRepository
       - name: Checkout micronaut-core
         uses: actions/checkout@v2
         with:
@@ -62,14 +54,15 @@ jobs:
             junit5Version=${{ env.junitVersion }}
             spockVersion=${{ env.spockVersion }}
           version: ${{ steps.release_version.outputs.release_version }}
-      - name: Release to Maven Central
+          continue-on-error: true
+      - name: Publish to Sonatype OSSRH
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
           GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
           GPG_FILE: ${{ secrets.GPG_FILE }}
-        run: echo $GPG_FILE | base64 -d > secring.gpg && ./gradlew releaseRepository
+        run: echo $GPG_FILE | base64 -d > secring.gpg && ./gradlew publish closeAndReleaseRepository
         continue-on-error: true
       - name: Run post-release
         if: success()
