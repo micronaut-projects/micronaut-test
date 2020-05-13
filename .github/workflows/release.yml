@@ -42,12 +42,7 @@ jobs:
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
           GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
           GPG_FILE: ${{ secrets.GPG_FILE }}
-        run: echo $GPG_FILE | base64 -d > secring.gpg && ./gradlew publish closeAndReleaseRepository
-      - name: Run post-release
-        if: success()
-        uses: micronaut-projects/github-actions/post-release@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        run: echo $GPG_FILE | base64 -d > secring.gpg && ./gradlew publish closeRepository
       - name: Checkout micronaut-core
         uses: actions/checkout@v2
         with:
@@ -67,3 +62,16 @@ jobs:
             junit5Version=${{ env.junitVersion }}
             spockVersion=${{ env.spockVersion }}
           version: ${{ steps.release_version.outputs.release_version }}
+      - name: Release to Maven Central
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
+          GPG_FILE: ${{ secrets.GPG_FILE }}
+        run: echo $GPG_FILE | base64 -d > secring.gpg && ./gradlew releaseRepository
+      - name: Run post-release
+        if: success()
+        uses: micronaut-projects/github-actions/post-release@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
