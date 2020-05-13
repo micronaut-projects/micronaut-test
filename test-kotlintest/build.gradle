@@ -17,6 +17,7 @@ dependencies {
     compileOnly(
             "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     )
+    implementation project(":test-junit5")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 
