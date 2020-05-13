@@ -70,6 +70,7 @@ jobs:
           GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
           GPG_FILE: ${{ secrets.GPG_FILE }}
         run: echo $GPG_FILE | base64 -d > secring.gpg && ./gradlew releaseRepository
+        continue-on-error: true
       - name: Run post-release
         if: success()
         uses: micronaut-projects/github-actions/post-release@master
