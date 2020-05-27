@@ -1,8 +1,3 @@
-ext {
-    micronautHibernateJpaVersion = "2.2.0"
-    micronautJdbcTomcatVersion = "2.2.0"
-}
-
 dependencies {
     api project(":test-core")
     api "io.micronaut:micronaut-inject:$micronautVersion"
@@ -22,10 +17,10 @@ dependencies {
     testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
     testImplementation 'org.mockito:mockito-junit-jupiter:3.3.3'
 
-    testImplementation "io.micronaut.configuration:micronaut-hibernate-jpa:$micronautHibernateJpaVersion"
-    testImplementation "io.micronaut.configuration:micronaut-hibernate-jpa-spring:$micronautHibernateJpaVersion"
+    testImplementation "io.micronaut.configuration:micronaut-hibernate-jpa:$micronautSqlVersion"
+    testImplementation "io.micronaut.configuration:micronaut-hibernate-jpa-spring:$micronautSqlVersion"
 
-    testRuntimeOnly "io.micronaut.configuration:micronaut-jdbc-tomcat:$micronautJdbcTomcatVersion"
+    testRuntimeOnly "io.micronaut.configuration:micronaut-jdbc-tomcat:$micronautSqlVersion"
     testRuntimeOnly "com.h2database:h2:1.4.200"
 }
 
