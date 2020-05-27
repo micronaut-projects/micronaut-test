@@ -1,6 +1,6 @@
 ext {
     micronautHibernateJpaVersion = "2.2.0"
-    micronautJdbcTomcatVersion = "2.2.0"
+    micronautJdbcTomcatVersion = "2.2.2"
 }
 
 dependencies {
