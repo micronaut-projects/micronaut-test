@@ -1,0 +1,82 @@
+name: Files sync
+on:
+  push:
+    branches:
+      - master
+jobs:
+  sync-files:
+    if: github.repository == 'micronaut-projects/micronaut-project-template'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: adrianjost/files-sync-action@v1.1.0
+        with:
+          COMMIT_MESSAGE: "Update common files"
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GIT_USERNAME: micronaut-build
+          GIT_EMAIL: "micronaut-build@users.noreply.github.com"
+          SRC_REPO: micronaut-projects/micronaut-project-template
+          FILE_PATTERNS: |-
+            ^\.github\/workflows\/central-sync\.yml$
+            ^\.github\/workflows\/dependency-check\.yml$
+            ^\.github\/workflows\/dependency-update\.yml$
+            ^\.github\/workflows\/gradle\.yml$
+            ^\.github\/workflows\/label-sync\.yml$
+            ^\.github\/workflows\/release-notes\.yml$
+            ^\.github\/workflows\/release\.yml$
+            ^gradle/.*$
+            ^.gitignore$
+            ^gradlew$
+            ^gradlew.bat$
+            ^ISSUE_TEMPLATE.md$
+            ^LICENSE$
+            ^config\/HEADER$
+            ^config\/spotless\.license\.java$
+            ^config\/checkstyle\/checkstyle\.xml$
+          TARGET_REPOS: |-
+            micronaut-projects/micronaut-azure
+            micronaut-projects/micronaut-data
+            micronaut-projects/micronaut-gcp
+            micronaut-projects/micronaut-groovy
+            micronaut-projects/micronaut-grpc
+            micronaut-projects/micronaut-kafka
+            micronaut-projects/micronaut-kotlin
+            micronaut-projects/micronaut-micrometer
+            micronaut-projects/micronaut-mongodb
+            micronaut-projects/micronaut-nats
+            micronaut-projects/micronaut-netflix
+            micronaut-projects/micronaut-rabbitmq
+            micronaut-projects/micronaut-servlet
+            micronaut-projects/micronaut-sql
+            micronaut-projects/micronaut-test
+            micronaut-projects/micronaut-openapi
+
+# Pending repos:
+#            micronaut-projects/micronaut-rss
+#            micronaut-projects/micronaut-liquibase
+#            micronaut-projects/micronaut-jaxrs
+#            micronaut-projects/micronaut-jmx
+#            micronaut-projects/micronaut-acme
+#            micronaut-projects/micronaut-aws
+#            micronaut-projects/micronaut-cache
+#            micronaut-projects/micronaut-cassandra
+#            micronaut-projects/micronaut-couchbase
+#            micronaut-projects/micronaut-core
+#            micronaut-projects/micronaut-elasticsearch
+#            micronaut-projects/micronaut-flyway
+#            micronaut-projects/micronaut-graphql
+#            micronaut-projects/micronaut-hibernate-validator
+#            micronaut-projects/micronaut-jackson-xml
+#            micronaut-projects/micronaut-reactor
+#            micronaut-projects/micronaut-jms
+#            micronaut-projects/micronaut-kubernetes
+#            micronaut-projects/micronaut-neo4j
+#            micronaut-projects/micronaut-oauth2            
+#            micronaut-projects/micronaut-picocli
+#            micronaut-projects/micronaut-ratelimiter
+#            micronaut-projects/micronaut-redis
+#            micronaut-projects/micronaut-rxjava3
+#            micronaut-projects/micronaut-rxjava1
+#            micronaut-projects/micronaut-security
+#            micronaut-projects/micronaut-spring
+#            micronaut-projects/micronaut-views
+
