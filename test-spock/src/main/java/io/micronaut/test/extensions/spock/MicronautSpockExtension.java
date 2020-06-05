@@ -49,7 +49,8 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodInvocation> implements IAnnotationDrivenExtension<MicronautTest> {
 
-    private Queue<Object> createdMocks = new ConcurrentLinkedDeque<>();
+    private Queue<Object> creatableMocks = new ConcurrentLinkedDeque<>();
+    private Queue<Object> singletonMocks = new ConcurrentLinkedDeque<>();
     private MockUtil mockUtil = new MockUtil();
 
     @Override
@@ -108,6 +109,7 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             afterTestClass(buildContext(invocation, null));
             afterClass(invocation);
             invocation.proceed();
+            singletonMocks.clear();
         });
 
         spec.addSetupInterceptor(invocation -> {
@@ -115,17 +117,23 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             final Method method = invocation.getFeature().getFeatureMethod().getReflection();
             List<Property> propertyAnnotations = Arrays.asList(method.getAnnotationsByType(Property.class));
             beforeEach(invocation, instance, method, propertyAnnotations);
-            for (Object createdMock : createdMocks) {
-                mockUtil.attachMock(createdMock, (Specification) instance);
+            for (Object mock : creatableMocks) {
+                mockUtil.attachMock(mock, (Specification) instance);
+            }
+            for (Object mock : singletonMocks) {
+                mockUtil.attachMock(mock, (Specification) instance);
             }
             invocation.proceed();
         });
 
         spec.addCleanupInterceptor(invocation -> {
-            for (Object createdMock : createdMocks) {
-                mockUtil.detachMock(createdMock);
+            for (Object mock : creatableMocks) {
+                mockUtil.detachMock(mock);
             }
-            createdMocks.clear();
+            for (Object mock : singletonMocks) {
+                mockUtil.detachMock(mock);
+            }
+            creatableMocks.clear();
             afterEach(invocation);
             invocation.proceed();
         });
@@ -181,7 +189,11 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         applicationContext.registerSingleton((BeanCreatedEventListener) event -> {
             final Object bean = event.getBean();
             if (mockUtil.isMock(bean)) {
-                createdMocks.add(bean);
+                if (event.getBeanDefinition().isSingleton()) {
+                    singletonMocks.add(bean);
+                } else {
+                    creatableMocks.add(bean);
+                }
             }
             return bean;
         });
@@ -197,16 +209,14 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
                 final Optional<FieldInfo> fld = context.getSpec().getFields().stream().filter(f -> f.getName().equals(args[0].getName())).findFirst();
                 if (fld.isPresent()) {
                     final FieldInfo fieldInfo = fld.get();
-                    if (applicationContext.resolveMetadata(fieldInfo.getType()).isAnnotationPresent(MockBean.class)) {
-                        final Object proxy = fieldInfo.readValue(
-                                instance
-                        );
-                        if (proxy instanceof InterceptedProxy) {
-                            final InterceptedProxy interceptedProxy = (InterceptedProxy) proxy;
-                            final Object target = interceptedProxy.interceptedTarget();
-                            fieldInfo.writeValue(instance, target);
+                    final Object fieldInstance = fieldInfo.readValue(
+                            instance
+                    );
+                    if (fieldInstance instanceof InterceptedProxy) {
+                        Object interceptedTarget = ((InterceptedProxy) fieldInstance).interceptedTarget();
+                        if (mockUtil.isMock(interceptedTarget)) {
+                            fieldInfo.writeValue(instance, interceptedTarget);
                         }
-
                     }
                 }
             }
