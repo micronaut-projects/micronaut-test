@@ -4,6 +4,10 @@ javaPlatform {
 dependencies {
     api platform("org.junit:junit-bom:$junitVersion")
     api platform("org.spockframework:spock-bom:$spockVersion")
+    api "io.kotlintest:kotlintest-runner-junit5:$kotlintestVersion"
+    api "io.kotest:kotest-runner-junit5-jvm:$kotestVersion"
+    api "io.mockk:mockk:$mockkVersion"
+
     constraints {
         for (Project p : rootProject.subprojects) {
             if (p.name == "test-bom") continue
