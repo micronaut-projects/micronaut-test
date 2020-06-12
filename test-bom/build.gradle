@@ -1,0 +1,13 @@
+javaPlatform {
+    allowDependencies()
+}
+dependencies {
+    api platform("org.junit:junit-bom:$junitVersion")
+    api platform("org.spockframework:spock-bom:$spockVersion")
+    constraints {
+        for (Project p : rootProject.subprojects) {
+            if (p.name == "test-bom") continue
+            api "$p.group:micronaut-$p.name:$p.version"
+        }
+    }
+}

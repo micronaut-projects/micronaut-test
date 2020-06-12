@@ -12,7 +12,14 @@ buildscript {
 subprojects { Project subproject ->
     group "io.micronaut.test"
 
-    apply plugin: "io.micronaut.build.common"
+
+    if (subproject.name != 'test-bom') {
+        apply plugin: "io.micronaut.build.common"
+
+    } else {
+        apply plugin: "java-platform"
+        version projectVersion
+    }
 
     if (subproject.parent.name == "docs-examples" || subproject.name == "docs-examples") {
         return
