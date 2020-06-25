@@ -1,5 +1,6 @@
 io.micronaut.test.annotation
 io.micronaut.test.condition
+io.micronaut.test.context
 io.micronaut.test.extensions
 io.micronaut.test.extensions.junit5
 io.micronaut.test.extensions.spock
