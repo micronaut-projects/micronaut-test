@@ -73,6 +73,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         fireListeners(TestExecutionListener::beforeTestExecution, testContext);
     }
 
+    @Override
+    public void beforeCleanupTest(TestContext testContext) throws Exception {
+        fireListeners(TestExecutionListener::beforeCleanupTest, testContext);
+    }
+
+    @Override
+    public void afterCleanupTest(TestContext testContext) throws Exception {
+        fireListeners(TestExecutionListener::afterCleanupTest, testContext);
+    }
+
     /** {@inheritDoc} */
     @Override
     public void afterTestExecution(TestContext testContext) throws Exception {
@@ -89,6 +99,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestClass, testContext);
+    }
+
+    @Override
+    public void beforeSetupTest(TestContext testContext) throws Exception {
+        fireListeners(TestExecutionListener::beforeSetupTest, testContext);
+    }
+
+    @Override
+    public void afterSetupTest(TestContext testContext) throws Exception {
+        fireListeners(TestExecutionListener::afterSetupTest, testContext);
     }
 
     /** {@inheritDoc} */

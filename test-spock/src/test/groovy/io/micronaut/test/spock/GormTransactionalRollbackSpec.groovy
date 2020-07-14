@@ -18,10 +18,10 @@ package io.micronaut.test.spock
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Property
 import io.micronaut.core.util.StringUtils
-import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.spock.entities.Book
 import io.micronaut.test.transaction.spring.SpringTransactionTestExecutionListener
+import org.springframework.transaction.support.TransactionSynchronizationManager
 import spock.lang.Specification
 import spock.lang.Stepwise
 
@@ -43,6 +43,16 @@ class GormTransactionalRollbackSpec extends Specification {
 
     @Inject
     ApplicationContext applicationContext
+
+    def setup() {
+        // check transaction is present in setup
+        assert TransactionSynchronizationManager.isSynchronizationActive()
+    }
+
+    def cleanup() {
+        // check transaction is present in setup
+        assert TransactionSynchronizationManager.isSynchronizationActive()
+    }
 
     void "bean SpringTransactionTestExecutionListener exists"() {
         expect:

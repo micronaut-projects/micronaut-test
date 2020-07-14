@@ -34,6 +34,46 @@ public interface TestExecutionListener {
   }
 
   /**
+   * Executed before the setup method of a test method.
+   *
+   * @param testContext the test context
+   * @throws Exception allows any exception to propagate
+   */
+  default void beforeSetupTest(TestContext testContext) throws Exception {
+
+  }
+
+  /**
+   * Executed after the setup method of a test method.
+   *
+   * @param testContext the test context
+   * @throws Exception allows any exception to propagate
+   */
+  default void afterSetupTest(TestContext testContext) throws Exception {
+
+  }
+
+  /**
+   * Executed before the setup method of a test method.
+   *
+   * @param testContext the test context
+   * @throws Exception allows any exception to propagate
+   */
+  default void beforeCleanupTest(TestContext testContext) throws Exception {
+
+  }
+
+  /**
+   * Executed after the setup method of a test method.
+   *
+   * @param testContext the test context
+   * @throws Exception allows any exception to propagate
+   */
+  default void afterCleanupTest(TestContext testContext) throws Exception {
+
+  }
+
+  /**
    * Executed before a test method is executed (a test method may contain multiple iterations).
    *
    * @param testContext the test context

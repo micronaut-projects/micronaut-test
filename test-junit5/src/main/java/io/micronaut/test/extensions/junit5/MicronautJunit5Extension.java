@@ -33,6 +33,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import javax.inject.Named;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -41,7 +42,7 @@ import java.util.*;
  * @author graemerocher
  * @since 1.0
  */
-public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver {
+public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor {
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
 
     @Override
@@ -58,6 +59,20 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         }
         beforeTestClass(buildContext(extensionContext));
+    }
+
+    @Override
+    public void interceptBeforeEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        beforeSetupTest(buildContext(extensionContext));
+        invocation.proceed();
+        afterSetupTest(buildContext(extensionContext));
+    }
+
+    @Override
+    public void interceptAfterEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        beforeCleanupTest(buildContext(extensionContext));
+        invocation.proceed();
+        afterCleanupTest(buildContext(extensionContext));
     }
 
     @Override
