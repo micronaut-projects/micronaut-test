@@ -50,28 +50,51 @@ public class SpringTransactionTestExecutionListener implements TestExecutionList
      */
     public SpringTransactionTestExecutionListener(
         PlatformTransactionManager transactionManager,
-        @Property(name = AbstractMicronautExtension.TEST_ROLLBACK) boolean rollback) {
+        @Property(name = AbstractMicronautExtension.TEST_ROLLBACK, defaultValue = "true") boolean rollback) {
 
         this.transactionManager = transactionManager;
         this.rollback = rollback;
+    }
 
+    @Override
+    public void beforeSetupTest(TestContext testContext) {
+        beforeTestExecution(testContext);
+    }
+
+    @Override
+    public void afterSetupTest(TestContext testContext) {
+        afterTestExecution(false);
+    }
+
+    @Override
+    public void beforeCleanupTest(TestContext testContext) throws Exception {
+        beforeTestExecution(testContext);
+    }
+
+    @Override
+    public void afterCleanupTest(TestContext testContext) throws Exception {
+        afterTestExecution(false);
     }
 
     @Override
     public void afterTestExecution(TestContext testContext) {
-        if (counter.decrementAndGet() == 0) {
-            if (rollback) {
-                transactionManager.rollback(tx);
-            } else {
-                transactionManager.commit(tx);
-            }
-        }
+        afterTestExecution(this.rollback);
     }
 
     @Override
     public void beforeTestExecution(TestContext testContext) {
         if (counter.getAndIncrement() == 0) {
             tx = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        }
+    }
+
+    private void afterTestExecution(boolean rollback) {
+        if (counter.decrementAndGet() == 0) {
+            if (rollback) {
+                transactionManager.rollback(tx);
+            } else {
+                transactionManager.commit(tx);
+            }
         }
     }
 }

@@ -108,6 +108,7 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         spec.addCleanupSpecInterceptor(invocation -> {
             afterTestClass(buildContext(invocation, null));
             afterClass(invocation);
+
             invocation.proceed();
             singletonMocks.clear();
         });
@@ -123,7 +124,12 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             for (Object mock : singletonMocks) {
                 mockUtil.attachMock(mock, (Specification) instance);
             }
-            invocation.proceed();
+            try {
+                beforeSetupTest(buildContext(invocation, null));
+                invocation.proceed();
+            } finally {
+                afterSetupTest(buildContext(invocation, null));
+            }
         });
 
         spec.addCleanupInterceptor(invocation -> {
@@ -135,7 +141,12 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             }
             creatableMocks.clear();
             afterEach(invocation);
-            invocation.proceed();
+            try {
+                beforeCleanupTest(buildContext(invocation, null));
+                invocation.proceed();
+            } finally {
+                afterCleanupTest(buildContext(invocation, null));
+            }
         });
     }
 
