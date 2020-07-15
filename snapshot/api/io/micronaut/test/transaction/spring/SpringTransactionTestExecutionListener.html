@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -161,11 +161,35 @@ implements <a href="../../../../../io/micronaut/test/context/TestExecutionListen
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/transaction/spring/SpringTransactionTestExecutionListener.html#afterCleanupTest-io.micronaut.test.context.TestContext-">afterCleanupTest</a></span>(<a href="../../../../../io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a>&nbsp;testContext)</code>
+<div class="block">Executed after the setup method of a test method.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/transaction/spring/SpringTransactionTestExecutionListener.html#afterSetupTest-io.micronaut.test.context.TestContext-">afterSetupTest</a></span>(<a href="../../../../../io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a>&nbsp;testContext)</code>
+<div class="block">Executed after the setup method of a test method.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/transaction/spring/SpringTransactionTestExecutionListener.html#afterTestExecution-io.micronaut.test.context.TestContext-">afterTestExecution</a></span>(<a href="../../../../../io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a>&nbsp;testContext)</code>
 <div class="block">Executed after a single test iteration has been executed .</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/transaction/spring/SpringTransactionTestExecutionListener.html#beforeCleanupTest-io.micronaut.test.context.TestContext-">beforeCleanupTest</a></span>(<a href="../../../../../io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a>&nbsp;testContext)</code>
+<div class="block">Executed before the setup method of a test method.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/transaction/spring/SpringTransactionTestExecutionListener.html#beforeSetupTest-io.micronaut.test.context.TestContext-">beforeSetupTest</a></span>(<a href="../../../../../io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a>&nbsp;testContext)</code>
+<div class="block">Executed before the setup method of a test method.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/transaction/spring/SpringTransactionTestExecutionListener.html#beforeTestExecution-io.micronaut.test.context.TestContext-">beforeTestExecution</a></span>(<a href="../../../../../io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a>&nbsp;testContext)</code>
 <div class="block">Executed before a single test iteration is executed.</div>
@@ -207,7 +231,7 @@ implements <a href="../../../../../io/micronaut/test/context/TestExecutionListen
 <li class="blockList">
 <h4>SpringTransactionTestExecutionListener</h4>
 <pre>public&nbsp;SpringTransactionTestExecutionListener(org.springframework.transaction.PlatformTransactionManager&nbsp;transactionManager,
-                                              @Property(name="micronaut.test.rollback")
+                                              @Property(name="micronaut.test.rollback",defaultValue="true")
                                               boolean&nbsp;rollback)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -224,6 +248,80 @@ implements <a href="../../../../../io/micronaut/test/context/TestExecutionListen
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="beforeSetupTest-io.micronaut.test.context.TestContext-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>beforeSetupTest</h4>
+<pre>public&nbsp;void&nbsp;beforeSetupTest(<a href="../../../../../io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a>&nbsp;testContext)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html#beforeSetupTest-io.micronaut.test.context.TestContext-">TestExecutionListener</a></code></span></div>
+<div class="block">Executed before the setup method of a test method.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html#beforeSetupTest-io.micronaut.test.context.TestContext-">beforeSetupTest</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context">TestExecutionListener</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>testContext</code> - the test context</dd>
+</dl>
+</li>
+</ul>
+<a name="afterSetupTest-io.micronaut.test.context.TestContext-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>afterSetupTest</h4>
+<pre>public&nbsp;void&nbsp;afterSetupTest(<a href="../../../../../io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a>&nbsp;testContext)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html#afterSetupTest-io.micronaut.test.context.TestContext-">TestExecutionListener</a></code></span></div>
+<div class="block">Executed after the setup method of a test method.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html#afterSetupTest-io.micronaut.test.context.TestContext-">afterSetupTest</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context">TestExecutionListener</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>testContext</code> - the test context</dd>
+</dl>
+</li>
+</ul>
+<a name="beforeCleanupTest-io.micronaut.test.context.TestContext-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>beforeCleanupTest</h4>
+<pre>public&nbsp;void&nbsp;beforeCleanupTest(<a href="../../../../../io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a>&nbsp;testContext)
+                       throws java.lang.Exception</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html#beforeCleanupTest-io.micronaut.test.context.TestContext-">TestExecutionListener</a></code></span></div>
+<div class="block">Executed before the setup method of a test method.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html#beforeCleanupTest-io.micronaut.test.context.TestContext-">beforeCleanupTest</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context">TestExecutionListener</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>testContext</code> - the test context</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - allows any exception to propagate</dd>
+</dl>
+</li>
+</ul>
+<a name="afterCleanupTest-io.micronaut.test.context.TestContext-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>afterCleanupTest</h4>
+<pre>public&nbsp;void&nbsp;afterCleanupTest(<a href="../../../../../io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a>&nbsp;testContext)
+                      throws java.lang.Exception</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html#afterCleanupTest-io.micronaut.test.context.TestContext-">TestExecutionListener</a></code></span></div>
+<div class="block">Executed after the setup method of a test method.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html#afterCleanupTest-io.micronaut.test.context.TestContext-">afterCleanupTest</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context">TestExecutionListener</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>testContext</code> - the test context</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - allows any exception to propagate</dd>
+</dl>
+</li>
+</ul>
 <a name="afterTestExecution-io.micronaut.test.context.TestContext-">
 <!--   -->
 </a>
