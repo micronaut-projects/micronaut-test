@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>2 Testing with Spock 1.2.2.BUILD-SNAPSHOT</title>
+    <title>2 Testing with Spock 1.1.6.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -50,10 +50,7 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/kotlintest.html"><strong>4</strong><span>Testing with KotlinTest</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/kotest.html"><strong>5</strong><span>Testing with Kotest</span></a>
-                        </div>
-                        
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/repository.html"><strong>6</strong><span>Repository</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/repository.html"><strong>5</strong><span>Repository</span></a>
                         </div>
                         
                     </div>
@@ -87,7 +84,7 @@ function addJsClass() {
                 <div class="project">
                     <h1>2 Testing with Spock</h1>
 
-                    <p><strong>Version:</strong> 1.2.2.BUILD-SNAPSHOT</p>
+                    <p><strong>Version:</strong> 1.1.6.BUILD-SNAPSHOT</p>
                 </div>
 
                 
@@ -96,7 +93,7 @@ function addJsClass() {
 <h1 id="spock"><a class="anchor" href="#spock"></a>2 Testing with Spock</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/spock.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/1.1.x/src/main/docs/guide/spock.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -110,7 +107,7 @@ function addJsClass() {
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">testCompile "io.micronaut.test:micronaut-test-spock:1.2.2.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">testCompile "io.micronaut.test:micronaut-test-spock:1.1.6.BUILD-SNAPSHOT"</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -148,22 +145,7 @@ If you plan to define mock beans you will also need <code>micronaut-inject-groov
 <div class="listingblock">
 <div class="title">The MathService Interface</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">/*
- * Copyright 2017-2020 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.micronaut.test.spock;
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock;
 
 import javax.inject.Singleton;
 
@@ -179,22 +161,7 @@ interface MathService {
 <div class="listingblock">
 <div class="title">The MathService implementation</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">/*
- * Copyright 2017-2020 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import javax.inject.Singleton
 
@@ -214,22 +181,7 @@ class MathServiceImpl implements MathService {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">/*
- * Copyright 2017-2020 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.test.annotation.MicronautTest
 import spock.lang.*
@@ -312,22 +264,7 @@ class MathServiceSpec extends Specification {
 <div class="listingblock">
 <div class="title">The MathService specification</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">/*
- * Copyright 2017-2020 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.test.annotation.*
 import spock.lang.*
@@ -390,22 +327,7 @@ class MathMockServiceSpec extends Specification {
 <div class="listingblock">
 <div class="title">The MathController</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">/*
- * Copyright 2017-2020 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
@@ -434,22 +356,7 @@ class MathController {
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">/*
- * Copyright 2017-2020 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock
 
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.RxHttpClient
@@ -541,22 +448,7 @@ class RequiresSpec extends Specification {
 <div class="listingblock">
 <div class="title">Using <code>@Property</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/*
- * Copyright 2017-2020 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Value
@@ -600,22 +492,7 @@ class PropertySpec extends Specification {
 <div class="listingblock">
 <div class="title">Using <code>propertySources</code> stored in files</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/*
- * Copyright 2017-2020 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.annotation.MicronautTest
@@ -670,22 +547,7 @@ re-evaluated again.</p>
 <div class="listingblock">
 <div class="title">Combining <code>@Requires</code> and <code>@Property</code> in a <code>@Refreshable</code> test class.</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">/*
- * Copyright 2017-2020 original authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package io.micronaut.test.spock
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
