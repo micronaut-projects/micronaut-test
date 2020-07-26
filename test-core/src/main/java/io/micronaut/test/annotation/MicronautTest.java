@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.lang.annotation.*;
 
 /**
- * Annotation that can be applied to any Spock spec to make it a Micronaut test.
+ * Annotation that can be applied to any Spock spec or JUnit 5 test to make it a Micronaut test.
  *
  * @author graemerocher
  * @since 1.0
