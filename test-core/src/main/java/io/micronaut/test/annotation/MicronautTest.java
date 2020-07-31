@@ -16,13 +16,28 @@
 package io.micronaut.test.annotation;
 
 import io.micronaut.context.ApplicationContextBuilder;
+import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.test.condition.TestActiveCondition;
+import io.micronaut.test.extensions.junit5.MicronautJunit5Extension;
+import io.micronaut.test.extensions.spock.MicronautSpockExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.lang.annotation.*;
 
 /**
- * Stub Micronaut Test annotation
+ * Annotation that can be applied to any Spock spec or JUnit 5 test to make it a Micronaut test.
  *
  * @author graemerocher
  * @since 1.0
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
+@org.spockframework.runtime.extension.ExtensionAnnotation(MicronautSpockExtension.class)
+@ExtendWith(MicronautJunit5Extension.class)
+@Factory
+@Inherited
+@Requires(condition = TestActiveCondition.class)
 public @interface MicronautTest {
     /**
      * @return The application class of the application
