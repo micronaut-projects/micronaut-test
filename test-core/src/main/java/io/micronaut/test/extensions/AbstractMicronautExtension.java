@@ -33,7 +33,7 @@ import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
 import io.micronaut.test.annotation.AnnotationUtils;
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.condition.TestActiveCondition;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.context.TestExecutionListener;
@@ -64,7 +64,9 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected BeanDefinition<?> specDefinition;
     protected Map<String, Object> testProperties = new LinkedHashMap<>();
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
-    private MicronautTest testAnnotation;
+
+    @Deprecated
+    private MicronautTestValue testAnnotationValue;
     private ApplicationContextBuilder builder = ApplicationContext.build();
 
     /** {@inheritDoc} */
@@ -146,15 +148,15 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      *
      * @param context The test context
      * @param testClass The test class
-     * @param testAnnotation The test annotation
+     * @param testAnnotationValue The test annotation values
      */
-    protected void beforeClass(C context, Class<?> testClass, @Nullable MicronautTest testAnnotation) {
-        if (testAnnotation != null) {
-            Class<? extends ApplicationContextBuilder>[] cb = testAnnotation.contextBuilder();
+    protected void beforeClass(C context, Class<?> testClass, @Nullable MicronautTestValue testAnnotationValue) {
+        if (testAnnotationValue != null) {
+            Class<? extends ApplicationContextBuilder>[] cb = testAnnotationValue.contextBuilder();
             if (ArrayUtils.isNotEmpty(cb)) {
                 this.builder = InstantiationUtils.instantiate(cb[0]);
             }
-            this.testAnnotation = testAnnotation;
+            this.testAnnotationValue = testAnnotationValue;
 
             final Package aPackage = testClass.getPackage();
             builder.packages(aPackage.getName());
@@ -164,7 +166,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 testProperties.put(property.name(), property.value());
             }
 
-            String[] propertySources = testAnnotation.propertySources();
+            String[] propertySources = testAnnotationValue.propertySources();
             if (ArrayUtils.isNotEmpty(propertySources)) {
 
                 Map<String, PropertySourceLoader> loaderMap = readPropertySourceLoaderMap();
@@ -201,21 +203,21 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 }
             }
             if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
-                resolveTestProperties(context, testAnnotation, testProperties);
+                resolveTestProperties(context, testAnnotationValue, testProperties);
             }
             testProperties.put(TestActiveCondition.ACTIVE_SPEC_NAME, aPackage.getName() + "." + testClass.getSimpleName());
             testProperties.put(TestActiveCondition.ACTIVE_SPEC_CLAZZ, testClass);
-            testProperties.put(TEST_ROLLBACK, String.valueOf(testAnnotation.rollback()));
-            testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotation.transactional()));
-            final Class<?> application = testAnnotation.application();
+            testProperties.put(TEST_ROLLBACK, String.valueOf(testAnnotationValue.rollback()));
+            testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
+            final Class<?> application = testAnnotationValue.application();
             if (application != void.class) {
                 builder.mainClass(application);
             }
-            String[] environments = testAnnotation.environments();
+            String[] environments = testAnnotationValue.environments();
             if (environments.length == 0) {
                 environments = new String[]{"test"};
             }
-            builder.packages(testAnnotation.packages())
+            builder.packages(testAnnotationValue.packages())
                    .environments(environments);
 
             builder.propertySources(io.micronaut.context.env.PropertySource.of(testProperties));
@@ -232,12 +234,11 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
     /**
      * Resolves any test properties.
-     *
-     * @param context The test context
-     * @param testAnnotation The test annotation
+     *  @param context The test context
+     * @param testAnnotationValue The test annotation
      * @param testProperties The test properties
      */
-    protected abstract void resolveTestProperties(C context, MicronautTest testAnnotation, Map<String, Object> testProperties);
+    protected abstract void resolveTestProperties(C context, MicronautTestValue testAnnotationValue, Map<String, Object> testProperties);
 
     /**
      * To be called by the different implementations before each test method.
@@ -261,7 +262,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 oldValues.forEach((k, v) -> testProperties.put(k, v));
             }
 
-            if (testAnnotation.rebuildContext() && testCount > 1) {
+            if (testAnnotationValue.rebuildContext() && testCount > 1) {
                 embeddedApplication.stop();
                 applicationContext.stop();
                 applicationContext = builder.build();

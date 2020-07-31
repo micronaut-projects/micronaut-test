@@ -95,6 +95,19 @@ public final class AnnotationUtils {
         return Collections.unmodifiableList(new ArrayList<>(found));
     }
 
+    public static MicronautTestValue buildValueObject(MicronautTest micronautTest) {
+        return new MicronautTestValue(
+                micronautTest.application(),
+                micronautTest.environments(),
+                micronautTest.packages(),
+                micronautTest.propertySources(),
+                micronautTest.rollback(),
+                micronautTest.transactional(),
+                micronautTest.rebuildContext(),
+                micronautTest.contextBuilder()
+        );
+    }
+
     private static <A extends Annotation> void findRepeatableAnnotations(AnnotatedElement element,
                                                                          Class<A> annotationType,
                                                                          Class<? extends Annotation> containerType,

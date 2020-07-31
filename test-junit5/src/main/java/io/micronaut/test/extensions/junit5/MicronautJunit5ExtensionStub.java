@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.extensions.spock;
-
-import org.spockframework.runtime.extension.AbstractAnnotationDrivenExtension;
+package io.micronaut.test.extensions.junit5;
 
 /**
- * Stub for the Spock extension.
+ * Compatibility class for cases when the old, shared <code>io.micronaut.test.annotation.MicronautTest</code> annotation
+ * is used.
  *
- * @author graemerocher
- * @since 1.0
+ * @author Álvaro Sánchez-Mariscal
+ * @since 1.0.0
  */
-public class MicronautSpockExtension extends AbstractAnnotationDrivenExtension {
+public class MicronautJunit5ExtensionStub extends MicronautJunit5Extension {
 }

@@ -23,6 +23,7 @@ import io.kotlintest.extensions.TestCaseExtension
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.extensions.TopLevelTest
 import io.micronaut.aop.InterceptedProxy
+import io.micronaut.test.annotation.AnnotationUtils
 import io.micronaut.test.annotation.MicronautTest
 import org.junit.platform.commons.support.AnnotationSupport
 import kotlin.reflect.KClass
@@ -73,13 +74,17 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
         // otherwise there's nothing to inject there
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
-        val micronautTest = AnnotationSupport.findAnnotation<MicronautTest>(testClass, MicronautTest::class.java).orElse(null)
+        val micronautTestValue = testClass
+                .annotations
+                .filterIsInstance<MicronautTest>()
+                .map { micronautTest -> AnnotationUtils.buildValueObject(micronautTest) }
+                .firstOrNull()
 
-        return if (micronautTest == null) {
+        return if (micronautTestValue == null) {
             null
         } else {
             val createBean = constructor != null && constructor.parameters.isNotEmpty()
-            val context = MicronautKotlinTestContext(testClass, micronautTest, createBean)
+            val context = MicronautKotlinTestContext(testClass, micronautTestValue, createBean)
             contexts[testClass.name] = context
             if (createBean) {
                 context.bean

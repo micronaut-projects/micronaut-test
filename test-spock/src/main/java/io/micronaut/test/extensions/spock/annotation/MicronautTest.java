@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.annotation;
+package io.micronaut.test.extensions.spock.annotation;
 
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.test.condition.TestActiveCondition;
-import io.micronaut.test.extensions.junit5.MicronautJunit5ExtensionStub;
-import io.micronaut.test.extensions.spock.MicronautSpockExtensionStub;
-import org.junit.jupiter.api.extension.ExtendWith;
+import io.micronaut.test.extensions.spock.MicronautSpockExtension;
 import org.spockframework.runtime.extension.ExtensionAnnotation;
 
 import java.lang.annotation.*;
@@ -30,17 +28,15 @@ import java.lang.annotation.*;
  * Annotation that can be applied to any Spock spec or JUnit 5 test to make it a Micronaut test.
  *
  * @author graemerocher
- * @since 1.0
- * @deprecated since 1.3, use the concrete implementations (eg: <pre>io.micronaut.test.extensions.junit5.annotation.MicronautTest</pre>, etc)
+ * @author Álvaro Sánchez-Mariscal
+ * @since 1.3
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
-@ExtensionAnnotation(MicronautSpockExtensionStub.class)
-@ExtendWith(MicronautJunit5ExtensionStub.class)
+@ExtensionAnnotation(MicronautSpockExtension.class)
 @Factory
 @Inherited
 @Requires(condition = TestActiveCondition.class)
-@Deprecated
 public @interface MicronautTest {
     /**
      * @return The application class of the application
