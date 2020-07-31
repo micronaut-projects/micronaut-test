@@ -24,8 +24,8 @@ import io.kotlintest.extensions.TestListener
 import io.kotlintest.extensions.TopLevelTest
 import io.micronaut.aop.InterceptedProxy
 import io.micronaut.test.annotation.AnnotationUtils
-import io.micronaut.test.annotation.MicronautTest
-import org.junit.platform.commons.support.AnnotationSupport
+import io.micronaut.test.annotation.MicronautTestValue
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -74,11 +74,18 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
         // otherwise there's nothing to inject there
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
-        val micronautTestValue = testClass
+        var micronautTestValue = testClass
                 .annotations
-                .filterIsInstance<MicronautTest>()
+                .filterIsInstance<io.micronaut.test.annotation.MicronautTest>()
                 .map { micronautTest -> AnnotationUtils.buildValueObject(micronautTest) }
                 .firstOrNull()
+        if (micronautTestValue == null) {
+            micronautTestValue = testClass
+                    .annotations
+                    .filterIsInstance<MicronautTest>()
+                    .map { micronautTest -> buildValueObject(micronautTest) }
+                    .firstOrNull()
+        }
 
         return if (micronautTestValue == null) {
             null
@@ -92,6 +99,19 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
                 null
             }
         }
+    }
+
+    private fun buildValueObject(micronautTest: MicronautTest): MicronautTestValue {
+        return MicronautTestValue(
+                micronautTest.application.java,
+                micronautTest.environments,
+                micronautTest.packages,
+                micronautTest.propertySources,
+                micronautTest.rollback,
+                micronautTest.transactional,
+                micronautTest.rebuildContext,
+                micronautTest.contextBuilder.map { kClass -> kClass.java }.toTypedArray()
+        )
     }
 
     @Suppress("UNCHECKED_CAST")

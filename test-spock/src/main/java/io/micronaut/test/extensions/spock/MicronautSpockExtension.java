@@ -38,6 +38,7 @@ import org.spockframework.runtime.model.SpecInfo;
 import spock.lang.Specification;
 
 import javax.inject.Inject;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -48,14 +49,14 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * @author graemerocher
  * @since 1.0
  */
-public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodInvocation> implements IAnnotationDrivenExtension<MicronautTest> {
+public class MicronautSpockExtension<T extends Annotation> extends AbstractMicronautExtension<IMethodInvocation> implements IAnnotationDrivenExtension<T> {
 
     private Queue<Object> creatableMocks = new ConcurrentLinkedDeque<>();
     private Queue<Object> singletonMocks = new ConcurrentLinkedDeque<>();
     private MockUtil mockUtil = new MockUtil();
 
     @Override
-    public void visitSpecAnnotation(MicronautTest annotation, SpecInfo spec) {
+    public void visitSpecAnnotation(T annotation, SpecInfo spec) {
 
         spec.getAllFeatures().forEach(feature -> {
 
@@ -82,12 +83,12 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         });
 
         spec.addSetupSpecInterceptor(invocation -> {
-                    MicronautTestValue micronautTestValue = null;
+                    MicronautTestValue micronautTestValue;
                     MicronautTest micronautTest = spec.getAnnotation(MicronautTest.class);
                     if (micronautTest == null) {
-                        micronautTestValue = buildValueObject(spec.getAnnotation(MicronautTest.class));
-                    } else {
                         micronautTestValue = AnnotationUtils.buildValueObject(spec.getAnnotation(io.micronaut.test.annotation.MicronautTest.class));
+                    } else {
+                        micronautTestValue = buildValueObject(micronautTest);
                     }
                     beforeClass(invocation, spec.getReflection(), micronautTestValue);
                     if (specDefinition == null) {
@@ -159,16 +160,20 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
     }
 
     private MicronautTestValue buildValueObject(MicronautTest micronautTest) {
-        return new MicronautTestValue(
-                micronautTest.application(),
-                micronautTest.environments(),
-                micronautTest.packages(),
-                micronautTest.propertySources(),
-                micronautTest.rollback(),
-                micronautTest.transactional(),
-                micronautTest.rebuildContext(),
-                micronautTest.contextBuilder()
-        );
+        if (micronautTest != null) {
+            return new MicronautTestValue(
+                    micronautTest.application(),
+                    micronautTest.environments(),
+                    micronautTest.packages(),
+                    micronautTest.propertySources(),
+                    micronautTest.rollback(),
+                    micronautTest.transactional(),
+                    micronautTest.rebuildContext(),
+                    micronautTest.contextBuilder()
+            );
+        } else {
+            return null;
+        }
     }
 
     private TestContext buildContext(IMethodInvocation invocation, Throwable exception) {
@@ -181,20 +186,20 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
     }
 
     @Override
-    public void visitFeatureAnnotation(MicronautTest annotation, FeatureInfo feature) {
+    public void visitFeatureAnnotation(T annotation, FeatureInfo feature) {
         throw new InvalidSpecException("@%s may not be applied to feature methods")
                 .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
-    public void visitFixtureAnnotation(MicronautTest annotation, MethodInfo fixtureMethod) {
+    public void visitFixtureAnnotation(T annotation, MethodInfo fixtureMethod) {
         throw new InvalidSpecException("@%s may not be applied to fixture methods")
                 .withArgs(annotation.annotationType().getSimpleName());
 
     }
 
     @Override
-    public void visitFieldAnnotation(MicronautTest annotation, FieldInfo field) {
+    public void visitFieldAnnotation(T annotation, FieldInfo field) {
         throw new InvalidSpecException("@%s may not be applied to fields")
                 .withArgs(annotation.annotationType().getSimpleName());
 

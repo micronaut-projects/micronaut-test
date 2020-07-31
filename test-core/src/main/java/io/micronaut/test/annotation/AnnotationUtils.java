@@ -96,16 +96,20 @@ public final class AnnotationUtils {
     }
 
     public static MicronautTestValue buildValueObject(MicronautTest micronautTest) {
-        return new MicronautTestValue(
-                micronautTest.application(),
-                micronautTest.environments(),
-                micronautTest.packages(),
-                micronautTest.propertySources(),
-                micronautTest.rollback(),
-                micronautTest.transactional(),
-                micronautTest.rebuildContext(),
-                micronautTest.contextBuilder()
-        );
+        if (micronautTest != null) {
+            return new MicronautTestValue(
+                    micronautTest.application(),
+                    micronautTest.environments(),
+                    micronautTest.packages(),
+                    micronautTest.propertySources(),
+                    micronautTest.rollback(),
+                    micronautTest.transactional(),
+                    micronautTest.rebuildContext(),
+                    micronautTest.contextBuilder()
+            );
+        } else {
+            return null;
+        }
     }
 
     private static <A extends Annotation> void findRepeatableAnnotations(AnnotatedElement element,

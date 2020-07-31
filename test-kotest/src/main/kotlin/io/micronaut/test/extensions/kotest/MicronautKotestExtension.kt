@@ -100,7 +100,6 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
         }
     }
 
-    //FIXME
     private fun buildValueObject(micronautTest: MicronautTest): MicronautTestValue {
         return MicronautTestValue(
                 micronautTest.application.java,
