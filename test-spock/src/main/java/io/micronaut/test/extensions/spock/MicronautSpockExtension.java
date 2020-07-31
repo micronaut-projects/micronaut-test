@@ -22,10 +22,10 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.test.annotation.AnnotationUtils;
-import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
+import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.spockframework.mock.MockUtil;
 import org.spockframework.runtime.InvalidSpecException;
@@ -82,7 +82,14 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         });
 
         spec.addSetupSpecInterceptor(invocation -> {
-                    beforeClass(invocation, spec.getReflection(), AnnotationUtils.buildValueObject(spec.getAnnotation(MicronautTest.class)));
+                    MicronautTestValue micronautTestValue = null;
+                    MicronautTest micronautTest = spec.getAnnotation(MicronautTest.class);
+                    if (micronautTest == null) {
+                        micronautTestValue = buildValueObject(spec.getAnnotation(MicronautTest.class));
+                    } else {
+                        micronautTestValue = AnnotationUtils.buildValueObject(spec.getAnnotation(io.micronaut.test.annotation.MicronautTest.class));
+                    }
+                    beforeClass(invocation, spec.getReflection(), micronautTestValue);
                     if (specDefinition == null) {
                         if (!isTestSuiteBeanPresent(spec.getReflection())) {
                             throw new InvalidSpecException(MISCONFIGURED_MESSAGE);
@@ -149,6 +156,19 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
                 afterCleanupTest(buildContext(invocation, null));
             }
         });
+    }
+
+    private MicronautTestValue buildValueObject(MicronautTest micronautTest) {
+        return new MicronautTestValue(
+                micronautTest.application(),
+                micronautTest.environments(),
+                micronautTest.packages(),
+                micronautTest.propertySources(),
+                micronautTest.rollback(),
+                micronautTest.transactional(),
+                micronautTest.rebuildContext(),
+                micronautTest.contextBuilder()
+        );
     }
 
     private TestContext buildContext(IMethodInvocation invocation, Throwable exception) {
