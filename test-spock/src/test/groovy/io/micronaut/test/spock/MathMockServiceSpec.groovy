@@ -15,8 +15,11 @@
  */
 package io.micronaut.test.spock
 
-import io.micronaut.test.annotation.*
-import spock.lang.*
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import spock.lang.Specification
+import spock.lang.Unroll
+
 import javax.inject.Inject
 
 @MicronautTest

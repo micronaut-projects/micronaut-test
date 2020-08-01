@@ -15,7 +15,7 @@
  */
 package io.micronaut.test.spock
 
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.*
 import javax.inject.Inject
 
