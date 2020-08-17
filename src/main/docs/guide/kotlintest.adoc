@@ -1,5 +1,7 @@
 === Setting up KotlinTest
 
+> **_NOTE:_**  KotlinTest for Micronaut is deprecated in favour of Kotest (see next section https://micronaut-projects.github.io/micronaut-test/latest/guide/#kotest)[Testing with Kotest])
+
 To get started using KotlinTest you need the following dependencies in your build configuration:
 
 .build.gradle
