@@ -155,7 +155,7 @@ include::{junit5tests}/MathCollaboratorTest.java[]
 
 The way this works is that `@MicronautTest` will inject the `Mock(..)` instance into the test, but the controller will have a proxy that points to the `Mock(..)` instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut's built in `RefreshScope`).
 
-For Factory injected beans, we can use Factory Replacement to inject Mocks. Refer https://docs.micronaut.io/latest/guide/ioc.html#_factory_replacement[Factory Replacement].
+For Factory injected beans, you can use Factory Replacement to inject Mocks. Refer to the https://docs.micronaut.io/latest/guide/index.html#_factory_replacement[factory replacement documentation] for more information.
 
 === Using `@Requires` on Tests
 
