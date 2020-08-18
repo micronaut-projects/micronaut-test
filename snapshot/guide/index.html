@@ -1356,6 +1356,9 @@ class MathCollaboratorTest {
 <div class="paragraph">
 <p>The way this works is that <code>@MicronautTest</code> will inject the <code>Mock(..)</code> instance into the test, but the controller will have a proxy that points to the <code>Mock(..)</code> instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
 </div>
+<div class="paragraph">
+<p>For Factory injected beans, you can use Factory Replacement to inject Mocks. Refer to the <a href="https://docs.micronaut.io/latest/guide/index.html#_factory_replacement">factory replacement documentation</a> for more information.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_using_code_requires_code_on_tests">Using <code>@Requires</code> on Tests</h3>
