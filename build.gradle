@@ -19,7 +19,8 @@ subprojects { Project subproject ->
         micronautBuild {
             resolutionStrategy {
                 eachDependency { DependencyResolveDetails details ->
-                    if (details.requested.group.startsWith('org.jetbrains.kotlin')) {
+                    String group = details.requested.group
+                    if (group.startsWith('org.jetbrains.kotlin') && group != 'org.jetbrains.kotlinx') {
                         details.useVersion kotlinVersion
                     }
                 }
