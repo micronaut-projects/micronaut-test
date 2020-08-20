@@ -213,6 +213,26 @@ Or the packages:
 
 To ensure that entities can be found during classpath scanning.
 
+=== Transaction semantics
+
+By default, if `org.springframework:spring-tx` is in the test classpath (eg transitively via
+`io.micronaut.configuration:micronaut-hibernate-jpa-spring`), when using `@MicronautTest`, each `@Test` method will be
+wrapped in a transaction that will be rolled back when the test finishes. This behaviour can be changed by using the
+`transactional` and `rollback` properties.
+
+To avoid creating a transaction:
+
+```java
+@MicronautTest(transactional = false)
+```
+
+To not rollback the transaction:
+
+```java
+@MicronautTest(rollback = false)
+```
+
+
 === Using Mockk Mocks
 
 Now let's say you want to replace the implementation with a Mockk. You can do so by defining a method that returns a mock and is annotated with `@MockBean`, for example:
