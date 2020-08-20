@@ -16,6 +16,16 @@ subprojects { Project subproject ->
     if (subproject.name != 'test-bom') {
         apply plugin: "io.micronaut.build.common"
 
+        micronautBuild {
+            resolutionStrategy {
+                eachDependency { DependencyResolveDetails details ->
+                    if (details.requested.group.startsWith('org.jetbrains.kotlin')) {
+                        details.useVersion kotlinVersion
+                    }
+                }
+            }
+        }
+
     } else {
         apply plugin: "java-platform"
         version projectVersion
