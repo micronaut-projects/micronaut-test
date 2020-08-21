@@ -305,6 +305,31 @@ class MathServiceSpec extends Specification {
 </div>
 </div>
 <div class="sect2">
+<h3 id="_transaction_semantics">Transaction semantics</h3>
+<div class="paragraph">
+<p>By default, if <code>org.springframework:spring-tx</code> is in the test classpath (eg transitively via
+<code>io.micronaut.configuration:micronaut-hibernate-jpa-spring</code>), when using <code>@MicronautTest</code>, each <code>@Test</code> method will be
+wrapped in a transaction that will be rolled back when the test finishes. This behaviour can be changed by using the
+<code>transactional</code> and <code>rollback</code> properties.</p>
+</div>
+<div class="paragraph">
+<p>To avoid creating a transaction:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(transactional = false)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To not rollback the transaction:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(rollback = false)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_using_spock_mocks">Using Spock Mocks</h3>
 <div class="paragraph">
 <p>Now let&#8217;s say you want to replace the implementation with a Spock Mock. You can do so by defining a method that returns a Spock mock and is annotated with <code>@MockBean</code>, for example:</p>
