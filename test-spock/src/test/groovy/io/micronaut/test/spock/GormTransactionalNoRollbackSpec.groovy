@@ -27,10 +27,10 @@ import spock.lang.Stepwise
 
 import javax.inject.Inject
 
-@MicronautTest(packages = "io.micronaut.test.spock.entities")
+@MicronautTest(rollback = false, packages = "io.micronaut.test.spock.entities")
 @HibernateProperties
 @Stepwise
-class GormTransactionalRollbackSpec extends Specification {
+class GormTransactionalNoRollbackSpec extends Specification {
 
     @Inject
     ApplicationContext applicationContext
@@ -61,8 +61,8 @@ class GormTransactionalRollbackSpec extends Specification {
         Book.count() == old(Book.count()) + 1
     }
 
-    void "book was rolled back"() {
+    void "book was not rolled back"() {
         expect:
-        Book.count() == 0
+        Book.count() == 1
     }
 }

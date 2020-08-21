@@ -1,0 +1,8 @@
+You can use combine the use of `@Requires` and `@Property`, so that injected beans will be refreshed if there are
+configuration changes that affect their `@Requires` condition.
+
+For that to work, the test must be annotated with `@MicronautTest(rebuildContext = true)`. In that case, if there are
+changes in any property for a given test, the application context will be rebuilt so that `@Requires` conditions are
+re-evaluated again.
+
+For example:
