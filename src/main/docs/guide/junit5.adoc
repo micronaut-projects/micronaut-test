@@ -92,44 +92,11 @@ include::{junit5tests}/MathServiceTest.java[]
 
 === Environments, Classpath Scanning etc.
 
-The `@MicronautTest` annotation supports specifying the environment names the test should run with:
-
-```java
-@MicronautTest(environments={"foo", "bar"})
-```
-
-In addition, although Micronaut itself doesn't scan the classpath, some integrations do (such as JPA and GORM), for these cases you may wish to specify either the application class:
-
-```java
-@MicronautTest(application=Application.class)
-```
-
-Or the packages:
-
-```java
-@MicronautTest(packages="foo.bar")
-```
-
-To ensure that entities can be found during classpath scanning.
+include::src/main/docs/guide/includes/environments-classpath-scanning.adoc[]
 
 === Transaction semantics
 
-By default, if `org.springframework:spring-tx` is in the test classpath (eg transitively via
-`io.micronaut.configuration:micronaut-hibernate-jpa-spring`), when using `@MicronautTest`, each `@Test` method will be
-wrapped in a transaction that will be rolled back when the test finishes. This behaviour can be changed by using the
-`transactional` and `rollback` properties.
-
-To avoid creating a transaction:
-
-```java
-@MicronautTest(transactional = false)
-```
-
-To not rollback the transaction:
-
-```java
-@MicronautTest(rollback = false)
-```
+include::src/main/docs/guide/includes/transaction.adoc[]
 
 === Using Mockito Mocks
 
@@ -230,14 +197,7 @@ NOTE: When using `TestPropertyProvider` you test must be declared with JUnit's `
 
 === Refreshing injected beans based on `@Requires` upon properties changes
 
-You can use combine the use of `@Requires` and `@Property`, so that injected beans will be refreshed if there are
-configuration changes that affect their `@Requires` condition.
-
-For that to work, the test must be annotated with `@MicronautTest(rebuildContext = true)`. In that case, if there are
-changes in any property for a given test, the application context will be rebuilt so that `@Requires` conditions are
-re-evaluated again.
-
-For example:
+include::src/main/docs/guide/includes/refreshing-requires.adoc[]
 
 .Combining `@Requires` and `@Property` in a `@Refreshable` test class.
 [source,java]

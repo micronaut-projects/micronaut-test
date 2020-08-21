@@ -1,0 +1,19 @@
+The `@MicronautTest` annotation supports specifying the environment names the test should run with:
+
+```java
+@MicronautTest(environments=["foo", "bar"])
+```
+
+In addition, although Micronaut itself doesn't scan the classpath, some integrations do (such as JPA and GORM), for these cases you may wish to specify either the application class:
+
+```java
+@MicronautTest(application=Application.class)
+```
+
+Or the packages:
+
+```java
+@MicronautTest(packages="foo.bar")
+```
+
+To ensure that entities can be found during classpath scanning.
