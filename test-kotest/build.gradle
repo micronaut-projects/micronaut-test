@@ -8,6 +8,7 @@ dependencies {
     implementation "io.micronaut:micronaut-inject:$micronautVersion"
     api "io.micronaut:micronaut-runtime:$micronautVersion"    
     api "io.kotest:kotest-runner-junit5-jvm:$kotestVersion"
+    api "io.kotest:kotest-assertions-core-jvm:$kotestVersion"
 
     implementation project(":test-junit5")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
@@ -23,7 +24,7 @@ dependencies {
     testRuntimeOnly "io.micronaut.configuration:micronaut-jdbc-tomcat:$micronautSqlVersion"
     testRuntimeOnly "com.h2database:h2:1.4.200"
     
-    testImplementation "io.kotest:kotest-assertions-core-jvm:$kotestVersion"
+
 }
 
 test {
