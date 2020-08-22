@@ -75,6 +75,12 @@ public @interface MicronautTest {
     boolean transactional() default true;
 
     /**
+     * The transaction mode describing how transactions should be handled for each test.
+     * @return The transaction mode
+     */
+    TransactionMode transactionMode() default TransactionMode.SEPARATE_TRANSACTIONS;
+
+    /**
      * Whether to rebuild the application context before each test method.
      * @return true if the application context should be rebuilt for each test method
      */

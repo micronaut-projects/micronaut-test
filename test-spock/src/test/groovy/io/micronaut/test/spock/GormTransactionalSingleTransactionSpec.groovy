@@ -17,50 +17,37 @@ package io.micronaut.test.spock
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.annotation.TransactionMode
 import io.micronaut.test.spock.entities.Book
-import io.micronaut.test.transaction.spring.SpringTransactionTestExecutionListener
-import org.springframework.transaction.support.TransactionSynchronizationManager
 import spock.lang.Specification
 import spock.lang.Stepwise
 
 import javax.inject.Inject
 
-@MicronautTest(packages = "io.micronaut.test.spock.entities")
+@MicronautTest(packages = "io.micronaut.test.spock.entities", transactionMode = TransactionMode.SINGLE_TRANSACTION)
 @HibernateProperties
 @Stepwise
-class GormTransactionalRollbackSpec extends Specification {
+class GormTransactionalSingleTransactionSpec extends Specification {
 
     @Inject
     ApplicationContext applicationContext
 
     def setup() {
-        // check transaction is present in setup
-        assert TransactionSynchronizationManager.isSynchronizationActive()
+        new Book(name: "The Shining").save(failOnError: true, flush: true)
     }
 
     def cleanup() {
-        // check transaction is present in cleanup
-        assert TransactionSynchronizationManager.isSynchronizationActive()
+        // check book from setup was rolled back
+        assert Book.count() == 0
     }
 
-    void "bean SpringTransactionTestExecutionListener exists"() {
+    void "book was saved"() {
         expect:
-        applicationContext.containsBean(SpringTransactionTestExecutionListener)
+        Book.count() == 1
     }
 
-    void "save book"() {
-        when:
-        new Book(name: "BAR").save(failOnError: true, flush: true)
-
-        then:
-        noExceptionThrown()
-
-        and:
-        Book.count() == old(Book.count()) + 1
-    }
-
-    void "book was rolled back"() {
+    void "book was saved again"() {
         expect:
-        Book.count() == 0
+        Book.count() == 1
     }
 }
