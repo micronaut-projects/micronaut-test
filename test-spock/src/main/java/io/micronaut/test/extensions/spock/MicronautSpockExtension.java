@@ -92,7 +92,7 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
                             }
                         }
                     } else {
-                        List<FieldInfo> fields = spec.getFields();
+                        List<FieldInfo> fields = spec.getAllFields();
                         for (FieldInfo field : fields) {
                             if (field.isShared() && field.getAnnotation(Inject.class) != null) {
                                 applicationContext.inject(invocation.getSharedInstance());
@@ -217,7 +217,7 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         for (MethodInjectionPoint injectedMethod : specDefinition.getInjectedMethods()) {
             final Argument<?>[] args = injectedMethod.getArguments();
             if (args.length == 1) {
-                final Optional<FieldInfo> fld = context.getSpec().getFields().stream().filter(f -> f.getName().equals(args[0].getName())).findFirst();
+                final Optional<FieldInfo> fld = context.getSpec().getAllFields().stream().filter(f -> f.getName().equals(args[0].getName())).findFirst();
                 if (fld.isPresent()) {
                     final FieldInfo fieldInfo = fld.get();
                     final Object fieldInstance = fieldInfo.readValue(
