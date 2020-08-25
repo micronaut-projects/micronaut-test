@@ -22,7 +22,6 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.test.annotation.MicronautTest;
-import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.support.TestPropertyProvider;
@@ -77,32 +76,31 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
                     throw e;
                 }
             });
-
         });
 
         spec.addSetupSpecInterceptor(invocation -> {
-                    beforeClass(invocation, spec.getReflection(), spec.getAnnotation(MicronautTest.class));
-                    if (specDefinition == null) {
-                        if (!isTestSuiteBeanPresent(spec.getReflection())) {
-                            throw new InvalidSpecException(MISCONFIGURED_MESSAGE);
-                        } else {
-                            final List<FeatureInfo> features = invocation.getSpec().getFeatures();
-                            for (FeatureInfo feature : features) {
-                                feature.setSkipped(true);
-                            }
-                        }
+                beforeClass(invocation, spec.getReflection(), spec.getAnnotation(MicronautTest.class));
+                if (specDefinition == null) {
+                    if (!isTestSuiteBeanPresent(spec.getReflection())) {
+                        throw new InvalidSpecException(MISCONFIGURED_MESSAGE);
                     } else {
-                        List<FieldInfo> fields = spec.getAllFields();
-                        for (FieldInfo field : fields) {
-                            if (field.isShared() && field.getAnnotation(Inject.class) != null) {
-                                applicationContext.inject(invocation.getSharedInstance());
-                                break;
-                            }
+                        final List<FeatureInfo> features = invocation.getSpec().getFeatures();
+                        for (FeatureInfo feature : features) {
+                            feature.setSkipped(true);
                         }
                     }
-                    beforeTestClass(buildContext(invocation, null));
-                    invocation.proceed();
+                } else {
+                    List<FieldInfo> fields = spec.getAllFields();
+                    for (FieldInfo field : fields) {
+                        if (field.isShared() && field.getAnnotation(Inject.class) != null) {
+                            applicationContext.inject(invocation.getSharedInstance());
+                            break;
+                        }
+                    }
                 }
+                beforeTestClass(buildContext(invocation, null));
+                invocation.proceed();
+            }
         );
 
         spec.addCleanupSpecInterceptor(invocation -> {
@@ -162,21 +160,19 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
     @Override
     public void visitFeatureAnnotation(MicronautTest annotation, FeatureInfo feature) {
         throw new InvalidSpecException("@%s may not be applied to feature methods")
-                .withArgs(annotation.annotationType().getSimpleName());
+            .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
     public void visitFixtureAnnotation(MicronautTest annotation, MethodInfo fixtureMethod) {
         throw new InvalidSpecException("@%s may not be applied to fixture methods")
-                .withArgs(annotation.annotationType().getSimpleName());
-
+            .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
     public void visitFieldAnnotation(MicronautTest annotation, FieldInfo field) {
         throw new InvalidSpecException("@%s may not be applied to fields")
-                .withArgs(annotation.annotationType().getSimpleName());
-
+            .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
@@ -221,7 +217,7 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
                 if (fld.isPresent()) {
                     final FieldInfo fieldInfo = fld.get();
                     final Object fieldInstance = fieldInfo.readValue(
-                            instance
+                        instance
                     );
                     if (fieldInstance instanceof InterceptedProxy) {
                         Object interceptedTarget = ((InterceptedProxy) fieldInstance).interceptedTarget();
@@ -233,5 +229,4 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             }
         }
     }
-
 }
