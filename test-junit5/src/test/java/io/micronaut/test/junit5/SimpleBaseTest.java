@@ -7,7 +7,7 @@ import static org.mockito.Mockito.mock;
 public abstract class SimpleBaseTest {
 
     @MockBean(SimpleService.class)
-    SimpleServiceInterface simpleService() {
+    SimpleService simpleService() {
         return mock(SimpleService.class);
     }
 

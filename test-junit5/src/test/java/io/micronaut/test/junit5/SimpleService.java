@@ -3,7 +3,7 @@ package io.micronaut.test.junit5;
 import javax.inject.Singleton;
 
 @Singleton
-public class SimpleService implements SimpleServiceInterface {
+public class SimpleService {
 
     private SimpleWorker simpleWorker;
 
