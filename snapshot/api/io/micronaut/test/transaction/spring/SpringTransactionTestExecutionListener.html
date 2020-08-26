@@ -141,9 +141,8 @@ implements <a href="../../../../../io/micronaut/test/context/TestExecutionListen
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/transaction/spring/SpringTransactionTestExecutionListener.html#SpringTransactionTestExecutionListener-org.springframework.transaction.PlatformTransactionManager-boolean-io.micronaut.test.annotation.TransactionMode-">SpringTransactionTestExecutionListener</a></span>(org.springframework.transaction.PlatformTransactionManager&nbsp;transactionManager,
-                                      boolean&nbsp;rollback,
-                                      <a href="../../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation">TransactionMode</a>&nbsp;transactionMode)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/transaction/spring/SpringTransactionTestExecutionListener.html#SpringTransactionTestExecutionListener-org.springframework.transaction.PlatformTransactionManager-boolean-">SpringTransactionTestExecutionListener</a></span>(org.springframework.transaction.PlatformTransactionManager&nbsp;transactionManager,
+                                      boolean&nbsp;rollback)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -225,7 +224,7 @@ implements <a href="../../../../../io/micronaut/test/context/TestExecutionListen
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="SpringTransactionTestExecutionListener-org.springframework.transaction.PlatformTransactionManager-boolean-io.micronaut.test.annotation.TransactionMode-">
+<a name="SpringTransactionTestExecutionListener-org.springframework.transaction.PlatformTransactionManager-boolean-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -233,14 +232,11 @@ implements <a href="../../../../../io/micronaut/test/context/TestExecutionListen
 <h4>SpringTransactionTestExecutionListener</h4>
 <pre>public&nbsp;SpringTransactionTestExecutionListener(org.springframework.transaction.PlatformTransactionManager&nbsp;transactionManager,
                                               @Property(name="micronaut.test.rollback",defaultValue="true")
-                                              boolean&nbsp;rollback,
-                                              @Property(name="micronaut.test.transaction-mode",defaultValue="SEPARATE_TRANSACTIONS")
-                                              <a href="../../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation">TransactionMode</a>&nbsp;transactionMode)</pre>
+                                              boolean&nbsp;rollback)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>transactionManager</code> - Spring's <code>PlatformTransactionManager</code></dd>
 <dd><code>rollback</code> - <code>true</code> if the transaction should be rollback</dd>
-<dd><code>transactionMode</code> - <code>TransactionMode</code> to use for each test</dd>
 </dl>
 </li>
 </ul>
