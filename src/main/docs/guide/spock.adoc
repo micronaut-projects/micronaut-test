@@ -140,8 +140,8 @@ include::{spocktests}/PropertySourceSpec.groovy[]
 
 The above example expects a file located at `src/test/resources/io/micronaut/spock/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
 
-* `file:myprops.properties` - A relative path to a file somewhere on the file system
-* `classpath:myprops.properties` - A file relative to the root of the classpath
+* `file:myprops.properties` - A relative path to a file somewhere on the file system.
+* `classpath:myprops.properties` - A file relative to the root of the classpath.
 * `myprops.properties` - A file relative on the classpath relative to the test being run.
 
 === Refreshing injected beans based on `@Requires` upon properties changes
