@@ -1,4 +1,4 @@
-By default, if `org.springframework:spring-tx` is in the test classpath (eg transitively via
+By default, if `org.springframework:spring-tx` is in the test classpath (e.g. transitively via
 `io.micronaut.configuration:micronaut-hibernate-jpa-spring`), when using `@MicronautTest`, each `@Test` method will be
 wrapped in a transaction that will be rolled back when the test finishes. This behaviour can be changed by using the
 `transactional` and `rollback` properties.
@@ -14,3 +14,20 @@ To not rollback the transaction:
 ```java
 @MicronautTest(rollback = false)
 ```
+
+Additionally, the `transactionMode` property can be used to further customize the way that transactions are handled for
+each test:
+
+```java
+@MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
+```
+
+The following transaction modes are supported:
+
+* `SEPARATE_TRANSACTIONS` (default) - Each setup/cleanup method is wrapped in its own transaction, separate from that of
+  the test. This transaction is always committed.
+* `SINGLE_TRANSACTION` - All setup methods are wrapped in the same transaction as the test. Cleanup methods are wrapped
+  in separate transactions.
+
+NOTE: Setup and cleanup methods are not wrapped in transactions in Kotest currently. As a result, transaction modes have
+no effect in Kotest.
