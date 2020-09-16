@@ -20,12 +20,11 @@ import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.spock.entities.Book
 import io.micronaut.test.transaction.spring.SpringTransactionTestExecutionListener
 import org.springframework.transaction.support.TransactionSynchronizationManager
-import spock.lang.Ignore
 import spock.lang.Specification
+import spock.lang.Stepwise
 
 import javax.inject.Inject
 
-@Ignore
 @MicronautTest(rollback = true, packages = "io.micronaut.test.spock.entities")
 @HibernateProperties
 class GormTransactionalRollbackSpec extends Specification {
