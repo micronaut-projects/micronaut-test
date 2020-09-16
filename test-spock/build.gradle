@@ -10,9 +10,9 @@ dependencies {
     testImplementation "io.micronaut:micronaut-http-server-netty:$micronautVersion"
     testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
 
-    testImplementation "io.micronaut.configuration:micronaut-jdbc-hikari:$micronautSqlVersion"
-    testImplementation "io.micronaut.configuration:micronaut-hibernate-validator"
-    testImplementation "io.micronaut.configuration:micronaut-hibernate-gorm:1.1.3" // needs to be at least 1.1.3
+    testImplementation "io.micronaut.sql:micronaut-jdbc-hikari:$micronautSqlVersion"
+    testImplementation "io.micronaut.beanvalidation:micronaut-hibernate-validator"
+    testImplementation "io.micronaut.groovy:micronaut-hibernate-gorm"
     // this should be brought transitively by micronaut-hibernate-gorm
     testImplementation "org.grails:grails-datastore-gorm-hibernate5:7.0.4.RELEASE"
 
