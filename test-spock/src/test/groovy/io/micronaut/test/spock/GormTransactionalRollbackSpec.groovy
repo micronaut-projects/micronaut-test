@@ -25,7 +25,7 @@ import spock.lang.Stepwise
 
 import javax.inject.Inject
 
-@MicronautTest(packages = "io.micronaut.test.spock.entities")
+@MicronautTest(rollback = true, packages = "io.micronaut.test.spock.entities")
 @HibernateProperties
 @Stepwise
 class GormTransactionalRollbackSpec extends Specification {
