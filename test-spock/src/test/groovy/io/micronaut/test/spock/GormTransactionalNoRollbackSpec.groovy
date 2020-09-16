@@ -64,5 +64,8 @@ class GormTransactionalNoRollbackSpec extends Specification {
     void "book was not rolled back"() {
         expect:
         Book.count() == 1
+
+        cleanup:
+        Book.where {}.deleteAll()
     }
 }
