@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,7 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.test.annotation.MicronautTest;
-import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.spockframework.mock.MockUtil;
@@ -48,39 +48,67 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodInvocation> implements IAnnotationDrivenExtension<MicronautTest> {
 
-    private Queue<Object> createdMocks = new ConcurrentLinkedDeque<>();
+    private Queue<Object> creatableMocks = new ConcurrentLinkedDeque<>();
+    private Queue<Object> singletonMocks = new ConcurrentLinkedDeque<>();
     private MockUtil mockUtil = new MockUtil();
 
     @Override
     public void visitSpecAnnotation(MicronautTest annotation, SpecInfo spec) {
 
+        spec.getAllFeatures().forEach(feature -> {
+
+            feature.addInterceptor(invocation -> {
+                try {
+                    beforeTestMethod(buildContext(invocation, null));
+                    invocation.proceed();
+                } finally {
+                    afterTestMethod(buildContext(invocation, null));
+                }
+            });
+
+            feature.getFeatureMethod().addInterceptor(invocation -> {
+                try {
+                    beforeTestExecution(buildContext(invocation, null));
+                    invocation.proceed();
+                    afterTestExecution(buildContext(invocation, null));
+                } catch (Exception e) {
+                    afterTestExecution(buildContext(invocation, e));
+                    throw e;
+                }
+            });
+        });
+
         spec.addSetupSpecInterceptor(invocation -> {
-                    beforeClass(invocation, spec.getReflection(), spec.getAnnotation(MicronautTest.class));
-                    if (specDefinition == null) {
-                        if (!isTestSuiteBeanPresent(spec.getReflection())) {
-                            throw new InvalidSpecException(MISCONFIGURED_MESSAGE);
-                        } else {
-                            final List<FeatureInfo> features = invocation.getSpec().getFeatures();
-                            for (FeatureInfo feature : features) {
-                                feature.setSkipped(true);
-                            }
-                        }
+                beforeClass(invocation, spec.getReflection(), spec.getAnnotation(MicronautTest.class));
+                if (specDefinition == null) {
+                    if (!isTestSuiteBeanPresent(spec.getReflection())) {
+                        throw new InvalidSpecException(MISCONFIGURED_MESSAGE);
                     } else {
-                        List<FieldInfo> fields = spec.getFields();
-                        for (FieldInfo field : fields) {
-                            if (field.isShared() && field.getAnnotation(Inject.class) != null) {
-                                applicationContext.inject(invocation.getSharedInstance());
-                                break;
-                            }
+                        final List<FeatureInfo> features = invocation.getSpec().getFeatures();
+                        for (FeatureInfo feature : features) {
+                            feature.setSkipped(true);
                         }
                     }
-                    invocation.proceed();
+                } else {
+                    List<FieldInfo> fields = spec.getAllFields();
+                    for (FieldInfo field : fields) {
+                        if (field.isShared() && field.getAnnotation(Inject.class) != null) {
+                            applicationContext.inject(invocation.getSharedInstance());
+                            break;
+                        }
+                    }
                 }
+                beforeTestClass(buildContext(invocation, null));
+                invocation.proceed();
+            }
         );
 
         spec.addCleanupSpecInterceptor(invocation -> {
+            afterTestClass(buildContext(invocation, null));
             afterClass(invocation);
+
             invocation.proceed();
+            singletonMocks.clear();
         });
 
         spec.addSetupInterceptor(invocation -> {
@@ -88,43 +116,63 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
             final Method method = invocation.getFeature().getFeatureMethod().getReflection();
             List<Property> propertyAnnotations = Arrays.asList(method.getAnnotationsByType(Property.class));
             beforeEach(invocation, instance, method, propertyAnnotations);
-            for (Object createdMock : createdMocks) {
-                mockUtil.attachMock(createdMock, (Specification) instance);
+            for (Object mock : creatableMocks) {
+                mockUtil.attachMock(mock, (Specification) instance);
             }
-            begin();
-            invocation.proceed();
+            for (Object mock : singletonMocks) {
+                mockUtil.attachMock(mock, (Specification) instance);
+            }
+            try {
+                beforeSetupTest(buildContext(invocation, null));
+                invocation.proceed();
+            } finally {
+                afterSetupTest(buildContext(invocation, null));
+            }
         });
 
         spec.addCleanupInterceptor(invocation -> {
-            for (Object createdMock : createdMocks) {
-                mockUtil.detachMock(createdMock);
+            for (Object mock : creatableMocks) {
+                mockUtil.detachMock(mock);
             }
-            createdMocks.clear();
+            for (Object mock : singletonMocks) {
+                mockUtil.detachMock(mock);
+            }
+            creatableMocks.clear();
             afterEach(invocation);
-            commit();
-            rollback();
-            invocation.proceed();
+            try {
+                beforeCleanupTest(buildContext(invocation, null));
+                invocation.proceed();
+            } finally {
+                afterCleanupTest(buildContext(invocation, null));
+            }
         });
+    }
+
+    private TestContext buildContext(IMethodInvocation invocation, Throwable exception) {
+        return new TestContext(
+            applicationContext,
+            Optional.ofNullable(invocation.getSpec()).map(SpecInfo::getReflection).orElse(null),
+            Optional.ofNullable(invocation.getFeature()).map(FeatureInfo::getFeatureMethod).map(MethodInfo::getReflection).orElse(null),
+            invocation.getInstance(),
+            exception);
     }
 
     @Override
     public void visitFeatureAnnotation(MicronautTest annotation, FeatureInfo feature) {
         throw new InvalidSpecException("@%s may not be applied to feature methods")
-                .withArgs(annotation.annotationType().getSimpleName());
+            .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
     public void visitFixtureAnnotation(MicronautTest annotation, MethodInfo fixtureMethod) {
         throw new InvalidSpecException("@%s may not be applied to fixture methods")
-                .withArgs(annotation.annotationType().getSimpleName());
-
+            .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
     public void visitFieldAnnotation(MicronautTest annotation, FieldInfo field) {
         throw new InvalidSpecException("@%s may not be applied to fields")
-                .withArgs(annotation.annotationType().getSimpleName());
-
+            .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
@@ -148,7 +196,11 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         applicationContext.registerSingleton((BeanCreatedEventListener) event -> {
             final Object bean = event.getBean();
             if (mockUtil.isMock(bean)) {
-                createdMocks.add(bean);
+                if (event.getBeanDefinition().isSingleton()) {
+                    singletonMocks.add(bean);
+                } else {
+                    creatableMocks.add(bean);
+                }
             }
             return bean;
         });
@@ -161,23 +213,20 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         for (MethodInjectionPoint injectedMethod : specDefinition.getInjectedMethods()) {
             final Argument<?>[] args = injectedMethod.getArguments();
             if (args.length == 1) {
-                final Optional<FieldInfo> fld = context.getSpec().getFields().stream().filter(f -> f.getName().equals(args[0].getName())).findFirst();
+                final Optional<FieldInfo> fld = context.getSpec().getAllFields().stream().filter(f -> f.getName().equals(args[0].getName())).findFirst();
                 if (fld.isPresent()) {
                     final FieldInfo fieldInfo = fld.get();
-                    if (applicationContext.resolveMetadata(fieldInfo.getType()).isAnnotationPresent(MockBean.class)) {
-                        final Object proxy = fieldInfo.readValue(
-                                instance
-                        );
-                        if (proxy instanceof InterceptedProxy) {
-                            final InterceptedProxy interceptedProxy = (InterceptedProxy) proxy;
-                            final Object target = interceptedProxy.interceptedTarget();
-                            fieldInfo.writeValue(instance, target);
+                    final Object fieldInstance = fieldInfo.readValue(
+                        instance
+                    );
+                    if (fieldInstance instanceof InterceptedProxy) {
+                        Object interceptedTarget = ((InterceptedProxy) fieldInstance).interceptedTarget();
+                        if (mockUtil.isMock(interceptedTarget)) {
+                            fieldInfo.writeValue(instance, interceptedTarget);
                         }
-
                     }
                 }
             }
         }
     }
-
 }

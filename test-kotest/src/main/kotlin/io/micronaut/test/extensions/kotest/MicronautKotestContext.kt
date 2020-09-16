@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,8 +17,10 @@ package io.micronaut.test.extensions.kotest
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.context.TestContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.TestPropertyProvider
 import kotlin.reflect.full.memberFunctions
@@ -52,9 +54,11 @@ class MicronautKotestContext(private val testClass: Class<Any>,
             beforeClass(spec, testClass, micronautTest)
             applicationContext.inject(spec)
         }
+        beforeTestClass(buildContext(spec))
     }
 
     fun afterSpecClass(spec: Spec) {
+        afterTestClass(buildContext(spec))
         afterClass(spec)
     }
 
@@ -66,14 +70,29 @@ class MicronautKotestContext(private val testClass: Class<Any>,
             propertyAnnotations = filter.first().annotations.filter { it is Property } as? List<Property>
         }
         beforeEach(testCase.spec, testCase.spec, testCase.test.javaClass, propertyAnnotations)
-        begin()
+        beforeTestMethod(buildContext(testCase, null))
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun afterTest(testCase: TestCase) {
-        commit()
-        rollback()
+    fun afterTest(testCase: TestCase, result: TestResult) {
+        afterTestMethod(buildContext(testCase, result))
+    }
+
+    fun beforeInvocation(testCase: TestCase) {
+        beforeTestExecution(buildContext(testCase, null))
+    }
+
+    fun afterInvocation(testCase: TestCase) {
+        afterTestExecution(buildContext(testCase, null))
     }
 
     fun getSpecDefinition() = specDefinition
+
+    fun buildContext(spec: Spec): TestContext {
+        return TestContext(applicationContext, spec.javaClass, null, spec, null)
+    }
+
+    fun buildContext(testCase: TestCase, result: TestResult?): TestContext {
+        return TestContext(applicationContext, testCase.spec.javaClass, testCase.test.javaClass, testCase.spec, result?.error)
+    }
+
 }

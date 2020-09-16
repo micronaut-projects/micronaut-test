@@ -10,6 +10,7 @@ gradleEnterprise {
 
 rootProject.name = 'micronaut-test'
 
+include 'test-bom'
 include 'test-core'
 include "test-spock"
 include "test-junit5"

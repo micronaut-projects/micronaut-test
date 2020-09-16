@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,7 @@ import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.TestInstance;
@@ -32,6 +33,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import javax.inject.Named;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -40,11 +42,11 @@ import java.util.*;
  * @author graemerocher
  * @since 1.0
  */
-public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver {
+public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor {
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
 
     @Override
-    public void beforeAll(ExtensionContext extensionContext) {
+    public void beforeAll(ExtensionContext extensionContext) throws Exception {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         final MicronautTest micronautTest = AnnotationSupport.findAnnotation(testClass, MicronautTest.class).orElse(null);
         beforeClass(extensionContext, testClass, micronautTest);
@@ -56,15 +58,31 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 applicationContext.inject(testInstance);
             }
         }
+        beforeTestClass(buildContext(extensionContext));
     }
 
     @Override
-    public void afterAll(ExtensionContext extensionContext) {
+    public void interceptBeforeEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        beforeSetupTest(buildContext(extensionContext));
+        invocation.proceed();
+        afterSetupTest(buildContext(extensionContext));
+    }
+
+    @Override
+    public void interceptAfterEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        beforeCleanupTest(buildContext(extensionContext));
+        invocation.proceed();
+        afterCleanupTest(buildContext(extensionContext));
+    }
+
+    @Override
+    public void afterAll(ExtensionContext extensionContext) throws Exception {
+        afterTestClass(buildContext(extensionContext));
         afterClass(extensionContext);
     }
 
     @Override
-    public void beforeEach(ExtensionContext extensionContext) {
+    public void beforeEach(ExtensionContext extensionContext) throws Exception {
         final Optional<Object> testInstance = extensionContext.getTestInstance();
         final Optional<? extends AnnotatedElement> testMethod = extensionContext.getTestMethod();
         List<Property> propertyAnnotations = null;
@@ -73,6 +91,13 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             propertyAnnotations = Arrays.asList(annotationsByType);
         }
         beforeEach(extensionContext, testInstance.orElse(null), testMethod.orElse(null), propertyAnnotations);
+        beforeTestMethod(buildContext(extensionContext));
+    }
+
+    @Override
+    public void afterEach(ExtensionContext extensionContext) throws Exception {
+        super.afterEach(extensionContext);
+        afterTestMethod(buildContext(extensionContext));
     }
 
     @Override
@@ -139,13 +164,21 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
-        commit();
-        rollback();
+        afterTestExecution(buildContext(context));
     }
 
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
-        begin();
+        beforeTestExecution(buildContext(context));
+    }
+
+    private TestContext buildContext(ExtensionContext context) {
+      return new TestContext(
+          applicationContext,
+          context.getTestClass().orElse(null),
+          context.getTestMethod().orElse(null),
+          context.getTestInstance().orElse(null),
+          context.getExecutionException().orElse(null));
     }
 
     @Override
