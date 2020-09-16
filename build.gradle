@@ -12,7 +12,6 @@ buildscript {
 subprojects { Project subproject ->
     group "io.micronaut.test"
 
-
     if (subproject.name != 'test-bom') {
         apply plugin: "io.micronaut.build.common"
 
@@ -30,10 +29,6 @@ subprojects { Project subproject ->
     } else {
         apply plugin: "java-platform"
         version projectVersion
-    }
-
-    if (subproject.parent.name == "docs-examples" || subproject.name == "docs-examples") {
-        return
     }
 
     apply plugin: "io.micronaut.build.dependency-updates"
