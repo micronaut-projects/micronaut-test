@@ -65,7 +65,7 @@ Note that for Maven you will also need to configure the Surefire plugin to use J
 <plugin>
     <artifactId>kotlin-maven-plugin</artifactId>
     <groupId>org.jetbrains.kotlin</groupId>
-    <version>1.3.20</version>
+    <version>1.4.10</version>
     <configuration>
         <compilerPlugins>
             <plugin>all-open</plugin>
