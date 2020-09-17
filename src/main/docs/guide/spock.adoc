@@ -13,7 +13,7 @@ NOTE: If you plan to define mock beans you will also need `micronaut-inject-groo
 Or for Maven:
 
 .pom.xml
-[source,xml]
+[source,xml,subs="attributes+"]
 ----
 <dependency>
     <groupId>io.micronaut.test</groupId>

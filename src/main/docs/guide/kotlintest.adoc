@@ -10,7 +10,7 @@ To get started using KotlinTest you need the following dependencies in your buil
 dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
     testImplementation "io.micronaut.test:micronaut-test-kotlintest:{version}"
-    testImplementation "io.mockk:mockk:1.9.3"
+    testImplementation "io.mockk:mockk:{mockkVersion}"
     testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
 }
 
@@ -23,7 +23,7 @@ test {
 Or for Maven:
 
 .pom.xml
-[source,xml]
+[source,xml,subs="attributes+"]
 ----
 <dependency>
     <groupId>io.micronaut.test</groupId>
@@ -34,7 +34,7 @@ Or for Maven:
 <dependency>
     <groupId>io.mockk</groupId>
     <artifactId>mockk</artifactId>
-    <version>1.9.3</version>
+    <version>{mockkVersion}</version>
     <scope>test</scope>
 </dependency>
 <dependency>
@@ -58,7 +58,7 @@ Note that for Maven you will also need to configure the Surefire plugin to use J
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.3.1</version>
+            <version>5.6.2</version>
         </dependency>
     </dependencies>
 </plugin>
