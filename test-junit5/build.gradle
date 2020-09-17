@@ -17,10 +17,10 @@ dependencies {
     testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
     testImplementation 'org.mockito:mockito-junit-jupiter:3.5.10'
 
-    testImplementation "io.micronaut.configuration:micronaut-hibernate-jpa:$micronautSqlVersion"
-    testImplementation "io.micronaut.configuration:micronaut-hibernate-jpa-spring:$micronautSqlVersion"
+    testImplementation "io.micronaut.sql:micronaut-hibernate-jpa:$micronautSqlVersion"
+    testImplementation "io.micronaut.sql:micronaut-hibernate-jpa-spring:$micronautSqlVersion"
 
-    testRuntimeOnly "io.micronaut.configuration:micronaut-jdbc-tomcat:$micronautSqlVersion"
+    testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat:$micronautSqlVersion"
     testRuntimeOnly "com.h2database:h2:1.4.200"
 }
 
