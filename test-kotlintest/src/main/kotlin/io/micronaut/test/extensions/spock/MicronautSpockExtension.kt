@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.extensions.junit5
-
-import org.junit.jupiter.api.extension.Extension
+package io.micronaut.test.extensions.spock
 
 /**
  * This class is necessary because `test-core` declares it as part of the class annotation, at
@@ -23,9 +21,9 @@ import org.junit.jupiter.api.extension.Extension
  * 0cf54bfbca0aa0f9ec39ed4cea31375ba7e1e441 on.
  *
  * When Kotest tries to initialize the spec, `io.micronaut.test.annotation::findRepeatableAnnotations` would throw an
- * exception because `MicronautJunit5Extension` won't be on the classpath.
+ * exception because `MicronautSpockExtension` won't be on the classpath.
  *
  * This small hack adds it to the classpath and hides it via the `internal`. It's not an issue as users from Kotest
- * won't use MicronautJunit5Extension anyway.
+ * won't use MicronautSpockExtension anyway.
  */
-internal class MicronautJunit5Extension : Extension 
+internal class MicronautSpockExtension

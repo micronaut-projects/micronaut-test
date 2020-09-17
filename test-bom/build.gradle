@@ -1,0 +1,19 @@
+javaPlatform {
+    allowDependencies()
+}
+dependencies {
+    api platform("org.junit:junit-bom:$junitVersion")
+    api platform("org.spockframework:spock-bom:$spockVersion")
+
+    constraints {
+        for (Project p : rootProject.subprojects) {
+            if (p.name == "test-bom") continue
+            api "$p.group:micronaut-$p.name:$p.version"
+        }
+
+        api "io.kotlintest:kotlintest-runner-junit5:$kotlintestVersion"
+        api "io.kotest:kotest-runner-junit5-jvm:$kotestVersion"
+        api "io.kotest:kotest-assertions-core-jvm:$kotestVersion"
+        api "io.mockk:mockk:$mockkVersion"
+    }
+}
