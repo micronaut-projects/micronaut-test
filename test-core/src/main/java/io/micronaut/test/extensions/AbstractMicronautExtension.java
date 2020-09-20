@@ -224,7 +224,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             this.applicationContext = builder.build();
             startApplicationContext();
             specDefinition = applicationContext.findBeanDefinition(testClass).orElse(null);
-            if (applicationContext.containsBean(EmbeddedApplication.class)) {
+            if (testAnnotation.embeddedApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
                 embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
                 embeddedApplication.start();
             }
