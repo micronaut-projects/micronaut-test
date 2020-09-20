@@ -35,41 +35,43 @@ public class MicronautTestValue {
     private final boolean rebuildContext;
     private final Class<? extends ApplicationContextBuilder>[] contextBuilder;
     private final TransactionMode transactionMode;
+    private final boolean startApplication;
 
     /**
-     * @param application     The application class of the application
-     * @param environments    The environments to use.
-     * @param packages        The packages to consider for scanning.
-     * @param propertySources The property sources
-     * @param rollback        True if changes should be rolled back
-     * @param transactional   Whether to wrap a test in a transaction.
-     * @param rebuildContext  true if the application context should be rebuilt for each test method
-     * @param contextBuilder  The builder
+     * @param application      The application class of the application
+     * @param environments     The environments to use.
+     * @param packages         The packages to consider for scanning.
+     * @param propertySources  The property sources
+     * @param rollback         True if changes should be rolled back
+     * @param transactional    Whether to wrap a test in a transaction.
+     * @param rebuildContext   true if the application context should be rebuilt for each test method
+     * @param contextBuilder   The builder
      */
     @Deprecated
     public MicronautTestValue(Class<?> application, String[] environments, String[] packages, String[] propertySources,
                               boolean rollback, boolean transactional, boolean rebuildContext,
                               Class<? extends ApplicationContextBuilder>[] contextBuilder) {
-        this(application, environments, packages, propertySources, rollback, transactional, rebuildContext, contextBuilder, TransactionMode.SEPARATE_TRANSACTIONS);
+        this(application, environments, packages, propertySources, rollback, transactional, rebuildContext, contextBuilder, TransactionMode.SEPARATE_TRANSACTIONS, true);
     }
 
     /**
      * Default constructor.
-     *
-     * @param application     The application class of the application
-     * @param environments    The environments to use.
-     * @param packages        The packages to consider for scanning.
-     * @param propertySources The property sources
-     * @param rollback        True if changes should be rolled back
-     * @param transactional   Whether to wrap a test in a transaction.
-     * @param rebuildContext  true if the application context should be rebuilt for each test method
-     * @param contextBuilder  The builder
-     * @param transactionMode The transaction mode
+     * @param application      The application class of the application
+     * @param environments     The environments to use.
+     * @param packages         The packages to consider for scanning.
+     * @param propertySources  The property sources
+     * @param rollback         True if changes should be rolled back
+     * @param transactional    Whether to wrap a test in a transaction.
+     * @param rebuildContext   true if the application context should be rebuilt for each test method
+     * @param contextBuilder   The builder
+     * @param transactionMode  The transaction mode
+     * @param startApplication Whether to start {@link io.micronaut.runtime.EmbeddedApplication}
      */
     @Creator
     public MicronautTestValue(Class<?> application, String[] environments, String[] packages, String[] propertySources,
-                              boolean rollback, boolean transactional, boolean rebuildContext,
-                              Class<? extends ApplicationContextBuilder>[] contextBuilder, TransactionMode transactionMode) {
+        boolean rollback, boolean transactional, boolean rebuildContext,
+        Class<? extends ApplicationContextBuilder>[] contextBuilder, TransactionMode transactionMode,
+        boolean startApplication) {
         this.application = application;
         this.environments = environments;
         this.packages = packages;
@@ -79,6 +81,7 @@ public class MicronautTestValue {
         this.rebuildContext = rebuildContext;
         this.contextBuilder = contextBuilder;
         this.transactionMode = transactionMode;
+        this.startApplication = startApplication;
     }
 
     /**
@@ -154,5 +157,17 @@ public class MicronautTestValue {
      */
     public TransactionMode transactionMode() {
         return transactionMode;
+    }
+
+    /**
+     * <p>Whether to start {@link io.micronaut.runtime.EmbeddedApplication}.</p>
+     *
+     * <p>When false, only the application context will be started.
+     * This can be used to disable {@link io.micronaut.runtime.server.EmbeddedServer}.</p>
+     *
+     * @return true if {@link io.micronaut.runtime.EmbeddedApplication} should be started
+     */
+    public boolean startApplication() {
+        return startApplication;
     }
 }
