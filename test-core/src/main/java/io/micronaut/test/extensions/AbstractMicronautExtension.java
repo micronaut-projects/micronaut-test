@@ -264,11 +264,11 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             }
 
             if (testAnnotation.rebuildContext() && testCount > 1) {
-                embeddedApplication.stop();
+                stopEmbeddedApplication();
                 applicationContext.stop();
                 applicationContext = builder.build();
                 startApplicationContext();
-                embeddedApplication.start();
+                startEmbeddedApplication();
             } else if (!oldValues.isEmpty()) {
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));
@@ -294,9 +294,8 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @param context the context
      */
     protected void afterClass(C context) {
-        if (embeddedApplication != null) {
-            embeddedApplication.stop();
-        } else if (applicationContext != null) {
+        stopEmbeddedApplication();
+        if (applicationContext != null) {
             applicationContext.stop();
         }
         embeddedApplication = null;
@@ -358,6 +357,18 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             }
         }
         return loaderMap;
+    }
+
+    private void startEmbeddedApplication() {
+        if (embeddedApplication != null) {
+            embeddedApplication.start();
+        }
+    }
+
+    private void stopEmbeddedApplication() {
+        if (embeddedApplication != null) {
+            embeddedApplication.stop();
+        }
     }
 
     /**
