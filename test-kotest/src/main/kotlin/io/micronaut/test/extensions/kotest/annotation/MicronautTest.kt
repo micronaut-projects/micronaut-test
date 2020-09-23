@@ -82,4 +82,15 @@ annotation class MicronautTest(
          * The transaction mode describing how transactions should be handled for each test.
          * @return The transaction mode
          */
-        val transactionMode: TransactionMode = TransactionMode.SEPARATE_TRANSACTIONS)
+        val transactionMode: TransactionMode = TransactionMode.SEPARATE_TRANSACTIONS,
+        /**
+         *
+         * Whether to start [io.micronaut.runtime.EmbeddedApplication].
+         *
+         *
+         * When false, only the application context will be started.
+         * This can be used to disable [io.micronaut.runtime.server.EmbeddedServer].
+         *
+         * @return true if [io.micronaut.runtime.EmbeddedApplication] should be started
+         */
+        val startApplication: Boolean = true)

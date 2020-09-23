@@ -95,4 +95,14 @@ public @interface MicronautTest {
      * @return The transaction mode
      */
     TransactionMode transactionMode() default TransactionMode.SEPARATE_TRANSACTIONS;
+
+    /**
+     * <p>Whether to start {@link io.micronaut.runtime.EmbeddedApplication}.</p>
+     *
+     * <p>When false, only the application context will be started.
+     * This can be used to disable {@link io.micronaut.runtime.server.EmbeddedServer}.</p>
+     *
+     * @return true if {@link io.micronaut.runtime.EmbeddedApplication} should be started
+     */
+    boolean startApplication() default true;
 }

@@ -17,6 +17,7 @@ package io.micronaut.test.annotation;
 
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.core.annotation.Creator;
+import io.micronaut.core.annotation.Internal;
 
 /**
  * Value object for the values from any of the MicronautTest annotations.
@@ -24,6 +25,7 @@ import io.micronaut.core.annotation.Creator;
  * @author Álvaro Sánchez-Mariscal
  * @since 2.1.0
  */
+@Internal
 public class MicronautTestValue {
 
     private final Class<?> application;
@@ -35,23 +37,7 @@ public class MicronautTestValue {
     private final boolean rebuildContext;
     private final Class<? extends ApplicationContextBuilder>[] contextBuilder;
     private final TransactionMode transactionMode;
-
-    /**
-     * @param application     The application class of the application
-     * @param environments    The environments to use.
-     * @param packages        The packages to consider for scanning.
-     * @param propertySources The property sources
-     * @param rollback        True if changes should be rolled back
-     * @param transactional   Whether to wrap a test in a transaction.
-     * @param rebuildContext  true if the application context should be rebuilt for each test method
-     * @param contextBuilder  The builder
-     */
-    @Deprecated
-    public MicronautTestValue(Class<?> application, String[] environments, String[] packages, String[] propertySources,
-                              boolean rollback, boolean transactional, boolean rebuildContext,
-                              Class<? extends ApplicationContextBuilder>[] contextBuilder) {
-        this(application, environments, packages, propertySources, rollback, transactional, rebuildContext, contextBuilder, TransactionMode.SEPARATE_TRANSACTIONS);
-    }
+    private final boolean startApplication;
 
     /**
      * Default constructor.
@@ -69,7 +55,7 @@ public class MicronautTestValue {
     @Creator
     public MicronautTestValue(Class<?> application, String[] environments, String[] packages, String[] propertySources,
                               boolean rollback, boolean transactional, boolean rebuildContext,
-                              Class<? extends ApplicationContextBuilder>[] contextBuilder, TransactionMode transactionMode) {
+                              Class<? extends ApplicationContextBuilder>[] contextBuilder, TransactionMode transactionMode, boolean startApplication) {
         this.application = application;
         this.environments = environments;
         this.packages = packages;
@@ -79,6 +65,7 @@ public class MicronautTestValue {
         this.rebuildContext = rebuildContext;
         this.contextBuilder = contextBuilder;
         this.transactionMode = transactionMode;
+        this.startApplication = startApplication;
     }
 
     /**
@@ -154,5 +141,12 @@ public class MicronautTestValue {
      */
     public TransactionMode transactionMode() {
         return transactionMode;
+    }
+
+    /***
+     * @return Whether to start the embedded application
+     */
+    public boolean startApplication() {
+        return startApplication;
     }
 }
