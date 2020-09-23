@@ -15,13 +15,12 @@
  */
 package io.micronaut.test.extensions.spock;
 
-import org.spockframework.runtime.extension.AbstractAnnotationDrivenExtension;
-
 /**
- * Stub for the Spock extension.
+ * Compatibility class for cases when the old, shared <code>io.micronaut.test.annotation.MicronautTest</code> annotation
+ * is used.
  *
- * @author graemerocher
- * @since 1.0
+ * @author Álvaro Sánchez-Mariscal
+ * @since 2.1.0
  */
-public class MicronautSpockExtension extends AbstractAnnotationDrivenExtension {
+public class MicronautSpockExtensionStub extends MicronautSpockExtension {
 }

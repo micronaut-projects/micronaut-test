@@ -13,29 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.spock
+package io.micronaut.test.extensions.junit5;
 
-import io.micronaut.test.extensions.spock.annotation.MicronautTest
-import spock.lang.*
-import javax.inject.Inject
-
-@MicronautTest // <1>
-class MathServiceSpec extends Specification {
-
-    @Inject
-    MathService mathService // <2>
-
-    @Unroll
-    void "should compute #num times 4"() { // <3>
-        when:
-        def result = mathService.compute(num)
-
-        then:
-        result == expected
-
-        where:
-        num | expected
-        2   | 8
-        3   | 12
-    }
+/**
+ * Compatibility class for cases when the old, shared <code>io.micronaut.test.annotation.MicronautTest</code> annotation
+ * is used.
+ *
+ * @author Álvaro Sánchez-Mariscal
+ * @since 2.1.0
+ */
+public class MicronautJunit5ExtensionStub extends MicronautJunit5Extension {
 }

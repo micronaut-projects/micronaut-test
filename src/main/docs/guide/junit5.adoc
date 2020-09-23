@@ -8,9 +8,9 @@ To get started using JUnit 5 you need the following dependencies in your build c
 dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
-    testCompile "io.micronaut.test:micronaut-test-junit5:{version}"
-    testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine:{junitVersion}"
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("io.micronaut.test:micronaut-test-junit5:{version}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:{junitVersion}")
 }
 
 // use JUnit 5 platform
@@ -24,40 +24,14 @@ NOTE: If you plan to define mock beans you will also need `inject-groovy` on you
 Or for Maven:
 
 .pom.xml
-[source,xml,subs="attributes+"]
+[source,xml]
 ----
 <dependency>
     <groupId>io.micronaut.test</groupId>
     <artifactId>micronaut-test-junit5</artifactId>
-    <version>{version}</version>
     <scope>test</scope>
 </dependency>
 ----
-
-Note that for Maven you will also need to configure the Surefire plugin to use JUnit platform:
-
-.pom.xml
-[source,xml,subs="attributes+"]
-----
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.19.1</version>
-    <dependencies>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>{junitVersion}</version>
-        </dependency>
-    </dependencies>
-</plugin>
-----
-
 
 === Writing a Micronaut Test with JUnit 5
 

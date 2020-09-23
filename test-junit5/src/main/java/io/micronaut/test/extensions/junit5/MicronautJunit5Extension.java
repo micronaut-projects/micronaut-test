@@ -21,10 +21,12 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.qualifiers.Qualifiers;
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.annotation.AnnotationUtils;
+import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
@@ -48,8 +50,15 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
-        final MicronautTest micronautTest = AnnotationSupport.findAnnotation(testClass, MicronautTest.class).orElse(null);
-        beforeClass(extensionContext, testClass, micronautTest);
+        final Optional<io.micronaut.test.annotation.MicronautTest> micronautTest =
+                AnnotationSupport.findAnnotation(testClass, io.micronaut.test.annotation.MicronautTest.class);
+        MicronautTestValue micronautTestValue = micronautTest
+                .map(AnnotationUtils::buildValueObject)
+                .orElseGet(() -> AnnotationSupport
+                        .findAnnotation(testClass, MicronautTest.class)
+                        .map(this::buildValueObject)
+                        .orElse(null));
+        beforeClass(extensionContext, testClass, micronautTestValue);
         getStore(extensionContext).put(ApplicationContext.class, applicationContext);
         if (specDefinition != null) {
             TestInstance ti = AnnotationSupport.findAnnotation(testClass, TestInstance.class).orElse(null);
@@ -120,7 +129,8 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         } else {
             final Class<?> testClass = extensionContext.getRequiredTestClass();
-            if (AnnotationSupport.isAnnotated(testClass, MicronautTest.class)) {
+            if (AnnotationSupport.isAnnotated(testClass, MicronautTest.class) ||
+                    AnnotationSupport.isAnnotated(testClass, io.micronaut.test.annotation.MicronautTest.class)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
                 return ConditionEvaluationResult.disabled(DISABLED_MESSAGE);
@@ -129,7 +139,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     @Override
-    protected void resolveTestProperties(ExtensionContext context, MicronautTest testAnnotation, Map<String, Object> testProperties) {
+    protected void resolveTestProperties(ExtensionContext context, MicronautTestValue testAnnotationValue, Map<String, Object> testProperties) {
         Object o = context.getTestInstance().orElse(null);
         if (o instanceof TestPropertyProvider) {
             Map<String, String> properties = ((TestPropertyProvider) o).getProperties();
@@ -199,4 +209,18 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     private static ExtensionContext.Store getStore(ExtensionContext context) {
         return context.getRoot().getStore(NAMESPACE);
     }
+
+    private MicronautTestValue buildValueObject(MicronautTest micronautTest) {
+        return new MicronautTestValue(
+                micronautTest.application(),
+                micronautTest.environments(),
+                micronautTest.packages(),
+                micronautTest.propertySources(),
+                micronautTest.rollback(),
+                micronautTest.transactional(),
+                micronautTest.rebuildContext(),
+                micronautTest.contextBuilder(),
+                micronautTest.transactionMode());
+    }
+
 }

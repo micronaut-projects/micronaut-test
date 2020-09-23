@@ -21,7 +21,9 @@ import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
+import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.support.TestPropertyProvider;
@@ -36,24 +38,30 @@ import org.spockframework.runtime.model.SpecInfo;
 import spock.lang.Specification;
 
 import javax.inject.Inject;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Extension for Spock.
  *
+ * @param <T> The MicronautTest annotation
  * @author graemerocher
  * @since 1.0
  */
-public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodInvocation> implements IAnnotationDrivenExtension<MicronautTest> {
+public class MicronautSpockExtension<T extends Annotation> extends AbstractMicronautExtension<IMethodInvocation> implements IAnnotationDrivenExtension<T> {
 
     private Queue<Object> creatableMocks = new ConcurrentLinkedDeque<>();
     private Queue<Object> singletonMocks = new ConcurrentLinkedDeque<>();
     private MockUtil mockUtil = new MockUtil();
 
     @Override
-    public void visitSpecAnnotation(MicronautTest annotation, SpecInfo spec) {
+    public void visitSpecAnnotation(T annotation, SpecInfo spec) {
 
         spec.getAllFeatures().forEach(feature -> {
 
@@ -79,27 +87,34 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         });
 
         spec.addSetupSpecInterceptor(invocation -> {
-                beforeClass(invocation, spec.getReflection(), spec.getAnnotation(MicronautTest.class));
-                if (specDefinition == null) {
-                    if (!isTestSuiteBeanPresent(spec.getReflection())) {
-                        throw new InvalidSpecException(MISCONFIGURED_MESSAGE);
+                    MicronautTestValue micronautTestValue;
+                    MicronautTest micronautTest = spec.getAnnotation(MicronautTest.class);
+                    if (micronautTest == null) {
+                        micronautTestValue = AnnotationUtils.buildValueObject(spec.getAnnotation(io.micronaut.test.annotation.MicronautTest.class));
                     } else {
-                        final List<FeatureInfo> features = invocation.getSpec().getFeatures();
-                        for (FeatureInfo feature : features) {
-                            feature.setSkipped(true);
+                        micronautTestValue = buildValueObject(micronautTest);
+                    }
+                    beforeClass(invocation, spec.getReflection(), micronautTestValue);
+                    if (specDefinition == null) {
+                        if (!isTestSuiteBeanPresent(spec.getReflection())) {
+                            throw new InvalidSpecException(MISCONFIGURED_MESSAGE);
+                        } else {
+                            final List<FeatureInfo> features = invocation.getSpec().getFeatures();
+                            for (FeatureInfo feature : features) {
+                                feature.setSkipped(true);
+                            }
+                        }
+                    } else {
+                        List<FieldInfo> fields = spec.getAllFields();
+                        for (FieldInfo field : fields) {
+                            if (field.isShared() && field.getAnnotation(Inject.class) != null) {
+                                applicationContext.inject(invocation.getSharedInstance());
+                                break;
+                            }
                         }
                     }
-                } else {
-                    List<FieldInfo> fields = spec.getAllFields();
-                    for (FieldInfo field : fields) {
-                        if (field.isShared() && field.getAnnotation(Inject.class) != null) {
-                            applicationContext.inject(invocation.getSharedInstance());
-                            break;
-                        }
-                    }
-                }
-                beforeTestClass(buildContext(invocation, null));
-                invocation.proceed();
+                    beforeTestClass(buildContext(invocation, null));
+                    invocation.proceed();
             }
         );
 
@@ -148,6 +163,23 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
         });
     }
 
+    private MicronautTestValue buildValueObject(MicronautTest micronautTest) {
+        if (micronautTest != null) {
+            return new MicronautTestValue(
+                    micronautTest.application(),
+                    micronautTest.environments(),
+                    micronautTest.packages(),
+                    micronautTest.propertySources(),
+                    micronautTest.rollback(),
+                    micronautTest.transactional(),
+                    micronautTest.rebuildContext(),
+                    micronautTest.contextBuilder(),
+                    micronautTest.transactionMode());
+        } else {
+            return null;
+        }
+    }
+
     private TestContext buildContext(IMethodInvocation invocation, Throwable exception) {
         return new TestContext(
             applicationContext,
@@ -158,19 +190,19 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
     }
 
     @Override
-    public void visitFeatureAnnotation(MicronautTest annotation, FeatureInfo feature) {
+    public void visitFeatureAnnotation(T annotation, FeatureInfo feature) {
         throw new InvalidSpecException("@%s may not be applied to feature methods")
             .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
-    public void visitFixtureAnnotation(MicronautTest annotation, MethodInfo fixtureMethod) {
+    public void visitFixtureAnnotation(T annotation, MethodInfo fixtureMethod) {
         throw new InvalidSpecException("@%s may not be applied to fixture methods")
             .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
-    public void visitFieldAnnotation(MicronautTest annotation, FieldInfo field) {
+    public void visitFieldAnnotation(T annotation, FieldInfo field) {
         throw new InvalidSpecException("@%s may not be applied to fields")
             .withArgs(annotation.annotationType().getSimpleName());
     }
@@ -181,7 +213,7 @@ public class MicronautSpockExtension extends AbstractMicronautExtension<IMethodI
     }
 
     @Override
-    protected void resolveTestProperties(IMethodInvocation context, MicronautTest testAnnotation, Map<String, Object> testProperties) {
+    protected void resolveTestProperties(IMethodInvocation context, MicronautTestValue testAnnotationValue, Map<String, Object> testProperties) {
         Object sharedInstance = context.getSharedInstance();
         if (sharedInstance instanceof TestPropertyProvider) {
             Map<String, String> properties = ((TestPropertyProvider) sharedInstance).getProperties();

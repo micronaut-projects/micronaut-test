@@ -22,7 +22,9 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.micronaut.aop.InterceptedProxy
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.annotation.AnnotationUtils
+import io.micronaut.test.annotation.MicronautTestValue
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -72,13 +74,23 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
-        val micronautTest = testClass.annotations.filterIsInstance<MicronautTest>().firstOrNull()
-
-        return if (micronautTest == null) {
+        var micronautTestValue = testClass
+                .annotations
+                .filterIsInstance<io.micronaut.test.annotation.MicronautTest>()
+                .map { micronautTest -> AnnotationUtils.buildValueObject(micronautTest) }
+                .firstOrNull()
+        if (micronautTestValue == null) {
+            micronautTestValue = testClass
+                    .annotations
+                    .filterIsInstance<MicronautTest>()
+                    .map { micronautTest -> buildValueObject(micronautTest) }
+                    .firstOrNull()
+        }
+        return if (micronautTestValue == null) {
             null
         } else {
             val createBean = constructor != null && constructor.parameters.isNotEmpty()
-            val context = MicronautKotestContext(testClass, micronautTest, createBean)
+            val context = MicronautKotestContext(testClass, micronautTestValue, createBean)
             contexts[testClass.name] = context
             if (createBean) {
                 context.bean
@@ -86,6 +98,20 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
                 null
             }
         }
+    }
+
+    private fun buildValueObject(micronautTest: MicronautTest): MicronautTestValue {
+        return MicronautTestValue(
+                micronautTest.application.java,
+                micronautTest.environments,
+                micronautTest.packages,
+                micronautTest.propertySources,
+                micronautTest.rollback,
+                micronautTest.transactional,
+                micronautTest.rebuildContext,
+                micronautTest.contextBuilder.map { kClass -> kClass.java }.toTypedArray(),
+                micronautTest.transactionMode
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
