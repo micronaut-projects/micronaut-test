@@ -17,6 +17,7 @@ package io.micronaut.test.annotation;
 
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.core.annotation.Creator;
+import io.micronaut.core.annotation.Internal;
 
 /**
  * Value object for the values from any of the MicronautTest annotations.
@@ -24,6 +25,7 @@ import io.micronaut.core.annotation.Creator;
  * @author Álvaro Sánchez-Mariscal
  * @since 2.1.0
  */
+@Internal
 public class MicronautTestValue {
 
     private final Class<?> application;
