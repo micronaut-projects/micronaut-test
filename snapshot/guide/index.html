@@ -149,7 +149,7 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></p
 <p>However, there are cases where having some additional features to test Micronaut come in handy, such as mocking bean definitions and so on.</p>
 </div>
 <div class="paragraph">
-<p>This project includes a pretty simple set of extensions for JUnit 5 and Spock:</p>
+<p>This project includes a pretty simple set of extensions for JUnit 5, Spock, Kotest and KotlinTest:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -165,20 +165,27 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)</code></p
 </ul>
 </div>
 <div class="paragraph">
-<p>This is achieved through a set of annotations found in the <code>io.micronaut.test.annotation</code> package:</p>
+<p>This is achieved through a set of annotations:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>@MicronautTest</code> - Can be added to any Spock or JUnit 5 test.</p>
+<p><code>@MicronautTest</code> - Can be added to any test:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>io.micronaut.test.extensions.junit5.annotation.MicronautTest</code> for JUnit 5, Kotest and Kotlintest.</p>
 </li>
 <li>
-<p><code>@MockBean</code> - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.</p>
+<p><code>io.micronaut.test.extensions.spock.annotation.MicronautTest</code> for Spock.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>If you have either of the libraries for spock or JUnit 5 in your dependencies, you must include the appropriate dependency for the <code>@MicronautTest</code> annotation to work. It is not enough to have just <code>micronaut-test-spock</code> if you have JUnit 5 libraries loaded, you must also include <code>micronaut-test-junit5</code> and vice versa, or remove the references to JUnit 5 completely.</p>
+</li>
+<li>
+<p><code>io.micronaut.test.annotation.@MockBean</code> - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within <code>@MicronautTest</code> it is running your real application.</p>
@@ -229,7 +236,10 @@ ApplicationContext context //refers to the current application context within th
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">testCompile "io.micronaut.test:micronaut-test-spock:2.1.0.BUILD-SNAPSHOT"</code></pre>
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">testImplementation "io.micronaut.test:micronaut-test-spock"
+testImplementation("org.spockframework:spock-core") {
+    exclude group: "org.codehaus.groovy", module: "groovy-all"
+}</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -239,7 +249,7 @@ ApplicationContext context //refers to the current application context within th
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you plan to define mock beans you will also need <code>micronaut-inject-groovy</code> on your <code>testCompile</code> classpath or <code>micronaut-inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>).
+If you plan to define mock beans you will also need <code>micronaut-inject-groovy</code> on your <code>testImplementation</code> classpath or <code>micronaut-inject-java</code> for Java or Kotlin (this should already be configured if you used <code>mn create-app</code>).
 </td>
 </tr>
 </table>
@@ -253,7 +263,6 @@ If you plan to define mock beans you will also need <code>micronaut-inject-groov
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-test-spock&lt;/artifactId&gt;
-    &lt;version&gt;2.1.0.BUILD-SNAPSHOT&lt;/version&gt;
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
@@ -350,7 +359,7 @@ class MathServiceImpl implements MathService {
  */
 package io.micronaut.test.spock
 
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.*
 import javax.inject.Inject
 
@@ -510,8 +519,11 @@ no effect in Kotest.
  */
 package io.micronaut.test.spock
 
-import io.micronaut.test.annotation.*
-import spock.lang.*
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import spock.lang.Specification
+import spock.lang.Unroll
+
 import javax.inject.Inject
 
 @MicronautTest
@@ -635,8 +647,11 @@ package io.micronaut.test.spock
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
-import io.micronaut.test.annotation.*
-import spock.lang.*
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import spock.lang.Specification
+import spock.lang.Unroll
+
 import javax.inject.Inject
 
 @MicronautTest
@@ -741,7 +756,7 @@ package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Value
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Specification
 import spock.lang.Stepwise
 
@@ -799,10 +814,8 @@ class PropertySpec extends Specification {
 package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.Property
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Specification
-
-import javax.inject.Inject
 
 @MicronautTest(propertySources = "myprops.properties")
 class PropertySourceSpec extends Specification {
@@ -870,7 +883,7 @@ package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Issue
 import spock.lang.Specification
 
@@ -935,9 +948,9 @@ class MyServiceChanged implements MyService {}</code></pre>
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
-    testCompile "io.micronaut.test:micronaut-test-junit5:2.1.0.BUILD-SNAPSHOT"
-    testCompile "org.mockito:mockito-junit-jupiter:2.22.0"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.7.0"
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("io.micronaut.test:micronaut-test-junit5:2.1.0.BUILD-SNAPSHOT")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
 }
 
 // use JUnit 5 platform
@@ -967,34 +980,8 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-test-junit5&lt;/artifactId&gt;
-    &lt;version&gt;2.1.0.BUILD-SNAPSHOT&lt;/version&gt;
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Note that for Maven you will also need to configure the Surefire plugin to use JUnit platform:</p>
-</div>
-<div class="listingblock">
-<div class="title">pom.xml</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;plugin&gt;
-    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
-    &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
-    &lt;version&gt;2.19.1&lt;/version&gt;
-    &lt;dependencies&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.junit.platform&lt;/groupId&gt;
-            &lt;artifactId&gt;junit-platform-surefire-provider&lt;/artifactId&gt;
-            &lt;version&gt;1.1.0&lt;/version&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
-            &lt;artifactId&gt;junit-jupiter-engine&lt;/artifactId&gt;
-            &lt;version&gt;5.7.0&lt;/version&gt;
-        &lt;/dependency&gt;
-    &lt;/dependencies&gt;
-&lt;/plugin&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -1087,7 +1074,7 @@ class MathServiceImpl implements MathService {
  */
 package io.micronaut.test.junit5;
 
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -1249,12 +1236,11 @@ no effect in Kotest.
  */
 package io.micronaut.test.junit5;
 
-import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.stubbing.Answer;
 
 import javax.inject.Inject;
 
@@ -1385,14 +1371,15 @@ package io.micronaut.test.junit5;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
-import io.micronaut.test.annotation.*;
 import io.micronaut.test.annotation.MockBean;
-import static org.junit.jupiter.api.Assertions.*;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.mockito.Mockito.*;
 import javax.inject.Inject;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @MicronautTest
 class MathCollaboratorTest {
@@ -1500,13 +1487,13 @@ class RequiresTest {
 package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest
 @Property(name = "foo.bar", value = "stuff")
@@ -1564,7 +1551,7 @@ class PropertyValueTest {
 package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -1626,7 +1613,7 @@ package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.core.util.CollectionUtils;
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.*;
 
@@ -1705,7 +1692,7 @@ package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;

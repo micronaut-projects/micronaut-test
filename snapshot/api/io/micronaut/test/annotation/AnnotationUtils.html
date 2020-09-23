@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9};
+var methods = {"i0":9,"i1":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -133,6 +133,10 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>static <a href="../../../../io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/AnnotationUtils.html#buildValueObject-io.micronaut.test.annotation.MicronautTest-">buildValueObject</a></span>(<a href="../../../../io/micronaut/test/annotation/MicronautTest.html" title="annotation in io.micronaut.test.annotation">MicronautTest</a>&nbsp;micronautTest)</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static &lt;A extends java.lang.annotation.Annotation&gt;<br>java.util.List&lt;A&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/AnnotationUtils.html#findRepeatableAnnotations-java.lang.reflect.AnnotatedElement-java.lang.Class-">findRepeatableAnnotations</a></span>(java.lang.reflect.AnnotatedElement&nbsp;element,
                          java.lang.Class&lt;A&gt;&nbsp;annotationType)</code>
@@ -166,7 +170,7 @@ extends java.lang.Object</pre>
 <a name="findRepeatableAnnotations-java.lang.reflect.AnnotatedElement-java.lang.Class-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>findRepeatableAnnotations</h4>
 <pre>public static&nbsp;&lt;A extends java.lang.annotation.Annotation&gt;&nbsp;java.util.List&lt;A&gt;&nbsp;findRepeatableAnnotations(java.lang.reflect.AnnotatedElement&nbsp;element,
@@ -204,6 +208,15 @@ extends java.lang.Object</pre>
 <dd><code>Repeatable</code>, 
 <code>Inherited</code></dd>
 </dl>
+</li>
+</ul>
+<a name="buildValueObject-io.micronaut.test.annotation.MicronautTest-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>buildValueObject</h4>
+<pre>public static&nbsp;<a href="../../../../io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a>&nbsp;buildValueObject(<a href="../../../../io/micronaut/test/annotation/MicronautTest.html" title="annotation in io.micronaut.test.annotation">MicronautTest</a>&nbsp;micronautTest)</pre>
 </li>
 </ul>
 </li>
