@@ -2,7 +2,7 @@ package io.micronaut.test.kotest
 
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 
 @MicronautTest
 class NewAnnotationTest(

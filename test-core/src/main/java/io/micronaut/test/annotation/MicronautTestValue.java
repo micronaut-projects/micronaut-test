@@ -22,7 +22,7 @@ import io.micronaut.core.annotation.Creator;
  * Value object for the values from any of the MicronautTest annotations.
  *
  * @author Álvaro Sánchez-Mariscal
- * @since 1.3
+ * @since 2.1.0
  */
 public class MicronautTestValue {
 

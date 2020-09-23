@@ -24,7 +24,7 @@ import io.kotest.core.test.TestResult
 import io.micronaut.aop.InterceptedProxy
 import io.micronaut.test.annotation.AnnotationUtils
 import io.micronaut.test.annotation.MicronautTestValue
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 

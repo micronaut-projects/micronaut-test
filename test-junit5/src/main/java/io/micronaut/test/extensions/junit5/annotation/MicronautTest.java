@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  *
  * @author graemerocher
  * @author Álvaro Sánchez-Mariscal
- * @since 1.3
+ * @since 2.1.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})

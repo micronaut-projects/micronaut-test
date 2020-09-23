@@ -20,7 +20,7 @@ package io.micronaut.test.extensions.junit5;
  * is used.
  *
  * @author Álvaro Sánchez-Mariscal
- * @since 1.3
+ * @since 2.1.0
  */
 public class MicronautJunit5ExtensionStub extends MicronautJunit5Extension {
 }
