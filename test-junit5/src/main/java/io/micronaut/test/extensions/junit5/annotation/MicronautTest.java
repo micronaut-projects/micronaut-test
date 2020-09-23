@@ -18,11 +18,16 @@ package io.micronaut.test.extensions.junit5.annotation;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.test.annotation.TransactionMode;
 import io.micronaut.test.condition.TestActiveCondition;
 import io.micronaut.test.extensions.junit5.MicronautJunit5Extension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Annotation that can be applied to any JUnit 5 test to make it a Micronaut test.
@@ -84,4 +89,10 @@ public @interface MicronautTest {
      * @return The builder
      */
     Class<? extends ApplicationContextBuilder>[] contextBuilder() default {};
+
+    /**
+     * The transaction mode describing how transactions should be handled for each test.
+     * @return The transaction mode
+     */
+    TransactionMode transactionMode() default TransactionMode.SEPARATE_TRANSACTIONS;
 }

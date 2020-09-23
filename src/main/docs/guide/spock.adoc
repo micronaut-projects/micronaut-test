@@ -16,7 +16,7 @@ NOTE: If you plan to define mock beans you will also need `micronaut-inject-groo
 Or for Maven:
 
 .pom.xml
-[source,xml]
+[source,xml,subs="attributes+"]
 ----
 <dependency>
     <groupId>io.micronaut.test</groupId>
@@ -57,25 +57,11 @@ include::{spocktests}/MathServiceSpec.groovy[]
 
 === Environments, Classpath Scanning etc.
 
-The `@MicronautTest` annotation supports specifying the environment names the test should run with:
+include::src/main/docs/guide/includes/environments-classpath-scanning.adoc[]
 
-```java
-@MicronautTest(environments=["foo", "bar"])
-```
+=== Transaction semantics
 
-In addition, although Micronaut itself doesn't scan the classpath, some integrations do (such as JPA and GORM), for these cases you may wish to specify either the application class:
-
-```java
-@MicronautTest(application=Application.class)
-```
-
-Or the packages:
-
-```java
-@MicronautTest(packages="foo.bar")
-```
-
-To ensure that entities can be found during classpath scanning.
+include::src/main/docs/guide/includes/transaction.adoc[]
 
 === Using Spock Mocks
 
@@ -156,20 +142,13 @@ include::{spocktests}/PropertySourceSpec.groovy[]
 
 The above example expects a file located at `src/test/resources/io/micronaut/spock/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
 
-* `file:myprops.properties` - A relative path to a file somewhere on the file system
-* `classpath:myprops.properties` - A file relative to the root of the classpath
+* `file:myprops.properties` - A relative path to a file somewhere on the file system.
+* `classpath:myprops.properties` - A file relative to the root of the classpath.
 * `myprops.properties` - A file relative on the classpath relative to the test being run.
 
 === Refreshing injected beans based on `@Requires` upon properties changes
 
-You can use combine the use of `@Requires` and `@Property`, so that injected beans will be refreshed if there are
-configuration changes that affect their `@Requires` condition.
-
-For that to work, the test must be annotated with `@MicronautTest(rebuildContext = true)`. In that case, if there are
-changes in any property for a given test, the application context will be rebuilt so that `@Requires` conditions are
-re-evaluated again.
-
-For example:
+include::src/main/docs/guide/includes/refreshing-requires.adoc[]
 
 .Combining `@Requires` and `@Property` in a `@Refreshable` test class.
 [source,java]

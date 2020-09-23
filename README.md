@@ -1,9 +1,10 @@
 Spock: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-spock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-spock)
 JUnit 5: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-junit5/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-junit5)
+Kotest: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-kotest/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-kotest)
 
 # Micronaut Test
 
-This project provides testing extension for JUnit 5 and Spock to make it easier to test Micronaut applications.
+This project provides testing extension for JUnit 5, Spock and Kotest to make it easier to test Micronaut applications.
 
 For more information see the [Latest](https://micronaut-projects.github.io/micronaut-test/latest/guide/index.html) or [Snapshot](https://micronaut-projects.github.io/micronaut-test/snapshot/guide/index.html) Documentation.
 

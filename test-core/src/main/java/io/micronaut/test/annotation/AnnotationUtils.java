@@ -15,7 +15,7 @@
  */
 package io.micronaut.test.annotation;
 
-import static java.util.Arrays.asList;
+import io.micronaut.core.reflect.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
@@ -30,7 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.micronaut.core.reflect.ReflectionUtils;
+import static java.util.Arrays.asList;
 
 /**
  * Common annotation utilities.
@@ -105,8 +105,8 @@ public final class AnnotationUtils {
                     micronautTest.rollback(),
                     micronautTest.transactional(),
                     micronautTest.rebuildContext(),
-                    micronautTest.contextBuilder()
-            );
+                    micronautTest.contextBuilder(),
+                    micronautTest.transactionMode());
         } else {
             return null;
         }

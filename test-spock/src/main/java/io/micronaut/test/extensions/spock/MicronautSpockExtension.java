@@ -22,10 +22,10 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.test.annotation.AnnotationUtils;
+import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
-import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.spockframework.mock.MockUtil;
 import org.spockframework.runtime.InvalidSpecException;
@@ -40,7 +40,11 @@ import spock.lang.Specification;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -79,7 +83,6 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     throw e;
                 }
             });
-
         });
 
         spec.addSetupSpecInterceptor(invocation -> {
@@ -101,7 +104,7 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                             }
                         }
                     } else {
-                        List<FieldInfo> fields = spec.getFields();
+                        List<FieldInfo> fields = spec.getAllFields();
                         for (FieldInfo field : fields) {
                             if (field.isShared() && field.getAnnotation(Inject.class) != null) {
                                 applicationContext.inject(invocation.getSharedInstance());
@@ -111,7 +114,7 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     }
                     beforeTestClass(buildContext(invocation, null));
                     invocation.proceed();
-                }
+            }
         );
 
         spec.addCleanupSpecInterceptor(invocation -> {
@@ -169,8 +172,8 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     micronautTest.rollback(),
                     micronautTest.transactional(),
                     micronautTest.rebuildContext(),
-                    micronautTest.contextBuilder()
-            );
+                    micronautTest.contextBuilder(),
+                    micronautTest.transactionMode());
         } else {
             return null;
         }
@@ -188,21 +191,19 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
     @Override
     public void visitFeatureAnnotation(T annotation, FeatureInfo feature) {
         throw new InvalidSpecException("@%s may not be applied to feature methods")
-                .withArgs(annotation.annotationType().getSimpleName());
+            .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
     public void visitFixtureAnnotation(T annotation, MethodInfo fixtureMethod) {
         throw new InvalidSpecException("@%s may not be applied to fixture methods")
-                .withArgs(annotation.annotationType().getSimpleName());
-
+            .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
     public void visitFieldAnnotation(T annotation, FieldInfo field) {
         throw new InvalidSpecException("@%s may not be applied to fields")
-                .withArgs(annotation.annotationType().getSimpleName());
-
+            .withArgs(annotation.annotationType().getSimpleName());
     }
 
     @Override
@@ -243,11 +244,11 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         for (MethodInjectionPoint injectedMethod : specDefinition.getInjectedMethods()) {
             final Argument<?>[] args = injectedMethod.getArguments();
             if (args.length == 1) {
-                final Optional<FieldInfo> fld = context.getSpec().getFields().stream().filter(f -> f.getName().equals(args[0].getName())).findFirst();
+                final Optional<FieldInfo> fld = context.getSpec().getAllFields().stream().filter(f -> f.getName().equals(args[0].getName())).findFirst();
                 if (fld.isPresent()) {
                     final FieldInfo fieldInfo = fld.get();
                     final Object fieldInstance = fieldInfo.readValue(
-                            instance
+                        instance
                     );
                     if (fieldInstance instanceof InterceptedProxy) {
                         Object interceptedTarget = ((InterceptedProxy) fieldInstance).interceptedTarget();
@@ -259,5 +260,4 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
             }
         }
     }
-
 }

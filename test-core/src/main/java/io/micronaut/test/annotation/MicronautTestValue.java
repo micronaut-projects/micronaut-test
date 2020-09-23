@@ -16,6 +16,7 @@
 package io.micronaut.test.annotation;
 
 import io.micronaut.context.ApplicationContextBuilder;
+import io.micronaut.core.annotation.Creator;
 
 /**
  * Value object for the values from any of the MicronautTest annotations.
@@ -33,22 +34,42 @@ public class MicronautTestValue {
     private final boolean transactional;
     private final boolean rebuildContext;
     private final Class<? extends ApplicationContextBuilder>[] contextBuilder;
+    private final TransactionMode transactionMode;
+
+    /**
+     * @param application     The application class of the application
+     * @param environments    The environments to use.
+     * @param packages        The packages to consider for scanning.
+     * @param propertySources The property sources
+     * @param rollback        True if changes should be rolled back
+     * @param transactional   Whether to wrap a test in a transaction.
+     * @param rebuildContext  true if the application context should be rebuilt for each test method
+     * @param contextBuilder  The builder
+     */
+    @Deprecated
+    public MicronautTestValue(Class<?> application, String[] environments, String[] packages, String[] propertySources,
+                              boolean rollback, boolean transactional, boolean rebuildContext,
+                              Class<? extends ApplicationContextBuilder>[] contextBuilder) {
+        this(application, environments, packages, propertySources, rollback, transactional, rebuildContext, contextBuilder, TransactionMode.SEPARATE_TRANSACTIONS);
+    }
 
     /**
      * Default constructor.
      *
-     * @param application The application class of the application
-     * @param environments The environments to use.
-     * @param packages The packages to consider for scanning.
+     * @param application     The application class of the application
+     * @param environments    The environments to use.
+     * @param packages        The packages to consider for scanning.
      * @param propertySources The property sources
-     * @param rollback True if changes should be rolled back
-     * @param transactional Whether to wrap a test in a transaction.
-     * @param rebuildContext true if the application context should be rebuilt for each test method
-     * @param contextBuilder The builder
+     * @param rollback        True if changes should be rolled back
+     * @param transactional   Whether to wrap a test in a transaction.
+     * @param rebuildContext  true if the application context should be rebuilt for each test method
+     * @param contextBuilder  The builder
+     * @param transactionMode The transaction mode
      */
+    @Creator
     public MicronautTestValue(Class<?> application, String[] environments, String[] packages, String[] propertySources,
                               boolean rollback, boolean transactional, boolean rebuildContext,
-                              Class<? extends ApplicationContextBuilder>[] contextBuilder) {
+                              Class<? extends ApplicationContextBuilder>[] contextBuilder, TransactionMode transactionMode) {
         this.application = application;
         this.environments = environments;
         this.packages = packages;
@@ -57,6 +78,7 @@ public class MicronautTestValue {
         this.transactional = transactional;
         this.rebuildContext = rebuildContext;
         this.contextBuilder = contextBuilder;
+        this.transactionMode = transactionMode;
     }
 
     /**
@@ -100,6 +122,7 @@ public class MicronautTestValue {
 
     /**
      * Allow disabling or enabling of automatic transaction wrapping.
+     *
      * @return Whether to wrap a test in a transaction.
      */
     public boolean transactional() {
@@ -108,6 +131,7 @@ public class MicronautTestValue {
 
     /**
      * Whether to rebuild the application context before each test method.
+     *
      * @return true if the application context should be rebuilt for each test method
      */
     public boolean rebuildContext() {
@@ -116,9 +140,19 @@ public class MicronautTestValue {
 
     /**
      * The application context builder to use to construct the context.
+     *
      * @return The builder
      */
     public Class<? extends ApplicationContextBuilder>[] contextBuilder() {
         return contextBuilder;
+    }
+
+    /**
+     * The {@link TransactionMode}.
+     *
+     * @return The transaction mode
+     */
+    public TransactionMode transactionMode() {
+        return transactionMode;
     }
 }

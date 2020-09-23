@@ -8,8 +8,8 @@ To get started using Kotest you need the following dependencies in your build co
 dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
     testImplementation "io.micronaut.test:micronaut-test-kotest:{version}"
-    testImplementation "io.mockk:mockk:1.9.3"
-    testImplementation "io.kotest:kotest-runner-junit5-jvm:4.0.3"
+    testImplementation "io.mockk:mockk:{mockkVersion}"
+    testImplementation "io.kotest:kotest-runner-junit5-jvm:{kotestVersion}"
 }
 
 // use JUnit 5 platform
@@ -21,7 +21,7 @@ test {
 Or for Maven:
 
 .pom.xml
-[source,xml]
+[source,xml,subs="attributes+"]
 ----
 <dependency>
     <groupId>io.micronaut.test</groupId>
@@ -32,13 +32,13 @@ Or for Maven:
 <dependency>
     <groupId>io.mockk</groupId>
     <artifactId>mockk</artifactId>
-    <version>1.9.3</version>
+    <version>{mockkVersion}</version>
     <scope>test</scope>
 </dependency>
 <dependency>
     <groupId>io.kotest</groupId>
     <artifactId>kotest-runner-junit5-jvm</artifactId>
-    <version>4.0.3</version>
+    <version>{kotestVersion}</version>
     <scope>test</scope>
 </dependency>
 ----
@@ -56,14 +56,14 @@ Note that for Maven you will also need to configure the Surefire plugin to use J
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.3.1</version>
+            <version>5.6.2</version>
         </dependency>
     </dependencies>
 </plugin>
 <plugin>
     <artifactId>kotlin-maven-plugin</artifactId>
     <groupId>org.jetbrains.kotlin</groupId>
-    <version>1.3.20</version>
+    <version>1.4.10</version>
     <configuration>
         <compilerPlugins>
             <plugin>all-open</plugin>
@@ -191,25 +191,11 @@ include::{kotesttests}/MathServiceTest.kt[]
 
 === Environments, Classpath Scanning etc.
 
-The `@MicronautTest` annotation supports specifying the environment names the test should run with:
+include::src/main/docs/guide/includes/environments-classpath-scanning.adoc[]
 
-```java
-@MicronautTest(environments={"foo", "bar"})
-```
+=== Transaction semantics
 
-In addition, although Micronaut itself doesn't scan the classpath, some integrations do (such as JPA and GORM), for these cases you may wish to specify either the application class:
-
-```java
-@MicronautTest(application=Application.class)
-```
-
-Or the packages:
-
-```java
-@MicronautTest(packages="foo.bar")
-```
-
-To ensure that entities can be found during classpath scanning.
+include::src/main/docs/guide/includes/transaction.adoc[]
 
 === Using Mockk Mocks
 
@@ -307,14 +293,7 @@ There are a couple caveats to using constructor injection to be aware of.
 
 === Refreshing injected beans based on `@Requires` upon properties changes
 
-You can use combine the use of `@Requires` and `@Property`, so that injected beans will be refreshed if there are
-configuration changes that affect their `@Requires` condition.
-
-For that to work, the test must be annotated with `@MicronautTest(rebuildContext = true)`. In that case, if there are
-changes in any property for a given test, the application context will be rebuilt so that `@Requires` conditions are
-re-evaluated again.
-
-For example:
+include::src/main/docs/guide/includes/refreshing-requires.adoc[]
 
 .Combining `@Requires` and `@Property` in a `@Refreshable` test class.
 [source,kotlin]

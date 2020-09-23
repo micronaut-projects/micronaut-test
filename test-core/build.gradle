@@ -1,6 +1,6 @@
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
-    compileOnly "io.micronaut:micronaut-spring:$micronautVersion"
+    compileOnly "io.micronaut:micronaut-spring:2.0.1"
     compileOnly("org.spockframework:spock-core:$spockVersion") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }

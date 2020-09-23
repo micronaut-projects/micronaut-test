@@ -219,8 +219,8 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 micronautTest.rollback(),
                 micronautTest.transactional(),
                 micronautTest.rebuildContext(),
-                micronautTest.contextBuilder()
-        );
+                micronautTest.contextBuilder(),
+                micronautTest.transactionMode());
     }
 
 }
