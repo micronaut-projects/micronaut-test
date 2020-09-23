@@ -111,7 +111,7 @@ object MicronautKotlinTestExtension: TestListener, ConstructorExtension, TestCas
                 micronautTest.transactional,
                 micronautTest.rebuildContext,
                 micronautTest.contextBuilder.map { kClass -> kClass.java }.toTypedArray(),
-                transactionMode
+                micronautTest.transactionMode
         )
     }
 

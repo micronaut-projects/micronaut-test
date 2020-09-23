@@ -50,6 +50,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 /**
  * Extension for Spock.
  *
+ * @param <T> The MicronautTest annotation
  * @author graemerocher
  * @since 1.0
  */
