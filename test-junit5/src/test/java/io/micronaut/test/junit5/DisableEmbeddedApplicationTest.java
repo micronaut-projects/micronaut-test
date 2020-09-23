@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 import static org.junit.Assert.assertFalse;
 
-@MicronautTest(embeddedApplication = false, rebuildContext = true)
+@MicronautTest(startApplication = false, rebuildContext = true)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class DisableEmbeddedApplicationTest {
 
