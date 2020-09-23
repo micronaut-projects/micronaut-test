@@ -161,11 +161,17 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/micronaut/test/extensions/junit5/annotation/MicronautTest.html#startApplication--">startApplication</a></span></code>
+<div class="block">Whether to start <code>EmbeddedApplication</code>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/micronaut/test/extensions/junit5/annotation/MicronautTest.html#transactional--">transactional</a></span></code>
 <div class="block">Allow disabling or enabling of automatic transaction wrapping.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation">TransactionMode</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/micronaut/test/extensions/junit5/annotation/MicronautTest.html#transactionMode--">transactionMode</a></span></code>
 <div class="block">The transaction mode describing how transactions should be handled for each test.</div>
@@ -354,7 +360,7 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <li class="blockList"><a name="transactionMode--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>transactionMode</h4>
 <pre>public abstract&nbsp;<a href="../../../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation">TransactionMode</a>&nbsp;transactionMode</pre>
@@ -366,6 +372,30 @@ public @interface <span class="memberNameLabel">MicronautTest</span></pre>
 <dl>
 <dt>Default:</dt>
 <dd>io.micronaut.test.annotation.TransactionMode.SEPARATE_TRANSACTIONS</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="startApplication--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>startApplication</h4>
+<pre>public abstract&nbsp;boolean&nbsp;startApplication</pre>
+<div class="block"><p>Whether to start <code>EmbeddedApplication</code>.</p>
+
+ <p>When false, only the application context will be started.
+ This can be used to disable <code>io.micronaut.runtime.server.EmbeddedServer</code>.</p></div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if <code>EmbeddedApplication</code> should be started</dd>
+</dl>
+<dl>
+<dt>Default:</dt>
+<dd>true</dd>
 </dl>
 </li>
 </ul>

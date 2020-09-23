@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -107,7 +107,8 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <span class="typeNameLabel">MicronautTestValue</span>
+<pre>@Internal
+public class <span class="typeNameLabel">MicronautTestValue</span>
 extends java.lang.Object</pre>
 <div class="block">Value object for the values from any of the MicronautTest annotations.</div>
 <dl>
@@ -134,19 +135,7 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTestValue.html#MicronautTestValue-java.lang.Class-java.lang.String:A-java.lang.String:A-java.lang.String:A-boolean-boolean-boolean-java.lang.Class:A-">MicronautTestValue</a></span>(java.lang.Class&lt;?&gt;&nbsp;application,
-                  java.lang.String[]&nbsp;environments,
-                  java.lang.String[]&nbsp;packages,
-                  java.lang.String[]&nbsp;propertySources,
-                  boolean&nbsp;rollback,
-                  boolean&nbsp;transactional,
-                  boolean&nbsp;rebuildContext,
-                  java.lang.Class&lt;? extends io.micronaut.context.ApplicationContextBuilder&gt;[]&nbsp;contextBuilder)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTestValue.html#MicronautTestValue-java.lang.Class-java.lang.String:A-java.lang.String:A-java.lang.String:A-boolean-boolean-boolean-java.lang.Class:A-io.micronaut.test.annotation.TransactionMode-">MicronautTestValue</a></span>(java.lang.Class&lt;?&gt;&nbsp;application,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTestValue.html#MicronautTestValue-java.lang.Class-java.lang.String:A-java.lang.String:A-java.lang.String:A-boolean-boolean-boolean-java.lang.Class:A-io.micronaut.test.annotation.TransactionMode-boolean-">MicronautTestValue</a></span>(java.lang.Class&lt;?&gt;&nbsp;application,
                   java.lang.String[]&nbsp;environments,
                   java.lang.String[]&nbsp;packages,
                   java.lang.String[]&nbsp;propertySources,
@@ -154,7 +143,8 @@ extends java.lang.Object</pre>
                   boolean&nbsp;transactional,
                   boolean&nbsp;rebuildContext,
                   java.lang.Class&lt;? extends io.micronaut.context.ApplicationContextBuilder&gt;[]&nbsp;contextBuilder,
-                  <a href="../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation">TransactionMode</a>&nbsp;transactionMode)</code>
+                  <a href="../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation">TransactionMode</a>&nbsp;transactionMode,
+                  boolean&nbsp;startApplication)</code>
 <div class="block">Default constructor.</div>
 </td>
 </tr>
@@ -211,11 +201,15 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTestValue.html#startApplication--">startApplication</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTestValue.html#transactional--">transactional</a></span>()</code>
 <div class="block">Allow disabling or enabling of automatic transaction wrapping.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation">TransactionMode</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/test/annotation/MicronautTestValue.html#transactionMode--">transactionMode</a></span>()</code>
 <div class="block">The <a href="../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation"><code>TransactionMode</code></a>.</div>
@@ -243,36 +237,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="MicronautTestValue-java.lang.Class-java.lang.String:A-java.lang.String:A-java.lang.String:A-boolean-boolean-boolean-java.lang.Class:A-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>MicronautTestValue</h4>
-<pre>@Deprecated
-public&nbsp;MicronautTestValue(java.lang.Class&lt;?&gt;&nbsp;application,
-                                      java.lang.String[]&nbsp;environments,
-                                      java.lang.String[]&nbsp;packages,
-                                      java.lang.String[]&nbsp;propertySources,
-                                      boolean&nbsp;rollback,
-                                      boolean&nbsp;transactional,
-                                      boolean&nbsp;rebuildContext,
-                                      java.lang.Class&lt;? extends io.micronaut.context.ApplicationContextBuilder&gt;[]&nbsp;contextBuilder)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>application</code> - The application class of the application</dd>
-<dd><code>environments</code> - The environments to use.</dd>
-<dd><code>packages</code> - The packages to consider for scanning.</dd>
-<dd><code>propertySources</code> - The property sources</dd>
-<dd><code>rollback</code> - True if changes should be rolled back</dd>
-<dd><code>transactional</code> - Whether to wrap a test in a transaction.</dd>
-<dd><code>rebuildContext</code> - true if the application context should be rebuilt for each test method</dd>
-<dd><code>contextBuilder</code> - The builder</dd>
-</dl>
-</li>
-</ul>
-<a name="MicronautTestValue-java.lang.Class-java.lang.String:A-java.lang.String:A-java.lang.String:A-boolean-boolean-boolean-java.lang.Class:A-io.micronaut.test.annotation.TransactionMode-">
+<a name="MicronautTestValue-java.lang.Class-java.lang.String:A-java.lang.String:A-java.lang.String:A-boolean-boolean-boolean-java.lang.Class:A-io.micronaut.test.annotation.TransactionMode-boolean-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -287,7 +252,8 @@ public&nbsp;MicronautTestValue(java.lang.Class&lt;?&gt;&nbsp;application,
                                    boolean&nbsp;transactional,
                                    boolean&nbsp;rebuildContext,
                                    java.lang.Class&lt;? extends io.micronaut.context.ApplicationContextBuilder&gt;[]&nbsp;contextBuilder,
-                                   <a href="../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation">TransactionMode</a>&nbsp;transactionMode)</pre>
+                                   <a href="../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation">TransactionMode</a>&nbsp;transactionMode,
+                                   boolean&nbsp;startApplication)</pre>
 <div class="block">Default constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -423,7 +389,7 @@ public&nbsp;MicronautTestValue(java.lang.Class&lt;?&gt;&nbsp;application,
 <a name="transactionMode--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>transactionMode</h4>
 <pre>public&nbsp;<a href="../../../../io/micronaut/test/annotation/TransactionMode.html" title="enum in io.micronaut.test.annotation">TransactionMode</a>&nbsp;transactionMode()</pre>
@@ -431,6 +397,19 @@ public&nbsp;MicronautTestValue(java.lang.Class&lt;?&gt;&nbsp;application,
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The transaction mode</dd>
+</dl>
+</li>
+</ul>
+<a name="startApplication--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>startApplication</h4>
+<pre>public&nbsp;boolean&nbsp;startApplication()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether to start the embedded application</dd>
 </dl>
 </li>
 </ul>
