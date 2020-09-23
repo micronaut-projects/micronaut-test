@@ -20,16 +20,17 @@ import io.kotlintest.TestCase
 import io.kotlintest.TestResult
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.context.TestContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.TestPropertyProvider
 import kotlin.reflect.full.memberFunctions
 
 class MicronautKotlinTestContext(private val testClass: Class<Any>,
-                                 private val micronautTest: MicronautTest,
+                                 private val micronautTestValue: MicronautTestValue,
                                  private val createBean: Boolean) : AbstractMicronautExtension<Spec>() {
 
-    override fun resolveTestProperties(context: Spec?, testAnnotation: MicronautTest?, testProperties: MutableMap<String, Any>?) {
+    override fun resolveTestProperties(context: Spec?, testAnnotationValue: MicronautTestValue, testProperties: MutableMap<String, Any>?) {
         if (context is TestPropertyProvider) {
             testProperties?.putAll(context.properties)
         }
@@ -39,7 +40,7 @@ class MicronautKotlinTestContext(private val testClass: Class<Any>,
 
     init {
         bean = if (createBean) {
-            beforeClass(null, testClass, micronautTest)
+            beforeClass(null, testClass, micronautTestValue)
             applicationContext.findBean(testClass).orElse(null) as Spec?
         } else {
             null
@@ -51,7 +52,7 @@ class MicronautKotlinTestContext(private val testClass: Class<Any>,
 
     fun beforeSpecClass(spec: Spec) {
         if (!createBean) {
-            beforeClass(spec, testClass, micronautTest)
+            beforeClass(spec, testClass, micronautTestValue)
             applicationContext.inject(spec)
         }
         beforeTestClass(buildContext(spec))

@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.extensions.junit5;
+package io.micronaut.test.extensions.spock;
 
-import org.junit.jupiter.api.extension.Extension;
+import org.spockframework.runtime.extension.AbstractAnnotationDrivenExtension;
 
 /**
- * Stub for the JUnit extension.
+ * Stub for the Spock extension.
  *
  * @author graemerocher
  * @since 1.0
  */
-public class MicronautJunit5Extension implements Extension {
-
+public class MicronautSpockExtensionStub extends AbstractAnnotationDrivenExtension {
 }

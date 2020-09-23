@@ -15,18 +15,18 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)
 
 However, there are cases where having some additional features to test Micronaut come in handy, such as mocking bean definitions and so on.
 
-This project includes a pretty simple set of extensions for JUnit 5 and Spock:
+This project includes a pretty simple set of extensions for JUnit 5, Spock, Kotest and KotlinTest:
 
 * Automatically start and stop the server for the scope of a test suite
 * Use mocks to replace existing beans for the scope of a test suite
 * Allow dependency injection into a test instance
 
-This is achieved through a set of annotations found in the `io.micronaut.test.annotation` package:
+This is achieved through a set of annotations:
 
-* `@MicronautTest` - Can be added to any Spock or JUnit 5 test.
-* `@MockBean` - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.
-
-If you have either of the libraries for spock or JUnit 5 in your dependencies, you must include the appropriate dependency for the `@MicronautTest` annotation to work. It is not enough to have just `micronaut-test-spock` if you have JUnit 5 libraries loaded, you must also include `micronaut-test-junit5` and vice versa, or remove the references to JUnit 5 completely.
+* `@MicronautTest` - Can be added to any test:
+** `io.micronaut.test.extensions.junit5.annotation.MicronautTest` for JUnit 5, Kotest and Kotlintest.
+** `io.micronaut.test.extensions.spock.annotation.MicronautTest` for Spock.
+* `io.micronaut.test.annotation.@MockBean` - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.
 
 These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within `@MicronautTest` it is running your real application.
 
@@ -39,4 +39,4 @@ EmbeddedServer server //refers to the server that was started up for this test s
 
 @Inject 
 ApplicationContext context //refers to the current application context within the scope of the test
-----
+

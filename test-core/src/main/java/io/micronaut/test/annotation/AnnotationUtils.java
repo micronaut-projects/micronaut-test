@@ -15,7 +15,7 @@
  */
 package io.micronaut.test.annotation;
 
-import static java.util.Arrays.asList;
+import io.micronaut.core.reflect.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
@@ -30,7 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.micronaut.core.reflect.ReflectionUtils;
+import static java.util.Arrays.asList;
 
 /**
  * Common annotation utilities.
@@ -93,6 +93,24 @@ public final class AnnotationUtils {
         findRepeatableAnnotations(element, annotationType, containerType, inherited, found, new HashSet<>(16));
         // unmodifiable since returned from public, non-internal method(s)
         return Collections.unmodifiableList(new ArrayList<>(found));
+    }
+
+    public static MicronautTestValue buildValueObject(MicronautTest micronautTest) {
+        if (micronautTest != null) {
+            return new MicronautTestValue(
+                    micronautTest.application(),
+                    micronautTest.environments(),
+                    micronautTest.packages(),
+                    micronautTest.propertySources(),
+                    micronautTest.rollback(),
+                    micronautTest.transactional(),
+                    micronautTest.rebuildContext(),
+                    micronautTest.contextBuilder(),
+                    micronautTest.transactionMode(),
+                    micronautTest.startApplication());
+        } else {
+            return null;
+        }
     }
 
     private static <A extends Annotation> void findRepeatableAnnotations(AnnotatedElement element,

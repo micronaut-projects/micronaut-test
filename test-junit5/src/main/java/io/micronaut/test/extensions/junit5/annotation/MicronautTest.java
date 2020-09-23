@@ -13,34 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.annotation;
+package io.micronaut.test.extensions.junit5.annotation;
 
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.test.annotation.TransactionMode;
 import io.micronaut.test.condition.TestActiveCondition;
-import io.micronaut.test.extensions.junit5.MicronautJunit5ExtensionStub;
-import io.micronaut.test.extensions.spock.MicronautSpockExtensionStub;
+import io.micronaut.test.extensions.junit5.MicronautJunit5Extension;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.spockframework.runtime.extension.ExtensionAnnotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Annotation that can be applied to any Spock spec or JUnit 5 test to make it a Micronaut test.
+ * Annotation that can be applied to any JUnit 5 test to make it a Micronaut test.
  *
  * @author graemerocher
- * @since 1.0
- * @deprecated since 1.3, use the concrete implementations (eg: <pre>io.micronaut.test.extensions.junit5.annotation.MicronautTest</pre>, etc)
+ * @author Álvaro Sánchez-Mariscal
+ * @since 2.1.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
-@ExtensionAnnotation(MicronautSpockExtensionStub.class)
-@ExtendWith(MicronautJunit5ExtensionStub.class)
+@ExtendWith(MicronautJunit5Extension.class)
 @Factory
 @Inherited
 @Requires(condition = TestActiveCondition.class)
-@Deprecated
 public @interface MicronautTest {
     /**
      * @return The application class of the application
@@ -78,12 +79,6 @@ public @interface MicronautTest {
     boolean transactional() default true;
 
     /**
-     * The transaction mode describing how transactions should be handled for each test.
-     * @return The transaction mode
-     */
-    TransactionMode transactionMode() default TransactionMode.SEPARATE_TRANSACTIONS;
-
-    /**
      * Whether to rebuild the application context before each test method.
      * @return true if the application context should be rebuilt for each test method
      */
@@ -94,6 +89,12 @@ public @interface MicronautTest {
      * @return The builder
      */
     Class<? extends ApplicationContextBuilder>[] contextBuilder() default {};
+
+    /**
+     * The transaction mode describing how transactions should be handled for each test.
+     * @return The transaction mode
+     */
+    TransactionMode transactionMode() default TransactionMode.SEPARATE_TRANSACTIONS;
 
     /**
      * <p>Whether to start {@link io.micronaut.runtime.EmbeddedApplication}.</p>
