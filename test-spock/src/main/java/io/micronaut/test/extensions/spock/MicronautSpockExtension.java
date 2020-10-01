@@ -22,7 +22,7 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.test.annotation.AnnotationUtils;
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
