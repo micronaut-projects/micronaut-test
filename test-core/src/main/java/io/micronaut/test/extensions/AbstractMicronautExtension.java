@@ -265,7 +265,9 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
             if (testAnnotationValue.rebuildContext() && testCount > 1) {
                 stopEmbeddedApplication();
-                applicationContext.stop();
+                if (applicationContext.isRunning()) {
+                    applicationContext.stop();
+                }
                 applicationContext = builder.build();
                 startApplicationContext();
                 startEmbeddedApplication();
@@ -295,7 +297,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     protected void afterClass(C context) {
         stopEmbeddedApplication();
-        if (applicationContext != null) {
+        if (applicationContext != null && applicationContext.isRunning()) {
             applicationContext.stop();
         }
         embeddedApplication = null;
