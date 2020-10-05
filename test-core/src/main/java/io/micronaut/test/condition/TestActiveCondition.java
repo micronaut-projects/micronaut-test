@@ -57,13 +57,16 @@ public class TestActiveCondition implements Condition {
                     final Class<?> declaringTypeClass = declaringType.get();
                     String declaringTypeName = declaringTypeClass.getName();
                     if (activeSpecClazz != null) {
+                        final String packageName = NameUtils.getPackageName(activeSpecName);
+                        final String simpleName = NameUtils.getSimpleName(activeSpecName);
+                        final String rootName = packageName + ".$" + simpleName;
                         if (definition.isProxy()) {
-                            final String packageName = NameUtils.getPackageName(activeSpecName);
-                            final String simpleName = NameUtils.getSimpleName(activeSpecName);
-                            final String rootName = packageName + ".$" + simpleName;
                             return declaringTypeClass.isAssignableFrom(activeSpecClazz) || declaringTypeName.equals(rootName) || declaringTypeName.startsWith(rootName + "$");
                         } else {
-                            return declaringTypeClass.isAssignableFrom(activeSpecClazz) || activeSpecName.equals(declaringTypeName) || declaringTypeName.startsWith(activeSpecName + "$");
+                            return declaringTypeClass.isAssignableFrom(activeSpecClazz) &&
+                                    definition.getClass().getName().startsWith(rootName + "$") // Check if super class def is part of the current spec
+                                    || activeSpecName.equals(declaringTypeName)
+                                    || declaringTypeName.startsWith(activeSpecName + "$");
                         }
                     } else {
                         context.fail(

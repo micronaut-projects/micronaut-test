@@ -10,5 +10,4 @@ public abstract class SimpleBaseTest {
     SimpleService simpleService() {
         return mock(SimpleService.class);
     }
-
 }
