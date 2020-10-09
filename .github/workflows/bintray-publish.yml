@@ -10,9 +10,6 @@ on:
       release_version:
         description: 'Release version (eg: 1.2.3)'
         required: true
-      upload:
-        description: 'Whether to upload (eg: true/false)'
-        required: true
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -27,12 +24,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Upload to Bintray
-        if: github.event.inputs.upload == 'true'
-        env:
-          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-          BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
-        run: ./gradlew bintrayUpload
       - name: Publish to Bintray
         env:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
