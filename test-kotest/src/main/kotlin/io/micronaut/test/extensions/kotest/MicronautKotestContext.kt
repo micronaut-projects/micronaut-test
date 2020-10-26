@@ -65,7 +65,7 @@ class MicronautKotestContext(private val testClass: Class<Any>,
 
     @Suppress("UNCHECKED_CAST")
     fun beforeTest(testCase: TestCase) {
-        var filter = testCase.spec::class.memberFunctions.filter { it.name == testCase.name }
+        val filter = testCase.spec::class.memberFunctions.filter { it.name == testCase.description.name.name }
         var propertyAnnotations: List<Property>? = emptyList()
         if (filter.isNotEmpty()) {
             propertyAnnotations = filter.first().annotations.filter { it is Property } as? List<Property>
