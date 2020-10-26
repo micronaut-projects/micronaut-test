@@ -48,6 +48,9 @@ public class ExternalServerTest implements TestPropertyProvider {
         assertTrue(
             embeddedServer instanceof TestEmbeddedServer
         );
+        assertTrue(
+                embeddedServer.isRunning()
+        );
         assertEquals(
                 embeddedServer.getPort(),
                 PORT
