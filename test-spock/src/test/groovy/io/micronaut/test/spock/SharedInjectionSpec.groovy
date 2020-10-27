@@ -1,7 +1,7 @@
 package io.micronaut.test.spock
 
 import io.micronaut.context.ApplicationContext
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Shared
 import spock.lang.Specification
 

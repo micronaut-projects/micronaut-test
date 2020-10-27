@@ -8,7 +8,6 @@ import io.micronaut.http.client.annotation.Client;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
-import io.micronaut.test.support.server.TestEmbeddedServer;
 import io.micronaut.test.support.server.TestExecutableEmbeddedServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -20,12 +19,15 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
 @MicronautTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+// tag::executable[]
 @Property(
     name = TestExecutableEmbeddedServer.PROPERTY,
     value = "src/test/apps/test-app.jar"
 )
+// end::executable[]
 public class ProcessServerTest implements TestPropertyProvider {
 
     @Inject
