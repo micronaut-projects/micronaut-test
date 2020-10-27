@@ -31,11 +31,11 @@ import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 
 import javax.inject.Singleton;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -188,15 +188,32 @@ public class TestExecutableEmbeddedServer implements EmbeddedServer {
 
             try {
                 this.process = processFuture.get();
-                long maxWait = 10000;
-                long waiting = 0;
-                while (SocketUtils.isTcpPortAvailable(port)) {
-                    Thread.sleep(100);
-                    waiting += 100;
-                    if (waiting > maxWait) {
-                        throw new ServerStartupException("Timeout waiting for test server to start");
+                int max = 10000;
+                int timeout = 0;
+                while (timeout < max) {
+                    try {
+                        URLConnection urlConnection = new URL("http://localhost:" + port).openConnection();
+                        urlConnection.setConnectTimeout(max);
+                        urlConnection.setReadTimeout(max);
+                        BufferedReader in = new BufferedReader(new InputStreamReader(
+                                urlConnection.getInputStream()));
+                        in.readLine();
+                        in.close();
+                    } catch (IOException e) {
+                        if (!(e instanceof FileNotFoundException)) {
+                            timeout += 100;
+                            if (timeout < max) {
+                                Thread.sleep(100);
+                            } else {
+                                throw new ServerStartupException("Timeout occurred starting Micronaut process server");
+                            }
+                        } else {
+                            // response from server
+                            break;
+                        }
                     }
                 }
+
                 this.port = port;
             } catch (InterruptedException | ExecutionException e) {
                 throw new ServerStartupException(e.getMessage(), e);
