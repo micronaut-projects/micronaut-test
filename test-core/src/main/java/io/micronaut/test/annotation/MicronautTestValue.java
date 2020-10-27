@@ -51,6 +51,7 @@ public class MicronautTestValue {
      * @param rebuildContext  true if the application context should be rebuilt for each test method
      * @param contextBuilder  The builder
      * @param transactionMode The transaction mode
+     * @param startApplication Whether the start the app
      */
     @Creator
     public MicronautTestValue(Class<?> application, String[] environments, String[] packages, String[] propertySources,

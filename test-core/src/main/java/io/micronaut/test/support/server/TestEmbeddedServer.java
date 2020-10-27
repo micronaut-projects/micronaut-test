@@ -39,6 +39,7 @@ import java.net.URL;
 @Singleton
 @Primary
 @Requires(property = TestEmbeddedServer.PROPERTY)
+@Requires(missingProperty = TestExecutableEmbeddedServer.PROPERTY)
 public class TestEmbeddedServer implements EmbeddedServer {
     public static final String PROPERTY = "micronaut.test.server.url";
     private final ApplicationContext applicationContext;
