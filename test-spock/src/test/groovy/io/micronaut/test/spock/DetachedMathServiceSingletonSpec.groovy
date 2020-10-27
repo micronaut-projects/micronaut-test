@@ -16,7 +16,7 @@
 package io.micronaut.test.spock
 
 import io.micronaut.context.annotation.*
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Specification
 import spock.lang.Stepwise
 import spock.lang.Unroll

@@ -3,7 +3,7 @@ package io.micronaut.test.kotlintest
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.micronaut.runtime.EmbeddedApplication
-import io.micronaut.test.annotation.MicronautTest
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import javax.inject.Inject
 
 @MicronautTest(startApplication = false, rebuildContext = true)
