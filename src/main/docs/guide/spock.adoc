@@ -117,7 +117,7 @@ class RequiresSpec extends Specification {
 }
 ----
 
-The above test will only run if `my-env` is active (you can active it by passing the system property `micronaut.environments`).
+The above test will only run if `my-env` is active (you can activate it by passing the system property `micronaut.environments`).
 
 === Defining Additional Test Specific Properties
 
