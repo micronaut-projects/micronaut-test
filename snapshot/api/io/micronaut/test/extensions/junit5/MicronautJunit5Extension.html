@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -223,27 +223,41 @@ implements org.junit.jupiter.api.extension.BeforeAllCallback, org.junit.jupiter.
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#beforeTestExecution-org.junit.jupiter.api.extension.ExtensionContext-">beforeTestExecution</a></span>(org.junit.jupiter.api.extension.ExtensionContext&nbsp;context)</code>&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>protected <a href="../../../../../io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#buildMicronautTestValue-java.lang.Class-">buildMicronautTestValue</a></span>(java.lang.Class&lt;?&gt;&nbsp;testClass)</code>
+<div class="block">Builds a <a href="../../../../../io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation"><code>MicronautTestValue</code></a> object from the provided class (e.g.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>org.junit.jupiter.api.extension.ConditionEvaluationResult</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#evaluateExecutionCondition-org.junit.jupiter.api.extension.ExtensionContext-">evaluateExecutionCondition</a></span>(org.junit.jupiter.api.extension.ExtensionContext&nbsp;extensionContext)</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>protected org.junit.jupiter.api.extension.ExtensionContext.Store</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#getStore-org.junit.jupiter.api.extension.ExtensionContext-">getStore</a></span>(org.junit.jupiter.api.extension.ExtensionContext&nbsp;context)</code>&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>protected boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#hasExpectedAnnotations-java.lang.Class-">hasExpectedAnnotations</a></span>(java.lang.Class&lt;?&gt;&nbsp;testClass)</code>&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptAfterEachMethod-org.junit.jupiter.api.extension.InvocationInterceptor.Invocation-org.junit.jupiter.api.extension.ReflectiveInvocationContext-org.junit.jupiter.api.extension.ExtensionContext-">interceptAfterEachMethod</a></span>(org.junit.jupiter.api.extension.InvocationInterceptor.Invocation&lt;java.lang.Void&gt;&nbsp;invocation,
                         org.junit.jupiter.api.extension.ReflectiveInvocationContext&lt;java.lang.reflect.Method&gt;&nbsp;invocationContext,
                         org.junit.jupiter.api.extension.ExtensionContext&nbsp;extensionContext)</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptBeforeEachMethod-org.junit.jupiter.api.extension.InvocationInterceptor.Invocation-org.junit.jupiter.api.extension.ReflectiveInvocationContext-org.junit.jupiter.api.extension.ExtensionContext-">interceptBeforeEachMethod</a></span>(org.junit.jupiter.api.extension.InvocationInterceptor.Invocation&lt;java.lang.Void&gt;&nbsp;invocation,
                          org.junit.jupiter.api.extension.ReflectiveInvocationContext&lt;java.lang.reflect.Method&gt;&nbsp;invocationContext,
                          org.junit.jupiter.api.extension.ExtensionContext&nbsp;extensionContext)</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>java.lang.Object</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#resolveParameter-org.junit.jupiter.api.extension.ParameterContext-org.junit.jupiter.api.extension.ExtensionContext-">resolveParameter</a></span>(org.junit.jupiter.api.extension.ParameterContext&nbsp;parameterContext,
                 org.junit.jupiter.api.extension.ExtensionContext&nbsp;extensionContext)</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#resolveTestProperties-org.junit.jupiter.api.extension.ExtensionContext-io.micronaut.test.annotation.MicronautTestValue-java.util.Map-">resolveTestProperties</a></span>(org.junit.jupiter.api.extension.ExtensionContext&nbsp;context,
                      <a href="../../../../../io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a>&nbsp;testAnnotationValue,
@@ -251,7 +265,7 @@ implements org.junit.jupiter.api.extension.BeforeAllCallback, org.junit.jupiter.
 <div class="block">Resolves any test properties.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#supportsParameter-org.junit.jupiter.api.extension.ParameterContext-org.junit.jupiter.api.extension.ExtensionContext-">supportsParameter</a></span>(org.junit.jupiter.api.extension.ParameterContext&nbsp;parameterContext,
                  org.junit.jupiter.api.extension.ExtensionContext&nbsp;extensionContext)</code>&nbsp;</td>
@@ -262,7 +276,7 @@ implements org.junit.jupiter.api.extension.BeforeAllCallback, org.junit.jupiter.
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;io.micronaut.test.extensions.<a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></h3>
-<code><a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterClass-C-">afterClass</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterCleanupTest-io.micronaut.test.context.TestContext-">afterCleanupTest</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterSetupTest-io.micronaut.test.context.TestContext-">afterSetupTest</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterTestClass-io.micronaut.test.context.TestContext-">afterTestClass</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterTestExecution-io.micronaut.test.context.TestContext-">afterTestExecution</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterTestMethod-io.micronaut.test.context.TestContext-">afterTestMethod</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeClass-C-java.lang.Class-io.micronaut.test.annotation.MicronautTestValue-">beforeClass</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeCleanupTest-io.micronaut.test.context.TestContext-">beforeCleanupTest</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeEach-C-java.lang.Object-java.lang.reflect.AnnotatedElement-java.util.List-">beforeEach</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeSetupTest-io.micronaut.test.context.TestContext-">beforeSetupTest</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeTestClass-io.micronaut.test.context.TestContext-">beforeTestClass</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeTestExecution-io.micronaut.test.context.TestContext-">beforeTestExecution</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeTestMethod-io.micronaut.test.context.TestContext-">beforeTestMethod</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#isTestSuiteBeanPresent-java.lang.Class-">isTestSuiteBeanPresent</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#startApplicationContext--">startApplicationContext</a></code></li>
+<code><a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterClass-C-">afterClass</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterCleanupTest-io.micronaut.test.context.TestContext-">afterCleanupTest</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterSetupTest-io.micronaut.test.context.TestContext-">afterSetupTest</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterTestClass-io.micronaut.test.context.TestContext-">afterTestClass</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterTestExecution-io.micronaut.test.context.TestContext-">afterTestExecution</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#afterTestMethod-io.micronaut.test.context.TestContext-">afterTestMethod</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeClass-C-java.lang.Class-io.micronaut.test.annotation.MicronautTestValue-">beforeClass</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeCleanupTest-io.micronaut.test.context.TestContext-">beforeCleanupTest</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeEach-C-java.lang.Object-java.lang.reflect.AnnotatedElement-java.util.List-">beforeEach</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeSetupTest-io.micronaut.test.context.TestContext-">beforeSetupTest</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeTestClass-io.micronaut.test.context.TestContext-">beforeTestClass</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeTestExecution-io.micronaut.test.context.TestContext-">beforeTestExecution</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeTestMethod-io.micronaut.test.context.TestContext-">beforeTestMethod</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#isTestSuiteBeanPresent-java.lang.Class-">isTestSuiteBeanPresent</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#postProcessBuilder-io.micronaut.context.ApplicationContextBuilder-">postProcessBuilder</a>, <a href="../../../../../io/micronaut/test/extensions/AbstractMicronautExtension.html#startApplicationContext--">startApplicationContext</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -322,6 +336,22 @@ implements org.junit.jupiter.api.extension.BeforeAllCallback, org.junit.jupiter.
 <dd><code>beforeAll</code>&nbsp;in interface&nbsp;<code>org.junit.jupiter.api.extension.BeforeAllCallback</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd>
+</dl>
+</li>
+</ul>
+<a name="buildMicronautTestValue-java.lang.Class-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>buildMicronautTestValue</h4>
+<pre>protected&nbsp;<a href="../../../../../io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a>&nbsp;buildMicronautTestValue(java.lang.Class&lt;?&gt;&nbsp;testClass)</pre>
+<div class="block">Builds a <a href="../../../../../io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation"><code>MicronautTestValue</code></a> object from the provided class (e.g. by scanning annotations).</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>testClass</code> - the class to extract builder configuration from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a MicronautTestValue to configure the test application context</dd>
 </dl>
 </li>
 </ul>
@@ -428,6 +458,21 @@ implements org.junit.jupiter.api.extension.BeforeAllCallback, org.junit.jupiter.
 </dl>
 </li>
 </ul>
+<a name="hasExpectedAnnotations-java.lang.Class-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hasExpectedAnnotations</h4>
+<pre>protected&nbsp;boolean&nbsp;hasExpectedAnnotations(java.lang.Class&lt;?&gt;&nbsp;testClass)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>testClass</code> - the test class</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if the provided test class holds the expected test annotations</dd>
+</dl>
+</li>
+</ul>
 <a name="resolveTestProperties-org.junit.jupiter.api.extension.ExtensionContext-io.micronaut.test.annotation.MicronautTestValue-java.util.Map-">
 <!--   -->
 </a>
@@ -518,7 +563,7 @@ implements org.junit.jupiter.api.extension.BeforeAllCallback, org.junit.jupiter.
 <a name="resolveParameter-org.junit.jupiter.api.extension.ParameterContext-org.junit.jupiter.api.extension.ExtensionContext-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>resolveParameter</h4>
 <pre>public&nbsp;java.lang.Object&nbsp;resolveParameter(org.junit.jupiter.api.extension.ParameterContext&nbsp;parameterContext,
@@ -529,6 +574,21 @@ implements org.junit.jupiter.api.extension.BeforeAllCallback, org.junit.jupiter.
 <dd><code>resolveParameter</code>&nbsp;in interface&nbsp;<code>org.junit.jupiter.api.extension.ParameterResolver</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>org.junit.jupiter.api.extension.ParameterResolutionException</code></dd>
+</dl>
+</li>
+</ul>
+<a name="getStore-org.junit.jupiter.api.extension.ExtensionContext-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getStore</h4>
+<pre>protected&nbsp;org.junit.jupiter.api.extension.ExtensionContext.Store&nbsp;getStore(org.junit.jupiter.api.extension.ExtensionContext&nbsp;context)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>context</code> - the current extension context</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the store to use for this extension</dd>
 </dl>
 </li>
 </ul>
