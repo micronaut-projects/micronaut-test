@@ -50,14 +50,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
-        final Optional<io.micronaut.test.annotation.MicronautTest> micronautTest =
-                AnnotationSupport.findAnnotation(testClass, io.micronaut.test.annotation.MicronautTest.class);
-        MicronautTestValue micronautTestValue = micronautTest
-                .map(AnnotationUtils::buildValueObject)
-                .orElseGet(() -> AnnotationSupport
-                        .findAnnotation(testClass, MicronautTest.class)
-                        .map(this::buildValueObject)
-                        .orElse(null));
+        MicronautTestValue micronautTestValue = buildMicronautTestValue(testClass);
         beforeClass(extensionContext, testClass, micronautTestValue);
         getStore(extensionContext).put(ApplicationContext.class, applicationContext);
         if (specDefinition != null) {
@@ -68,6 +61,23 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         }
         beforeTestClass(buildContext(extensionContext));
+    }
+
+    /**
+     * Builds a {@link MicronautTestValue} object from the provided class (e.g. by scanning annotations).
+     *
+     * @param testClass the class to extract builder configuration from
+     * @return a MicronautTestValue to configure the test application context
+     */
+    protected MicronautTestValue buildMicronautTestValue(Class<?> testClass) {
+        final Optional<io.micronaut.test.annotation.MicronautTest> micronautTest =
+                AnnotationSupport.findAnnotation(testClass, io.micronaut.test.annotation.MicronautTest.class);
+        return micronautTest
+                .map(AnnotationUtils::buildValueObject)
+                .orElseGet(() -> AnnotationSupport
+                        .findAnnotation(testClass, MicronautTest.class)
+                        .map(this::buildValueObject)
+                        .orElse(null));
     }
 
     @Override
@@ -129,13 +139,21 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         } else {
             final Class<?> testClass = extensionContext.getRequiredTestClass();
-            if (AnnotationSupport.isAnnotated(testClass, MicronautTest.class) ||
-                    AnnotationSupport.isAnnotated(testClass, io.micronaut.test.annotation.MicronautTest.class)) {
+            if (hasExpectedAnnotations(testClass)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
                 return ConditionEvaluationResult.disabled(DISABLED_MESSAGE);
             }
         }
+    }
+
+    /**
+     * @param testClass the test class
+     * @return true if the provided test class holds the expected test annotations
+     */
+    protected boolean hasExpectedAnnotations(Class<?> testClass) {
+        return AnnotationSupport.isAnnotated(testClass, MicronautTest.class) ||
+                AnnotationSupport.isAnnotated(testClass, io.micronaut.test.annotation.MicronautTest.class);
     }
 
     @Override
@@ -206,7 +224,11 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         }
     }
 
-    private static ExtensionContext.Store getStore(ExtensionContext context) {
+    /**
+     * @param context the current extension context
+     * @return the store to use for this extension
+     */
+    protected ExtensionContext.Store getStore(ExtensionContext context) {
         return context.getRoot().getStore(NAMESPACE);
     }
 

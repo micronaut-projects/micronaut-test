@@ -230,6 +230,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                     testProperties
             );
             builder.propertySources(testPropertySource);
+            postProcessBuilder(builder);
             this.applicationContext = builder.build();
             startApplicationContext();
             specDefinition = applicationContext.findBeanDefinition(testClass).orElse(null);
@@ -239,6 +240,13 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             }
             refreshScope = applicationContext.findBean(RefreshScope.class).orElse(null);
         }
+    }
+
+    /**
+     * Allows subclasses to customize the builder right before context initialization.
+     * @param builder the application context builder
+     */
+    protected void postProcessBuilder(ApplicationContextBuilder builder) {
     }
 
     /**
