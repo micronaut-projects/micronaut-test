@@ -16,6 +16,7 @@ dependencies {
         api "io.kotest:kotest-assertions-core-jvm:$kotestVersion"
         api "io.mockk:mockk:$mockkVersion"
         api "org.mockito:mockito-core:$mockitoVersion"
+        api "org.mockito:mockito-junit-jupiter:$mockitoVersion"
         api "org.assertj:assertj-core:$assertJVersion"
         api "org.hamcrest:hamcrest:$hamcrestVersion"
     }
