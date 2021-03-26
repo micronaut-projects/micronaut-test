@@ -79,7 +79,7 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     beforeTestExecution(buildContext(invocation, null));
                     invocation.proceed();
                     afterTestExecution(buildContext(invocation, null));
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     afterTestExecution(buildContext(invocation, e));
                     throw e;
                 }
