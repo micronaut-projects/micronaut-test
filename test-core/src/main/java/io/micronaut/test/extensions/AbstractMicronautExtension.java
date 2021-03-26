@@ -72,61 +72,62 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
     private MicronautTestValue testAnnotationValue;
     private ApplicationContextBuilder builder = ApplicationContext.build();
+    private List<TestExecutionListener> listeners;
 
     /** {@inheritDoc} */
     @Override
     public void beforeTestExecution(TestContext testContext) throws Exception {
-        fireListeners(TestExecutionListener::beforeTestExecution, testContext);
+        fireListeners(TestExecutionListener::beforeTestExecution, testContext, false);
     }
 
     @Override
     public void beforeCleanupTest(TestContext testContext) throws Exception {
-        fireListeners(TestExecutionListener::beforeCleanupTest, testContext);
+        fireListeners(TestExecutionListener::beforeCleanupTest, testContext, false);
     }
 
     @Override
     public void afterCleanupTest(TestContext testContext) throws Exception {
-        fireListeners(TestExecutionListener::afterCleanupTest, testContext);
+        fireListeners(TestExecutionListener::afterCleanupTest, testContext, true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void afterTestExecution(TestContext testContext) throws Exception {
-        fireListeners(TestExecutionListener::afterTestExecution, testContext);
+        fireListeners(TestExecutionListener::afterTestExecution, testContext, true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
-        fireListeners(TestExecutionListener::beforeTestClass, testContext);
+        fireListeners(TestExecutionListener::beforeTestClass, testContext, false);
     }
 
     /** {@inheritDoc} */
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
-        fireListeners(TestExecutionListener::afterTestClass, testContext);
+        fireListeners(TestExecutionListener::afterTestClass, testContext, true);
     }
 
     @Override
     public void beforeSetupTest(TestContext testContext) throws Exception {
-        fireListeners(TestExecutionListener::beforeSetupTest, testContext);
+        fireListeners(TestExecutionListener::beforeSetupTest, testContext, false);
     }
 
     @Override
     public void afterSetupTest(TestContext testContext) throws Exception {
-        fireListeners(TestExecutionListener::afterSetupTest, testContext);
+        fireListeners(TestExecutionListener::afterSetupTest, testContext, true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
-        fireListeners(TestExecutionListener::beforeTestMethod, testContext);
+        fireListeners(TestExecutionListener::beforeTestMethod, testContext, false);
     }
 
     /** {@inheritDoc} */
     @Override
     public void afterTestMethod(TestContext testContext) throws Exception {
-        fireListeners(TestExecutionListener::afterTestMethod, testContext);
+        fireListeners(TestExecutionListener::afterTestMethod, testContext, true);
     }
 
     /**
@@ -136,14 +137,17 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @param testContext the test context
      * @throws Exception allows any exception to propagate
      */
-    private void fireListeners(TestListenerCallback callback, TestContext testContext) throws Exception {
-        if (applicationContext != null) {
-
-            Collection<TestExecutionListener> listeners = applicationContext.getBeansOfType(TestExecutionListener.class);
-            for (TestExecutionListener listener : listeners) {
-                callback.apply(listener, testContext);
+    private void fireListeners(TestListenerCallback callback, TestContext testContext, boolean reverse) throws Exception {
+        if (listeners != null) {
+            if (reverse) {
+                for (int i = listeners.size() - 1; i >= 0; i--) {
+                    callback.apply(listeners.get(i), testContext);
+                }
+            } else {
+                for (TestExecutionListener listener : listeners) {
+                    callback.apply(listener, testContext);
+                }
             }
-
         }
     }
 
@@ -342,6 +346,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     protected void startApplicationContext() {
         applicationContext.start();
+        listeners = new ArrayList<>(applicationContext.getBeansOfType(TestExecutionListener.class));
     }
 
     /**
