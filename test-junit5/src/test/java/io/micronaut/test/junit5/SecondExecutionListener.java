@@ -1,7 +1,7 @@
 package io.micronaut.test.junit5;
 
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Order;
-import io.micronaut.core.order.Ordered;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.context.TestExecutionListener;
 
@@ -10,6 +10,7 @@ import javax.inject.Singleton;
 
 @Singleton
 @Order(100)
+@Requires(env = TestExecutionListenerOrderTest.ENVIRONMENT)
 public class SecondExecutionListener implements TestExecutionListener {
 
     private final Provider<FirstExecutionListener> first;

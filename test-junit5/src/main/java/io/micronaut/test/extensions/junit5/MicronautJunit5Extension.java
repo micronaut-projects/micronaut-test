@@ -28,6 +28,7 @@ import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -102,6 +103,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
+        injectEnclosingTestInstances(extensionContext);
         final Optional<Object> testInstance = extensionContext.getTestInstance();
         final Optional<? extends AnnotatedElement> testMethod = extensionContext.getTestMethod();
         List<Property> propertyAnnotations = null;
@@ -125,7 +127,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         if (testInstance.isPresent()) {
 
             final Class<?> requiredTestClass = extensionContext.getRequiredTestClass();
-            if (applicationContext.containsBean(requiredTestClass)) {
+            if (applicationContext.containsBean(requiredTestClass) || isNestedTestClass(requiredTestClass)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
 
@@ -139,7 +141,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         } else {
             final Class<?> testClass = extensionContext.getRequiredTestClass();
-            if (hasExpectedAnnotations(testClass)) {
+            if (hasExpectedAnnotations(testClass) || isNestedTestClass(testClass)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
                 return ConditionEvaluationResult.disabled(DISABLED_MESSAGE);
@@ -246,4 +248,14 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 micronautTest.startApplication());
     }
 
+    private boolean isNestedTestClass(Class<?> testClass) {
+        return AnnotationSupport.isAnnotated(testClass, Nested.class);
+    }
+
+    private void injectEnclosingTestInstances(ExtensionContext extensionContext) {
+        extensionContext.getTestInstances().ifPresent(testInstances -> {
+            List<Object> allInstances = testInstances.getAllInstances();
+            allInstances.stream().limit(allInstances.size() - 1).forEach(applicationContext::inject);
+        });
+    }
 }
