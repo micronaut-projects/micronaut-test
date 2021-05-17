@@ -33,7 +33,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import javax.inject.Named;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -46,7 +45,10 @@ import java.util.*;
  * @since 1.0
  */
 public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor {
+
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
+    private static final boolean JAVAX_PRESENT = isTypePresent("javax.inject.Named");
+    private static final boolean JAKARTA_PRESENT = isTypePresent("jakarta.inject.Named");
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
@@ -218,12 +220,20 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        Named named = parameterContext.findAnnotation(Named.class).orElse(null);
-        if (named != null) {
-            return applicationContext.getBean(parameterContext.getParameter().getType(), Qualifiers.byName(named.value()));
-        } else {
-            return applicationContext.getBean(parameterContext.getParameter().getType());
+        if (JAVAX_PRESENT) {
+            javax.inject.Named named = parameterContext.findAnnotation(javax.inject.Named.class).orElse(null);
+            if (named != null) {
+                return applicationContext.getBean(parameterContext.getParameter().getType(), Qualifiers.byName(named.value()));
+            }
         }
+        if (JAKARTA_PRESENT) {
+            jakarta.inject.Named named = parameterContext.findAnnotation(jakarta.inject.Named.class).orElse(null);
+            if (named != null) {
+                return applicationContext.getBean(parameterContext.getParameter().getType(), Qualifiers.byName(named.value()));
+            }
+        }
+
+        return applicationContext.getBean(parameterContext.getParameter().getType());
     }
 
     /**
@@ -257,5 +267,14 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             List<Object> allInstances = testInstances.getAllInstances();
             allInstances.stream().limit(allInstances.size() - 1).forEach(applicationContext::inject);
         });
+    }
+
+    private static boolean isTypePresent(String type) {
+        try {
+            Class.forName(type);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }
