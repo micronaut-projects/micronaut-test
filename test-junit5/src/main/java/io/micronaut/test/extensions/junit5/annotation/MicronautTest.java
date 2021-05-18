@@ -16,6 +16,7 @@
 package io.micronaut.test.extensions.junit5.annotation;
 
 import io.micronaut.context.ApplicationContextBuilder;
+import io.micronaut.context.annotation.Executable;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.test.annotation.TransactionMode;
@@ -42,6 +43,7 @@ import java.lang.annotation.Target;
 @Factory
 @Inherited
 @Requires(condition = TestActiveCondition.class)
+@Executable
 public @interface MicronautTest {
     /**
      * @return The application class of the application

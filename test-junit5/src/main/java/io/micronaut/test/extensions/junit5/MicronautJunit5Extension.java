@@ -17,8 +17,14 @@ package io.micronaut.test.extensions.junit5;
 
 import io.micronaut.aop.InterceptedProxy;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.Qualifier;
 import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Value;
+import io.micronaut.core.annotation.AnnotationMetadata;
+import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
+import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.AnnotationUtils;
@@ -33,8 +39,10 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import javax.inject.Named;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -213,16 +221,42 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return applicationContext != null && applicationContext.containsBean(parameterContext.getParameter().getType());
+        final Argument<?> argument = getArgument(parameterContext, applicationContext);
+        if (argument != null) {
+            if (argument.isAnnotationPresent(Value.class) || argument.isAnnotationPresent(Property.class)) {
+                return true;
+            } else {
+                return applicationContext.containsBean(argument.getType(), resolveQualifier(argument));
+            }
+        }
+        return false;
     }
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        Named named = parameterContext.findAnnotation(Named.class).orElse(null);
-        if (named != null) {
-            return applicationContext.getBean(parameterContext.getParameter().getType(), Qualifiers.byName(named.value()));
+        final Argument<?> argument = getArgument(parameterContext, applicationContext);
+        if (argument != null) {
+            Optional<String> v = argument.getAnnotationMetadata().stringValue(Value.class);
+            if (v.isPresent()) {
+                Optional<String> finalV = v;
+                return applicationContext.getEnvironment().getProperty(v.get(), argument)
+                        .orElseThrow(() ->
+                    new ParameterResolutionException("Unresolvable property specified to @Value: " + finalV.get())
+                );
+            } else {
+                v = argument.getAnnotationMetadata().stringValue(Property.class, "name");
+                if (v.isPresent()) {
+                    Optional<String> finalV1 = v;
+                    return applicationContext.getEnvironment()
+                            .getProperty(v.get(), argument).orElseThrow(() ->
+                                    new ParameterResolutionException("Unresolvable property specified to @Property: " + finalV1.get())
+                            );
+                } else {
+                    return applicationContext.getBean(argument.getType(), resolveQualifier(argument));
+                }
+            }
         } else {
-            return applicationContext.getBean(parameterContext.getParameter().getType());
+            throw new ParameterResolutionException("Parameter cannot be resolved: " + parameterContext.getParameter());
         }
     }
 
@@ -257,5 +291,67 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             List<Object> allInstances = testInstances.getAllInstances();
             allInstances.stream().limit(allInstances.size() - 1).forEach(applicationContext::inject);
         });
+    }
+
+    private Argument<?> getArgument(ParameterContext parameterContext, ApplicationContext applicationContext){
+        try {
+            final Executable declaringExecutable = parameterContext.getDeclaringExecutable();
+            final int index = parameterContext.getIndex();
+            if (declaringExecutable instanceof Constructor) {
+                final Class<?> declaringClass = declaringExecutable.getDeclaringClass();
+                final BeanDefinition<?> beanDefinition = applicationContext.findBeanDefinition(declaringClass).orElse(null);
+                if (beanDefinition != null) {
+                    final Argument<?>[] arguments = beanDefinition.getConstructor().getArguments();
+                    if (index < arguments.length) {
+                        return arguments[index];
+                    }
+                }
+            } else {
+
+                final ExecutableMethod<?, Object> executableMethod = applicationContext.getExecutableMethod(
+                        declaringExecutable.getDeclaringClass(),
+                        declaringExecutable.getName(),
+                        declaringExecutable.getParameterTypes()
+                );
+                final Argument<?>[] arguments = executableMethod.getArguments();
+                if (index < arguments.length) {
+                    return arguments[index];
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
+        return null;
+    }
+
+
+    /**
+     * Build a qualifier for the given argument.
+     * @param argument The argument
+     * @param <T> The type
+     * @return The resolved qualifier
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> Qualifier<T> resolveQualifier(Argument<?> argument) {
+        AnnotationMetadata annotationMetadata = Objects.requireNonNull(argument, "Argument cannot be null").getAnnotationMetadata();
+        boolean hasMetadata = annotationMetadata != AnnotationMetadata.EMPTY_METADATA;
+
+        List<Class<? extends Annotation>> qualifierTypes = hasMetadata ? annotationMetadata.getAnnotationTypesByStereotype(javax.inject.Qualifier.class) : null;
+        if (CollectionUtils.isNotEmpty(qualifierTypes)) {
+            if (qualifierTypes.size() == 1) {
+                return Qualifiers.byAnnotation(
+                        annotationMetadata,
+                        qualifierTypes.iterator().next()
+                );
+            } else {
+                final Qualifier[] qualifiers = qualifierTypes
+                        .stream().map((type) -> Qualifiers.byAnnotation(annotationMetadata, type))
+                        .toArray(Qualifier[]::new);
+                return Qualifiers.<T>byQualifiers(
+                        qualifiers
+                );
+            }
+        }
+        return null;
     }
 }
