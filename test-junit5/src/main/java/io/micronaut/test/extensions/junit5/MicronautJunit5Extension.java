@@ -106,7 +106,9 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     @Override
     public void afterAll(ExtensionContext extensionContext) throws Exception {
         afterTestClass(buildContext(extensionContext));
-        afterClass(extensionContext);
+        if (!extensionContext.getTestClass().filter(this::isNestedTestClass).isPresent()) {
+            afterClass(extensionContext);
+        }
     }
 
     @Override
@@ -288,8 +290,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     private void injectEnclosingTestInstances(ExtensionContext extensionContext) {
         extensionContext.getTestInstances().ifPresent(testInstances -> {
-            List<Object> allInstances = testInstances.getAllInstances();
-            allInstances.stream().limit(allInstances.size() - 1).forEach(applicationContext::inject);
+            testInstances.getEnclosingInstances().forEach(applicationContext::inject);
         });
     }
 
