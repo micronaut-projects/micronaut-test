@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.BeforeAll;
 
 @MicronautTest
 @Property(name = "foo.bar", value = "test")
@@ -17,6 +18,12 @@ public class ConstructorInjectionTest {
     private final MathService mathService;
     private final RxHttpClient client;
     private final String val;
+
+    @BeforeAll
+    static void injectStatic(MathService mathService) {
+        Assertions.assertNotNull(mathService);
+    }
+
 
     public ConstructorInjectionTest(
             @Property(name="foo.bar") String val,

@@ -230,8 +230,9 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             } else {
                 return applicationContext.containsBean(argument.getType(), resolveQualifier(argument));
             }
-        }
-        return false;
+        } else {
+            return applicationContext.containsBean(parameterContext.getParameter().getType());
+        }        
     }
 
     @Override
@@ -258,7 +259,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 }
             }
         } else {
-            throw new ParameterResolutionException("Parameter cannot be resolved: " + parameterContext.getParameter());
+            return applicationContext.getBean(parameterContext.getParameter().getType());
         }
     }
 
