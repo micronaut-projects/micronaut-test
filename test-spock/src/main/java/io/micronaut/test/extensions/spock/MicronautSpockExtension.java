@@ -18,8 +18,10 @@ package io.micronaut.test.extensions.spock;
 import io.micronaut.aop.InterceptedProxy;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.event.BeanCreatedEventListener;
+import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
+import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
@@ -37,7 +39,6 @@ import org.spockframework.runtime.model.MethodInfo;
 import org.spockframework.runtime.model.SpecInfo;
 import spock.lang.Specification;
 
-import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -46,6 +47,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.stream.Collectors;
 
 /**
  * Extension for Spock.
@@ -59,6 +61,7 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
     private Queue<Object> creatableMocks = new ConcurrentLinkedDeque<>();
     private Queue<Object> singletonMocks = new ConcurrentLinkedDeque<>();
     private MockUtil mockUtil = new MockUtil();
+    private static final String METHOD_PREFIX = "set$spock_sharedField_";
 
     @Override
     public void visitSpecAnnotation(T annotation, SpecInfo spec) {
@@ -105,9 +108,24 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                             }
                         }
                     } else {
+                        final List<String> injectionNames = specDefinition.getInjectedFields()
+                                .stream()
+                                .map(FieldInjectionPoint::getName)
+                                .collect(Collectors.toList());
+                        injectionNames.addAll(specDefinition.getInjectedMethods()
+                                .stream()
+                                .map(MethodInjectionPoint::getName)
+                                .map(name -> {
+                                    if (name.startsWith(METHOD_PREFIX)) {
+                                        return name.substring(METHOD_PREFIX.length());
+                                    } else {
+                                        return NameUtils.getPropertyNameForSetter(name);
+                                    }
+                                })
+                                .collect(Collectors.toList()));
                         List<FieldInfo> fields = spec.getAllFields();
                         for (FieldInfo field : fields) {
-                            if (field.isShared() && field.getAnnotation(Inject.class) != null) {
+                            if (field.isShared() && injectionNames.contains(field.getName())) {
                                 applicationContext.inject(invocation.getSharedInstance());
                                 break;
                             }

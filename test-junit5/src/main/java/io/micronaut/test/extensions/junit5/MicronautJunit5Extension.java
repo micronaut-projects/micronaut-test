@@ -232,7 +232,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         } else {
             return applicationContext.containsBean(parameterContext.getParameter().getType());
-        }        
+        }
     }
 
     @Override
@@ -338,7 +338,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         AnnotationMetadata annotationMetadata = Objects.requireNonNull(argument, "Argument cannot be null").getAnnotationMetadata();
         boolean hasMetadata = annotationMetadata != AnnotationMetadata.EMPTY_METADATA;
 
-        List<Class<? extends Annotation>> qualifierTypes = hasMetadata ? annotationMetadata.getAnnotationTypesByStereotype(javax.inject.Qualifier.class) : null;
+        List<String> qualifierTypes = hasMetadata ? annotationMetadata.getAnnotationNamesByStereotype("javax.inject.Qualifier") : null;
         if (CollectionUtils.isNotEmpty(qualifierTypes)) {
             if (qualifierTypes.size() == 1) {
                 return Qualifiers.byAnnotation(
