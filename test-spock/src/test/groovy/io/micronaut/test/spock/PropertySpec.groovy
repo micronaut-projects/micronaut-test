@@ -16,6 +16,9 @@ class PropertySpec extends Specification {
     @Value('${foo.bar}')
     String val
 
+    @Value('${prop.from.yml}')
+    String fromYml
+
     void "test value"() {
         expect:
         val == 'stuff'
@@ -31,4 +34,16 @@ class PropertySpec extends Specification {
         expect:
         val == 'stuff'
     }
+
+    @Property(name = "prop.from.yml", value = "local")
+    void "test overridden from config"() {
+        expect:
+        fromYml == "local"
+    }
+
+    void "test value from config"() {
+        expect:
+        fromYml == "yml"
+    }
+
 }

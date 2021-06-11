@@ -280,7 +280,13 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                     );
                 }
             } else {
-                oldValues.forEach((k, v) -> testProperties.put(k, v));
+                oldValues.forEach((k, v) -> {
+                    if (v == null) {
+                        testProperties.remove(k);
+                    } else {
+                        testProperties.put(k, v);
+                    }
+                });
             }
 
             if (testAnnotationValue.rebuildContext() && testCount > 1) {
@@ -333,7 +339,13 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     public void afterEach(C context) throws Exception {
         if (refreshScope != null) {
             if (!oldValues.isEmpty()) {
-                testProperties.putAll(oldValues);
+                oldValues.forEach((k, v) -> {
+                    if (v == null) {
+                        testProperties.remove(k);
+                    } else {
+                        testProperties.put(k, v);
+                    }
+                });
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));
             }
