@@ -58,10 +58,11 @@ import java.util.stream.Collectors;
  */
 public class MicronautSpockExtension<T extends Annotation> extends AbstractMicronautExtension<IMethodInvocation> implements IAnnotationDrivenExtension<T> {
 
+    private static final String METHOD_PREFIX = "set$spock_sharedField_";
+
     private Queue<Object> creatableMocks = new ConcurrentLinkedDeque<>();
     private Queue<Object> singletonMocks = new ConcurrentLinkedDeque<>();
     private MockUtil mockUtil = new MockUtil();
-    private static final String METHOD_PREFIX = "set$spock_sharedField_";
 
     @Override
     public void visitSpecAnnotation(T annotation, SpecInfo spec) {

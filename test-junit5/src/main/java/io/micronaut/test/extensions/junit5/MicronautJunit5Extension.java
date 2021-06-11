@@ -39,7 +39,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
@@ -295,7 +294,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         });
     }
 
-    private Argument<?> getArgument(ParameterContext parameterContext, ApplicationContext applicationContext){
+    private Argument<?> getArgument(ParameterContext parameterContext, ApplicationContext applicationContext) {
         try {
             final Executable declaringExecutable = parameterContext.getDeclaringExecutable();
             final int index = parameterContext.getIndex();
