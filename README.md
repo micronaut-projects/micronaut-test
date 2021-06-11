@@ -13,7 +13,7 @@ Example Spock Test:
 ```groovy
 import io.micronaut.test.annotation.MicronautTest
 import spock.lang.*
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @MicronautTest // Declares the test as a micronaut test
 class MathServiceSpec extends Specification {
@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 
 @MicronautTest // Declares the test as a micronaut test

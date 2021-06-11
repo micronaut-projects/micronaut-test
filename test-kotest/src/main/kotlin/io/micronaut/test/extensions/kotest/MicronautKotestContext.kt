@@ -19,7 +19,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.micronaut.context.annotation.Property
-import io.micronaut.test.annotation.MicronautTest
 import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.context.TestContext
 import io.micronaut.test.extensions.AbstractMicronautExtension

@@ -6,8 +6,8 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
-import javax.inject.Inject
-import javax.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
 @MicronautTest(rebuildContext = true)
 @Property(name = "foo.bar", value = "stuff")

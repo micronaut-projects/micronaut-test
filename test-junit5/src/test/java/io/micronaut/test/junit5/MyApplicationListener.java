@@ -4,8 +4,8 @@ package io.micronaut.test.junit5;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.context.event.StartupEvent;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class MyApplicationListener implements ApplicationEventListener<StartupEvent> {

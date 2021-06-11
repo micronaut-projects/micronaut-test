@@ -12,7 +12,7 @@ import io.micronaut.test.support.server.TestExecutableEmbeddedServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Collections;
 import java.util.Map;
 

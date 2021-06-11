@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @MicronautTest
 public class NewAnnotationTest {

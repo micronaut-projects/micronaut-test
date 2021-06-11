@@ -27,7 +27,6 @@ import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.qualifiers.Qualifiers;
-import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.context.TestContext;
@@ -79,14 +78,10 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
      * @return a MicronautTestValue to configure the test application context
      */
     protected MicronautTestValue buildMicronautTestValue(Class<?> testClass) {
-        final Optional<io.micronaut.test.annotation.MicronautTest> micronautTest =
-                AnnotationSupport.findAnnotation(testClass, io.micronaut.test.annotation.MicronautTest.class);
-        return micronautTest
-                .map(AnnotationUtils::buildValueObject)
-                .orElseGet(() -> AnnotationSupport
-                        .findAnnotation(testClass, MicronautTest.class)
-                        .map(this::buildValueObject)
-                        .orElse(null));
+        return AnnotationSupport
+                .findAnnotation(testClass, MicronautTest.class)
+                .map(this::buildValueObject)
+                .orElse(null);
     }
 
     @Override
@@ -164,8 +159,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
      * @return true if the provided test class holds the expected test annotations
      */
     protected boolean hasExpectedAnnotations(Class<?> testClass) {
-        return AnnotationSupport.isAnnotated(testClass, MicronautTest.class) ||
-                AnnotationSupport.isAnnotated(testClass, io.micronaut.test.annotation.MicronautTest.class);
+        return AnnotationSupport.isAnnotated(testClass, MicronautTest.class);
     }
 
     @Override
@@ -232,7 +226,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         } else {
             return applicationContext.containsBean(parameterContext.getParameter().getType());
-        }        
+        }
     }
 
     @Override

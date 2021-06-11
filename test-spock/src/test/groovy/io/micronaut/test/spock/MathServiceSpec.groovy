@@ -3,7 +3,7 @@ package io.micronaut.test.spock
 
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.*
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @MicronautTest // <1>
 class MathServiceSpec extends Specification {

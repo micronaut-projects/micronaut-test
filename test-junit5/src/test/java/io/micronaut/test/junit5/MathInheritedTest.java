@@ -4,7 +4,7 @@ package io.micronaut.test.junit5;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 class MathInheritedTest extends BaseTest {
 

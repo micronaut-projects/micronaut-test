@@ -6,6 +6,9 @@ dependencies {
     api(
             "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     )
+    compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
+
+    testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
     testCompileOnly "io.micronaut:micronaut-inject:$micronautVersion"
     testRuntimeOnly(
             "org.junit.jupiter:junit-jupiter-engine:$junitVersion"

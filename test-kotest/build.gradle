@@ -6,12 +6,16 @@ plugins {
 dependencies {
     api project(":test-core")
     implementation "io.micronaut:micronaut-inject:$micronautVersion"
-    api "io.micronaut:micronaut-runtime:$micronautVersion"    
+    api "io.micronaut:micronaut-runtime:$micronautVersion"
     api "io.kotest:kotest-runner-junit5-jvm:$kotestVersion"
 
     implementation project(":test-junit5")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+
+    compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
+
+    testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
 
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
@@ -22,7 +26,7 @@ dependencies {
     testImplementation "io.micronaut.sql:micronaut-hibernate-jpa-spring:$micronautSqlVersion"
     testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat:$micronautSqlVersion"
     testRuntimeOnly "com.h2database:h2:1.4.200"
-    
+
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotestVersion"
 }
 

@@ -4,7 +4,7 @@ package io.micronaut.test.kotest
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @MicronautTest
 class EmptyConstructorTest: StringSpec() {

@@ -10,7 +10,7 @@ import io.micronaut.test.annotation.MockBean;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;

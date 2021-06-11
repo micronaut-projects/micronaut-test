@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.micronaut.runtime.EmbeddedApplication
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @MicronautTest(startApplication = false, rebuildContext = true)
 internal class DisableEmbeddedApplicationTest: StringSpec() {

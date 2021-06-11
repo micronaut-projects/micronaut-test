@@ -5,7 +5,7 @@ import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import org.springframework.core.annotation.Order
 import spock.lang.Specification
 
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @MicronautTest(startApplication = false, rebuildContext = true)
 class DisableEmbeddedApplicationSpec extends Specification {

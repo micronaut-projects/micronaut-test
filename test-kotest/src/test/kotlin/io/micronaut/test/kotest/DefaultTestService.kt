@@ -1,7 +1,7 @@
 
 package io.micronaut.test.kotest
 
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @Singleton
 class DefaultTestService : TestService {

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 @MicronautAndMockitoTest
 class ApplicationRunTest {

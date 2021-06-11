@@ -6,8 +6,8 @@ import io.micronaut.test.junit5.beans.FactoryBean;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 @MicronautTest
 public class FactoryTest {

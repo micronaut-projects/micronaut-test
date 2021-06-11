@@ -2,12 +2,12 @@
 package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.*;
 
-import javax.annotation.Nonnull;
 import java.util.Map;
 
 @MicronautTest
@@ -22,7 +22,7 @@ class PropertySourceMapTest implements TestPropertyProvider {
         Assertions.assertEquals("one", val);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public Map<String, String> getProperties() {
         return CollectionUtils.mapOf(

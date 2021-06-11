@@ -75,17 +75,10 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
         var micronautTestValue = testClass
-                .annotations
-                .filterIsInstance<io.micronaut.test.annotation.MicronautTest>()
-                .map { micronautTest -> AnnotationUtils.buildValueObject(micronautTest) }
-                .firstOrNull()
-        if (micronautTestValue == null) {
-            micronautTestValue = testClass
                     .annotations
                     .filterIsInstance<MicronautTest>()
                     .map { micronautTest -> buildValueObject(micronautTest) }
                     .firstOrNull()
-        }
         return if (micronautTestValue == null) {
             null
         } else {
@@ -124,6 +117,3 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
         }
     }
 }
-
-@Deprecated(message = "MicornautKotlinTestExtension is deprecated", replaceWith = ReplaceWith("MicronautKotlinTestExtension"))
-typealias MicornautKotlinTestExtension = MicronautKotestExtension

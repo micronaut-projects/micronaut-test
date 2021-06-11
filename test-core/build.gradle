@@ -11,6 +11,9 @@ dependencies {
     )
 
     api "io.micronaut:micronaut-inject:$micronautVersion"
+    compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
+
+    testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
     implementation "io.micronaut:micronaut-runtime:$micronautVersion"
 }
 jar {
