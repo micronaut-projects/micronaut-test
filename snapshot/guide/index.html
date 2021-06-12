@@ -667,6 +667,9 @@ class PropertySpec extends Specification {
     @Value('${foo.bar}')
     String val
 
+    @Value('${prop.from.yml}')
+    String fromYml
+
     void "test value"() {
         expect:
         val == 'stuff'
@@ -682,6 +685,18 @@ class PropertySpec extends Specification {
         expect:
         val == 'stuff'
     }
+
+    @Property(name = "prop.from.yml", value = "local")
+    void "test overridden from config"() {
+        expect:
+        fromYml == "local"
+    }
+
+    void "test value from config"() {
+        expect:
+        fromYml == "yml"
+    }
+
 }</code></pre>
 </div>
 </div>
@@ -1267,6 +1282,9 @@ class PropertyValueTest {
     @Property(name = "foo.bar")
     String val;
 
+    @Property(name = "prop.from.yml")
+    String fromYml;
+
     @Test
     @Order(1)
     void testInitialValue() {
@@ -1284,6 +1302,19 @@ class PropertyValueTest {
     @Order(3)
     void testValueRestored() {
         assertEquals("stuff", val);
+    }
+
+    @Test
+    @Property(name = "prop.from.yml", value = "local")
+    @Order(4)
+    void testValueOverridenFromConfig() {
+        assertEquals("local", fromYml);
+    }
+
+    @Test
+    @Order(5)
+    void testValueFromConfig() {
+        assertEquals("yml", fromYml);
     }
 }</code></pre>
 </div>
@@ -2873,6 +2904,9 @@ class PropertyValueTest: AnnotationSpec() {
     @Value("\${foo.bar}")
     lateinit var value: String
 
+    @Value("\${prop.from.yml}")
+    lateinit var fromYml: String
+
     @Test
     fun testInitialValue() {
         value shouldBe "stuff"
@@ -2887,6 +2921,17 @@ class PropertyValueTest: AnnotationSpec() {
     @Test
     fun testValueRestored() {
         value shouldBe "stuff"
+    }
+
+    @Test
+    @Property(name = "prop.from.yml", value = "local")
+    fun testValueOverridenFromConfig() {
+        fromYml shouldBe "local"
+    }
+
+    @Test
+    fun testValueFromConfig() {
+        fromYml shouldBe "yml"
     }
 }</code></pre>
 </div>
