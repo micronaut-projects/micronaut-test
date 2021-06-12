@@ -18,6 +18,9 @@ class PropertyValueTest {
     @Property(name = "foo.bar")
     String val;
 
+    @Property(name = "prop.from.yml")
+    String fromYml;
+
     @Test
     @Order(1)
     void testInitialValue() {
@@ -35,5 +38,18 @@ class PropertyValueTest {
     @Order(3)
     void testValueRestored() {
         assertEquals("stuff", val);
+    }
+
+    @Test
+    @Property(name = "prop.from.yml", value = "local")
+    @Order(4)
+    void testValueOverridenFromConfig() {
+        assertEquals("local", fromYml);
+    }
+
+    @Test
+    @Order(5)
+    void testValueFromConfig() {
+        assertEquals("yml", fromYml);
     }
 }

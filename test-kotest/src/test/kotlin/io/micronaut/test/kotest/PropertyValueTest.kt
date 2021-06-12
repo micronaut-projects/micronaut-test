@@ -14,6 +14,9 @@ class PropertyValueTest: AnnotationSpec() {
     @Value("\${foo.bar}")
     lateinit var value: String
 
+    @Value("\${prop.from.yml}")
+    lateinit var fromYml: String
+
     @Test
     fun testInitialValue() {
         value shouldBe "stuff"
@@ -28,5 +31,16 @@ class PropertyValueTest: AnnotationSpec() {
     @Test
     fun testValueRestored() {
         value shouldBe "stuff"
+    }
+
+    @Test
+    @Property(name = "prop.from.yml", value = "local")
+    fun testValueOverridenFromConfig() {
+        fromYml shouldBe "local"
+    }
+
+    @Test
+    fun testValueFromConfig() {
+        fromYml shouldBe "yml"
     }
 }
