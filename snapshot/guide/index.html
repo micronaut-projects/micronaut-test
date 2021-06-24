@@ -114,7 +114,7 @@
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/2.3.x
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master
 /src/main/docs/guide/introduction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
@@ -207,7 +207,7 @@ ApplicationContext context //refers to the current application context within th
 <h1 id="releaseHistory"><a class="anchor" href="#releaseHistory"></a>2 Release History</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/2.3.x
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master
 /src/main/docs/guide/releaseHistory.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
@@ -224,7 +224,7 @@ ApplicationContext context //refers to the current application context within th
 <h1 id="spock"><a class="anchor" href="#spock"></a>3 Testing with Spock</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/2.3.x
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master
 /src/main/docs/guide/spock.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
@@ -667,9 +667,6 @@ class PropertySpec extends Specification {
     @Value('${foo.bar}')
     String val
 
-    @Value('${prop.from.yml}')
-    String fromYml
-
     void "test value"() {
         expect:
         val == 'stuff'
@@ -685,18 +682,6 @@ class PropertySpec extends Specification {
         expect:
         val == 'stuff'
     }
-
-    @Property(name = "prop.from.yml", value = "local")
-    void "test overridden from config"() {
-        expect:
-        fromYml == "local"
-    }
-
-    void "test value from config"() {
-        expect:
-        fromYml == "yml"
-    }
-
 }</code></pre>
 </div>
 </div>
@@ -814,7 +799,7 @@ class MyServiceChanged implements MyService {}</code></pre>
 <h1 id="junit5"><a class="anchor" href="#junit5"></a>4 Testing with JUnit 5</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/2.3.x
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master
 /src/main/docs/guide/junit5.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
@@ -833,7 +818,7 @@ class MyServiceChanged implements MyService {}</code></pre>
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
     testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("io.micronaut.test:micronaut-test-junit5:2.3.8-SNAPSHOT")
+    testImplementation("io.micronaut.test:micronaut-test-junit5:2.3.7-SNAPSHOT")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
 }
 
@@ -1282,9 +1267,6 @@ class PropertyValueTest {
     @Property(name = "foo.bar")
     String val;
 
-    @Property(name = "prop.from.yml")
-    String fromYml;
-
     @Test
     @Order(1)
     void testInitialValue() {
@@ -1302,19 +1284,6 @@ class PropertyValueTest {
     @Order(3)
     void testValueRestored() {
         assertEquals("stuff", val);
-    }
-
-    @Test
-    @Property(name = "prop.from.yml", value = "local")
-    @Order(4)
-    void testValueOverridenFromConfig() {
-        assertEquals("local", fromYml);
-    }
-
-    @Test
-    @Order(5)
-    void testValueFromConfig() {
-        assertEquals("yml", fromYml);
     }
 }</code></pre>
 </div>
@@ -1527,7 +1496,7 @@ class MyServiceChanged implements MyService {}</code></pre>
 <h1 id="kotlintest"><a class="anchor" href="#kotlintest"></a>5 Testing with KotlinTest</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/2.3.x
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master
 /src/main/docs/guide/kotlintest.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
@@ -1551,7 +1520,7 @@ class MyServiceChanged implements MyService {}</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
-    testImplementation "io.micronaut.test:micronaut-test-kotlintest:2.3.8-SNAPSHOT"
+    testImplementation "io.micronaut.test:micronaut-test-kotlintest:2.3.7-SNAPSHOT"
     testImplementation "io.mockk:mockk:1.10.5"
     testImplementation "io.kotlintest:kotlintest-runner-junit5:3.3.2"
 }
@@ -1571,7 +1540,7 @@ test {
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-test-kotlintest&lt;/artifactId&gt;
-    &lt;version&gt;2.3.8-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;2.3.7-SNAPSHOT&lt;/version&gt;
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
@@ -2307,7 +2276,7 @@ open class MyServiceChanged : MyService</code></pre>
 <h1 id="kotest"><a class="anchor" href="#kotest"></a>6 Testing with Kotest</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/2.3.x
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master
 /src/main/docs/guide/kotest.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
@@ -2324,7 +2293,7 @@ open class MyServiceChanged : MyService</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
-    testImplementation "io.micronaut.test:micronaut-test-kotest:2.3.8-SNAPSHOT"
+    testImplementation "io.micronaut.test:micronaut-test-kotest:2.3.7-SNAPSHOT"
     testImplementation "io.mockk:mockk:1.10.5"
     testImplementation "io.kotest:kotest-runner-junit5-jvm:4.3.0"
 }
@@ -2344,7 +2313,7 @@ test {
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-test-kotest&lt;/artifactId&gt;
-    &lt;version&gt;2.3.8-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;2.3.7-SNAPSHOT&lt;/version&gt;
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
@@ -2904,9 +2873,6 @@ class PropertyValueTest: AnnotationSpec() {
     @Value("\${foo.bar}")
     lateinit var value: String
 
-    @Value("\${prop.from.yml}")
-    lateinit var fromYml: String
-
     @Test
     fun testInitialValue() {
         value shouldBe "stuff"
@@ -2921,17 +2887,6 @@ class PropertyValueTest: AnnotationSpec() {
     @Test
     fun testValueRestored() {
         value shouldBe "stuff"
-    }
-
-    @Test
-    @Property(name = "prop.from.yml", value = "local")
-    fun testValueOverridenFromConfig() {
-        fromYml shouldBe "local"
-    }
-
-    @Test
-    fun testValueFromConfig() {
-        fromYml shouldBe "yml"
     }
 }</code></pre>
 </div>
@@ -3079,7 +3034,7 @@ open class MyServiceChanged : MyService</code></pre>
 <h1 id="repository"><a class="anchor" href="#repository"></a>7 Repository</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/2.3.x
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master
 /src/main/docs/guide/repository.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
