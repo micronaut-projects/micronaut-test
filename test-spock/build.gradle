@@ -16,7 +16,7 @@ dependencies {
     testImplementation "io.micronaut.beanvalidation:micronaut-hibernate-validator"
     testImplementation "io.micronaut.groovy:micronaut-hibernate-gorm"
     // this should be brought transitively by micronaut-hibernate-gorm
-    testImplementation "org.grails:grails-datastore-gorm-hibernate5:7.0.4.RELEASE"
+    testImplementation "org.grails:grails-datastore-gorm-hibernate5:7.0.5"
 
     testRuntimeOnly "com.h2database:h2"
 }
