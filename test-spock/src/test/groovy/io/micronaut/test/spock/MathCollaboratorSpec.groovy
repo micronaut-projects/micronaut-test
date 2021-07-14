@@ -2,7 +2,7 @@
 package io.micronaut.test.spock
 
 import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
@@ -19,7 +19,7 @@ class MathCollaboratorSpec extends Specification {
 
     @Inject
     @Client('/')
-    RxHttpClient client // <3>
+    HttpClient client // <3>
 
     @Unroll
     void "should compute #num to #square"() {

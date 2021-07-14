@@ -2,10 +2,12 @@
 package io.micronaut.test.junit5;
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaQuery;
 
 import static org.junit.Assert.assertEquals;
@@ -16,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 public class JpaRollbackTest {
 
     @Inject
+    @PersistenceContext
     EntityManager entityManager;
 
     @Test

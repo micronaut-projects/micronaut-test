@@ -4,7 +4,7 @@ package io.micronaut.test.kotest;
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
@@ -15,7 +15,7 @@ import io.mockk.verify
 
 @MicronautTest
 class ApplicationRunAnotherTest(
-        @Client("/") private val client: RxHttpClient,
+        @Client("/") private val client: HttpClient,
         private val testService: TestService): BehaviorSpec({
 
     val specName = javaClass.simpleName

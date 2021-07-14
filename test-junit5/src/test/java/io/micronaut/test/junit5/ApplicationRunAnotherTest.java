@@ -3,7 +3,7 @@ package io.micronaut.test.junit5;
 
 import io.micronaut.context.BeanContext;
 import io.micronaut.http.HttpRequest;
-import io.micronaut.http.client.RxHttpClient;
+import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
@@ -21,7 +21,7 @@ class ApplicationRunAnotherTest {
 
     @Inject
     @Client("/")
-    RxHttpClient client;
+    HttpClient client;
 
     @Inject
     TestService testService;

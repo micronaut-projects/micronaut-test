@@ -15,6 +15,7 @@
  */
 package io.micronaut.test.annotation;
 
+import io.micronaut.aop.Around;
 import io.micronaut.context.annotation.AliasFor;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Replaces;
@@ -38,6 +39,7 @@ import java.lang.annotation.Target;
 @Bean
 @Requires(condition = TestActiveCondition.class)
 @Refreshable(TestActiveCondition.ACTIVE_MOCKS)
+@Around(proxyTargetMode = Around.ProxyTargetConstructorMode.ALLOW)
 public @interface MockBean {
     /**
      * @return The bean this mock replaces

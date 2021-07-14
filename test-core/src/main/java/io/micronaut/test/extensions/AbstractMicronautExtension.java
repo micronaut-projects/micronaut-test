@@ -71,7 +71,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
 
     private MicronautTestValue testAnnotationValue;
-    private ApplicationContextBuilder builder = ApplicationContext.build();
+    private ApplicationContextBuilder builder = ApplicationContext.builder();
     private List<TestExecutionListener> listeners;
 
     /** {@inheritDoc} */

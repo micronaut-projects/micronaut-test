@@ -1,9 +1,7 @@
-
 package io.micronaut.test.spock
 
-
 import io.micronaut.http.HttpRequest
-import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
@@ -16,7 +14,7 @@ class ApplicationRunSpec extends Specification {
 
     @Inject
     @Client("/")
-    RxHttpClient client
+    HttpClient client
 
     void "test ping server"() {
         expect:

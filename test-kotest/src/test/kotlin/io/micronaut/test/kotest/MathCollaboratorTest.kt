@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.matchers.shouldBe
-import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import io.micronaut.test.annotation.MockBean
@@ -19,7 +19,7 @@ import kotlin.math.roundToInt
 @MicronautTest
 class MathCollaboratorTest(
     private val mathService: MathService,
-    @Client("/") private val client: RxHttpClient // <2>
+    @Client("/") private val client: HttpClient // <2>
 ) : StringSpec({
 
     "test compute num to square" {

@@ -3,7 +3,7 @@ package io.micronaut.test.junit5.server;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
-import io.micronaut.http.client.RxHttpClient;
+import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -36,11 +36,11 @@ public class ProcessServerTest implements TestPropertyProvider {
 
     @Inject
     @Client("/")
-    RxHttpClient client;
+    HttpClient client;
 
     @Test
     void testServerAvailable() {
-        HttpResponse<String> response = client.exchange("/test", String.class).blockingFirst();
+        HttpResponse<String> response = client.toBlocking().exchange("/test", String.class);
 
         assertTrue(
                 embeddedServer instanceof TestExecutableEmbeddedServer

@@ -2,7 +2,7 @@
 package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
-import io.micronaut.http.client.RxHttpClient;
+import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.BeforeAll;
 @Property(name = "foo.bar", value = "test")
 public class ConstructorInjectionTest {
     private final MathService mathService;
-    private final RxHttpClient client;
+    private final HttpClient client;
     private final String val;
 
     @BeforeAll
@@ -28,7 +28,7 @@ public class ConstructorInjectionTest {
     public ConstructorInjectionTest(
             @Property(name="foo.bar") String val,
             MathService mathService,
-            @Client("/") RxHttpClient client) {
+            @Client("/") HttpClient client) {
         this.mathService = mathService;
         this.client = client;
         this.val = val;
