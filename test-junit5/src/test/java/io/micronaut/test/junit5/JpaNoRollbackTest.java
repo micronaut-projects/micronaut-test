@@ -2,12 +2,12 @@
 package io.micronaut.test.junit5;
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.transaction.SynchronousTransactionManager;
+import io.micronaut.transaction.TransactionStatus;
+import io.micronaut.transaction.support.DefaultTransactionDefinition;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import jakarta.inject.Inject;
 import javax.persistence.EntityManager;
@@ -27,7 +27,7 @@ public class JpaNoRollbackTest {
     EntityManager entityManager;
 
     @Inject
-    PlatformTransactionManager transactionManager;
+    SynchronousTransactionManager transactionManager;
 
     @AfterAll
     void cleanup() {

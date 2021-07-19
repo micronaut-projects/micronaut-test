@@ -3,14 +3,14 @@ package io.micronaut.test.junit5;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import io.micronaut.test.transaction.spring.SpringTransactionTestExecutionListener;
+import io.micronaut.transaction.support.TransactionSynchronizationManager;
+import io.micronaut.transaction.test.DefaultTestTransactionExecutionListener;
 import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @MicronautTest(transactional = true)
 @DbProperties
@@ -31,7 +31,7 @@ class TransactionalTest {
 
   @Test
   void testSpringTransactionListenerMissing() {
-    Assertions.assertTrue(applicationContext.containsBean(SpringTransactionTestExecutionListener.class));
+    Assertions.assertTrue(applicationContext.containsBean(DefaultTestTransactionExecutionListener.class));
   }
 
 }

@@ -51,7 +51,6 @@ public class TestContext {
     this.testException = testException;
     this.testInstance = testInstance;
     this.testMethod = testMethod;
-
   }
 
   /**
