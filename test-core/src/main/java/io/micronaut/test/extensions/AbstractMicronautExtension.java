@@ -354,7 +354,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @return true if the te given class has a bean definition class in the classpath (ie: the annotation processor has been run correctly)
      */
     protected boolean isTestSuiteBeanPresent(Class<?> requiredTestClass) {
-        return ClassUtils.isPresent(requiredTestClass.getPackage().getName() + ".$" + requiredTestClass.getSimpleName() + "Definition", requiredTestClass.getClassLoader());
+        String prefix = requiredTestClass.getPackage().getName() + ".$" + requiredTestClass.getSimpleName();
+        final ClassLoader classLoader = requiredTestClass.getClassLoader();
+        return ClassUtils.isPresent( prefix+ "Definition", classLoader) ||
+                ClassUtils.isPresent(prefix + "$Definition", classLoader);
     }
 
     /**

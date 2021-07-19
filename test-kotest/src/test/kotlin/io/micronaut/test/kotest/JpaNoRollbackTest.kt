@@ -6,15 +6,15 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
-import org.springframework.transaction.PlatformTransactionManager
-import org.springframework.transaction.support.DefaultTransactionDefinition
+import io.micronaut.transaction.SynchronousTransactionManager
+import io.micronaut.transaction.support.DefaultTransactionDefinition
 import javax.persistence.EntityManager
 
 @MicronautTest(rollback = false)
 @DbProperties
 class JpaNoRollbackTest(
     private val entityManager: EntityManager,
-    private val transactionManager: PlatformTransactionManager
+    private val transactionManager: SynchronousTransactionManager<Any>
 ) : BehaviorSpec() {
 
     init {
