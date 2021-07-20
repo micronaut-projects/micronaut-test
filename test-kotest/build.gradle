@@ -18,12 +18,14 @@ dependencies {
     testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
 
     testImplementation "io.mockk:mockk:$mockkVersion"
-    testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
-    testImplementation "io.micronaut:micronaut-http-server-netty:$micronautVersion"
     kaptTest "io.micronaut:micronaut-inject-java:$micronautVersion"
 
-    testImplementation "io.micronaut.sql:micronaut-hibernate-jpa:$micronautSqlVersion"
+    testImplementation "io.micronaut:micronaut-http-server-netty:$micronautVersion"
+    testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
+
     testImplementation "io.micronaut.data:micronaut-data-tx:2.4.7"
+    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:2.4.7"
+
     testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat:$micronautSqlVersion"
     testRuntimeOnly "com.h2database:h2:1.4.200"
 

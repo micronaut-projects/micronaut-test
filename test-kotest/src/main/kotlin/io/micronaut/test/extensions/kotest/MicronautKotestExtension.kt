@@ -70,6 +70,14 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
         contexts[testCase.spec.javaClass.name]?.afterInvocation(testCase)
     }
 
+    override suspend fun beforeContainer(testCase: TestCase) {
+        contexts[testCase.spec.javaClass.name]?.beforeInvocation(testCase)
+    }
+
+    override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+        contexts[testCase.spec.javaClass.name]?.afterInvocation(testCase)
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
         val constructor = clazz.primaryConstructor
