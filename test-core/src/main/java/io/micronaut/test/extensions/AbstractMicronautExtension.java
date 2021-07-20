@@ -213,7 +213,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
                 resolveTestProperties(context, testAnnotationValue, testProperties);
             }
-            testProperties.put(TestActiveCondition.ACTIVE_SPEC_NAME, aPackage.getName() + "." + testClass.getSimpleName());
+
             testProperties.put(TestActiveCondition.ACTIVE_SPEC_CLAZZ, testClass);
             testProperties.put(TEST_ROLLBACK, String.valueOf(testAnnotationValue.rollback()));
             testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));

@@ -34,11 +34,6 @@ import java.util.Optional;
 public class TestActiveCondition implements Condition {
 
     public static final String ACTIVE_MOCKS = "micronaut.test.spock.active.mocks";
-    /**
-     * Deprecated please use {@link #ACTIVE_SPEC_CLAZZ} instead.
-     */
-    @Deprecated
-    public static final String ACTIVE_SPEC_NAME = "micronaut.test.active.spec";
 
     public static final String ACTIVE_SPEC_CLAZZ = "micronaut.test.active.spec.clazz";
 

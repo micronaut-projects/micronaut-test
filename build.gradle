@@ -18,10 +18,6 @@ subprojects { Project subproject ->
     if (subproject.name != 'test-bom') {
         apply plugin: "io.micronaut.build.internal.common"
 
-        repositories {
-            maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
-        }
-
         micronautBuild {
             resolutionStrategy {
                 eachDependency { DependencyResolveDetails details ->
