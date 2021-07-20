@@ -7,8 +7,8 @@ import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Issue
 import spock.lang.Specification
 
-import javax.inject.Inject
-import javax.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
 @Issue("https://github.com/micronaut-projects/micronaut-test/issues/91")
 @MicronautTest(rebuildContext = true)

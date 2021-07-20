@@ -29,7 +29,7 @@ import io.micronaut.runtime.ApplicationConfiguration;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;

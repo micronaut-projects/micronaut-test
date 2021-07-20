@@ -21,13 +21,13 @@ import io.micronaut.context.Qualifier;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.core.annotation.AnnotationMetadata;
+import io.micronaut.core.annotation.AnnotationUtil;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.qualifiers.Qualifiers;
-import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.context.TestContext;
@@ -39,7 +39,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
@@ -79,14 +78,10 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
      * @return a MicronautTestValue to configure the test application context
      */
     protected MicronautTestValue buildMicronautTestValue(Class<?> testClass) {
-        final Optional<io.micronaut.test.annotation.MicronautTest> micronautTest =
-                AnnotationSupport.findAnnotation(testClass, io.micronaut.test.annotation.MicronautTest.class);
-        return micronautTest
-                .map(AnnotationUtils::buildValueObject)
-                .orElseGet(() -> AnnotationSupport
-                        .findAnnotation(testClass, MicronautTest.class)
-                        .map(this::buildValueObject)
-                        .orElse(null));
+        return AnnotationSupport
+                .findAnnotation(testClass, MicronautTest.class)
+                .map(this::buildValueObject)
+                .orElse(null);
     }
 
     @Override
@@ -164,8 +159,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
      * @return true if the provided test class holds the expected test annotations
      */
     protected boolean hasExpectedAnnotations(Class<?> testClass) {
-        return AnnotationSupport.isAnnotated(testClass, MicronautTest.class) ||
-                AnnotationSupport.isAnnotated(testClass, io.micronaut.test.annotation.MicronautTest.class);
+        return AnnotationSupport.isAnnotated(testClass, MicronautTest.class);
     }
 
     @Override
@@ -232,7 +226,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         } else {
             return applicationContext.containsBean(parameterContext.getParameter().getType());
-        }        
+        }
     }
 
     @Override
@@ -295,7 +289,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         });
     }
 
-    private Argument<?> getArgument(ParameterContext parameterContext, ApplicationContext applicationContext){
+    private Argument<?> getArgument(ParameterContext parameterContext, ApplicationContext applicationContext) {
         try {
             final Executable declaringExecutable = parameterContext.getDeclaringExecutable();
             final int index = parameterContext.getIndex();
@@ -338,7 +332,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         AnnotationMetadata annotationMetadata = Objects.requireNonNull(argument, "Argument cannot be null").getAnnotationMetadata();
         boolean hasMetadata = annotationMetadata != AnnotationMetadata.EMPTY_METADATA;
 
-        List<Class<? extends Annotation>> qualifierTypes = hasMetadata ? annotationMetadata.getAnnotationTypesByStereotype(javax.inject.Qualifier.class) : null;
+        List<String> qualifierTypes = hasMetadata ? annotationMetadata.getAnnotationNamesByStereotype(AnnotationUtil.QUALIFIER) : null;
         if (CollectionUtils.isNotEmpty(qualifierTypes)) {
             if (qualifierTypes.size() == 1) {
                 return Qualifiers.byAnnotation(

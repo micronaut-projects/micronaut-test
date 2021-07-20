@@ -22,8 +22,8 @@ import spock.lang.Stepwise
 import spock.lang.Unroll
 import spock.mock.DetachedMockFactory
 
-import javax.inject.Inject
-import javax.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
 @Stepwise
 @MicronautTest

@@ -1,21 +1,26 @@
 buildscript {
     repositories {
-        maven { url "https://repo.grails.org/grails/core" }
+        mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
-        classpath "io.micronaut.build.internal:micronaut-gradle-plugins:3.0.3"
+        classpath "io.micronaut.build.internal:micronaut-gradle-plugins:4.0.0"
     }
 }
 
 repositories {
     maven { url "https://repo.grails.org/grails/core" }
 }
-    
+
 subprojects { Project subproject ->
     group "io.micronaut.test"
 
     if (subproject.name != 'test-bom') {
         apply plugin: "io.micronaut.build.internal.common"
+
+        repositories {
+            maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+        }
 
         micronautBuild {
             resolutionStrategy {

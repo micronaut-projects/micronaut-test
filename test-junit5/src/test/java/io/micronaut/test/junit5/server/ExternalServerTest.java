@@ -3,7 +3,7 @@ package io.micronaut.test.junit5.server;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
-import io.micronaut.http.client.RxHttpClient;
+import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Collections;
 import java.util.Map;
 
@@ -31,7 +31,7 @@ public class ExternalServerTest implements TestPropertyProvider {
 
     @Inject
     @Client("/")
-    RxHttpClient client;
+    HttpClient client;
 
     @Inject
     EmbeddedServer embeddedServer;
@@ -43,7 +43,7 @@ public class ExternalServerTest implements TestPropertyProvider {
 
     @Test
     void testServerAvailable() {
-        HttpResponse<String> response = client.exchange("/math/compute/10", String.class).blockingFirst();
+        HttpResponse<String> response = client.toBlocking().exchange("/math/compute/10", String.class);
 
         assertTrue(
             embeddedServer instanceof TestEmbeddedServer

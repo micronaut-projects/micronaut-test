@@ -6,7 +6,7 @@ import io.micronaut.test.junit5.beans.MyInterface;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @MicronautTest
 public class ConstructorNamedInjectionTest {

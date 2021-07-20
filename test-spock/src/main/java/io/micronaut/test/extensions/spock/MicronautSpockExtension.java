@@ -21,7 +21,6 @@ import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
-import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
@@ -37,7 +36,7 @@ import org.spockframework.runtime.model.MethodInfo;
 import org.spockframework.runtime.model.SpecInfo;
 import spock.lang.Specification;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -87,13 +86,8 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         });
 
         spec.addSetupSpecInterceptor(invocation -> {
-                    MicronautTestValue micronautTestValue;
                     MicronautTest micronautTest = spec.getAnnotation(MicronautTest.class);
-                    if (micronautTest == null) {
-                        micronautTestValue = AnnotationUtils.buildValueObject(spec.getAnnotation(io.micronaut.test.annotation.MicronautTest.class));
-                    } else {
-                        micronautTestValue = buildValueObject(micronautTest);
-                    }
+                    MicronautTestValue micronautTestValue =  buildValueObject(micronautTest);
                     beforeClass(invocation, spec.getReflection(), micronautTestValue);
                     if (specDefinition == null) {
                         if (!isTestSuiteBeanPresent(spec.getReflection())) {

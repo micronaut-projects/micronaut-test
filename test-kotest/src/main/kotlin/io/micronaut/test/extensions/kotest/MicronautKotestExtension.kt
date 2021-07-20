@@ -70,22 +70,23 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
         contexts[testCase.spec.javaClass.name]?.afterInvocation(testCase)
     }
 
+    override suspend fun beforeContainer(testCase: TestCase) {
+        contexts[testCase.spec.javaClass.name]?.beforeInvocation(testCase)
+    }
+
+    override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
+        contexts[testCase.spec.javaClass.name]?.afterInvocation(testCase)
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
         var micronautTestValue = testClass
-                .annotations
-                .filterIsInstance<io.micronaut.test.annotation.MicronautTest>()
-                .map { micronautTest -> AnnotationUtils.buildValueObject(micronautTest) }
-                .firstOrNull()
-        if (micronautTestValue == null) {
-            micronautTestValue = testClass
                     .annotations
                     .filterIsInstance<MicronautTest>()
                     .map { micronautTest -> buildValueObject(micronautTest) }
                     .firstOrNull()
-        }
         return if (micronautTestValue == null) {
             null
         } else {
@@ -124,6 +125,3 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
         }
     }
 }
-
-@Deprecated(message = "MicornautKotlinTestExtension is deprecated", replaceWith = ReplaceWith("MicronautKotlinTestExtension"))
-typealias MicornautKotlinTestExtension = MicronautKotestExtension

@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import io.micronaut.test.support.TestPropertyProvider
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @MicronautTest
 class TestPropertiesProviderTest: StringSpec(), TestPropertyProvider {

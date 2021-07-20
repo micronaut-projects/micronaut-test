@@ -1,7 +1,7 @@
 
 package io.micronaut.test.spock;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 interface MathService {
 

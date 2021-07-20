@@ -15,7 +15,8 @@
  */
 package io.micronaut.test.support;
 
-import javax.annotation.Nonnull;
+import io.micronaut.core.annotation.NonNull;
+
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -37,6 +38,6 @@ public interface TestPropertyProvider extends Supplier<Map<String, String>> {
      * Allows dynamically providing properties for a test.
      * @return A map of properties
      */
-    @Nonnull
+    @NonNull
     Map<String, String> getProperties();
 }

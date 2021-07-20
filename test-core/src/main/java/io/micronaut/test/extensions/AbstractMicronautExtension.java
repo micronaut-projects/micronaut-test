@@ -20,6 +20,7 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.env.PropertySourceLoader;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.core.io.service.ServiceDefinition;
 import io.micronaut.core.io.service.SoftServiceLoader;
@@ -39,7 +40,6 @@ import io.micronaut.test.context.TestContext;
 import io.micronaut.test.context.TestExecutionListener;
 import io.micronaut.test.support.TestPropertyProvider;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.AnnotatedElement;
@@ -71,7 +71,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
 
     private MicronautTestValue testAnnotationValue;
-    private ApplicationContextBuilder builder = ApplicationContext.build();
+    private ApplicationContextBuilder builder = ApplicationContext.builder();
     private List<TestExecutionListener> listeners;
 
     /** {@inheritDoc} */
@@ -354,7 +354,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @return true if the te given class has a bean definition class in the classpath (ie: the annotation processor has been run correctly)
      */
     protected boolean isTestSuiteBeanPresent(Class<?> requiredTestClass) {
-        return ClassUtils.isPresent(requiredTestClass.getPackage().getName() + ".$" + requiredTestClass.getSimpleName() + "Definition", requiredTestClass.getClassLoader());
+        String prefix = requiredTestClass.getPackage().getName() + ".$" + requiredTestClass.getSimpleName();
+        final ClassLoader classLoader = requiredTestClass.getClassLoader();
+        return ClassUtils.isPresent(prefix + "Definition", classLoader) ||
+                ClassUtils.isPresent(prefix + "$Definition", classLoader);
     }
 
     /**

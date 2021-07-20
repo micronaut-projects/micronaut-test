@@ -5,7 +5,9 @@ dependencies {
     api("org.spockframework:spock-core:$spockVersion") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
+    compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
 
+    testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
     testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
     testImplementation "io.micronaut:micronaut-http-server-netty:$micronautVersion"
     testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
@@ -13,8 +15,6 @@ dependencies {
     testImplementation "io.micronaut.sql:micronaut-jdbc-hikari:$micronautSqlVersion"
     testImplementation "io.micronaut.beanvalidation:micronaut-hibernate-validator"
     testImplementation "io.micronaut.groovy:micronaut-hibernate-gorm"
-    // this should be brought transitively by micronaut-hibernate-gorm
-    testImplementation "org.grails:grails-datastore-gorm-hibernate5:7.0.4.RELEASE"
 
     testRuntimeOnly "com.h2database:h2"
 }

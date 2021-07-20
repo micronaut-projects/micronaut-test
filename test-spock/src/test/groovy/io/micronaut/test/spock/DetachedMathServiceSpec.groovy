@@ -8,7 +8,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 import spock.mock.DetachedMockFactory
 
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @MicronautTest
 class DetachedMathServiceSpec extends Specification {

@@ -1,7 +1,7 @@
 
 package io.micronaut.test.junit5;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 class MathServiceImpl implements MathService {

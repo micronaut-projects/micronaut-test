@@ -5,14 +5,12 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
-import org.springframework.transaction.PlatformTransactionManager
 
 import javax.persistence.EntityManager
 
 @MicronautTest
 @DbProperties
-class JpaRollbackTest(private val entityManager: EntityManager,
-                      private val transactionManager: PlatformTransactionManager): BehaviorSpec({
+class JpaRollbackTest(private val entityManager: EntityManager): BehaviorSpec({
 
     given("rollback between tests") {
         `when`("test persist one") {

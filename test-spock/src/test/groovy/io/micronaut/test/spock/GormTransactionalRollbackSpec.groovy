@@ -9,7 +9,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import spock.lang.Specification
 import spock.lang.Stepwise
 
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @MicronautTest(packages = "io.micronaut.test.spock.entities")
 @HibernateProperties

@@ -1,16 +1,18 @@
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
-    compileOnly "io.micronaut.spring:micronaut-spring:3.1.0"
     compileOnly "io.micronaut:micronaut-http-server:$micronautVersion"
     compileOnly("org.spockframework:spock-core:$spockVersion") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
-
+    compileOnly "io.micronaut.spring:micronaut-spring:3.1.0"
     compileOnly(
             "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     )
 
     api "io.micronaut:micronaut-inject:$micronautVersion"
+    compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
+
+    testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
     implementation "io.micronaut:micronaut-runtime:$micronautVersion"
 }
 jar {

@@ -15,6 +15,7 @@
  */
 package io.micronaut.test.annotation;
 
+import io.micronaut.aop.Around;
 import io.micronaut.context.annotation.AliasFor;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Replaces;
@@ -38,18 +39,19 @@ import java.lang.annotation.Target;
 @Bean
 @Requires(condition = TestActiveCondition.class)
 @Refreshable(TestActiveCondition.ACTIVE_MOCKS)
+@Around(proxyTargetMode = Around.ProxyTargetConstructorMode.ALLOW)
 public @interface MockBean {
     /**
      * @return The bean this mock replaces
      */
     @AliasFor(annotation = Replaces.class, member = "value")
-    Class value() default void.class;
+    Class<?> value() default void.class;
 
     /**
      * @return The bean this mock replaces
      */
     @AliasFor(annotation = Replaces.class, member = "value")
-    Class bean() default void.class;
+    Class<?> bean() default void.class;
 
     /**
      * The name of the bean to replace in the case of multiple beans.

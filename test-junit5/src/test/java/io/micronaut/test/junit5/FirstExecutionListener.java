@@ -5,8 +5,8 @@ import io.micronaut.core.annotation.Order;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.context.TestExecutionListener;
 
-import javax.inject.Provider;
-import javax.inject.Singleton;
+import jakarta.inject.Provider;
+import jakarta.inject.Singleton;
 
 @Singleton
 @Order(99)
