@@ -8,5 +8,4 @@ io.micronaut.test.extensions.spock
 io.micronaut.test.extensions.spock.annotation
 io.micronaut.test.support
 io.micronaut.test.support.server
-io.micronaut.test.transaction
 io.micronaut.test.transaction.spring
