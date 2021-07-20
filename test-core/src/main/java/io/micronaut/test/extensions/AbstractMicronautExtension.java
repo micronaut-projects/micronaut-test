@@ -356,7 +356,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected boolean isTestSuiteBeanPresent(Class<?> requiredTestClass) {
         String prefix = requiredTestClass.getPackage().getName() + ".$" + requiredTestClass.getSimpleName();
         final ClassLoader classLoader = requiredTestClass.getClassLoader();
-        return ClassUtils.isPresent( prefix+ "Definition", classLoader) ||
+        return ClassUtils.isPresent(prefix + "Definition", classLoader) ||
                 ClassUtils.isPresent(prefix + "$Definition", classLoader);
     }
 

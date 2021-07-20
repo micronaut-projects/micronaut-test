@@ -289,7 +289,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         });
     }
 
-    private Argument<?> getArgument(ParameterContext parameterContext, ApplicationContext applicationContext){
+    private Argument<?> getArgument(ParameterContext parameterContext, ApplicationContext applicationContext) {
         try {
             final Executable declaringExecutable = parameterContext.getDeclaringExecutable();
             final int index = parameterContext.getIndex();

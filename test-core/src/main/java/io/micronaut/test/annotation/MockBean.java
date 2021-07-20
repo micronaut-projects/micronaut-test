@@ -45,13 +45,13 @@ public @interface MockBean {
      * @return The bean this mock replaces
      */
     @AliasFor(annotation = Replaces.class, member = "value")
-    Class value() default void.class;
+    Class<?> value() default void.class;
 
     /**
      * @return The bean this mock replaces
      */
     @AliasFor(annotation = Replaces.class, member = "value")
-    Class bean() default void.class;
+    Class<?> bean() default void.class;
 
     /**
      * The name of the bean to replace in the case of multiple beans.
