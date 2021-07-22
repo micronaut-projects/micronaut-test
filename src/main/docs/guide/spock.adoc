@@ -97,7 +97,7 @@ include::{spocktests}/MathCollaboratorSpec.groovy[]
 ----
 
 <1> Like the previous example a Mock is defined using `@MockBean`
-<2> This time we inject an instance of `RxHttpClient` to test the controller.
+<2> This time we inject an instance of `HttpClient` to test the controller.
 <3> We invoke the controller and retrieve the result
 <4> The interaction with mock collaborator is verified.
 
