@@ -4,7 +4,6 @@ dependencies {
     compileOnly("org.spockframework:spock-core:$spockVersion") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
-    compileOnly "io.micronaut.spring:micronaut-spring:3.1.0"
     compileOnly(
             "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     )

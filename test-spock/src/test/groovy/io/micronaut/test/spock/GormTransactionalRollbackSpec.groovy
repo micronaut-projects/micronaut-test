@@ -2,9 +2,9 @@
 package io.micronaut.test.spock
 
 import io.micronaut.context.ApplicationContext
+import io.micronaut.spring.tx.test.SpringTransactionTestExecutionListener
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import io.micronaut.test.spock.entities.Book
-import io.micronaut.test.transaction.spring.SpringTransactionTestExecutionListener
 import org.springframework.transaction.support.TransactionSynchronizationManager
 import spock.lang.Specification
 import spock.lang.Stepwise
