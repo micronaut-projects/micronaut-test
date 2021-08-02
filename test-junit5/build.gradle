@@ -19,7 +19,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:3.11.1'
 
     testImplementation "io.micronaut.data:micronaut-data-tx:2.4.7"
-    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:2.4.7"
+    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:2.5.0"
 
     testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat:$micronautSqlVersion"
     testRuntimeOnly "com.h2database:h2:1.4.200"
