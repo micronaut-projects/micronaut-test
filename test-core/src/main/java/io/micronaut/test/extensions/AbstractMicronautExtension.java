@@ -333,7 +333,14 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     public void afterEach(C context) throws Exception {
         if (refreshScope != null) {
             if (!oldValues.isEmpty()) {
-                testProperties.putAll(oldValues);
+                for (Map.Entry<String, Object> entry: oldValues.entrySet()) {
+                    Object value = entry.getValue();
+                    if (value != null) {
+                        testProperties.put(entry.getKey(), value);
+                    } else {
+                        testProperties.remove(entry.getKey());
+                    }
+                }
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));
             }
