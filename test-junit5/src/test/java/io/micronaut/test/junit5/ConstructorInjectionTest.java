@@ -42,5 +42,9 @@ public class ConstructorInjectionTest {
         assertNotNull(client);
 
         assertEquals("test", val);
+
+        final String response = client.toBlocking().retrieve("/test");
+
+        assertEquals("original", response);
     }
 }

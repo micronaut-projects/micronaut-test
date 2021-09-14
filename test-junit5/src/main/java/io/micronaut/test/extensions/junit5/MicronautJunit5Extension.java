@@ -249,7 +249,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                                     new ParameterResolutionException("Unresolvable property specified to @Property: " + finalV1.get())
                             );
                 } else {
-                    return applicationContext.getBean(argument.getType(), resolveQualifier(argument));
+                    return applicationContext.getBean(argument, resolveQualifier(argument));
                 }
             }
         } else {
