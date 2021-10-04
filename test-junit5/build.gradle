@@ -18,7 +18,7 @@ dependencies {
     testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
     testImplementation 'org.mockito:mockito-junit-jupiter:3.11.1'
 
-    testImplementation "io.micronaut.data:micronaut-data-tx:2.4.7"
+    testImplementation "io.micronaut.data:micronaut-data-tx:3.1.0"
     testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:2.4.7"
 
     testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat:$micronautSqlVersion"
