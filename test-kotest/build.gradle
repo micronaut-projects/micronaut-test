@@ -24,7 +24,7 @@ dependencies {
     testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
 
     testImplementation "io.micronaut.data:micronaut-data-tx:2.4.7"
-    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:2.4.7"
+    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:3.1.2"
 
     testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat:$micronautSqlVersion"
     testRuntimeOnly "com.h2database:h2:1.4.200"
