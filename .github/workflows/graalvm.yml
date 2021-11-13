@@ -36,7 +36,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Setup GraalVM CE
-        uses: DeLaGuardo/setup-graalvm@4.0
+        uses: DeLaGuardo/setup-graalvm@5.0
         with:
           graalvm: 21.2.0
           java: ${{ matrix.java }}
@@ -52,6 +52,7 @@ jobs:
           fi
         env:
            TESTCONTAINERS_RYUK_DISABLED: true
+           GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
       - name: Publish Test Report
         if: always()
         uses: mikepenz/action-junit-report@v2
