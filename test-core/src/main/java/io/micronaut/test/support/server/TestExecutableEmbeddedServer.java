@@ -23,6 +23,7 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.Order;
 import io.micronaut.http.server.HttpServerConfiguration;
 import io.micronaut.http.server.exceptions.ServerStartupException;
 import io.micronaut.runtime.ApplicationConfiguration;
@@ -42,6 +43,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static io.micronaut.core.io.socket.SocketUtils.findAvailableTcpPort;
+import io.micronaut.core.order.Ordered;
 
 /**
  * An {@link EmbeddedServer} implementation that runs an external executable JAR or native.
@@ -50,6 +52,7 @@ import static io.micronaut.core.io.socket.SocketUtils.findAvailableTcpPort;
  * @since 2.2.1
  */
 @Primary
+@Order(-100)
 @Requires(property = TestExecutableEmbeddedServer.PROPERTY)
 @Requires(beans = HttpServerConfiguration.class)
 @Singleton
