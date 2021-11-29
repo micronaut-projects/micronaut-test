@@ -112,6 +112,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre>@Primary
+ @Order(value=-100)
  @Requires(property="micronaut.test.server.executable") @Requires(beans=io.micronaut.http.server.HttpServerConfiguration.class)
  @Singleton
 public class <span class="typeNameLabel">TestExecutableEmbeddedServer</span>
