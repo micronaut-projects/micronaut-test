@@ -24,7 +24,6 @@ import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.io.socket.SocketUtils;
 import io.micronaut.runtime.ApplicationConfiguration;
 import io.micronaut.runtime.server.EmbeddedServer;
-import io.micronaut.core.order.Ordered;
 import io.micronaut.core.annotation.Order;
 
 import jakarta.inject.Singleton;
