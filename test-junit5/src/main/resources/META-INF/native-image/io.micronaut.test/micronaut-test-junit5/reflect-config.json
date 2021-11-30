@@ -15,10 +15,5 @@
         "name":"io.micronaut.context.annotation.PropertySource",
         "queryAllPublicMethods":true,
         "methods":[{"name":"value","parameterTypes":[] }]
-    },
-    {
-        "name":"net.bytebuddy.implementation.bind.annotation.BindingPriority",
-        "queryAllDeclaredMethods":true,
-        "queryAllDeclaredConstructors":true,
-        "methods":[{"name":"value","parameterTypes":[] }]}
+    }
 ]
