@@ -45,7 +45,6 @@ import java.lang.annotation.Target;
 @Inherited
 @Requires(condition = TestActiveCondition.class)
 @Executable
-@ReflectiveAccess
 public @interface MicronautTest {
     /**
      * @return The application class of the application
