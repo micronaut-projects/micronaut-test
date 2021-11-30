@@ -1,11 +1,47 @@
+plugins {
+  id 'org.graalvm.buildtools.native' version '0.9.8'
+  id "java-library"
+}
+
+repositories {
+    mavenCentral()
+}
+version projectVersion
+
+java {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs '-Duser.country=US'
+    jvmArgs '-Duser.language=en'
+
+    reports.html.required = !System.getenv("GITHUB_ACTION")
+    reports.junitXml.required = true
+
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.compilerArgs.add('-parameters')
+}
+
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes('Automatic-Module-Name': "${project.group}.${project.name}".replaceAll('[^\\w\\.\\$_]', "_"))
+        attributes('Implementation-Version': project.findProperty("projectVersion"))
+        attributes('Implementation-Title': project.findProperty("title"))
+    }
+}
 dependencies {
     api project(":test-core")
     api "io.micronaut:micronaut-inject:$micronautVersion"
     implementation "io.micronaut:micronaut-runtime:$micronautVersion"
 
-    api(
-            "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    )
+    api("org.junit.jupiter:junit-jupiter-api:$junitVersion")
 
     testCompileOnly "io.micronaut:micronaut-inject:$micronautVersion"
     testRuntimeOnly(
@@ -17,14 +53,21 @@ dependencies {
     testImplementation "io.micronaut:micronaut-http-server-netty:$micronautVersion"
     testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
     testImplementation 'org.mockito:mockito-junit-jupiter:3.11.1'
-
+    testImplementation 'org.hamcrest:hamcrest:2.2'
     testImplementation "io.micronaut.data:micronaut-data-tx:2.4.7"
     testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:2.4.7"
 
     testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat:$micronautSqlVersion"
     testRuntimeOnly "com.h2database:h2:1.4.200"
+
 }
 
-test {
-    useJUnitPlatform()
+
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--initialize-at-run-time=io.micronaut.test.junit5.server.ExternalServerTest')
+        }
+    }
 }

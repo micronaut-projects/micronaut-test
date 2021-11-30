@@ -10,7 +10,7 @@ import jakarta.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
 @DbProperties
