@@ -113,6 +113,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>@Singleton
  @Primary
+ @Order(value=-100)
  @Requires(property="micronaut.test.server.url") @Requires(missingProperty="micronaut.test.server.executable")
 public class <span class="typeNameLabel">TestEmbeddedServer</span>
 extends java.lang.Object
