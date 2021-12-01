@@ -19,6 +19,7 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.annotation.Executable;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.test.annotation.TransactionMode;
 import io.micronaut.test.condition.TestActiveCondition;
 import io.micronaut.test.extensions.junit5.MicronautJunit5Extension;

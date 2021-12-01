@@ -10,7 +10,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import jakarta.inject.Inject;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @MicronautTest(startApplication = false, rebuildContext = true)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

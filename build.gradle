@@ -15,7 +15,7 @@ repositories {
 subprojects { Project subproject ->
     group "io.micronaut.test"
 
-    if (subproject.name != 'test-bom') {
+    if (subproject.name != 'test-bom' && subproject.name != 'test-junit5') {
         apply plugin: "io.micronaut.build.internal.common"
 
         micronautBuild {
@@ -29,7 +29,7 @@ subprojects { Project subproject ->
             }
         }
 
-    } else {
+    } else if (subproject.name != 'test-junit5') {
         apply plugin: "java-platform"
         version projectVersion
     }

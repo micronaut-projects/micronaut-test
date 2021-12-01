@@ -1,6 +1,8 @@
 
 package io.micronaut.test.junit5;
 
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.util.StringUtils;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +14,7 @@ import jakarta.inject.Inject;
 import static org.mockito.Mockito.*;
 
 @MicronautTest
+@Requires(property = "mockito.test.enabled", defaultValue = StringUtils.FALSE, value = StringUtils.TRUE)
 class MathMockServiceTest {
 
     @Inject

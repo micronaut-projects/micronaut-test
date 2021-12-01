@@ -43,7 +43,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static io.micronaut.core.io.socket.SocketUtils.findAvailableTcpPort;
-import io.micronaut.core.order.Ordered;
 
 /**
  * An {@link EmbeddedServer} implementation that runs an external executable JAR or native.

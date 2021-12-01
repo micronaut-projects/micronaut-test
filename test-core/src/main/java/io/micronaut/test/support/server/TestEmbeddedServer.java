@@ -24,6 +24,7 @@ import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.io.socket.SocketUtils;
 import io.micronaut.runtime.ApplicationConfiguration;
 import io.micronaut.runtime.server.EmbeddedServer;
+import io.micronaut.core.annotation.Order;
 
 import jakarta.inject.Singleton;
 import java.net.URI;
@@ -38,6 +39,7 @@ import java.net.URL;
  */
 @Singleton
 @Primary
+@Order(-100)
 @Requires(property = TestEmbeddedServer.PROPERTY)
 @Requires(missingProperty = TestExecutableEmbeddedServer.PROPERTY)
 public class TestEmbeddedServer implements EmbeddedServer {
