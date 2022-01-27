@@ -16,6 +16,6 @@ dependencies {
     testImplementation "io.micronaut.beanvalidation:micronaut-hibernate-validator"
     testImplementation "io.micronaut.groovy:micronaut-hibernate-gorm"
     testImplementation "io.micronaut.spring:micronaut-spring:$micronautSpringVersion"
-
+    testImplementation "org.testcontainers:mongodb:1.16.2"
     testRuntimeOnly "com.h2database:h2"
 }

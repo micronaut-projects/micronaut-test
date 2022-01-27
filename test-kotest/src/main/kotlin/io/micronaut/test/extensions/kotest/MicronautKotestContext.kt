@@ -19,15 +19,20 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.micronaut.context.annotation.Property
+import io.micronaut.core.util.CollectionUtils
 import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.context.TestContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
+import io.micronaut.test.extensions.TestResourceManager
 import io.micronaut.test.support.TestPropertyProvider
 import kotlin.reflect.full.memberFunctions
 
-class MicronautKotestContext(private val testClass: Class<Any>,
-                             private val micronautTestValue: MicronautTestValue,
-                             private val createBean: Boolean) : AbstractMicronautExtension<Spec>() {
+class MicronautKotestContext(
+    private val testClass: Class<Any>,
+    private val micronautTestValue: MicronautTestValue,
+    private val createBean: Boolean,
+    private val trm: TestResourceManager
+) : AbstractMicronautExtension<Spec>() {
 
     override fun resolveTestProperties(context: Spec?, testAnnotationValue: MicronautTestValue, testProperties: MutableMap<String, Any>?) {
         if (context is TestPropertyProvider) {
@@ -39,6 +44,7 @@ class MicronautKotestContext(private val testClass: Class<Any>,
 
     init {
         bean = if (createBean) {
+            super.testResourceManager = trm
             beforeClass(null, testClass, micronautTestValue)
             applicationContext.findBean(testClass).orElse(null) as Spec?
         } else {
@@ -51,6 +57,7 @@ class MicronautKotestContext(private val testClass: Class<Any>,
 
     fun beforeSpecClass(spec: Spec) {
         if (!createBean) {
+            super.testResourceManager = trm
             beforeClass(spec, testClass, micronautTestValue)
             applicationContext.inject(spec)
         }

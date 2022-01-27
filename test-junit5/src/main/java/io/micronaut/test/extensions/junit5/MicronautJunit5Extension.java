@@ -32,6 +32,7 @@ import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
+import io.micronaut.test.extensions.TestResourceManager;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Nested;
@@ -46,17 +47,33 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
 /**
  * Extension for JUnit 5.
  *
  * @author graemerocher
  * @since 1.0
  */
-public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor {
+public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor, ExtensionContext.Store.CloseableResource {
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
+
+    private static boolean started = false;
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
+        final ExtensionContext.Store globalStore = extensionContext.getRoot().getStore(GLOBAL);
+        if (!started) {
+            started = true;
+            testResourceManager.start();
+            globalStore.put(JUnit5TestResourceHandle.class.getName(), new JUnit5TestResourceHandle(testResourceManager));
+        } else {
+            final JUnit5TestResourceHandle resourceHandle = globalStore
+                    .get(JUnit5TestResourceHandle.class.getName(), JUnit5TestResourceHandle.class);
+            if (resourceHandle != null) {
+                testResourceManager = resourceHandle.getTestResourceManager();
+            }
+        }
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         MicronautTestValue micronautTestValue = buildMicronautTestValue(testClass);
         beforeClass(extensionContext, testClass, micronautTestValue);
@@ -349,5 +366,27 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         }
         return null;
+    }
+
+    @Override
+    public void close() {
+        testResourceManager.stop();
+    }
+
+    private static final class JUnit5TestResourceHandle implements ExtensionContext.Store.CloseableResource {
+        private final TestResourceManager testResourceManager;
+
+        private JUnit5TestResourceHandle(TestResourceManager testResourceManager) {
+            this.testResourceManager = testResourceManager;
+        }
+
+        public TestResourceManager getTestResourceManager() {
+            return testResourceManager;
+        }
+
+        @Override
+        public void close() throws Throwable {
+            testResourceManager.stop();
+        }
     }
 }

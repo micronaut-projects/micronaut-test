@@ -1,9 +1,10 @@
 introduction:
   title: Introduction
 releaseHistory: Release History
-spock: Testing with Spock
 junit5: Testing with JUnit 5
+spock: Testing with Spock
 kotlintest: Testing with KotlinTest
 kotest: Testing with Kotest
+testResources: Test Resources
 #spek: Testing with Spek
 repository: Repository

@@ -20,6 +20,7 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.env.PropertySourceLoader;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.core.io.service.ServiceDefinition;
@@ -28,6 +29,7 @@ import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.reflect.InstantiationUtils;
 import io.micronaut.core.util.ArrayUtils;
+import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.runtime.EmbeddedApplication;
@@ -69,6 +71,8 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected BeanDefinition<?> specDefinition;
     protected Map<String, Object> testProperties = new LinkedHashMap<>();
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
+    @NonNull
+    protected TestResourceManager testResourceManager = new TestResourceManager();
 
     private MicronautTestValue testAnnotationValue;
     private ApplicationContextBuilder builder = ApplicationContext.builder();
@@ -165,6 +169,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 this.builder = InstantiationUtils.instantiate(cb[0]);
             }
             this.testAnnotationValue = testAnnotationValue;
+            final Map<String, Object> config = testResourceManager.getConfig();
+            if (CollectionUtils.isNotEmpty(config)) {
+                config.forEach((key, value) -> testProperties.putIfAbsent(key, value));
+            }
 
             final Package aPackage = testClass.getPackage();
             builder.packages(aPackage.getName());
@@ -173,6 +181,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             for (Property property : ps) {
                 testProperties.put(property.name(), property.value());
             }
+
 
             String[] propertySources = testAnnotationValue.propertySources();
             if (ArrayUtils.isNotEmpty(propertySources)) {

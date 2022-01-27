@@ -1,0 +1,22 @@
+Frequently it is useful to define test resources that are setup once before all tests are run and shutdown and after all tests have run.
+
+This is a pattern often used in combination with https://www.testcontainers.org/[Testcontainers] to setup a database once and used the same instance across the suite and then shut it down in the end.
+
+Micronaut Test supports defining such resources with the api:test.support.resource.TestResource[] interface.
+
+For example to add a MongoDB database as a test resource with Test containers:
+
+.Defining a Test Resource
+[source,java]
+----
+include::{junit5tests}/resource/MongoResource.java[]
+----
+
+<1> Define a class that implements api:test.support.resource.TestResource[
+<2> In the `start` method start the container
+<3> Return the configuration that should apply to the application (in this case the `mongodb.uri` configuration option)
+<4> Stop the container at the end of the test run
+
+To activate this resource you need to define a file called `META-INF/services/io.micronaut.test.support.resource.TestResource` since test resources are loaded via service loader.
+
+Regardless whether you use JUnit 5, Spock or Kotest this resource will be available to your tests for the scope of the test run.

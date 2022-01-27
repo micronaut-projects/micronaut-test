@@ -21,6 +21,7 @@ import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
+import io.micronaut.test.extensions.TestResourceManager;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
@@ -34,6 +35,7 @@ import org.spockframework.runtime.model.FeatureInfo;
 import org.spockframework.runtime.model.FieldInfo;
 import org.spockframework.runtime.model.MethodInfo;
 import org.spockframework.runtime.model.SpecInfo;
+import org.spockframework.runtime.model.Tag;
 import spock.lang.Specification;
 
 import jakarta.inject.Inject;
@@ -88,6 +90,15 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         spec.addSetupSpecInterceptor(invocation -> {
                     MicronautTest micronautTest = spec.getAnnotation(MicronautTest.class);
                     MicronautTestValue micronautTestValue =  buildValueObject(micronautTest);
+                    final List<Tag> tags = spec.getTags();
+                    for (Tag tag : tags) {
+                        if (tag.getName().equals(SpockTestResourceExtension.TAG_MICRONAUT_TEST)) {
+                            final Object value = tag.getValue();
+                            if (value instanceof TestResourceManager) {
+                                this.testResourceManager = (TestResourceManager) value;
+                            }
+                        }
+                    }
                     beforeClass(invocation, spec.getReflection(), micronautTestValue);
                     if (specDefinition == null) {
                         if (!isTestSuiteBeanPresent(spec.getReflection())) {

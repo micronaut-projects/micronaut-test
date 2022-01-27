@@ -17,18 +17,29 @@ package io.micronaut.test.extensions.kotest
 
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.micronaut.aop.InterceptedProxy
-import io.micronaut.test.annotation.AnnotationUtils
 import io.micronaut.test.annotation.MicronautTestValue
+import io.micronaut.test.extensions.TestResourceManager
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
-object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExtension {
+object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExtension, ProjectListener {
+    val contexts: MutableMap<String, MicronautKotestContext> = mutableMapOf()
+    val testResourceManager: TestResourceManager = TestResourceManager()
+
+    override suspend fun afterProject() {
+        testResourceManager.stop()
+    }
+
+    override suspend fun beforeProject() {
+        testResourceManager.start()
+    }
 
     override suspend fun intercept(
         testCase: TestCase,
@@ -43,8 +54,6 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
             execute(testCase)
         }
     }
-
-    val contexts: MutableMap<String, MicronautKotestContext> = mutableMapOf()
 
     override suspend fun beforeSpec(spec: Spec) {
         contexts[spec.javaClass.name]?.beforeSpecClass(spec)
@@ -74,6 +83,9 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
         contexts[testCase.spec.javaClass.name]?.beforeInvocation(testCase)
     }
 
+    override val name: String
+        get() = super<TestListener>.name
+
     override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
         contexts[testCase.spec.javaClass.name]?.afterInvocation(testCase)
     }
@@ -91,7 +103,12 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
             null
         } else {
             val createBean = constructor != null && constructor.parameters.isNotEmpty()
-            val context = MicronautKotestContext(testClass, micronautTestValue, createBean)
+            val context = MicronautKotestContext(
+                testClass,
+                micronautTestValue,
+                createBean,
+                testResourceManager
+            )
             contexts[testClass.name] = context
             if (createBean) {
                 context.bean

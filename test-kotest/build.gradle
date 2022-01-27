@@ -30,6 +30,7 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:1.4.200"
 
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotestVersion"
+    testImplementation "org.testcontainers:mongodb:1.16.2"
 }
 
 test {
