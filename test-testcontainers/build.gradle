@@ -1,0 +1,4 @@
+dependencies {
+    api project(":test-core")
+    compileOnly "org.testcontainers:mongodb:1.16.2"
+}

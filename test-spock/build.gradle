@@ -17,5 +17,6 @@ dependencies {
     testImplementation "io.micronaut.groovy:micronaut-hibernate-gorm"
     testImplementation "io.micronaut.spring:micronaut-spring:$micronautSpringVersion"
     testImplementation "org.testcontainers:mongodb:1.16.2"
+    testImplementation project(":test-testcontainers")
     testRuntimeOnly "com.h2database:h2"
 }

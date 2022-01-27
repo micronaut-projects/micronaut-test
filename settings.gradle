@@ -15,3 +15,4 @@ include 'test-core'
 include "test-spock"
 include "test-junit5"
 include "test-kotest"
+include "test-testcontainers"

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceConfigurationError;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.micronaut.context.ApplicationContext;
@@ -51,8 +52,15 @@ public class TestResourceManager implements LifeCycle<TestResourceManager> {
             SoftServiceLoader<TestResource> testResources = SoftServiceLoader.load(TestResource.class);
             for (ServiceDefinition<TestResource> testResource : testResources) {
                 if (testResource.isPresent()) {
-                    final TestResource tr = testResource.load();
-                    this.testResources.add(tr);
+                    try {
+                        final TestResource tr = testResource.load();
+                        this.testResources.add(tr);
+                    } catch (ServiceConfigurationError e) {
+                        final Throwable cause = e.getCause();
+                        if (!(cause instanceof NoClassDefFoundError) && !(cause instanceof ClassNotFoundException)) {
+                          throw e;
+                        }
+                    }
                 }
             }
             if (!this.testResources.isEmpty()) {
