@@ -17,6 +17,7 @@ package io.micronaut.test.extensions.kotest
 
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
@@ -29,16 +30,14 @@ import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
-object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExtension, ProjectListener {
+object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExtension, AfterProjectListener {
     val contexts: MutableMap<String, MicronautKotestContext> = mutableMapOf()
-    val testResourceManager: TestResourceManager = TestResourceManager()
+    private val testResourceManager: TestResourceManager = TestResourceManager()
 
     override suspend fun afterProject() {
-        testResourceManager.stop()
-    }
-
-    override suspend fun beforeProject() {
-        testResourceManager.start()
+        if (testResourceManager.isRunning) {
+            testResourceManager.stop()
+        }
     }
 
     override suspend fun intercept(
@@ -120,16 +119,17 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
 
     private fun buildValueObject(micronautTest: MicronautTest): MicronautTestValue {
         return MicronautTestValue(
-                micronautTest.application.java,
-                micronautTest.environments,
-                micronautTest.packages,
-                micronautTest.propertySources,
-                micronautTest.rollback,
-                micronautTest.transactional,
-                micronautTest.rebuildContext,
-                micronautTest.contextBuilder.map { kClass -> kClass.java }.toTypedArray(),
-                micronautTest.transactionMode,
-                micronautTest.startApplication
+            micronautTest.application.java,
+            micronautTest.environments,
+            micronautTest.packages,
+            micronautTest.propertySources,
+            micronautTest.rollback,
+            micronautTest.transactional,
+            micronautTest.rebuildContext,
+            micronautTest.contextBuilder.map { kClass -> kClass.java }.toTypedArray(),
+            micronautTest.transactionMode,
+            micronautTest.startApplication,
+            micronautTest.startTestResources
         )
     }
 

@@ -34,6 +34,10 @@ class MicronautKotestContext(
     private val trm: TestResourceManager
 ) : AbstractMicronautExtension<Spec>() {
 
+    init {
+        this.testResourceManager = trm
+    }
+
     override fun resolveTestProperties(context: Spec?, testAnnotationValue: MicronautTestValue, testProperties: MutableMap<String, Any>?) {
         if (context is TestPropertyProvider) {
             testProperties?.putAll(context.properties)
@@ -44,7 +48,6 @@ class MicronautKotestContext(
 
     init {
         bean = if (createBean) {
-            super.testResourceManager = trm
             beforeClass(null, testClass, micronautTestValue)
             applicationContext.findBean(testClass).orElse(null) as Spec?
         } else {

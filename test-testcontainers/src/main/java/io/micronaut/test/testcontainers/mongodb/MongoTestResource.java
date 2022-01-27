@@ -15,10 +15,7 @@
  */
 package io.micronaut.test.testcontainers.mongodb;
 
-import java.util.Collections;
-import java.util.Map;
-
-import io.micronaut.core.value.PropertyResolver;
+import io.micronaut.test.support.resource.TestRun;
 import io.micronaut.test.testcontainers.AbstractTestContainerTestResource;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.MongoDBContainer;
@@ -30,7 +27,7 @@ import org.testcontainers.utility.DockerImageName;
  * @author graemerocher
  * @since 3.1.0
  */
-public class MongodbTestResource extends AbstractTestContainerTestResource {
+public class MongoTestResource extends AbstractTestContainerTestResource {
     private MongoDBContainer container;
 
     @Override
@@ -54,12 +51,10 @@ public class MongodbTestResource extends AbstractTestContainerTestResource {
     }
 
     @Override
-    public Map<String, Object> start(PropertyResolver environment) throws Exception {
-        final DockerImageName dockerImageName = getDockerImageName(environment);
+    public void start(TestRun testRun) throws Exception {
+        final DockerImageName dockerImageName = getDockerImageName(testRun.getEnvironment());
         this.container = new MongoDBContainer(dockerImageName);
         this.container.start();
-        return Collections.singletonMap(
-                "mongodb.uri", container.getReplicaSetUrl()
-        );
+        testRun.addProperty("mongodb.uri", container.getReplicaSetUrl());
     }
 }

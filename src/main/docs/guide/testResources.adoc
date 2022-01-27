@@ -9,12 +9,12 @@ For example to add a MongoDB database as a test resource with Test containers:
 .Defining a Test Resource
 [source,java]
 ----
-include::{junit5tests}/resource/MongoResource.java[]
+include::test-testcontainers/src/main/java/io/micronaut/test/testcontainers/mongodb/MongodbTestResource.java[]
 ----
 
-<1> Define a class that implements api:test.support.resource.TestResource[
+<1> Define a class that implements api:test.support.resource.ManagedTestResource[
 <2> In the `start` method start the container
-<3> Return the configuration that should apply to the application (in this case the `mongodb.uri` configuration option)
+<3> Add the configuration that should apply to the application (in this case the `mongodb.uri` configuration option)
 <4> Stop the container at the end of the test run
 
 To activate this resource you need to define a file called `META-INF/services/io.micronaut.test.support.resource.TestResource` since test resources are loaded via service loader.

@@ -38,11 +38,11 @@ public class MicronautTestValue {
     private final Class<? extends ApplicationContextBuilder>[] contextBuilder;
     private final TransactionMode transactionMode;
     private final boolean startApplication;
+    private final boolean startTestResources;
 
     /**
      * Default constructor.
-     *
-     * @param application     The application class of the application
+     *  @param application     The application class of the application
      * @param environments    The environments to use.
      * @param packages        The packages to consider for scanning.
      * @param propertySources The property sources
@@ -52,11 +52,20 @@ public class MicronautTestValue {
      * @param contextBuilder  The builder
      * @param transactionMode The transaction mode
      * @param startApplication Whether the start the app
+     * @param startTestResources Whether to start test resources
      */
     @Creator
-    public MicronautTestValue(Class<?> application, String[] environments, String[] packages, String[] propertySources,
-                              boolean rollback, boolean transactional, boolean rebuildContext,
-                              Class<? extends ApplicationContextBuilder>[] contextBuilder, TransactionMode transactionMode, boolean startApplication) {
+    public MicronautTestValue(Class<?> application,
+                              String[] environments,
+                              String[] packages,
+                              String[] propertySources,
+                              boolean rollback,
+                              boolean transactional,
+                              boolean rebuildContext,
+                              Class<? extends ApplicationContextBuilder>[] contextBuilder,
+                              TransactionMode transactionMode,
+                              boolean startApplication,
+                              boolean startTestResources) {
         this.application = application;
         this.environments = environments;
         this.packages = packages;
@@ -67,6 +76,7 @@ public class MicronautTestValue {
         this.contextBuilder = contextBuilder;
         this.transactionMode = transactionMode;
         this.startApplication = startApplication;
+        this.startTestResources = startTestResources;
     }
 
     /**
@@ -149,5 +159,12 @@ public class MicronautTestValue {
      */
     public boolean startApplication() {
         return startApplication;
+    }
+
+    /**
+     * @return Whether to start test resources
+     */
+    public boolean isStartTestResources() {
+        return startTestResources;
     }
 }

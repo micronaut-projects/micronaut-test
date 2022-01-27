@@ -105,4 +105,13 @@ public @interface MicronautTest {
      * @return true if {@link io.micronaut.runtime.EmbeddedApplication} should be started
      */
     boolean startApplication() default true;
+
+    /**
+     * Whether to start test resources if they are not already running.
+     *
+     * @return True if test resources should be started
+     * @see io.micronaut.test.support.resource.ManagedTestResource
+     * @since 3.1.0
+     */
+    boolean startTestResources() default true;
 }

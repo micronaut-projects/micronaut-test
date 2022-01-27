@@ -15,18 +15,17 @@
  */
 package io.micronaut.test.support.resource;
 
-import java.util.Map;
-
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.value.PropertyResolver;
 
 /**
- * Represents a test resource.
+ * Represents a managed test resource, which is typically (but not always) a docker container
+ * that is started and stopped for the scope of entire test run.
  *
  * @author graemerocher
  * @since 3.1.0
  */
-public interface TestResource extends AutoCloseable {
+public interface ManagedTestResource extends AutoCloseable {
 
     /**
      * Whether this resource is enabled. Defaults to {@code true}.
@@ -44,11 +43,9 @@ public interface TestResource extends AutoCloseable {
     /**
      * Called before the first test is run.
      *
-     * @param environment The environment the test runs in.
-     * @return Additional properties added by this resource.
+     * @param testRun A configurable test run object
      */
-    @NonNull
-    Map<String, Object> start(@NonNull PropertyResolver environment) throws Exception;
+    void start(@NonNull TestRun testRun) throws Exception;
 
     /**
      * Called after all tests have run.

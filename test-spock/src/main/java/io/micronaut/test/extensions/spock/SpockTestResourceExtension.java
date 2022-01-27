@@ -22,17 +22,12 @@ import org.spockframework.runtime.model.SpecInfo;
 import org.spockframework.runtime.model.Tag;
 
 /**
- * Adds support for {@link io.micronaut.test.support.resource.TestResource} for spock.
+ * Adds support for {@link io.micronaut.test.support.resource.ManagedTestResource} for spock.
  */
 public class SpockTestResourceExtension implements IGlobalExtension {
     public static final String TAG_MICRONAUT_TEST = "MicronautTest";
     public static final String KEY_TEST_RESOURCE_MANAGER = "globalConfig";
     private final TestResourceManager testResourceManager = new TestResourceManager();
-
-    @Override
-    public void start() {
-        testResourceManager.start();
-    }
 
     @Override
     public void visitSpec(SpecInfo spec) {

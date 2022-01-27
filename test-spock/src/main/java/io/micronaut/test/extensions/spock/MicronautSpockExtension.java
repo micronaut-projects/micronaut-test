@@ -180,7 +180,9 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     micronautTest.rebuildContext(),
                     micronautTest.contextBuilder(),
                     micronautTest.transactionMode(),
-                    micronautTest.startApplication());
+                    micronautTest.startApplication(),
+                    micronautTest.startTestResources()
+            );
         } else {
             return null;
         }

@@ -29,7 +29,9 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.io.service.ServiceDefinition;
 import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.order.OrderUtil;
-import io.micronaut.test.support.resource.TestResource;
+import io.micronaut.core.value.PropertyResolver;
+import io.micronaut.test.support.resource.ManagedTestResource;
+import io.micronaut.test.support.resource.TestRun;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TestResourceManager implements LifeCycle<TestResourceManager> {
     private static final Logger LOG = LoggerFactory.getLogger(TestResourceManager.class);
-    protected final List<TestResource> testResources = new ArrayList<>();
+    protected final List<ManagedTestResource> testResources = new ArrayList<>();
     private Map<String, Object> config = new LinkedHashMap<>();
     private AtomicBoolean running = new AtomicBoolean(false);
 
@@ -49,11 +51,11 @@ public class TestResourceManager implements LifeCycle<TestResourceManager> {
     public TestResourceManager start() {
         if (running.compareAndSet(false, true)) {
 
-            SoftServiceLoader<TestResource> testResources = SoftServiceLoader.load(TestResource.class);
-            for (ServiceDefinition<TestResource> testResource : testResources) {
+            SoftServiceLoader<ManagedTestResource> testResources = SoftServiceLoader.load(ManagedTestResource.class);
+            for (ServiceDefinition<ManagedTestResource> testResource : testResources) {
                 if (testResource.isPresent()) {
                     try {
-                        final TestResource tr = testResource.load();
+                        final ManagedTestResource tr = testResource.load();
                         this.testResources.add(tr);
                     } catch (ServiceConfigurationError e) {
                         final Throwable cause = e.getCause();
@@ -72,10 +74,21 @@ public class TestResourceManager implements LifeCycle<TestResourceManager> {
                         .banner(false)
                         .build()
                         .getEnvironment();
-                for (TestResource tr : this.testResources) {
+                for (ManagedTestResource tr : this.testResources) {
                     if (tr.isEnabled(resourceEnvironment)) {
                         try {
-                            config.putAll(tr.start(resourceEnvironment));
+                            tr.start(new TestRun() {
+                                @Override
+                                public TestRun addProperty(String name, Object value) {
+                                    config.putIfAbsent(name, value);
+                                    return this;
+                                }
+
+                                @Override
+                                public PropertyResolver getEnvironment() {
+                                    return resourceEnvironment;
+                                }
+                            });
                         } catch (Exception e) {
                             throw new RuntimeException("Error starting test resource: " + e.getMessage(), e);
                         }
@@ -103,7 +116,7 @@ public class TestResourceManager implements LifeCycle<TestResourceManager> {
         if (running.compareAndSet(true, false)) {
             if (!this.testResources.isEmpty()) {
                 OrderUtil.reverseSort(this.testResources);
-                for (TestResource testResource : testResources) {
+                for (ManagedTestResource testResource : testResources) {
                     try {
                         testResource.close();
                     } catch (Exception e) {

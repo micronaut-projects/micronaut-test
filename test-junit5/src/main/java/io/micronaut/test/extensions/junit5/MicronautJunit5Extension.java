@@ -65,7 +65,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         final ExtensionContext.Store globalStore = extensionContext.getRoot().getStore(GLOBAL);
         if (!started) {
             started = true;
-            testResourceManager.start();
+            testResourceManager = new TestResourceManager();
             globalStore.put(JUnit5TestResourceHandle.class.getName(), new JUnit5TestResourceHandle(testResourceManager));
         } else {
             final JUnit5TestResourceHandle resourceHandle = globalStore
@@ -293,7 +293,9 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 micronautTest.rebuildContext(),
                 micronautTest.contextBuilder(),
                 micronautTest.transactionMode(),
-                micronautTest.startApplication());
+                micronautTest.startApplication(),
+                micronautTest.startTestResources()
+        );
     }
 
     private boolean isNestedTestClass(Class<?> testClass) {
@@ -386,7 +388,9 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
         @Override
         public void close() throws Throwable {
-            testResourceManager.stop();
+            if (testResourceManager.isRunning()) {
+                testResourceManager.stop();
+            }
         }
     }
 }

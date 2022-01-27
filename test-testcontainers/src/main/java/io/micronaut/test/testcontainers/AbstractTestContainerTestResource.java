@@ -20,7 +20,7 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.value.PropertyResolver;
-import io.micronaut.test.support.resource.TestResource;
+import io.micronaut.test.support.resource.ManagedTestResource;
 import org.testcontainers.containers.Container;
 import org.testcontainers.utility.DockerImageName;
 
@@ -30,7 +30,7 @@ import org.testcontainers.utility.DockerImageName;
  * @since 3.1.0
  * @author graemerocher
  */
-public abstract class AbstractTestContainerTestResource implements TestResource {
+public abstract class AbstractTestContainerTestResource implements ManagedTestResource {
     /**
      * @return The created container if it was started otherwise null.
      */
