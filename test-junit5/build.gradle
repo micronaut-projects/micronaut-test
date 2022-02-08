@@ -44,27 +44,26 @@ tasks.withType(Jar).configureEach {
 dependencies {
     api project(":test-core")
     api "io.micronaut:micronaut-inject"
+    api "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     implementation "io.micronaut:micronaut-runtime"
-    compileOnly "org.graalvm.nativeimage:svm:21.3.0"
-    api("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    compileOnly "org.graalvm.nativeimage:svm:22.0.0.2"
 
     testCompileOnly "io.micronaut:micronaut-inject"
-    testRuntimeOnly(
-            "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    )
 
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     testAnnotationProcessor "io.micronaut:micronaut-graal"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testImplementation "io.micronaut:micronaut-http-server-netty"
     testImplementation "io.micronaut:micronaut-http-client"
-    testImplementation 'org.mockito:mockito-junit-jupiter:4.1.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:$mockitoVersion'
     testImplementation "org.hamcrest:hamcrest:$hamcrestVersion"
-    testImplementation "io.micronaut.data:micronaut-data-tx:2.4.7"
-    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:2.4.7"
+    testImplementation "io.micronaut.data:micronaut-data-tx"
+    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa"
 
-    testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat:$micronautSqlVersion"
-    testRuntimeOnly "com.h2database:h2:1.4.200"
+    testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat"
+    testRuntimeOnly "com.h2database:h2"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 }
 
 graalvmNative {

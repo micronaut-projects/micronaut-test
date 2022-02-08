@@ -6,7 +6,7 @@ dependencies {
     compileOnly "io.micronaut:micronaut-http-server"
     compileOnly("org.junit.jupiter:junit-jupiter-api:$junitVersion")
 
-    api "io.micronaut:micronaut-inject:$micronautVersion"
+    api "io.micronaut:micronaut-inject"
 
     implementation "io.micronaut:micronaut-runtime"
 }
