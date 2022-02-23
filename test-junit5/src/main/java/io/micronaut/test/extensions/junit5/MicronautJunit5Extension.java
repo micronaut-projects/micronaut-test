@@ -201,7 +201,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     private Optional<Object> findSpecInstance(ExtensionContext context) {
         return context.getTestInstances()
-            .map(testInstances -> testInstances.findInstance(specDefinition.getBeanType()));
+            .flatMap(testInstances -> testInstances.findInstance(specDefinition.getBeanType()));
     }
 
     @Override
