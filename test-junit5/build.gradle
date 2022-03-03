@@ -1,6 +1,6 @@
 plugins {
-  id 'org.graalvm.buildtools.native' version '0.9.8'
-  id "java-library"
+    id 'org.graalvm.buildtools.native' version '0.9.8'
+    id "io.micronaut.build.internal.module"
 }
 
 repositories {
@@ -11,7 +11,6 @@ version projectVersion
 java {
     sourceCompatibility = "1.8"
     targetCompatibility = "1.8"
-
 }
 
 tasks.withType(Test).configureEach {
@@ -36,23 +35,24 @@ tasks.withType(Jar).configureEach {
         attributes('Implementation-Title': project.findProperty("title"))
     }
 }
+
 dependencies {
     api project(":test-core")
-    api "io.micronaut:micronaut-inject:$micronautVersion"
-    implementation "io.micronaut:micronaut-runtime:$micronautVersion"
+    api "io.micronaut:micronaut-inject"
+    implementation "io.micronaut:micronaut-runtime"
     compileOnly "org.graalvm.nativeimage:svm:21.3.0"
     api("org.junit.jupiter:junit-jupiter-api:$junitVersion")
 
-    testCompileOnly "io.micronaut:micronaut-inject:$micronautVersion"
+    testCompileOnly "io.micronaut:micronaut-inject"
     testRuntimeOnly(
             "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     )
 
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
-    testAnnotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
-    testAnnotationProcessor "io.micronaut:micronaut-graal:$micronautVersion"
-    testImplementation "io.micronaut:micronaut-http-server-netty:$micronautVersion"
-    testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+    testAnnotationProcessor "io.micronaut:micronaut-graal"
+    testImplementation "io.micronaut:micronaut-http-server-netty"
+    testImplementation "io.micronaut:micronaut-http-client"
     testImplementation 'org.mockito:mockito-junit-jupiter:4.1.0'
     testImplementation "org.hamcrest:hamcrest:$hamcrestVersion"
     testImplementation "io.micronaut.data:micronaut-data-tx:2.4.7"
@@ -62,8 +62,6 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:1.4.200"
 
 }
-
-
 
 graalvmNative {
     binaries {

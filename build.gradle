@@ -1,42 +1,4 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath "io.micronaut.build.internal:micronaut-gradle-plugins:4.1.5"
-    }
+plugins {
+    id "io.micronaut.build.internal.docs"
+    id "io.micronaut.build.internal.dependency-updates"
 }
-
-repositories {
-    maven { url "https://repo.grails.org/grails/core" }
-}
-
-subprojects { Project subproject ->
-    group "io.micronaut.test"
-
-    if (subproject.name != 'test-bom' && subproject.name != 'test-junit5') {
-        apply plugin: "io.micronaut.build.internal.common"
-
-        micronautBuild {
-            resolutionStrategy {
-                eachDependency { DependencyResolveDetails details ->
-                    String group = details.requested.group
-                    if (group.startsWith('org.jetbrains.kotlin') && group != 'org.jetbrains.kotlinx') {
-                        details.useVersion kotlinVersion
-                    }
-                }
-            }
-        }
-
-    } else if (subproject.name != 'test-junit5') {
-        apply plugin: "java-platform"
-        version projectVersion
-    }
-
-    apply plugin: "io.micronaut.build.internal.dependency-updates"
-    apply plugin: "io.micronaut.build.internal.publishing"
-}
-
-apply plugin: "io.micronaut.build.internal.docs"
-apply plugin: "io.micronaut.build.internal.dependency-updates"

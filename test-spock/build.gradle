@@ -1,16 +1,20 @@
+plugins {
+    id "io.micronaut.build.internal.module"
+}
+
 dependencies {
     api project(":test-core")
-    api "io.micronaut:micronaut-inject:$micronautVersion"
-    implementation "io.micronaut:micronaut-runtime:$micronautVersion"
+    api "io.micronaut:micronaut-inject"
+    implementation "io.micronaut:micronaut-runtime"
     api("org.spockframework:spock-core:$spockVersion") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
     compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
 
     testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
-    testImplementation "io.micronaut:micronaut-inject-groovy:$micronautVersion"
-    testImplementation "io.micronaut:micronaut-http-server-netty:$micronautVersion"
-    testImplementation "io.micronaut:micronaut-http-client:$micronautVersion"
+    testImplementation "io.micronaut:micronaut-inject-groovy"
+    testImplementation "io.micronaut:micronaut-http-server-netty"
+    testImplementation "io.micronaut:micronaut-http-client"
 
     testImplementation "io.micronaut.sql:micronaut-jdbc-hikari:$micronautSqlVersion"
     testImplementation "io.micronaut.beanvalidation:micronaut-hibernate-validator"
