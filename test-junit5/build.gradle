@@ -1,12 +1,11 @@
 plugins {
     id 'org.graalvm.buildtools.native' version '0.9.10'
-    id "io.micronaut.build.internal.module"
+    id "io.micronaut.build.internal.base-module"
 }
 
 repositories {
     mavenCentral()
 }
-version projectVersion
 
 java {
     sourceCompatibility = "1.8"

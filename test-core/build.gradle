@@ -5,9 +5,6 @@ plugins {
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     compileOnly "io.micronaut:micronaut-http-server"
-    compileOnly("org.spockframework:spock-core:$spockVersion") {
-        exclude group: "org.codehaus.groovy", module: "groovy-all"
-    }
     compileOnly(
             "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     )
