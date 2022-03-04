@@ -15,7 +15,7 @@ EmbeddedServer embeddedServer = ApplicationContext.run(EmbeddedServer)
 
 However, there are cases where having some additional features to test Micronaut come in handy, such as mocking bean definitions and so on.
 
-This project includes a pretty simple set of extensions for JUnit 5, Spock, Kotest and KotlinTest:
+This project includes a pretty simple set of extensions for JUnit 5, Spock and Kotest:
 
 * Automatically start and stop the server for the scope of a test suite
 * Use mocks to replace existing beans for the scope of a test suite
@@ -24,7 +24,7 @@ This project includes a pretty simple set of extensions for JUnit 5, Spock, Kote
 This is achieved through a set of annotations:
 
 * `@MicronautTest` - Can be added to any test:
-** `io.micronaut.test.extensions.junit5.annotation.MicronautTest` for JUnit 5, Kotest and Kotlintest.
+** `io.micronaut.test.extensions.junit5.annotation.MicronautTest` for JUnit 5 and Kotest.
 ** `io.micronaut.test.extensions.spock.annotation.MicronautTest` for Spock.
 * `io.micronaut.test.annotation.@MockBean` - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.
 
