@@ -9,7 +9,7 @@ dependencies {
     api("org.spockframework:spock-core:$spockVersion") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
-    compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
+    compileOnly "jakarta.inject:jakarta.inject-api:2.0.1"
 
     testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
     testImplementation "io.micronaut:micronaut-inject-groovy"

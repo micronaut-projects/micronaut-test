@@ -14,7 +14,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 
-    compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
+    compileOnly "jakarta.inject:jakarta.inject-api:2.0.1"
 
     testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
 
