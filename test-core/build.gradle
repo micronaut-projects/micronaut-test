@@ -3,11 +3,8 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor "io.micronaut:micronaut-inject-java"
     compileOnly "io.micronaut:micronaut-http-server"
-    compileOnly(
-            "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    )
+    compileOnly("org.junit.jupiter:junit-jupiter-api:$junitVersion")
 
     api "io.micronaut:micronaut-inject:$micronautVersion"
 
