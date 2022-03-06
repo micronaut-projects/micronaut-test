@@ -14,9 +14,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
 
-    compileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
+    compileOnly "jakarta.inject:jakarta.inject-api:2.0.1"
 
-    testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.0"
+    testCompileOnly "jakarta.inject:jakarta.inject-api:2.0.1"
 
     testImplementation "io.mockk:mockk:$mockkVersion"
 
@@ -26,11 +26,11 @@ dependencies {
     testImplementation "io.micronaut:micronaut-http-server-netty"
     testImplementation "io.micronaut:micronaut-http-client"
 
-    testImplementation "io.micronaut.data:micronaut-data-tx:2.4.7"
-    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:2.4.7"
+    testImplementation "io.micronaut.data:micronaut-data-tx:3.2.2"
+    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:3.2.2"
 
     testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat:$micronautSqlVersion"
-    testRuntimeOnly "com.h2database:h2:1.4.200"
+    testRuntimeOnly "com.h2database:h2:2.1.210"
 
     testImplementation "io.kotest:kotest-assertions-core-jvm:$kotestVersion"
 }
