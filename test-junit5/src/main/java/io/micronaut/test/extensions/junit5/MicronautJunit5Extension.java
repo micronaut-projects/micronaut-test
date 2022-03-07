@@ -175,25 +175,33 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     protected void alignMocks(ExtensionContext context, Object instance) {
-        if (specDefinition != null) {
+        if (specDefinition == null) {
+            return;
+        }
+        findSpecInstance(context).ifPresent(specInstance -> {
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
                 final boolean isMock = applicationContext.resolveMetadata(injectedField.getType()).isAnnotationPresent(MockBean.class);
                 if (isMock) {
                     final Field field = injectedField.getField();
                     field.setAccessible(true);
                     try {
-                        final Object mock = field.get(instance);
+                        final Object mock = field.get(specInstance);
                         if (mock instanceof InterceptedProxy) {
                             InterceptedProxy ip = (InterceptedProxy) mock;
                             final Object target = ip.interceptedTarget();
-                            field.set(instance, target);
+                            field.set(specInstance, target);
                         }
                     } catch (IllegalAccessException e) {
                         // continue
                     }
                 }
             }
-        }
+        });
+    }
+
+    private Optional<Object> findSpecInstance(ExtensionContext context) {
+        return context.getTestInstances()
+            .flatMap(testInstances -> testInstances.findInstance(specDefinition.getBeanType()));
     }
 
     @Override
