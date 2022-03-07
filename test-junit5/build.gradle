@@ -64,7 +64,7 @@ dependencies {
     testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa:2.4.7"
 
     testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat:$micronautSqlVersion"
-    testRuntimeOnly "com.h2database:h2:1.4.200"
+    testRuntimeOnly "com.h2database:h2:2.1.210"
 }
 
 graalvmNative {
