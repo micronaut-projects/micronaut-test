@@ -199,7 +199,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         });
     }
 
-    private Optional<Object> findSpecInstance(ExtensionContext context) {
+    private Optional<?> findSpecInstance(ExtensionContext context) {
         return context.getTestInstances()
             .flatMap(testInstances -> testInstances.findInstance(specDefinition.getBeanType()));
     }
