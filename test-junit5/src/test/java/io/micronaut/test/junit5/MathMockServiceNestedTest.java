@@ -20,8 +20,9 @@ class MathMockServiceNestedTest {
 
     private int number = 10;
 
+    @Inject
     @Property(name = "mockito.test.enabled")
-    boolean isNotNativeTest = true;
+    boolean mockitoEnabled = true;
 
     @Inject
     MathService mathService; // <3>
@@ -48,7 +49,8 @@ class MathMockServiceNestedTest {
 
         @Test
         void mockIsAvailableOnNestedLevel() {
-            if (isNotNativeTest) {
+            System.out.println("Mockito Enabled? = " + mockitoEnabled);
+            if (mockitoEnabled) {
                 when(mathService.compute(number)).thenReturn(100);
                 mathService.compute(number);
                 verify(mathService).compute(20); // <4>
