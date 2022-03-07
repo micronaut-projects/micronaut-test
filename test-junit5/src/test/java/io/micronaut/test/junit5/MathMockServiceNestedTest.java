@@ -1,6 +1,7 @@
 
 package io.micronaut.test.junit5;
 
+import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.test.annotation.MockBean;
@@ -20,6 +21,10 @@ class MathMockServiceNestedTest {
     private int number = 10;
 
     @Inject
+    @Property(name = "mockito.test.enabled", defaultValue = StringUtils.FALSE)
+    boolean mockitoEnabled = false;
+
+    @Inject
     MathService mathService; // <3>
 
     @BeforeEach
@@ -36,7 +41,6 @@ class MathMockServiceNestedTest {
 
     @Nested
     @DisplayName("Given number is 20")
-    @Requires(property = "mockito.test.enabled", defaultValue = StringUtils.FALSE, value = StringUtils.TRUE)
     class GivenNumberIsTwenty {
         @BeforeEach
         void setup() {
@@ -45,9 +49,12 @@ class MathMockServiceNestedTest {
 
         @Test
         void mockIsAvailableOnNestedLevel() {
-            when(mathService.compute(number)).thenReturn(100);
-            mathService.compute(number);
-            verify(mathService).compute(20); // <4>
+            System.out.println("Mockito Enabled? = " + mockitoEnabled);
+            if (mockitoEnabled) {
+                when(mathService.compute(number)).thenReturn(100);
+                mathService.compute(number);
+                verify(mathService).compute(20); // <4>
+            }
         }
     }
 
