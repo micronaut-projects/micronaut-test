@@ -36,6 +36,7 @@ class MathMockServiceNestedTest {
 
     @Nested
     @DisplayName("Given number is 20")
+    @Requires(property = "mockito.test.enabled", defaultValue = StringUtils.FALSE, value = StringUtils.TRUE)
     class GivenNumberIsTwenty {
         @BeforeEach
         void setup() {
