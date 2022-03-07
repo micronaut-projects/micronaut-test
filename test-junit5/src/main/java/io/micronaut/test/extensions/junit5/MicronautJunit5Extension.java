@@ -32,7 +32,7 @@ import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
-import io.micronaut.test.extensions.TestResourceManager;
+import io.micronaut.test.extensions.AllTestResources;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Nested;
@@ -65,7 +65,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         final ExtensionContext.Store globalStore = extensionContext.getRoot().getStore(GLOBAL);
         if (!started) {
             started = true;
-            testResourceManager = new TestResourceManager();
+            testResourceManager = new AllTestResources();
             globalStore.put(JUnit5TestResourceHandle.class.getName(), new JUnit5TestResourceHandle(testResourceManager));
         } else {
             final JUnit5TestResourceHandle resourceHandle = globalStore
@@ -293,8 +293,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 micronautTest.rebuildContext(),
                 micronautTest.contextBuilder(),
                 micronautTest.transactionMode(),
-                micronautTest.startApplication(),
-                micronautTest.startTestResources()
+                micronautTest.startApplication()
         );
     }
 
@@ -376,13 +375,13 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     private static final class JUnit5TestResourceHandle implements ExtensionContext.Store.CloseableResource {
-        private final TestResourceManager testResourceManager;
+        private final AllTestResources testResourceManager;
 
-        private JUnit5TestResourceHandle(TestResourceManager testResourceManager) {
+        private JUnit5TestResourceHandle(AllTestResources testResourceManager) {
             this.testResourceManager = testResourceManager;
         }
 
-        public TestResourceManager getTestResourceManager() {
+        public AllTestResources getTestResourceManager() {
             return testResourceManager;
         }
 

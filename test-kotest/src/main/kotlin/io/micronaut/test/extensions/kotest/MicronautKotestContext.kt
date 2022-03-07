@@ -19,11 +19,10 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.micronaut.context.annotation.Property
-import io.micronaut.core.util.CollectionUtils
 import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.context.TestContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
-import io.micronaut.test.extensions.TestResourceManager
+import io.micronaut.test.extensions.AllTestResources
 import io.micronaut.test.support.TestPropertyProvider
 import kotlin.reflect.full.memberFunctions
 
@@ -31,7 +30,7 @@ class MicronautKotestContext(
     private val testClass: Class<Any>,
     private val micronautTestValue: MicronautTestValue,
     private val createBean: Boolean,
-    private val trm: TestResourceManager
+    private val trm: AllTestResources
 ) : AbstractMicronautExtension<Spec>() {
 
     init {

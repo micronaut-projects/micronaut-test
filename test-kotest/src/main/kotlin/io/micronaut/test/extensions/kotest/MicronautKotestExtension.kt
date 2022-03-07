@@ -18,25 +18,25 @@ package io.micronaut.test.extensions.kotest
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.AfterProjectListener
-import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.micronaut.aop.InterceptedProxy
 import io.micronaut.test.annotation.MicronautTestValue
-import io.micronaut.test.extensions.TestResourceManager
+import io.micronaut.test.extensions.AllTestResources
 import io.micronaut.test.extensions.kotest.annotation.MicronautTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
 object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExtension, AfterProjectListener {
     val contexts: MutableMap<String, MicronautKotestContext> = mutableMapOf()
-    private val testResourceManager: TestResourceManager = TestResourceManager()
+    private val allTestResources: AllTestResources =
+        AllTestResources()
 
     override suspend fun afterProject() {
-        if (testResourceManager.isRunning) {
-            testResourceManager.stop()
+        if (allTestResources.isRunning) {
+            allTestResources.stop()
         }
     }
 
@@ -106,7 +106,7 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
                 testClass,
                 micronautTestValue,
                 createBean,
-                testResourceManager
+                allTestResources
             )
             contexts[testClass.name] = context
             if (createBean) {
@@ -128,8 +128,7 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
             micronautTest.rebuildContext,
             micronautTest.contextBuilder.map { kClass -> kClass.java }.toTypedArray(),
             micronautTest.transactionMode,
-            micronautTest.startApplication,
-            micronautTest.startTestResources
+            micronautTest.startApplication
         )
     }
 

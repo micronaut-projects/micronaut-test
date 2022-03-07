@@ -20,7 +20,6 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.env.PropertySourceLoader;
-import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.core.io.service.ServiceDefinition;
@@ -72,7 +71,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected Map<String, Object> testProperties = new LinkedHashMap<>();
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
     @Nullable
-    protected TestResourceManager testResourceManager;
+    protected AllTestResources testResourceManager;
 
     private MicronautTestValue testAnnotationValue;
     private ApplicationContextBuilder builder = ApplicationContext.builder();
@@ -170,7 +169,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             }
             this.testAnnotationValue = testAnnotationValue;
             if (testResourceManager != null) {
-                if (this.testAnnotationValue.isStartTestResources() && !testResourceManager.isRunning()) {
+                if (!testResourceManager.isRunning()) {
                     testResourceManager.start();
                 }
                 final Map<String, Object> config = testResourceManager.getConfig();

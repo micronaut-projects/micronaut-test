@@ -16,7 +16,6 @@
 package io.micronaut.test.support.resource;
 
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.value.PropertyResolver;
 
 /**
  * Represents a managed test resource, which is typically (but not always) a docker container
@@ -25,27 +24,14 @@ import io.micronaut.core.value.PropertyResolver;
  * @author graemerocher
  * @since 3.1.0
  */
-public interface ManagedTestResource extends AutoCloseable {
-
-    /**
-     * Whether this resource is enabled. Defaults to {@code true}.
-     *
-     * <p>Note the passed environment represents the environment for the entire
-     * test run and doesn't include test specific configuration.</p>
-     *
-     * @param environment The environment.
-     * @return True if the resource is enabled
-     */
-    default boolean isEnabled(@NonNull PropertyResolver environment) {
-        return true;
-    }
+public interface TestResourceManager extends AutoCloseable {
 
     /**
      * Called before the first test is run.
      *
      * @param testRun A configurable test run object
      */
-    void start(@NonNull TestRun testRun) throws Exception;
+    void start(@NonNull TestResourceDefinition definition, @NonNull TestRun testRun) throws Exception;
 
     /**
      * Called after all tests have run.

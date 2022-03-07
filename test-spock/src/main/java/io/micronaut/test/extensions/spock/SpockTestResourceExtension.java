@@ -15,19 +15,19 @@
  */
 package io.micronaut.test.extensions.spock;
 
-import io.micronaut.test.extensions.TestResourceManager;
+import io.micronaut.test.extensions.AllTestResources;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import org.spockframework.runtime.extension.IGlobalExtension;
 import org.spockframework.runtime.model.SpecInfo;
 import org.spockframework.runtime.model.Tag;
 
 /**
- * Adds support for {@link io.micronaut.test.support.resource.ManagedTestResource} for spock.
+ * Adds support for {@link io.micronaut.test.support.resource.TestResourceManager} for spock.
  */
 public class SpockTestResourceExtension implements IGlobalExtension {
     public static final String TAG_MICRONAUT_TEST = "MicronautTest";
     public static final String KEY_TEST_RESOURCE_MANAGER = "globalConfig";
-    private final TestResourceManager testResourceManager = new TestResourceManager();
+    private final AllTestResources testResourceManager = new AllTestResources();
 
     @Override
     public void visitSpec(SpecInfo spec) {

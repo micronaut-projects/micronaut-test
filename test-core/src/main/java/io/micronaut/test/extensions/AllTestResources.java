@@ -30,7 +30,7 @@ import io.micronaut.core.io.service.ServiceDefinition;
 import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.order.OrderUtil;
 import io.micronaut.core.value.PropertyResolver;
-import io.micronaut.test.support.resource.ManagedTestResource;
+import io.micronaut.test.support.resource.TestResourceManager;
 import io.micronaut.test.support.resource.TestRun;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,21 +41,21 @@ import org.slf4j.LoggerFactory;
  * @author graemerocher
  * @since 3.1.0
  */
-public class TestResourceManager implements LifeCycle<TestResourceManager> {
-    private static final Logger LOG = LoggerFactory.getLogger(TestResourceManager.class);
-    protected final List<ManagedTestResource> testResources = new ArrayList<>();
+public class AllTestResources implements LifeCycle<AllTestResources> {
+    private static final Logger LOG = LoggerFactory.getLogger(AllTestResources.class);
+    protected final List<TestResourceManager> testResources = new ArrayList<>();
     private Map<String, Object> config = new LinkedHashMap<>();
     private AtomicBoolean running = new AtomicBoolean(false);
 
     @Override
-    public TestResourceManager start() {
+    public AllTestResources start() {
         if (running.compareAndSet(false, true)) {
 
-            SoftServiceLoader<ManagedTestResource> testResources = SoftServiceLoader.load(ManagedTestResource.class);
-            for (ServiceDefinition<ManagedTestResource> testResource : testResources) {
+            SoftServiceLoader<TestResourceManager> testResources = SoftServiceLoader.load(TestResourceManager.class);
+            for (ServiceDefinition<TestResourceManager> testResource : testResources) {
                 if (testResource.isPresent()) {
                     try {
-                        final ManagedTestResource tr = testResource.load();
+                        final TestResourceManager tr = testResource.load();
                         this.testResources.add(tr);
                     } catch (ServiceConfigurationError e) {
                         final Throwable cause = e.getCause();
@@ -74,7 +74,7 @@ public class TestResourceManager implements LifeCycle<TestResourceManager> {
                         .banner(false)
                         .build()
                         .getEnvironment();
-                for (ManagedTestResource tr : this.testResources) {
+                for (TestResourceManager tr : this.testResources) {
                     if (tr.isEnabled(resourceEnvironment)) {
                         try {
                             tr.start(new TestRun() {
@@ -112,11 +112,11 @@ public class TestResourceManager implements LifeCycle<TestResourceManager> {
     }
 
     @Override
-    public TestResourceManager stop() {
+    public AllTestResources stop() {
         if (running.compareAndSet(true, false)) {
             if (!this.testResources.isEmpty()) {
                 OrderUtil.reverseSort(this.testResources);
-                for (ManagedTestResource testResource : testResources) {
+                for (TestResourceManager testResource : testResources) {
                     try {
                         testResource.close();
                     } catch (Exception e) {

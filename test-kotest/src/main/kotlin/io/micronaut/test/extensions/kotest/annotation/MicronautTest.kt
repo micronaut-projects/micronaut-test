@@ -94,14 +94,4 @@ annotation class MicronautTest(
          * @return true if [io.micronaut.runtime.EmbeddedApplication] should be started
          */
         val startApplication: Boolean = true,
-
-        /**
-         * Whether to start test resources if they are not already running.
-         *
-         * @return True if test resources should be started
-         * @see io.micronaut.test.support.resource.ManagedTestResource
-         *
-         * @since 3.1.0
-         */
-        val startTestResources: Boolean = true
 )

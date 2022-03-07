@@ -20,7 +20,7 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.value.PropertyResolver;
 
 /**
- * Strategy object used by {@link ManagedTestResource} to configure the test run.
+ * Strategy object used by {@link TestResourceManager} to configure the test run.
  *
  * @since 3.1.0
  * @author graemerocher

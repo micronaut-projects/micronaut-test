@@ -15,9 +15,9 @@
  */
 package io.micronaut.test.testcontainers.mongodb;
 
+import io.micronaut.test.support.resource.TestResourceDefinition;
 import io.micronaut.test.support.resource.TestRun;
-import io.micronaut.test.testcontainers.AbstractTestContainerTestResource;
-import org.testcontainers.containers.Container;
+import io.micronaut.test.testcontainers.ContainerTestResource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -27,34 +27,26 @@ import org.testcontainers.utility.DockerImageName;
  * @author graemerocher
  * @since 3.1.0
  */
-public class MongoTestResource extends AbstractTestContainerTestResource {
+public class MongoTestResource extends ContainerTestResource<MongoDBContainer> {
     private MongoDBContainer container;
 
     @Override
-    protected Container<?> getContainer() {
+    protected MongoDBContainer getContainer() {
         return container;
     }
 
     @Override
-    protected String getContainerType() {
-        return "org.testcontainers.containers.MongoDBContainer";
-    }
-
-    @Override
-    protected String getImageLabel() {
-        return "4.0.10";
-    }
-
-    @Override
-    protected String getImageName() {
-        return "mongo";
-    }
-
-    @Override
-    public void start(TestRun testRun) throws Exception {
-        final DockerImageName dockerImageName = getDockerImageName(testRun.getEnvironment());
+    protected void start(
+            TestResourceDefinition definition,
+            TestRun testRun,
+            DockerImageName dockerImageName) {
         this.container = new MongoDBContainer(dockerImageName);
         this.container.start();
         testRun.addProperty("mongodb.uri", container.getReplicaSetUrl());
+    }
+
+    @Override
+    protected String getDefaultImageName() {
+        return "mongo:4.0.10";
     }
 }

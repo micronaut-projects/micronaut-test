@@ -17,10 +17,11 @@ package io.micronaut.test.testcontainers;
 
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.value.PropertyResolver;
-import io.micronaut.test.support.resource.ManagedTestResource;
+import io.micronaut.test.support.resource.TestResourceDefinition;
+import io.micronaut.test.support.resource.TestResourceManager;
+import io.micronaut.test.support.resource.TestRun;
 import org.testcontainers.containers.Container;
 import org.testcontainers.utility.DockerImageName;
 
@@ -30,34 +31,11 @@ import org.testcontainers.utility.DockerImageName;
  * @since 3.1.0
  * @author graemerocher
  */
-public abstract class AbstractTestContainerTestResource implements ManagedTestResource {
+public abstract class ContainerTestResource<T extends Container<T>> implements TestResourceManager {
     /**
      * @return The created container if it was started otherwise null.
      */
-    protected abstract @Nullable Container<?> getContainer();
-
-    /**
-     * @return The container type
-     */
-    @NonNull
-    protected abstract String getContainerType();
-
-    /**
-     * @return The image label
-     */
-    @NonNull
-    protected abstract String getImageLabel();
-
-    /**
-     * @return The image name
-     */
-    @NonNull
-    protected abstract String getImageName();
-
-    @Override
-    public boolean isEnabled(PropertyResolver environment) {
-        return ClassUtils.isPresent(getContainerType(), getClass().getClassLoader());
-    }
+    protected abstract @Nullable T getContainer();
 
     @Override
     public void close() throws Exception {
@@ -67,16 +45,39 @@ public abstract class AbstractTestContainerTestResource implements ManagedTestRe
         }
     }
 
+    @Override
+    public final void start(TestResourceDefinition definition, TestRun testRun) throws Exception {
+        final DockerImageName dockerImageName = getDockerImageName(definition);
+        start(definition, testRun, dockerImageName);
+    }
+
+    /**
+     * Starts a docker image.
+     * @param definition The definition
+     * @param testRun The test run
+     * @param dockerImageName The docker image name
+     */
+    protected abstract void start(
+            @NonNull TestResourceDefinition definition,
+            @NonNull TestRun testRun,
+            @NonNull DockerImageName dockerImageName);
+
     /**
      * Gets the docker image name.
-     * @param environment The environment
+     * @param definition The definition
      * @return The image name
      */
     @NonNull
-    protected DockerImageName getDockerImageName(@NonNull PropertyResolver environment) {
-        final String imageName = environment
-                .getProperty("testcontainers." + getImageName() + ".image", Argument.STRING)
-                .orElse(getImageName() + ":" + getImageLabel());
+    private DockerImageName getDockerImageName(@NonNull TestResourceDefinition definition) {
+        final String imageName = definition.getName()
+                .orElse(getDefaultImageName());
         return DockerImageName.parse(imageName);
     }
+
+    /**
+     * @return The default image name.
+     */
+    @NonNull
+    protected abstract String getDefaultImageName();
+
 }

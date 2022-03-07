@@ -21,7 +21,7 @@ import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
-import io.micronaut.test.extensions.TestResourceManager;
+import io.micronaut.test.extensions.AllTestResources;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
@@ -94,8 +94,8 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     for (Tag tag : tags) {
                         if (tag.getName().equals(SpockTestResourceExtension.TAG_MICRONAUT_TEST)) {
                             final Object value = tag.getValue();
-                            if (value instanceof TestResourceManager) {
-                                this.testResourceManager = (TestResourceManager) value;
+                            if (value instanceof AllTestResources) {
+                                this.testResourceManager = (AllTestResources) value;
                             }
                         }
                     }
@@ -180,8 +180,7 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     micronautTest.rebuildContext(),
                     micronautTest.contextBuilder(),
                     micronautTest.transactionMode(),
-                    micronautTest.startApplication(),
-                    micronautTest.startTestResources()
+                    micronautTest.startApplication()
             );
         } else {
             return null;

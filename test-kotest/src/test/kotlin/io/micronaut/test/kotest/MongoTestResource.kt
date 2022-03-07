@@ -1,11 +1,11 @@
 package io.micronaut.test.kotest
 
-import io.micronaut.test.support.resource.ManagedTestResource
+import io.micronaut.test.support.resource.TestResourceManager
 import io.micronaut.test.support.resource.TestRun
 import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.utility.DockerImageName
 
-class MongoResource : ManagedTestResource {
+class MongoResource : TestResourceManager {
     private var mongoDBContainer: MongoDBContainer? = null
 
     @Throws(Exception::class)
