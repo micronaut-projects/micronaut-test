@@ -21,7 +21,7 @@ class MathMockServiceNestedTest {
     private int number = 10;
 
     @Inject
-    @Property(name = "mockito.test.enabled", defaultValue = StringUtils.TRUE)
+    @Property(name = "mockito.test.enabled", defaultValue = StringUtils.FALSE)
     boolean mockitoEnabled = false;
 
     @Inject
