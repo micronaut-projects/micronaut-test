@@ -6,10 +6,10 @@ pluginManagement {
 }
 
 plugins {
-    id 'io.micronaut.build.shared.settings' version '5.2.1'
+    id 'io.micronaut.build.shared.settings' version '5.2.3'
 }
 
-rootProject.name = 'micronaut-test'
+rootProject.name = 'test-parent'
 
 include 'test-bom'
 include 'test-core'
