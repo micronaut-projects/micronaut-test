@@ -1,15 +1,13 @@
-=== Setting up Kotest 4
+=== Setting up Kotest 5
 
-NOTE: A new <<kotest, Kotest 5>> module is now available. This module is maintained for backwards compatibility but new users should consider moving to Kotest 5
-
-To get started using Kotest 4 you need the following dependencies in your build configuration:
+To get started using Kotest 5 you need the following dependencies in your build configuration:
 
 .build.gradle
 [source,groovy,subs="attributes"]
 ----
 dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
-    testImplementation "io.micronaut.test:micronaut-test-kotest:{version}"
+    testImplementation "io.micronaut.test:micronaut-test-kotest5:{version}"
     testImplementation "io.mockk:mockk:{mockkVersion}"
     testImplementation "io.kotest:kotest-runner-junit5-jvm:{kotestVersion}"
 }
@@ -27,7 +25,7 @@ Or for Maven:
 ----
 <dependency>
     <groupId>io.micronaut.test</groupId>
-    <artifactId>micronaut-test-kotest</artifactId>
+    <artifactId>micronaut-test-kotest5</artifactId>
     <version>{version}</version>
     <scope>test</scope>
 </dependency>
@@ -167,7 +165,7 @@ Let's take a look at an example using Kotest. Consider you have the following in
 .The MathService Interface
 [source,kotlin]
 ----
-include::{kotesttests}/MathService.kt[]
+include::{kotest5tests}/MathService.kt[]
 ----
 
 And a simple implementation that computes the value times 4 and is defined as Micronaut bean:
@@ -175,7 +173,7 @@ And a simple implementation that computes the value times 4 and is defined as Mi
 .The MathService implementation
 [source,kotlin]
 ----
-include::{kotesttests}/MathServiceImpl.kt[]
+include::{kotest5tests}/MathServiceImpl.kt[]
 ----
 
 You can define the following test to test the implementation:
@@ -183,7 +181,7 @@ You can define the following test to test the implementation:
 .The MathService specification
 [source,groovy]
 ----
-include::{kotesttests}/MathServiceTest.kt[]
+include::{kotest5tests}/MathServiceTest.kt[]
 ----
 
 <1> The test is declared as Micronaut test with `@MicronautTest`
@@ -206,7 +204,7 @@ Now let's say you want to replace the implementation with a Mockk. You can do so
 .The MathService specification
 [source,kotlin]
 ----
-include::{kotesttests}/MathMockServiceTest.kt[]
+include::{kotest5tests}/MathMockServiceTest.kt[]
 ----
 
 <1> The `@MockBean` annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.
@@ -226,7 +224,7 @@ Note that in most cases you won't define a `@MockBean` and then inject it only t
 .The MathController
 [source,kotlin]
 ----
-include::{kotesttests}/MathController.kt[]
+include::{kotest5tests}/MathController.kt[]
 ----
 
 The above controller uses the `MathService` to expose a `/math/compute/{number}` endpoint. See the following example for a test that tests interaction with the mock collaborator:
@@ -234,7 +232,7 @@ The above controller uses the `MathService` to expose a `/math/compute/{number}`
 .Mocking Collaborators
 [source,kotlin]
 ----
-include::{kotesttests}/MathCollaboratorTest.kt[]
+include::{kotest5tests}/MathCollaboratorTest.kt[]
 ----
 
 <1> Like the previous example a Mock is defined using `@MockBean`
@@ -266,7 +264,7 @@ You can define additional test specific properties using the `@Property` annotat
 .Using `@Property`
 [source,kotlin]
 ----
-include::{kotesttests}/PropertyValueTest.kt[]
+include::{kotest5tests}/PropertyValueTest.kt[]
 ----
 
 Alternatively you can specify additional `propertySources` in any supported format (YAML, JSON, Java properties file etc.) using the `@MicronautTest` annotation:
@@ -274,7 +272,7 @@ Alternatively you can specify additional `propertySources` in any supported form
 .Using `propertySources` stored in files
 [source,kotlin]
 ----
-include::{kotesttests}/PropertySourceTest.kt[]
+include::{kotest5tests}/PropertySourceTest.kt[]
 ----
 
 The above example expects a file located at `src/test/resources/io/micronaut/kotest/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
@@ -300,5 +298,5 @@ include::src/main/docs/guide/includes/refreshing-requires.adoc[]
 .Combining `@Requires` and `@Property` in a `@Refreshable` test class.
 [source,kotlin]
 ----
-include::{kotesttests}/PropertyValueRequiresTest.kt[]
+include::{kotest5tests}/PropertyValueRequiresTest.kt[]
 ----
