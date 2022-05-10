@@ -1,6 +1,7 @@
 Spock: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-spock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-spock)
 JUnit 5: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-junit5/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-junit5)
 Kotest: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-kotest/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-kotest)
+Kotest 5: [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-kotest5/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.micronaut.test/micronaut-test-kotest5)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=micronaut-projects_micronaut-test&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=micronaut-projects_micronaut-test)
 
 # Micronaut Test
