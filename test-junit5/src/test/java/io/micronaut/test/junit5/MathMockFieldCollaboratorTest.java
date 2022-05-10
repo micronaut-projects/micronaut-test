@@ -1,7 +1,5 @@
 package io.micronaut.test.junit5;
 
-import io.micronaut.context.annotation.Requires;
-import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
@@ -17,7 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @MicronautTest
-@Requires(property = "mockito.test.enabled", defaultValue = StringUtils.FALSE, value = StringUtils.TRUE)
+@MockitoEnabled
 class MathMockFieldCollaboratorTest {
 
     @MockBean(MathServiceImpl.class) // <1>
