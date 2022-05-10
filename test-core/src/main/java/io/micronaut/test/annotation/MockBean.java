@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * @since 1.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.FIELD})
 @Bean
 @Requires(condition = TestActiveCondition.class)
 @Refreshable(TestActiveCondition.ACTIVE_MOCKS)

@@ -1,0 +1,36 @@
+package io.micronaut.test.spock
+
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
+import spock.lang.Unroll
+
+@MicronautTest
+class MathFieldCollaboratorSpec extends Specification {
+
+    @MockBean(MathServiceImpl) // <1>
+    MathService mathService = Mock(MathService)
+
+    @Inject
+    @Client('/')
+    HttpClient client // <3>
+
+    @Unroll
+    void "should compute #num to #square"() {
+        when:
+        Integer result = client.toBlocking().retrieve(HttpRequest.GET('/math/compute/10'), Integer) // <3>
+
+        then:
+        1 * mathService.compute(10) >> Math.pow(num, 2)  // <4>
+        result == square
+
+        where:
+        num | square
+        2   | 4
+        3   | 9
+    }
+}
