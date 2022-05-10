@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 
 @MicronautTest
 @Requires(property = "mockito.test.enabled", defaultValue = StringUtils.FALSE, value = StringUtils.TRUE)
-public class MathFieldMockServiceTest {
+class MathFieldMockServiceTest {
 
     @MockBean(MathServiceImpl.class) // <1>
     MathService mock = mock(MathService.class); // <2>
