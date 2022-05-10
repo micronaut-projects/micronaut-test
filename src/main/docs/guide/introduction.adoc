@@ -24,10 +24,10 @@ This project includes a pretty simple set of extensions for JUnit 5, Spock and K
 This is achieved through a set of annotations:
 
 * `@MicronautTest` - Can be added to any test:
+** `io.micronaut.test.extensions.spock.annotation.MicronautTest` for Spock.
 ** `io.micronaut.test.extensions.junit5.annotation.MicronautTest` for JUnit 5.
 ** `io.micronaut.test.extensions.kotest.annotation.MicronautTest` for Kotest.
 ** `io.micronaut.test.extensions.kotest5.annotation.MicronautTest` for Kotest 5.
-** `io.micronaut.test.extensions.spock.annotation.MicronautTest` for Spock.
 * `io.micronaut.test.annotation.@MockBean` - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.
 
 These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within `@MicronautTest` it is running your real application.

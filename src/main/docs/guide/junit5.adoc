@@ -167,7 +167,7 @@ For example:
 include::{junit5tests}/PropertySourceMapTest.java[]
 ----
 
-NOTE: When using `TestPropertyProvider` you test must be declared with JUnit's `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` annotation.
+NOTE: When using `TestPropertyProvider` your test must be declared with JUnit's `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` annotation.
 
 === Refreshing injected beans based on `@Requires` upon properties changes
 
