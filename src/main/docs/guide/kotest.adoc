@@ -1,6 +1,8 @@
 === Setting up Kotest 4
 
-To get started using Kotest you need the following dependencies in your build configuration:
+NOTE: A new <<kotest, Kotest 5>> module is now available. This module is maintained for backwards compatibility but new users should consider moving to Kotest 5
+
+To get started using Kotest 4 you need the following dependencies in your build configuration:
 
 .build.gradle
 [source,groovy,subs="attributes"]

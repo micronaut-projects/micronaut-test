@@ -3,7 +3,7 @@ introduction:
 releaseHistory: Release History
 spock: Testing with Spock
 junit5: Testing with JUnit 5
-kotest: Testing with Kotest
+kotest: Testing with Kotest 4
 kotest5: Testing with Kotest 5
 #spek: Testing with Spek
 repository: Repository

@@ -1,6 +1,6 @@
 === Setting up Kotest 5
 
-To get started using Kotest you need the following dependencies in your build configuration:
+To get started using Kotest 5 you need the following dependencies in your build configuration:
 
 .build.gradle
 [source,groovy,subs="attributes"]
