@@ -18,7 +18,7 @@ dependencies {
 
     testCompileOnly(libs.jakarta.inject.api)
 
-    kaptTest(platform(libs.boms.micronaut))
+    kaptTest(platform(libs.micronaut.bom))
     kaptTest(libs.micronaut.inject.java)
 
     testImplementation(libs.managed.mockk)

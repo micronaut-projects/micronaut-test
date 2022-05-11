@@ -6,8 +6,8 @@ managed-mockk = "1.12.2"
 managed-kotest = "4.6.4"
 managed-kotest5 = "5.2.1"
 
-junit = "5.8.2"
-spock = "2.0-groovy-3.0"
+managed-junit = "5.8.2"
+managed-spock = "2.0-groovy-3.0"
 kotlin = "1.6.21"
 
 # Micronaut
@@ -26,9 +26,9 @@ managed-kotest5-assertions-core-jvm = { module = "io.kotest:kotest-assertions-co
 managed-kotest5-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "managed-kotest5" }
 
 # BOMs
-boms-junit = { module = "org.junit:junit-bom", version.ref = "junit" }
-boms-spock = { module = "org.spockframework:spock-bom", version.ref = "spock" }
-boms-micronaut = { module = "io.micronaut:micronaut-bom", version.ref = "micronaut" }
+boms-junit = { module = "org.junit:junit-bom", version.ref = "managed-junit" }
+boms-spock = { module = "org.spockframework:spock-bom", version.ref = "managed-spock" }
+micronaut-bom = { module = "io.micronaut:micronaut-bom", version.ref = "micronaut" }
 
 # Micronaut
 micronaut-data-hibernate-jpa = { module = "io.micronaut.data:micronaut-data-hibernate-jpa" }
@@ -49,9 +49,9 @@ micronaut-spring = { module = "io.micronaut.spring:micronaut-spring" }
 
 h2 = { module = "com.h2database:h2" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "managed-junit" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "managed-junit" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "managed-junit" }
 
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
