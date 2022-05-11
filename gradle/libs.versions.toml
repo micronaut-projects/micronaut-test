@@ -1,11 +1,11 @@
 [versions]
 managed-assertj = "3.22.0"
 managed-hamcrest = "2.2"
-managed-mockito = "4.3.1"
+managed-mockito = "4.5.1"
 managed-mockk = "1.12.2"
 managed-kotest = "4.6.4"
 managed-junit = "5.8.2"
-managed-spock = "2.0-groovy-3.0"
+managed-spock = "2.1-groovy-3.0"
 
 kotest5 = "5.2.1" # can not be managed until we deprecate kotest 4
 
