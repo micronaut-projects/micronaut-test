@@ -56,8 +56,8 @@ dependencies {
     testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.micronaut.http.server.netty)
     testImplementation(libs.micronaut.http.client)
-    testImplementation(libs.mockito.junit.jupiter)
-    testImplementation(libs.hamcrest)
+    testImplementation(libs.managed.mockito.junit.jupiter)
+    testImplementation(libs.managed.hamcrest)
     testImplementation(libs.micronaut.data.tx)
     testImplementation(libs.micronaut.data.hibernate.jpa)
 

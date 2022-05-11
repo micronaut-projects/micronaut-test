@@ -7,7 +7,7 @@ plugins {
 dependencies {
     api project(":test-core")
     api(libs.micronaut.runtime)
-    api(libs.kotest.runner.junit5.jvm)
+    api(libs.managed.kotest.runner.junit5.jvm)
 
     implementation(libs.micronaut.inject)
     implementation project(":test-junit5")
@@ -21,7 +21,7 @@ dependencies {
     kaptTest(platform(libs.boms.micronaut))
     kaptTest(libs.micronaut.inject.java)
 
-    testImplementation(libs.mockk)
+    testImplementation(libs.managed.mockk)
 
     testImplementation(libs.micronaut.http.server.netty)
     testImplementation(libs.micronaut.http.client)
@@ -32,7 +32,7 @@ dependencies {
     testRuntimeOnly(libs.micronaut.jdbc.tomcat)
     testRuntimeOnly(libs.h2)
 
-    testImplementation(libs.kotest.assertions.core.jvm)
+    testImplementation(libs.managed.kotest.assertions.core.jvm)
 }
 
 test {

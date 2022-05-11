@@ -5,13 +5,4 @@ plugins {
 dependencies {
     api(platform(libs.boms.junit))
     api(platform(libs.boms.spock))
-    constraints {
-        api(libs.kotest.runner.junit5.jvm)
-        api(libs.kotest.assertions.core.jvm)
-        api(libs.mockk)
-        api(libs.mockito.core)
-        api(libs.mockito.junit.jupiter)
-        api(libs.assertj.core)
-        api(libs.hamcrest)
-    }
 }

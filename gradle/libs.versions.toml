@@ -1,11 +1,12 @@
 [versions]
-assertj = "3.22.0"
-hamcrest = "2.2"
+managed-assertj = "3.22.0"
+managed-hamcrest = "2.2"
+managed-mockito = "4.3.1"
+managed-mockk = "1.12.2"
+managed-kotest = "4.6.4"
+managed-kotest5 = "5.2.1"
+
 junit = "5.8.2"
-kotest = "4.6.4"
-kotest5 = "5.2.1"
-mockito = "4.3.1"
-mockk = "1.12.2"
 spock = "2.0-groovy-3.0"
 kotlin = "1.6.21"
 
@@ -14,6 +15,16 @@ micronaut = "3.4.3"
 
 
 [libraries]
+managed-assertj-core = { module = "org.assertj:assertj-core", version.ref = "managed-assertj" }
+managed-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "managed-hamcrest" }
+managed-mockito-core = { module = "org.mockito:mockito-core", version.ref = "managed-mockito" }
+managed-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "managed-mockito" }
+managed-mockk = { module = "io.mockk:mockk", version.ref = "managed-mockk" }
+managed-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "managed-kotest" }
+managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "managed-kotest" }
+managed-kotest5-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "managed-kotest5" }
+managed-kotest5-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "managed-kotest5" }
+
 # BOMs
 boms-junit = { module = "org.junit:junit-bom", version.ref = "junit" }
 boms-spock = { module = "org.spockframework:spock-bom", version.ref = "spock" }
@@ -36,21 +47,12 @@ micronaut-jdbc-tomcat = { module = "io.micronaut.sql:micronaut-jdbc-tomcat" }
 micronaut-runtime = { module = "io.micronaut:micronaut-runtime" }
 micronaut-spring = { module = "io.micronaut.spring:micronaut-spring" }
 
-assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 h2 = { module = "com.h2database:h2" }
-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
-kotest5-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest5" }
-kotest5-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest5" }
 
-mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 graal = { module = "org.graalvm.nativeimage:svm" }
