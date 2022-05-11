@@ -45,3 +45,9 @@ compileTestKotlin {
         javaParameters = true
     }
 }
+
+micronautBuild {
+    binaryCompatibility {
+        enabled = false
+    }
+}
