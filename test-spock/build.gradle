@@ -4,22 +4,22 @@ plugins {
 
 dependencies {
     api project(":test-core")
-    api "io.micronaut:micronaut-inject"
+    api(libs.micronaut.inject)
     api("org.spockframework:spock-core:$spockVersion") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
-    implementation "io.micronaut:micronaut-runtime"
-    compileOnly "jakarta.inject:jakarta.inject-api"
+    implementation(libs.micronaut.runtime)
+    compileOnly(libs.jakarta.inject.api)
 
-    testCompileOnly "jakarta.inject:jakarta.inject-api"
-    testImplementation "io.micronaut:micronaut-inject-groovy"
-    testImplementation "io.micronaut:micronaut-http-server-netty"
-    testImplementation "io.micronaut:micronaut-http-client"
+    testCompileOnly(libs.jakarta.inject.api)
+    testImplementation(libs.micronaut.inject.groovy)
+    testImplementation(libs.micronaut.http.server.netty)
+    testImplementation(libs.micronaut.http.client)
 
-    testImplementation "io.micronaut.sql:micronaut-jdbc-hikari"
-    testImplementation "io.micronaut.beanvalidation:micronaut-hibernate-validator"
-    testImplementation "io.micronaut.groovy:micronaut-hibernate-gorm"
-    testImplementation "io.micronaut.spring:micronaut-spring"
+    testImplementation(libs.micronaut.jdbc.hikari)
+    testImplementation(libs.micronaut.hibernate.validator)
+    testImplementation(libs.micronaut.hibernate.gorm)
+    testImplementation(libs.micronaut.spring)
 
-    testRuntimeOnly "com.h2database:h2"
+    testRuntimeOnly(libs.h2)
 }

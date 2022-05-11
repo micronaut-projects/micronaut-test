@@ -6,33 +6,33 @@ plugins {
 
 dependencies {
     api project(":test-core")
-    api "io.micronaut:micronaut-runtime:$micronautVersion"
-    api "io.kotest:kotest-runner-junit5-jvm:$kotestVersion"
+    api(libs.micronaut.runtime)
+    api(libs.managed.kotest.runner.junit5.jvm)
 
-    implementation "io.micronaut:micronaut-inject"
+    implementation(libs.micronaut.inject)
     implementation project(":test-junit5")
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+    implementation(libs.kotlin.stdlib.jdk8)
+    implementation(libs.kotlin.reflect)
 
-    compileOnly "jakarta.inject:jakarta.inject-api"
+    compileOnly(libs.jakarta.inject.api)
 
-    testCompileOnly "jakarta.inject:jakarta.inject-api"
+    testCompileOnly(libs.jakarta.inject.api)
 
-    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    kaptTest "io.micronaut:micronaut-inject-java"
+    kaptTest(platform(libs.micronaut.bom))
+    kaptTest(libs.micronaut.inject.java)
 
-    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation(libs.managed.mockk)
 
-    testImplementation "io.micronaut:micronaut-http-server-netty"
-    testImplementation "io.micronaut:micronaut-http-client"
+    testImplementation(libs.micronaut.http.server.netty)
+    testImplementation(libs.micronaut.http.client)
 
-    testImplementation "io.micronaut.data:micronaut-data-tx"
-    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa"
+    testImplementation(libs.micronaut.data.tx)
+    testImplementation(libs.micronaut.data.hibernate.jpa)
 
-    testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat"
-    testRuntimeOnly "com.h2database:h2"
+    testRuntimeOnly(libs.micronaut.jdbc.tomcat)
+    testRuntimeOnly(libs.h2)
 
-    testImplementation "io.kotest:kotest-assertions-core-jvm:$kotestVersion"
+    testImplementation(libs.managed.kotest.assertions.core.jvm)
 }
 
 test {

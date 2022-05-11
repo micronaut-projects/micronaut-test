@@ -43,27 +43,27 @@ tasks.withType(Jar).configureEach {
 
 dependencies {
     api project(":test-core")
-    api "io.micronaut:micronaut-inject"
-    api "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    implementation "io.micronaut:micronaut-runtime"
-    compileOnly "org.graalvm.nativeimage:svm:22.0.0.2"
+    api(libs.micronaut.inject)
+    api(libs.junit.jupiter.api)
+    implementation(libs.micronaut.runtime)
+    compileOnly(libs.graal)
 
-    testCompileOnly "io.micronaut:micronaut-inject"
+    testCompileOnly(libs.micronaut.inject)
 
-    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
-    testAnnotationProcessor "io.micronaut:micronaut-graal"
+    testAnnotationProcessor(libs.micronaut.inject.java)
+    testAnnotationProcessor(libs.micronaut.graal)
 
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
-    testImplementation "io.micronaut:micronaut-http-server-netty"
-    testImplementation "io.micronaut:micronaut-http-client"
-    testImplementation 'org.mockito:mockito-junit-jupiter:$mockitoVersion'
-    testImplementation "org.hamcrest:hamcrest:$hamcrestVersion"
-    testImplementation "io.micronaut.data:micronaut-data-tx"
-    testImplementation "io.micronaut.data:micronaut-data-hibernate-jpa"
+    testImplementation(libs.junit.jupiter.params)
+    testImplementation(libs.micronaut.http.server.netty)
+    testImplementation(libs.micronaut.http.client)
+    testImplementation(libs.managed.mockito.junit.jupiter)
+    testImplementation(libs.managed.hamcrest)
+    testImplementation(libs.micronaut.data.tx)
+    testImplementation(libs.micronaut.data.hibernate.jpa)
 
-    testRuntimeOnly "io.micronaut.sql:micronaut-jdbc-tomcat"
-    testRuntimeOnly "com.h2database:h2"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testRuntimeOnly(libs.micronaut.jdbc.tomcat)
+    testRuntimeOnly(libs.h2)
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
 graalvmNative {
