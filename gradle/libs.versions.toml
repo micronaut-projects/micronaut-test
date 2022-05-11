@@ -4,7 +4,8 @@ managed-hamcrest = "2.2"
 managed-mockito = "4.3.1"
 managed-mockk = "1.12.2"
 managed-kotest = "4.6.4"
-managed-kotest5 = "5.2.1"
+
+kotest5 = "5.2.1" # can not be managed until we deprecate kotest 4
 
 managed-junit = "5.8.2"
 managed-spock = "2.0-groovy-3.0"
@@ -22,15 +23,16 @@ managed-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", 
 managed-mockk = { module = "io.mockk:mockk", version.ref = "managed-mockk" }
 managed-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "managed-kotest" }
 managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "managed-kotest" }
-managed-kotest5-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "managed-kotest5" }
-managed-kotest5-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "managed-kotest5" }
+
+kotest5-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest5" }
+kotest5-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest5" }
 
 # BOMs
 boms-junit = { module = "org.junit:junit-bom", version.ref = "managed-junit" }
 boms-spock = { module = "org.spockframework:spock-bom", version.ref = "managed-spock" }
-micronaut-bom = { module = "io.micronaut:micronaut-bom", version.ref = "micronaut" }
 
 # Micronaut
+micronaut-bom = { module = "io.micronaut:micronaut-bom", version.ref = "micronaut" }
 micronaut-data-hibernate-jpa = { module = "io.micronaut.data:micronaut-data-hibernate-jpa" }
 micronaut-data-tx = { module = "io.micronaut.data:micronaut-data-tx" }
 micronaut-graal = { module = "io.micronaut:micronaut-graal" }
