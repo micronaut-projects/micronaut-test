@@ -2,7 +2,7 @@
 managed-assertj = "3.22.0"
 managed-hamcrest = "2.2"
 managed-mockito = "4.5.1"
-managed-mockk = "1.12.2"
+managed-mockk = "1.12.4"
 managed-kotest = "4.6.4"
 managed-junit = "5.8.2"
 managed-spock = "2.1-groovy-3.0"
