@@ -2441,14 +2441,14 @@ test {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest5
 
 import io.kotest.core.config.AbstractProjectConfig
-import io.micronaut.test.extensions.kotest.MicronautKotestExtension
+import io.micronaut.test.extensions.kotest5.MicronautKotest5Extension
 
+@Suppress("unused")
 object ProjectConfig : AbstractProjectConfig() {
-    override fun listeners() = listOf(MicronautKotestExtension)
-    override fun extensions() = listOf(MicronautKotestExtension)
+    override fun extensions() = listOf(MicronautKotest5Extension)
 }</code></pre>
 </div>
 </div>
