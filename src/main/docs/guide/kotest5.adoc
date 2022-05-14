@@ -155,7 +155,7 @@ Before you can get started writing tests with Kotest, it is necessary to inform 
 
 [source,kotlin]
 ----
-include::test-kotest/src/test/kotlin/io/micronaut/test/kotest/ProjectConfig.kt[]
+include::test-kotest5/src/test/kotlin/io/micronaut/test/kotest5/ProjectConfig.kt[]
 ----
 
 === Writing a Micronaut Test with Kotest
