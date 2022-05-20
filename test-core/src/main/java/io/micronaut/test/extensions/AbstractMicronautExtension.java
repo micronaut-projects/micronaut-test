@@ -318,6 +318,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected void afterClass(C context) {
         stopEmbeddedApplication();
         if (applicationContext != null && applicationContext.isRunning()) {
+            applicationContext.getEnvironment().close();
             applicationContext.stop();
         }
         embeddedApplication = null;
