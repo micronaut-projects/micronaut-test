@@ -12,7 +12,7 @@ kotest5 = "5.2.1" # can not be managed until we deprecate kotest 4
 kotlin = "1.6.21"
 
 # Micronaut
-micronaut = "3.4.3"
+micronaut = "3.4.4"
 
 
 [libraries]
