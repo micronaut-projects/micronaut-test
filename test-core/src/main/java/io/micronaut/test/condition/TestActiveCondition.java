@@ -15,6 +15,8 @@
  */
 package io.micronaut.test.condition;
 
+import java.util.Optional;
+
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.BeanContext;
 import io.micronaut.context.condition.Condition;
@@ -22,8 +24,6 @@ import io.micronaut.context.condition.ConditionContext;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.test.annotation.MockBean;
-
-import java.util.Optional;
 
 /**
  * A custom {@link Condition} that enables inner classes and {@link MockBean} instances only for the scope of the test.
@@ -60,7 +60,7 @@ public class TestActiveCondition implements Condition {
                         } else {
                             return declaringTypeClass.isAssignableFrom(activeSpecClazz) &&
                                     definition.getClass().getName().startsWith(rootName + "$") // Check if super class def is part of the current spec
-                                    || activeSpecName.equals(declaringTypeName)
+                                    || (activeSpecName != null && activeSpecName.equals(declaringTypeName))
                                     || declaringTypeName.startsWith(activeSpecName + "$");
                         }
                     } else {
