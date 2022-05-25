@@ -15,23 +15,11 @@
  */
 package io.micronaut.test.support.server;
 
-import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.annotation.Primary;
-import io.micronaut.context.annotation.Property;
-import io.micronaut.context.annotation.Requires;
-import io.micronaut.context.env.Environment;
-import io.micronaut.context.env.PropertySource;
-import io.micronaut.context.exceptions.ConfigurationException;
-import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.annotation.Order;
-import io.micronaut.http.server.HttpServerConfiguration;
-import io.micronaut.http.server.exceptions.ServerStartupException;
-import io.micronaut.runtime.ApplicationConfiguration;
-import io.micronaut.runtime.server.EmbeddedServer;
-import io.micronaut.test.extensions.AbstractMicronautExtension;
-
-import jakarta.inject.Singleton;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -42,7 +30,22 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.annotation.Primary;
+import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.env.Environment;
+import io.micronaut.context.env.PropertySource;
+import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.Order;
 import static io.micronaut.core.io.socket.SocketUtils.findAvailableTcpPort;
+import io.micronaut.http.server.HttpServerConfiguration;
+import io.micronaut.http.server.exceptions.ServerStartupException;
+import io.micronaut.runtime.ApplicationConfiguration;
+import io.micronaut.runtime.server.EmbeddedServer;
+import io.micronaut.test.extensions.AbstractMicronautExtension;
+import jakarta.inject.Singleton;
 
 /**
  * An {@link EmbeddedServer} implementation that runs an external executable JAR or native.
@@ -216,7 +219,10 @@ public class TestExecutableEmbeddedServer implements EmbeddedServer {
                 }
 
                 this.port = port;
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new ServerStartupException(e.getMessage(), e);
+            } catch (ExecutionException e) {
                 throw new ServerStartupException(e.getMessage(), e);
             }
         }
