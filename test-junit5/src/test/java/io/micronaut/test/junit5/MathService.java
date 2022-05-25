@@ -1,7 +1,7 @@
 
 package io.micronaut.test.junit5;
 
-interface MathService {
+public interface MathService {
 
     Integer compute(Integer num);
 }
