@@ -86,6 +86,10 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         });
 
         spec.addSetupSpecInterceptor(invocation -> {
+                    if (specDefinition != null) {
+                        invocation.proceed();
+                        return;
+                    }
                     MicronautTest micronautTest = spec.getAnnotation(MicronautTest.class);
                     MicronautTestValue micronautTestValue =  buildValueObject(micronautTest);
                     beforeClass(invocation, spec.getReflection(), micronautTestValue);

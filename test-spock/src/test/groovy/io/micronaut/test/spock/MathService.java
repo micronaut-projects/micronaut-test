@@ -3,7 +3,7 @@ package io.micronaut.test.spock;
 
 import jakarta.inject.Singleton;
 
-interface MathService {
+public interface MathService {
 
     Integer compute(Integer num);
 }
