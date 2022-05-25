@@ -222,7 +222,7 @@ public class TestExecutableEmbeddedServer implements EmbeddedServer {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new ServerStartupException(e.getMessage(), e);
-            } catch(ExecutionException e) {
+            } catch (ExecutionException e) {
                 throw new ServerStartupException(e.getMessage(), e);
             }
         }
