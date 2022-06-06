@@ -16,8 +16,8 @@
 package io.micronaut.test.rest.assured;
 
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Prototype;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.runtime.context.scope.Refreshable;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
@@ -36,7 +36,7 @@ public class RequestSpecificationFactory {
      * @param embeddedServer The embedded server
      * @return A request specification for the current server.
      */
-    @Refreshable
+    @Prototype
     @Requires(beans = EmbeddedServer.class) 
     RequestSpecification requestSpecification(EmbeddedServer embeddedServer) {
         return RestAssured.given()
