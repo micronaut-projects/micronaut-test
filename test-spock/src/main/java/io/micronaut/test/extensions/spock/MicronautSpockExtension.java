@@ -21,6 +21,7 @@ import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
+import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
@@ -65,11 +66,23 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         spec.getAllFeatures().forEach(feature -> {
 
             feature.addInterceptor(invocation -> {
+                TestContext testContext = buildContext(invocation, null);
                 try {
-                    beforeTestMethod(buildContext(invocation, null));
-                    invocation.proceed();
+                    beforeTestMethod(testContext);
+                    interceptTest(new TestMethodInvocationContext<Object>() {
+                        @Override
+                        public TestContext getTestContext() {
+                            return testContext;
+                        }
+
+                        @Override
+                        public Object proceed() throws Throwable {
+                            invocation.proceed();
+                            return null;
+                        }
+                    });
                 } finally {
-                    afterTestMethod(buildContext(invocation, null));
+                    afterTestMethod(testContext);
                 }
             });
 
@@ -135,11 +148,23 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
             for (Object mock : singletonMocks) {
                 mockUtil.attachMock(mock, (Specification) instance);
             }
+            TestContext testContext = buildContext(invocation, null);
             try {
-                beforeSetupTest(buildContext(invocation, null));
-                invocation.proceed();
+                beforeSetupTest(testContext);
+                interceptBeforeEach(new TestMethodInvocationContext() {
+                    @Override
+                    public TestContext getTestContext() {
+                        return testContext;
+                    }
+
+                    @Override
+                    public Object proceed() throws Throwable {
+                        invocation.proceed();
+                        return null;
+                    }
+                });
             } finally {
-                afterSetupTest(buildContext(invocation, null));
+                afterSetupTest(testContext);
             }
         });
 
@@ -152,11 +177,23 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
             }
             creatableMocks.clear();
             afterEach(invocation);
+            TestContext testContext = buildContext(invocation, null);
             try {
-                beforeCleanupTest(buildContext(invocation, null));
-                invocation.proceed();
+                beforeCleanupTest(testContext);
+                interceptAfterEach(new TestMethodInvocationContext() {
+                    @Override
+                    public TestContext getTestContext() {
+                        return testContext;
+                    }
+
+                    @Override
+                    public Object proceed() throws Throwable {
+                        invocation.proceed();
+                        return null;
+                    }
+                });
             } finally {
-                afterCleanupTest(buildContext(invocation, null));
+                afterCleanupTest(testContext);
             }
         });
     }

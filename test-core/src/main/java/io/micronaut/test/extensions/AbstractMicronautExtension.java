@@ -38,6 +38,8 @@ import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.condition.TestActiveCondition;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.context.TestExecutionListener;
+import io.micronaut.test.context.TestMethodInterceptor;
+import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.support.TestPropertyProvider;
 
 import java.io.IOException;
@@ -52,7 +54,7 @@ import java.util.*;
  * @since 1.0
  * @param <C> The extension context
  */
-public abstract class AbstractMicronautExtension<C> implements TestExecutionListener {
+public abstract class AbstractMicronautExtension<C> implements TestExecutionListener, TestMethodInterceptor<Object> {
     public static final String TEST_ROLLBACK = "micronaut.test.rollback";
     public static final String TEST_TRANSACTIONAL = "micronaut.test.transactional";
     public static final String TEST_TRANSACTION_MODE = "micronaut.test.transaction-mode";
@@ -73,6 +75,79 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     private MicronautTestValue testAnnotationValue;
     private ApplicationContextBuilder builder = ApplicationContext.builder();
     private List<TestExecutionListener> listeners;
+    private List<TestMethodInterceptor<Object>> interceptors;
+
+    @Override
+    public Object interceptBeforeEach(TestMethodInvocationContext<Object> methodInvocationContext) throws Throwable {
+        return interceptBeforeEach(methodInvocationContext, interceptors);
+    }
+
+    @Override
+    public Object interceptAfterEach(TestMethodInvocationContext<Object> methodInvocationContext) throws Throwable {
+        return interceptAfterEach(methodInvocationContext, interceptors);
+    }
+
+    @Override
+    public Object interceptTest(TestMethodInvocationContext<Object> methodInvocationContext) throws Throwable {
+        return interceptEach(methodInvocationContext, interceptors);
+    }
+
+    private <T> Object interceptBeforeEach(TestMethodInvocationContext<Object> methodInvocationContext, List<TestMethodInterceptor<Object>> interceptors) throws Throwable {
+        if (interceptors == null || interceptors.isEmpty()) {
+            return methodInvocationContext.proceed();
+        }
+        TestMethodInterceptor<Object> next = interceptors.iterator().next();
+        List<TestMethodInterceptor<Object>> rest = interceptors.subList(1, interceptors.size());
+        return next.interceptBeforeEach(new TestMethodInvocationContext<Object>() {
+            @Override
+            public TestContext getTestContext() {
+                return methodInvocationContext.getTestContext();
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return interceptBeforeEach(methodInvocationContext, rest);
+            }
+        });
+    }
+
+    private Object interceptAfterEach(TestMethodInvocationContext<Object> methodInvocationContext, List<TestMethodInterceptor<Object>> interceptors) throws Throwable {
+        if (interceptors == null || interceptors.isEmpty()) {
+            return methodInvocationContext.proceed();
+        }
+        TestMethodInterceptor<Object> next = interceptors.iterator().next();
+        List<TestMethodInterceptor<Object>> rest = interceptors.subList(1, interceptors.size());
+        return next.interceptAfterEach(new TestMethodInvocationContext<Object>() {
+            @Override
+            public TestContext getTestContext() {
+                return methodInvocationContext.getTestContext();
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return interceptAfterEach(methodInvocationContext, rest);
+            }
+        });
+    }
+
+    private Object interceptEach(TestMethodInvocationContext<Object> methodInvocationContext, List<TestMethodInterceptor<Object>> interceptors) throws Throwable {
+        if (interceptors == null || interceptors.isEmpty()) {
+            return methodInvocationContext.proceed();
+        }
+        TestMethodInterceptor<Object> next = interceptors.iterator().next();
+        List<TestMethodInterceptor<Object>> rest = interceptors.subList(1, interceptors.size());
+        return next.interceptTest(new TestMethodInvocationContext<Object>() {
+            @Override
+            public TestContext getTestContext() {
+                return methodInvocationContext.getTestContext();
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return interceptEach(methodInvocationContext, rest);
+            }
+        });
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -354,6 +429,8 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected void startApplicationContext() {
         applicationContext.start();
         listeners = new ArrayList<>(applicationContext.getBeansOfType(TestExecutionListener.class));
+        Collection collection = applicationContext.getBeansOfType(TestMethodInterceptor.class);
+        interceptors = new ArrayList<>(collection);
     }
 
     /**
