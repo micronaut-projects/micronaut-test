@@ -49,7 +49,6 @@ class InterceptTestTest {
 
     @Test
     void testOk() {
-        Assertions.assertEquals("A", "A");
     }
 
     @Test
