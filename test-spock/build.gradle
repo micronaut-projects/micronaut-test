@@ -3,9 +3,10 @@ plugins {
 }
 
 dependencies {
+    api(platform(libs.boms.spock))
     api project(":test-core")
     api(libs.micronaut.inject)
-    api("org.spockframework:spock-core:$spockVersion") {
+    api(libs.spock.core) {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
     implementation(libs.micronaut.runtime)

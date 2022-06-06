@@ -1,0 +1,39 @@
+plugins {
+    id 'org.graalvm.buildtools.native' version '0.9.11'
+    id "io.micronaut.build.internal.base-module"
+}
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}
+
+micronautBuild {
+    // new module, so no binary check
+    binaryCompatibility {
+        enabled.set(false)
+    }
+}
+
+dependencies {
+    annotationProcessor(libs.micronaut.inject.java)
+    api project(":test-core")
+    api(platform(libs.boms.rest.assured))
+    api(libs.micronaut.inject)
+    api(libs.rest.assured) {
+        exclude group:"org.apache.groovy", module:"groovy"
+    }
+    implementation(libs.micronaut.runtime)
+    testCompileOnly(libs.micronaut.inject)
+
+    testAnnotationProcessor(libs.micronaut.inject.java)
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation project(":test-junit5")
+    testImplementation(libs.micronaut.http.server.netty)
+    testImplementation(libs.managed.hamcrest)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+}
