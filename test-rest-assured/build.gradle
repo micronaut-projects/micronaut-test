@@ -1,5 +1,4 @@
 plugins {
-    id 'org.graalvm.buildtools.native' version '0.9.11'
     id "io.micronaut.build.internal.base-module"
 }
 
@@ -27,6 +26,7 @@ dependencies {
     api(libs.rest.assured) {
         exclude group:"org.apache.groovy", module:"groovy"
     }
+    implementation(libs.groovy)
     implementation(libs.micronaut.runtime)
     testCompileOnly(libs.micronaut.inject)
 

@@ -60,3 +60,4 @@ rest-assured = { module = "io.rest-assured:rest-assured" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 graal = { module = "org.graalvm.nativeimage:svm" }
+groovy = { module = "org.codehaus.groovy:groovy" }
