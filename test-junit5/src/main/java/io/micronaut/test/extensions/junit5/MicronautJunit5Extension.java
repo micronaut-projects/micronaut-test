@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.micronaut.test.context.TestMethodInvocationContext;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -106,16 +107,98 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public void interceptBeforeEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
-        beforeSetupTest(buildContext(extensionContext));
-        invocation.proceed();
-        afterSetupTest(buildContext(extensionContext));
+        TestContext testContext = buildContext(extensionContext);
+        beforeSetupTest(testContext);
+        interceptBeforeEach(new TestMethodInvocationContext<Object>() {
+            @Override
+            public TestContext getTestContext() {
+                return testContext;
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return invocation.proceed();
+            }
+        });
+        afterSetupTest(testContext);
+    }
+
+    @Override
+    public void interceptTestMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        interceptTest(new TestMethodInvocationContext<Object>() {
+            TestContext testContext;
+
+            @Override
+            public TestContext getTestContext() {
+                if (testContext == null) {
+                    testContext = buildContext(extensionContext);
+                }
+                return testContext;
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return invocation.proceed();
+            }
+        });
+    }
+
+    @Override
+    public void interceptTestTemplateMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        interceptTest(new TestMethodInvocationContext<Object>() {
+            TestContext testContext;
+
+            @Override
+            public TestContext getTestContext() {
+                if (testContext == null) {
+                    testContext = buildContext(extensionContext);
+                }
+                return testContext;
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return invocation.proceed();
+            }
+        });
+    }
+
+    @Override
+    public <T> T interceptTestFactoryMethod(Invocation<T> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        return (T) interceptTest(new TestMethodInvocationContext<Object>() {
+            TestContext testContext;
+
+            @Override
+            public TestContext getTestContext() {
+                if (testContext == null) {
+                    testContext = buildContext(extensionContext);
+                }
+                return testContext;
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return invocation.proceed();
+            }
+        });
     }
 
     @Override
     public void interceptAfterEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
-        beforeCleanupTest(buildContext(extensionContext));
-        invocation.proceed();
-        afterCleanupTest(buildContext(extensionContext));
+        TestContext testContext = buildContext(extensionContext);
+        beforeCleanupTest(testContext);
+        interceptAfterEach(new TestMethodInvocationContext<Object>() {
+            @Override
+            public TestContext getTestContext() {
+                return testContext;
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return invocation.proceed();
+            }
+        });
+        afterCleanupTest(testContext);
     }
 
     @Override
