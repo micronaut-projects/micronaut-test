@@ -1,0 +1,12 @@
+A small utility module exists that helps integrating the REST-assured library. Simply add the following dependency:
+
+dependency:micronaut-test-rest-assured[groupId="io.micronaut.test"]
+
+You can then inject instances of https://www.javadoc.io/static/io.rest-assured/rest-assured/5.1.0/io/restassured/specification/RequestSpecification.html[RequestSpecification] into test fields or method parameters (parameters are only supported with JUnit 5):
+
+.REST-Assured Example
+[source,groovy]
+----
+include::{restassuredtests}/RestAssuredHelloWorldTest.java[]
+----
+
