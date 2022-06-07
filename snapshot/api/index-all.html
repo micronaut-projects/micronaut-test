@@ -288,6 +288,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/test/context/TestContext.html#getTestClass--">getTestClass()</a></span> - Method in class io.micronaut.test.context.<a href="io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/context/TestMethodInvocationContext.html#getTestContext--">getTestContext()</a></span> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestMethodInvocationContext.html" title="interface in io.micronaut.test.context">TestMethodInvocationContext</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/test/context/TestContext.html#getTestException--">getTestException()</a></span> - Method in class io.micronaut.test.context.<a href="io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/test/context/TestContext.html#getTestInstance--">getTestInstance()</a></span> - Method in class io.micronaut.test.context.<a href="io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a></dt>
@@ -316,9 +318,33 @@
 </a>
 <h2 class="title">I</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/context/TestMethodInterceptor.html#interceptAfterEach-io.micronaut.test.context.TestMethodInvocationContext-">interceptAfterEach(TestMethodInvocationContext&lt;R&gt;)</a></span> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestMethodInterceptor.html" title="interface in io.micronaut.test.context">TestMethodInterceptor</a></dt>
+<dd>
+<div class="block">Intercepts after each test invocation.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#interceptAfterEach-io.micronaut.test.context.TestMethodInvocationContext-">interceptAfterEach(TestMethodInvocationContext&lt;Object&gt;)</a></span> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptAfterEachMethod-org.junit.jupiter.api.extension.InvocationInterceptor.Invocation-org.junit.jupiter.api.extension.ReflectiveInvocationContext-org.junit.jupiter.api.extension.ExtensionContext-">interceptAfterEachMethod(InvocationInterceptor.Invocation&lt;Void&gt;, ReflectiveInvocationContext&lt;Method&gt;, ExtensionContext)</a></span> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/context/TestMethodInterceptor.html#interceptBeforeEach-io.micronaut.test.context.TestMethodInvocationContext-">interceptBeforeEach(TestMethodInvocationContext&lt;R&gt;)</a></span> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestMethodInterceptor.html" title="interface in io.micronaut.test.context">TestMethodInterceptor</a></dt>
+<dd>
+<div class="block">Intercepts before each test invocation.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#interceptBeforeEach-io.micronaut.test.context.TestMethodInvocationContext-">interceptBeforeEach(TestMethodInvocationContext&lt;Object&gt;)</a></span> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptBeforeEachMethod-org.junit.jupiter.api.extension.InvocationInterceptor.Invocation-org.junit.jupiter.api.extension.ReflectiveInvocationContext-org.junit.jupiter.api.extension.ExtensionContext-">interceptBeforeEachMethod(InvocationInterceptor.Invocation&lt;Void&gt;, ReflectiveInvocationContext&lt;Method&gt;, ExtensionContext)</a></span> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/context/TestMethodInterceptor.html#interceptTest-io.micronaut.test.context.TestMethodInvocationContext-">interceptTest(TestMethodInvocationContext&lt;R&gt;)</a></span> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestMethodInterceptor.html" title="interface in io.micronaut.test.context">TestMethodInterceptor</a></dt>
+<dd>
+<div class="block">Intercepts each test invocation.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#interceptTest-io.micronaut.test.context.TestMethodInvocationContext-">interceptTest(TestMethodInvocationContext&lt;Object&gt;)</a></span> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptTestFactoryMethod-org.junit.jupiter.api.extension.InvocationInterceptor.Invocation-org.junit.jupiter.api.extension.ReflectiveInvocationContext-org.junit.jupiter.api.extension.ExtensionContext-">interceptTestFactoryMethod(InvocationInterceptor.Invocation&lt;T&gt;, ReflectiveInvocationContext&lt;Method&gt;, ExtensionContext)</a></span> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptTestMethod-org.junit.jupiter.api.extension.InvocationInterceptor.Invocation-org.junit.jupiter.api.extension.ReflectiveInvocationContext-org.junit.jupiter.api.extension.ExtensionContext-">interceptTestMethod(InvocationInterceptor.Invocation&lt;Void&gt;, ReflectiveInvocationContext&lt;Method&gt;, ExtensionContext)</a></span> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptTestTemplateMethod-org.junit.jupiter.api.extension.InvocationInterceptor.Invocation-org.junit.jupiter.api.extension.ReflectiveInvocationContext-org.junit.jupiter.api.extension.ExtensionContext-">interceptTestTemplateMethod(InvocationInterceptor.Invocation&lt;Void&gt;, ReflectiveInvocationContext&lt;Method&gt;, ExtensionContext)</a></span> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/annotation/package-summary.html">io.micronaut.test.annotation</a> - package io.micronaut.test.annotation</dt>
 <dd>&nbsp;</dd>
@@ -411,6 +437,10 @@
 <dt><span class="memberNameLink"><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#postProcessBuilder-io.micronaut.context.ApplicationContextBuilder-">postProcessBuilder(ApplicationContextBuilder)</a></span> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
 <dd>
 <div class="block">Allows subclasses to customize the builder right before context initialization.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/test/context/TestMethodInvocationContext.html#proceed--">proceed()</a></span> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestMethodInvocationContext.html" title="interface in io.micronaut.test.context">TestMethodInvocationContext</a></dt>
+<dd>
+<div class="block">Proceed with the method invocation.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/test/support/server/TestEmbeddedServer.html#PROPERTY">PROPERTY</a></span> - Static variable in class io.micronaut.test.support.server.<a href="io/micronaut/test/support/server/TestEmbeddedServer.html" title="class in io.micronaut.test.support.server">TestEmbeddedServer</a></dt>
 <dd>&nbsp;</dd>
@@ -521,6 +551,14 @@
 <dt><a href="io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context"><span class="typeNameLink">TestExecutionListener</span></a> - Interface in <a href="io/micronaut/test/context/package-summary.html">io.micronaut.test.context</a></dt>
 <dd>
 <div class="block">Test execution listener.</div>
+</dd>
+<dt><a href="io/micronaut/test/context/TestMethodInterceptor.html" title="interface in io.micronaut.test.context"><span class="typeNameLink">TestMethodInterceptor</span></a>&lt;<a href="io/micronaut/test/context/TestMethodInterceptor.html" title="type parameter in TestMethodInterceptor">R</a>&gt; - Interface in <a href="io/micronaut/test/context/package-summary.html">io.micronaut.test.context</a></dt>
+<dd>
+<div class="block">Test method interceptor.</div>
+</dd>
+<dt><a href="io/micronaut/test/context/TestMethodInvocationContext.html" title="interface in io.micronaut.test.context"><span class="typeNameLink">TestMethodInvocationContext</span></a>&lt;<a href="io/micronaut/test/context/TestMethodInvocationContext.html" title="type parameter in TestMethodInvocationContext">R</a>&gt; - Interface in <a href="io/micronaut/test/context/package-summary.html">io.micronaut.test.context</a></dt>
+<dd>
+<div class="block">The test method invocation context.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#testProperties">testProperties</a></span> - Variable in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
 <dd>&nbsp;</dd>
