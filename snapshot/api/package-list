@@ -6,6 +6,5 @@ io.micronaut.test.extensions.junit5
 io.micronaut.test.extensions.junit5.annotation
 io.micronaut.test.extensions.spock
 io.micronaut.test.extensions.spock.annotation
-io.micronaut.test.rest.assured
 io.micronaut.test.support
 io.micronaut.test.support.server
