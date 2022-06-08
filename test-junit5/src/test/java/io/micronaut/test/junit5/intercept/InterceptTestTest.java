@@ -1,21 +1,24 @@
 
 package io.micronaut.test.junit5.intercept;
 
-import io.micronaut.context.annotation.Property;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import io.micronaut.test.junit5.MathService;
-import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import io.micronaut.context.annotation.Property;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.junit5.MathService;
+import jakarta.inject.Inject;
 
 @Property(name = "InterceptTestSpec", value = "true")
 @MicronautTest
@@ -41,7 +44,7 @@ class InterceptTestTest {
     void testComputeNumToSquare(Integer num, Integer square) {
         final Integer result = mathService.compute(num);
 
-        Assertions.assertEquals(
+        assertEquals(
                 square,
                 result
         );
@@ -49,6 +52,7 @@ class InterceptTestTest {
 
     @Test
     void testOk() {
+        assertTrue(true);
     }
 
     @Test
