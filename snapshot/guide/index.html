@@ -288,8 +288,6 @@ If you plan to define mock beans you will also need <code>micronaut-inject-groov
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.spock;
 
-import jakarta.inject.Singleton;
-
 public interface MathService {
 
     Integer compute(Integer num);
@@ -3041,13 +3039,13 @@ open class MyServiceChanged : MyService</code></pre>
 
 
 <div class="paragraph">
-<p>A small utility module exists that helps integrating the REST-assured library. Simply add the following dependency:</p>
+<p>A small utility module exists that helps integrate the REST-assured library. Simply add the following dependency:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.test:micronaut-test-rest-assured")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">testImplementation(<span class="hljs-string">"io.micronaut.test:micronaut-test-rest-assured")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -3055,6 +3053,7 @@ open class MyServiceChanged : MyService</code></pre>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-test-rest-assured&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
