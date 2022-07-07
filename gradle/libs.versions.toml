@@ -10,7 +10,7 @@ managed-rest-assured = "5.1.0"
 
 kotest5 = "5.3.0" # can not be managed until we deprecate kotest 4
 
-kotlin = "1.6.21"
+kotlin = "1.7.10"
 
 # Micronaut
 micronaut = "3.5.1"
