@@ -2,20 +2,20 @@
 managed-assertj = "3.23.1"
 managed-hamcrest = "2.2"
 managed-mockito = "4.6.1"
-managed-mockk = "1.12.4"
+managed-mockk = "1.12.5"
 # Kotest 5
-managed-kotest = "5.3.0"
+managed-kotest = "5.4.1"
 managed-junit = "5.8.2"
 managed-spock = "2.1-groovy-3.0"
-managed-rest-assured = "5.1.0"
+managed-rest-assured = "5.1.1"
 
 # Kotest 4
 kotest = "4.6.4"
 
-kotlin = "1.6.21"
+kotlin = "1.7.10"
 
 # Micronaut
-micronaut = "3.5.1"
+micronaut = "3.5.4"
 
 
 [libraries]
