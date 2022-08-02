@@ -3,12 +3,14 @@ managed-assertj = "3.23.1"
 managed-hamcrest = "2.2"
 managed-mockito = "4.6.1"
 managed-mockk = "1.12.5"
-managed-kotest = "4.6.4"
+# Kotest 5
+managed-kotest = "5.4.1"
 managed-junit = "5.8.2"
 managed-spock = "2.1-groovy-3.0"
 managed-rest-assured = "5.1.1"
 
-kotest5 = "5.4.1" # can not be managed until we deprecate kotest 4
+# Kotest 4
+kotest = "4.6.4"
 
 kotlin = "1.7.10"
 
@@ -22,10 +24,12 @@ managed-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "managed-ha
 managed-mockito-core = { module = "org.mockito:mockito-core", version.ref = "managed-mockito" }
 managed-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "managed-mockito" }
 managed-mockk = { module = "io.mockk:mockk", version.ref = "managed-mockk" }
+# Kotest 4
+kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
+kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
+# Kotest 5 is managed
 managed-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "managed-kotest" }
 managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "managed-kotest" }
-kotest5-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest5" }
-kotest5-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest5" }
 
 # BOMs
 boms-junit = { module = "org.junit:junit-bom", version.ref = "managed-junit" }
