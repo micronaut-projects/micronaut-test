@@ -1,19 +1,19 @@
 [versions]
 managed-assertj = "3.23.1"
 managed-hamcrest = "2.2"
-managed-mockito = "4.6.1"
+managed-mockito = "4.8.0"
 managed-mockk = "1.12.7"
 managed-kotest = "4.6.4"
 managed-junit = "5.9.0"
 managed-spock = "2.1-groovy-3.0"
 managed-rest-assured = "5.2.0"
 
-kotest5 = "5.4.1" # can not be managed until we deprecate kotest 4
+kotest5 = "5.4.2" # can not be managed until we deprecate kotest 4
 
 kotlin = "1.7.10"
 
 # Micronaut
-micronaut = "3.5.4"
+micronaut = "3.6.3"
 micronaut-gradle-plugin = "3.5.3"
 
 [libraries]
