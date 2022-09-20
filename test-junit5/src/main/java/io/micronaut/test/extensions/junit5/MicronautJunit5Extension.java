@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.micronaut.aop.Intercepted;
 import io.micronaut.test.context.TestMethodInvocationContext;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
@@ -249,6 +250,12 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         } else {
             final Class<?> testClass = extensionContext.getRequiredTestClass();
+
+            // see https://github.com/micronaut-projects/micronaut-test/issues/640
+            if (Intercepted.class.isAssignableFrom(testClass)) {
+                return ConditionEvaluationResult.disabled("Intercepted Class is not a test");
+            }
+
             if (hasExpectedAnnotations(testClass) || isNestedTestClass(testClass)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
