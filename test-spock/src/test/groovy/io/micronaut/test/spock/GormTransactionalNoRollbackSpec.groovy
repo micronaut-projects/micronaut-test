@@ -6,6 +6,7 @@ import io.micronaut.spring.tx.test.SpringTransactionTestExecutionListener
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import io.micronaut.test.spock.entities.Book
 import org.springframework.transaction.support.TransactionSynchronizationManager
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Stepwise
 
@@ -14,6 +15,7 @@ import jakarta.inject.Inject
 @MicronautTest(rollback = false, packages = "io.micronaut.test.spock.entities")
 @HibernateProperties
 @Stepwise
+@Ignore("GORM is not supported yet")
 class GormTransactionalNoRollbackSpec extends Specification {
 
     @Inject

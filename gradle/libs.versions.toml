@@ -6,7 +6,7 @@ managed-mockk = "1.12.5"
 # Kotest 5
 managed-kotest = "5.4.1"
 managed-junit = "5.8.2"
-managed-spock = "2.1-groovy-3.0"
+managed-spock = "2.2-groovy-4.0"
 managed-rest-assured = "5.1.1"
 
 # Kotest 4
@@ -15,7 +15,7 @@ kotest = "4.6.4"
 kotlin = "1.7.10"
 
 # Micronaut
-micronaut = "3.5.4"
+micronaut = "4.0.0-SNAPSHOT"
 
 
 [libraries]
@@ -36,24 +36,6 @@ boms-junit = { module = "org.junit:junit-bom", version.ref = "managed-junit" }
 boms-spock = { module = "org.spockframework:spock-bom", version.ref = "managed-spock" }
 boms-rest-assured = { module = "io.rest-assured:rest-assured-bom", version.ref = "managed-rest-assured" }
 
-# Micronaut
-micronaut-bom = { module = "io.micronaut:micronaut-bom", version.ref = "micronaut" }
-micronaut-data-hibernate-jpa = { module = "io.micronaut.data:micronaut-data-hibernate-jpa" }
-micronaut-data-tx = { module = "io.micronaut.data:micronaut-data-tx" }
-micronaut-graal = { module = "io.micronaut:micronaut-graal" }
-micronaut-hibernate-gorm = { module = "io.micronaut.groovy:micronaut-hibernate-gorm" }
-micronaut-hibernate-validator = { module = "io.micronaut.beanvalidation:micronaut-hibernate-validator" }
-micronaut-http-client = { module = "io.micronaut:micronaut-http-client" }
-micronaut-http-server = { module = "io.micronaut:micronaut-http-server" }
-micronaut-http-server-netty = { module = "io.micronaut:micronaut-http-server-netty" }
-micronaut-inject = { module = "io.micronaut:micronaut-inject" }
-micronaut-inject-groovy = { module = "io.micronaut:micronaut-inject-groovy" }
-micronaut-inject-java = { module = "io.micronaut:micronaut-inject-java" }
-micronaut-jdbc-hikari = { module = "io.micronaut.sql:micronaut-jdbc-hikari" }
-micronaut-jdbc-tomcat = { module = "io.micronaut.sql:micronaut-jdbc-tomcat" }
-micronaut-runtime = { module = "io.micronaut:micronaut-runtime" }
-micronaut-spring = { module = "io.micronaut.spring:micronaut-spring" }
-
 spock-core = { module = "org.spockframework:spock-core" }
 h2 = { module = "com.h2database:h2" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
@@ -64,4 +46,4 @@ rest-assured = { module = "io.rest-assured:rest-assured" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 graal = { module = "org.graalvm.nativeimage:svm" }
-groovy = { module = "org.codehaus.groovy:groovy" }
+groovy = { module = "org.apache.groovy:groovy" }
