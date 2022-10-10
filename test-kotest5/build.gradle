@@ -36,7 +36,7 @@ dependencies {
 
     testRuntimeOnly(mn.micronaut.jdbc.tomcat)
     testRuntimeOnly(libs.h2)
-
+    testImplementation(mn.snakeyaml)
     testImplementation(libs.managed.kotest.assertions.core.jvm)
 }
 
