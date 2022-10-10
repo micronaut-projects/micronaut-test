@@ -4,11 +4,7 @@ plugins {
 
 repositories {
     mavenCentral()
-}
-
-java {
-    sourceCompatibility = "1.8"
-    targetCompatibility = "1.8"
+    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 micronautBuild {
@@ -19,21 +15,21 @@ micronautBuild {
 }
 
 dependencies {
-    annotationProcessor(libs.micronaut.inject.java)
+    annotationProcessor(mn.micronaut.inject.java)
     api project(":test-core")
     api(platform(libs.boms.rest.assured))
-    api(libs.micronaut.inject)
+    api(mn.micronaut.inject)
     api(libs.rest.assured) {
-        exclude group:"org.apache.groovy", module:"groovy"
+        exclude group:"org.codehaus.groovy", module:"groovy"
     }
     implementation(libs.groovy)
-    implementation(libs.micronaut.runtime)
-    testCompileOnly(libs.micronaut.inject)
+    implementation(mn.micronaut.runtime)
+    testCompileOnly(mn.micronaut.inject)
 
-    testAnnotationProcessor(libs.micronaut.inject.java)
+    testAnnotationProcessor(mn.micronaut.inject.java)
     testImplementation(libs.junit.jupiter.api)
     testImplementation project(":test-junit5")
-    testImplementation(libs.micronaut.http.server.netty)
+    testImplementation(mn.micronaut.http.server.netty)
     testImplementation(libs.managed.hamcrest)
     testRuntimeOnly(libs.junit.jupiter.engine)
 }

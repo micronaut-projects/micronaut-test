@@ -2,25 +2,31 @@ plugins {
     id "io.micronaut.build.internal.module"
 }
 
+repositories {
+    mavenCentral()
+    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+}
+
 dependencies {
     api(platform(libs.boms.spock))
     api project(":test-core")
-    api(libs.micronaut.inject)
+    api(mn.micronaut.inject)
     api(libs.spock.core) {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
-    implementation(libs.micronaut.runtime)
+    implementation(mn.micronaut.runtime)
     compileOnly(libs.jakarta.inject.api)
 
     testCompileOnly(libs.jakarta.inject.api)
-    testImplementation(libs.micronaut.inject.groovy)
-    testImplementation(libs.micronaut.http.server.netty)
-    testImplementation(libs.micronaut.http.client)
+    testImplementation(mn.micronaut.inject.groovy)
+    testImplementation(mn.micronaut.http.server.netty)
+    testImplementation(mn.micronaut.http.client)
 
-    testImplementation(libs.micronaut.jdbc.hikari)
-    testImplementation(libs.micronaut.hibernate.validator)
-    testImplementation(libs.micronaut.hibernate.gorm)
-    testImplementation(libs.micronaut.spring)
+    testImplementation(mn.micronaut.jdbc.hikari)
+    testImplementation(mn.micronaut.hibernate.validator)
+//    testImplementation(mn.micronaut.hibernate.gorm)
+    testImplementation(mn.micronaut.spring)
+    testImplementation(mn.snakeyaml)
 
     testRuntimeOnly(libs.h2)
 }
