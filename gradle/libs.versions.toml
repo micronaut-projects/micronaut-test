@@ -13,7 +13,7 @@ kotest5 = "5.4.2" # can not be managed until we deprecate kotest 4
 kotlin = "1.7.10"
 
 # Micronaut
-micronaut = "3.6.3"
+micronaut = "3.7.1"
 micronaut-gradle-plugin = "3.5.3"
 
 [libraries]
