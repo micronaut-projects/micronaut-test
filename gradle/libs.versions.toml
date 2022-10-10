@@ -3,8 +3,9 @@ managed-assertj = "3.23.1"
 managed-hamcrest = "2.2"
 managed-mockito = "4.6.1"
 managed-kotest = "5.4.1"
-managed-junit = "5.8.2"
 managed-spock = "2.2-groovy-4.0"
+managed-mockk = "1.12.7"
+managed-junit = "5.9.0"
 managed-rest-assured = "5.2.0"
 
 kotlin = "1.7.20"
@@ -12,6 +13,7 @@ kotlin = "1.7.20"
 # Micronaut
 micronaut = "4.0.0-SNAPSHOT"
 
+micronaut-gradle-plugin = "3.5.3"
 
 [libraries]
 managed-assertj-core = { module = "org.assertj:assertj-core", version.ref = "managed-assertj" }
