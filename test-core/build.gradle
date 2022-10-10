@@ -2,13 +2,18 @@ plugins {
     id "io.micronaut.build.internal.module"
 }
 
+repositories {
+    mavenCentral()
+    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+}
+
 dependencies {
-    compileOnly(libs.micronaut.http.server)
+    compileOnly(mn.micronaut.http.server)
     compileOnly(libs.junit.jupiter.api)
 
-    api(libs.micronaut.inject)
+    api(mn.micronaut.inject)
 
-    implementation(libs.micronaut.runtime)
+    implementation(mn.micronaut.runtime)
 }
 
 jar {

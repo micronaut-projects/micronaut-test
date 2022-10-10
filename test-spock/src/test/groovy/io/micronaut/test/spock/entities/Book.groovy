@@ -1,13 +1,13 @@
 
 package io.micronaut.test.spock.entities
 
-import grails.gorm.annotation.Entity
+//import grails.gorm.annotation.Entity
 import io.micronaut.core.annotation.Introspected
-import org.grails.datastore.gorm.GormEntity
+//import org.grails.datastore.gorm.GormEntity
 
 @Introspected
-@Entity
-class Book implements GormEntity<Book> {
+//@Entity
+class Book { // implements GormEntity<Book> {
     String name
 
     static constraints = {

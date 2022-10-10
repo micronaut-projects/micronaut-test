@@ -5,11 +5,7 @@ plugins {
 
 repositories {
     mavenCentral()
-}
-
-java {
-    sourceCompatibility = "1.8"
-    targetCompatibility = "1.8"
+    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 tasks.withType(Test).configureEach {
@@ -43,25 +39,26 @@ tasks.withType(Jar).configureEach {
 
 dependencies {
     api project(":test-core")
-    api(libs.micronaut.inject)
+    api(mn.micronaut.inject)
     api(libs.junit.jupiter.api)
-    implementation(libs.micronaut.runtime)
+    implementation(mn.micronaut.runtime)
     compileOnly(libs.graal)
 
-    testCompileOnly(libs.micronaut.inject)
+    testCompileOnly(mn.micronaut.inject)
 
-    testAnnotationProcessor(libs.micronaut.inject.java)
-    testAnnotationProcessor(libs.micronaut.graal)
+    testAnnotationProcessor(mn.micronaut.inject.java)
+    testAnnotationProcessor(mn.micronaut.graal)
 
     testImplementation(libs.junit.jupiter.params)
-    testImplementation(libs.micronaut.http.server.netty)
-    testImplementation(libs.micronaut.http.client)
+    testImplementation(mn.micronaut.http.server.netty)
+    testImplementation(mn.micronaut.http.client)
     testImplementation(libs.managed.mockito.junit.jupiter)
     testImplementation(libs.managed.hamcrest)
-    testImplementation(libs.micronaut.data.tx)
-    testImplementation(libs.micronaut.data.hibernate.jpa)
+    testImplementation(mn.micronaut.data.tx)
+    testImplementation(mn.micronaut.data.hibernate.jpa)
+    testImplementation(mn.snakeyaml)
 
-    testRuntimeOnly(libs.micronaut.jdbc.tomcat)
+    testRuntimeOnly(mn.micronaut.jdbc.tomcat)
     testRuntimeOnly(libs.h2)
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
