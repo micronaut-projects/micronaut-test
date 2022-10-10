@@ -5,7 +5,7 @@ managed-mockito = "4.6.1"
 managed-kotest = "5.4.1"
 managed-junit = "5.8.2"
 managed-spock = "2.2-groovy-4.0"
-managed-rest-assured = "5.1.1"
+managed-rest-assured = "5.2.0"
 
 kotlin = "1.7.20"
 
