@@ -36,12 +36,17 @@ dependencies {
 
     testRuntimeOnly(mn.micronaut.jdbc.tomcat)
     testRuntimeOnly(libs.h2)
-
+    testImplementation(mn.snakeyaml)
     testImplementation(libs.managed.kotest.assertions.core.jvm)
 }
 
 test {
     useJUnitPlatform()
+}
+
+// PTS just skips Kotest tests silently...
+tasks.withType(Test).configureEach {
+    predictiveSelection.enabled = false
 }
 
 compileTestKotlin {
