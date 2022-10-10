@@ -39,6 +39,11 @@ test {
     useJUnitPlatform()
 }
 
+// PTS just skips Kotest tests silently...
+tasks.withType(Test).configureEach {
+    predictiveSelection.enabled = false
+}
+
 compileTestKotlin {
     kotlinOptions {
         jvmTarget = '1.8'
