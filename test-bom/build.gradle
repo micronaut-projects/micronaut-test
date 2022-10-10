@@ -1,3 +1,9 @@
 plugins {
     id "io.micronaut.build.internal.bom"
 }
+
+micronautBom {
+    suppressions {
+        acceptedLibraryRegressions.add("micronaut-test-kotest")
+    }
+}
