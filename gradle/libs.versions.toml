@@ -12,7 +12,7 @@ managed-rest-assured = "5.1.1"
 # Kotest 4
 kotest = "4.6.4"
 
-kotlin = "1.7.10"
+kotlin = "1.7.20"
 
 # Micronaut
 micronaut = "4.0.0-SNAPSHOT"
