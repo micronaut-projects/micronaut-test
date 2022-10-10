@@ -5,6 +5,7 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import io.micronaut.test.annotation.TransactionMode
 import io.micronaut.test.spock.entities.Book
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Stepwise
 
@@ -13,6 +14,7 @@ import jakarta.inject.Inject
 @MicronautTest(packages = "io.micronaut.test.spock.entities", transactionMode = TransactionMode.SINGLE_TRANSACTION)
 @HibernateProperties
 @Stepwise
+@Ignore("GORM is not supported yet")
 class GormTransactionalSingleTransactionSpec extends Specification {
 
     @Inject
