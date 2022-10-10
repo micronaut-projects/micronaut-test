@@ -2,15 +2,10 @@
 managed-assertj = "3.23.1"
 managed-hamcrest = "2.2"
 managed-mockito = "4.6.1"
-managed-mockk = "1.12.5"
-# Kotest 5
 managed-kotest = "5.4.1"
 managed-junit = "5.8.2"
 managed-spock = "2.2-groovy-4.0"
 managed-rest-assured = "5.1.1"
-
-# Kotest 4
-kotest = "4.6.4"
 
 kotlin = "1.7.20"
 
@@ -24,10 +19,7 @@ managed-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "managed-ha
 managed-mockito-core = { module = "org.mockito:mockito-core", version.ref = "managed-mockito" }
 managed-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "managed-mockito" }
 managed-mockk = { module = "io.mockk:mockk", version.ref = "managed-mockk" }
-# Kotest 4
-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
-# Kotest 5 is managed
+# Kotest 5
 managed-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "managed-kotest" }
 managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "managed-kotest" }
 
