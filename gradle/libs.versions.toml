@@ -2,14 +2,13 @@
 managed-assertj = "3.23.1"
 managed-hamcrest = "2.2"
 managed-mockito = "4.8.0"
-managed-kotest = "5.4.2"
+managed-kotest = "5.5.1"
 managed-spock = "2.2-groovy-4.0"
 managed-mockk = "1.12.8"
 managed-junit = "5.9.0"
 managed-rest-assured = "5.2.0"
 
 kotlin = "1.7.20"
-
 micronaut = "4.0.0-SNAPSHOT"
 
 micronaut-gradle-plugin = "3.6.2"
@@ -27,6 +26,8 @@ managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jv
 boms-junit = { module = "org.junit:junit-bom", version.ref = "managed-junit" }
 boms-spock = { module = "org.spockframework:spock-bom", version.ref = "managed-spock" }
 boms-rest-assured = { module = "io.rest-assured:rest-assured-bom", version.ref = "managed-rest-assured" }
+
+micronaut-library-plugin = { module = "io.micronaut.library:io.micronaut.library.gradle.plugin", version.ref = "micronaut-gradle-plugin" }
 
 micronaut-library-plugin = { module = "io.micronaut.library:io.micronaut.library.gradle.plugin", version.ref = "micronaut-gradle-plugin" }
 
