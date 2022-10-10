@@ -12,7 +12,7 @@ repositories {
 dependencies {
     api project(":test-core")
     api(mn.micronaut.runtime)
-    api(libs.kotest.runner.junit5.jvm)
+    api(libs.managed.kotest.runner.junit5.jvm)
 
     implementation(mn.micronaut.inject)
     implementation project(":test-junit5")
@@ -37,7 +37,7 @@ dependencies {
     testRuntimeOnly(mn.micronaut.jdbc.tomcat)
     testRuntimeOnly(libs.h2)
 
-    testImplementation(libs.kotest.assertions.core.jvm)
+    testImplementation(libs.managed.kotest.assertions.core.jvm)
 }
 
 test {
