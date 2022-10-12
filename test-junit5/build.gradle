@@ -20,7 +20,7 @@ tasks.withType(Test).configureEach {
 
 configurations {
     nativeImageTestClasspath {
-        exclude(group: 'org.codehaus.groovy')
+        exclude(group: 'org.apache.groovy')
     }
 }
 
