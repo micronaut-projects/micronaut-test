@@ -11,6 +11,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("io.micronaut.test:micronaut-test-junit5:{version}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:{junitVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:{junitVersion}")
 }
 
 // use JUnit 5 platform
