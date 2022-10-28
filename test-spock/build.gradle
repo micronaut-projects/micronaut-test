@@ -14,7 +14,7 @@ dependencies {
     api(libs.spock.core) {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
-    implementation(mn.micronaut.runtime)
+    implementation(mn.micronaut.context)
     compileOnly(libs.jakarta.inject.api)
 
     testCompileOnly(libs.jakarta.inject.api)

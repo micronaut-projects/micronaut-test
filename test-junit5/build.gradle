@@ -41,7 +41,7 @@ dependencies {
     api project(":test-core")
     api(mn.micronaut.inject)
     api(libs.junit.jupiter.api)
-    implementation(mn.micronaut.runtime)
+    implementation(mn.micronaut.context)
     compileOnly(libs.graal)
 
     testCompileOnly(mn.micronaut.inject)
