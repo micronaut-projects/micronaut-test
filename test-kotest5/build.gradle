@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     api project(":test-core")
-    api(mn.micronaut.runtime)
+    api(mn.micronaut.context)
     api(libs.managed.kotest.runner.junit5.jvm)
 
     implementation(mn.micronaut.inject)

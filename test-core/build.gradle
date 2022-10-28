@@ -13,7 +13,7 @@ dependencies {
 
     api(mn.micronaut.inject)
 
-    implementation(mn.micronaut.runtime)
+    implementation(mn.micronaut.context)
 }
 
 jar {
