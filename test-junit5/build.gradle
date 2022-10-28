@@ -1,5 +1,5 @@
 plugins {
-    id 'io.micronaut.library' // Required to configure Graal for nativeTest
+    id 'io.micronaut.graalvm' // Required to configure Graal for nativeTest
     id "io.micronaut.build.internal.base-module"
 }
 
