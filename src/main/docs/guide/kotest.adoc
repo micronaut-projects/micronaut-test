@@ -1,6 +1,6 @@
 === Setting up Kotest 4
 
-NOTE: A new <<kotest, Kotest 5>> module is now available. This module is maintained for backwards compatibility but new users should consider moving to Kotest 5
+NOTE: A new <<kotest5, Kotest 5>> module is now available. This module is maintained for backwards compatibility but new users should move to Kotest 5.
 
 To get started using Kotest 4 you need the following dependencies in your build configuration:
 
