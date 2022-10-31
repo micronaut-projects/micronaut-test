@@ -1,7 +1,7 @@
 [versions]
 managed-assertj = "3.23.1"
 managed-hamcrest = "2.2"
-managed-mockito = "4.8.0"
+managed-mockito = "4.8.1"
 managed-mockk = "1.12.8"
 managed-kotest = "4.6.4"
 managed-junit = "5.9.1"
