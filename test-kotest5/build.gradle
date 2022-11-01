@@ -30,6 +30,7 @@ dependencies {
 
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.jackson.databind)
 
     testImplementation(mn.micronaut.data.tx)
     testImplementation(mn.micronaut.data.hibernate.jpa)

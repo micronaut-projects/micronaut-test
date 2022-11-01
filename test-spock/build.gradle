@@ -21,6 +21,7 @@ dependencies {
     testImplementation(mn.micronaut.inject.groovy)
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.jackson.databind)
 
     testImplementation(mn.micronaut.jdbc.hikari)
     testImplementation(mn.micronaut.hibernate.validator)
