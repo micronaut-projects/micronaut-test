@@ -8,7 +8,7 @@ managed-rest-assured = "5.2.0"
 managed-kotest = "5.5.1"
 managed-spock = "2.2-groovy-4.0"
 
-kotlin = "1.7.20"
+kotlin = "1.7.21"
 micronaut = "4.0.0-SNAPSHOT"
 
 micronaut-gradle-plugin = "3.6.3"
