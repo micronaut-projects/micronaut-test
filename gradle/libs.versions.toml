@@ -14,7 +14,7 @@ kotlin = "1.7.10"
 
 # Micronaut
 micronaut = "3.7.3"
-micronaut-gradle-plugin = "3.6.3"
+micronaut-gradle-plugin = "3.6.5"
 
 [libraries]
 managed-assertj-core = { module = "org.assertj:assertj-core", version.ref = "managed-assertj" }
