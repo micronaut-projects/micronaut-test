@@ -11,7 +11,7 @@ managed-spock = "2.2-groovy-4.0"
 kotlin = "1.7.21"
 micronaut = "4.0.0-SNAPSHOT"
 
-micronaut-gradle-plugin = "3.6.3"
+micronaut-gradle-plugin = "3.6.5"
 
 [libraries]
 managed-assertj-core = { module = "org.assertj:assertj-core", version.ref = "managed-assertj" }
