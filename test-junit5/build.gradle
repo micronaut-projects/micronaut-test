@@ -60,6 +60,7 @@ dependencies {
 
     testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
     testRuntimeOnly(libs.h2)
+    testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
 

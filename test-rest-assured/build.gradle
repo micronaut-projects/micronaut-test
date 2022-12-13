@@ -32,4 +32,5 @@ dependencies {
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(libs.managed.hamcrest)
     testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(mnSerde.micronaut.serde.jackson)
 }

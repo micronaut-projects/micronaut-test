@@ -14,6 +14,7 @@ graal-svm = "22.0.0.2"
 
 micronaut-data = "3.9.0"
 micronaut-hibernate-validator = "4.0.0-SNAPSHOT"
+micronaut-serde = "2.0.0-SNAPSHOT"
 micronaut-spring = "4.3.1"
 micronaut-sql = "5.0.0-SNAPSHOT"
 
@@ -23,6 +24,7 @@ micronaut-gradle-plugin = "3.6.5"
 
 micronaut-data = { module = "io.micronaut.data:micronaut-data-bom", version.ref = "micronaut-data" }
 micronaut-hibernate-validator = { module = "io.micronaut.beanvalidation:micronaut-hibernate-validator", version.ref = "micronaut-hibernate-validator" }
+micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
 micronaut-spring = { module = "io.micronaut.spring:micronaut-spring-bom", version.ref = "micronaut-spring" }
 micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "micronaut-sql" }
 

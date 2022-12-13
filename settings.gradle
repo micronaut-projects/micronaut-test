@@ -15,6 +15,7 @@ micronautBuild {
     addSnapshotRepository()
     importMicronautCatalog()
     importMicronautCatalog("micronaut-data")
+    importMicronautCatalog("micronaut-serde")
     importMicronautCatalog("micronaut-spring")
     importMicronautCatalog("micronaut-sql")
 }

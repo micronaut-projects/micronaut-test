@@ -28,5 +28,6 @@ dependencies {
     testImplementation(mnSpring.micronaut.spring)
     testImplementation(mn.snakeyaml)
 
+    testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(libs.h2)
 }
