@@ -10,10 +10,12 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @MicronautTest(transactional = true)
 @DbProperties
+@Disabled("Disabled until we get a working micronaut-data for 4.0.0")
 class TransactionalTest {
 
   @Inject

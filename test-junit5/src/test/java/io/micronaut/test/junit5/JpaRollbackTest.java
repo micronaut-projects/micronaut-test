@@ -2,6 +2,7 @@
 package io.micronaut.test.junit5;
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @MicronautTest
 @DbProperties
+@Disabled("Disabled until we get a working micronaut-data for 4.0.0")
 public class JpaRollbackTest {
 
     @Inject
