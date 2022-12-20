@@ -6,17 +6,18 @@ pluginManagement {
 }
 
 plugins {
-    id("io.micronaut.build.shared.settings") version "6.1.0"
+    id("io.micronaut.build.shared.settings") version "6.1.1"
 }
 
-dependencyResolutionManagement {
-    repositories {
-        maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
-    }
-}
+enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
 micronautBuild {
+    addSnapshotRepository()
     importMicronautCatalog()
+    importMicronautCatalog("micronaut-data")
+    importMicronautCatalog("micronaut-serde")
+    importMicronautCatalog("micronaut-spring")
+    importMicronautCatalog("micronaut-sql")
 }
 
 rootProject.name = 'test-parent'

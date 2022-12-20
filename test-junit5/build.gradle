@@ -42,7 +42,7 @@ dependencies {
     api(mn.micronaut.inject)
     api(libs.junit.jupiter.api)
     implementation(mn.micronaut.context)
-    compileOnly(libs.graal)
+    compileOnly(libs.graal.svm)
 
     testCompileOnly(mn.micronaut.inject)
 
@@ -54,12 +54,13 @@ dependencies {
     testImplementation(mn.micronaut.http.client)
     testImplementation(libs.managed.mockito.junit.jupiter)
     testImplementation(libs.managed.hamcrest)
-    testImplementation(mn.micronaut.data.tx)
-    testImplementation(mn.micronaut.data.hibernate.jpa)
+    testImplementation(mnData.micronaut.data.tx)
+    testImplementation(mnData.micronaut.data.hibernate.jpa)
     testImplementation(mn.snakeyaml)
 
-    testRuntimeOnly(mn.micronaut.jdbc.tomcat)
+    testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
     testRuntimeOnly(libs.h2)
+    testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
