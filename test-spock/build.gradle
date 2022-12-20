@@ -22,11 +22,12 @@ dependencies {
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
 
-    testImplementation(mn.micronaut.jdbc.hikari)
-    testImplementation(mn.micronaut.hibernate.validator)
+    testImplementation(mnSql.micronaut.jdbc.hikari)
+    testImplementation(libs.micronaut.hibernate.validator)
 //    testImplementation(mn.micronaut.hibernate.gorm)
-    testImplementation(mn.micronaut.spring)
+    testImplementation(mnSpring.micronaut.spring)
     testImplementation(mn.snakeyaml)
 
+    testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(libs.h2)
 }

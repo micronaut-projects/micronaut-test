@@ -10,10 +10,24 @@ managed-spock = "2.3-groovy-4.0"
 
 kotlin = "1.7.21"
 micronaut = "4.0.0-SNAPSHOT"
+graal-svm = "22.0.0.2"
+
+micronaut-data = "3.9.0"
+micronaut-hibernate-validator = "4.0.0-SNAPSHOT"
+micronaut-serde = "2.0.0-SNAPSHOT"
+micronaut-spring = "4.3.1"
+micronaut-sql = "5.0.0-SNAPSHOT"
 
 micronaut-gradle-plugin = "3.6.7"
 
 [libraries]
+
+micronaut-data = { module = "io.micronaut.data:micronaut-data-bom", version.ref = "micronaut-data" }
+micronaut-hibernate-validator = { module = "io.micronaut.beanvalidation:micronaut-hibernate-validator", version.ref = "micronaut-hibernate-validator" }
+micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
+micronaut-spring = { module = "io.micronaut.spring:micronaut-spring-bom", version.ref = "micronaut-spring" }
+micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "micronaut-sql" }
+
 managed-assertj-core = { module = "org.assertj:assertj-core", version.ref = "managed-assertj" }
 managed-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "managed-hamcrest" }
 managed-mockito-core = { module = "org.mockito:mockito-core", version.ref = "managed-mockito" }
@@ -29,6 +43,8 @@ boms-rest-assured = { module = "io.rest-assured:rest-assured-bom", version.ref =
 
 micronaut-library-plugin = { module = "io.micronaut.library:io.micronaut.library.gradle.plugin", version.ref = "micronaut-gradle-plugin" }
 
+graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
+
 spock-core = { module = "org.spockframework:spock-core" }
 h2 = { module = "com.h2database:h2" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
@@ -38,5 +54,4 @@ junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", vers
 rest-assured = { module = "io.rest-assured:rest-assured" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-graal = { module = "org.graalvm.nativeimage:svm" }
 groovy = { module = "org.apache.groovy:groovy" }
