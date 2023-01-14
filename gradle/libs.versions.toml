@@ -18,7 +18,7 @@ micronaut-serde = "2.0.0-SNAPSHOT"
 micronaut-spring = "4.3.1"
 micronaut-sql = "5.0.0-SNAPSHOT"
 
-micronaut-gradle-plugin = "3.6.7"
+micronaut-gradle-plugin = "3.7.0"
 
 [libraries]
 
