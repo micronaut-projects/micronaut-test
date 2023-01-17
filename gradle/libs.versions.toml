@@ -10,7 +10,7 @@ managed-spock = "2.3-groovy-4.0"
 
 kotlin = "1.7.21"
 micronaut = "4.0.0-SNAPSHOT"
-graal-svm = "22.0.0.2"
+graal-svm = "22.3.1"
 
 micronaut-data = "3.9.0"
 micronaut-hibernate-validator = "4.0.0-SNAPSHOT"
