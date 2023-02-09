@@ -21,7 +21,7 @@ class MathInnerServiceSpec extends Specification {
         result == 50
     }
 
-    @MockBean(MathServiceImpl)
+    @MockBean(MathService)
     static class MyMock implements MathService {
 
         @Override
