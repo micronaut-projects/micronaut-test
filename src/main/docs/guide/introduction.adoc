@@ -45,7 +45,7 @@ ApplicationContext context //refers to the current application context within th
 
 ### Eager Singleton Initialization
 
-If you enable https://docs.micronaut.io/latest/guide/index.html#eagerInit[eager singleton initialization] in your application, Micronaut will eagerly initialize all singletons at startup time. This can be useful for applications that need to perform some initialization at startup time, such as registering a bean with a third party library.
+If you enable https://docs.micronaut.io/latest/guide/index.html#eagerInit[eager singleton initialization] in your application, the Micronaut Framework eagerly initializes all singletons at startup time. This can be useful for applications that need to perform some initialization at startup time, such as registering a bean with a third party library.
 
 However, as tests annotated with `@MicronautTest` are implicitly in the `Singleton` scope, this can cause problems injecting some beans (for example an `HttpClient`) into your test class.
 
