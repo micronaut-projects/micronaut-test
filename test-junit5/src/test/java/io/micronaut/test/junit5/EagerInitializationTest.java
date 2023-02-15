@@ -18,7 +18,6 @@ import java.util.function.Supplier;
 
 @MicronautTest(contextBuilder = EagerInitializationTest.EagerContextBuilder.class)
 @Property(name = "spec.name", value = "EagerInitializationTest")
-@Property(name = "micronaut.eager-init-singletons", value = "true")
 class EagerInitializationTest {
 
     // tag::eager[]
