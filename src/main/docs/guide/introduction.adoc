@@ -52,17 +52,9 @@ However, as tests annotated with `@MicronautTest` are implicitly in the `Singlet
 To avoid this, you can either disable eager singleton initialization for your tests, or you will need to manually get an instance of the bean you would normally inject.  As an example, to get an `HttpClient` you could do:
 
 [source,java]
+.Using an HttpClient in a test with eager singleton initialization enabled
 ----
-@Inject
-EmbeddedServer server; // <1>
-
-Supplier<HttpClient> client = SupplierUtil.memoizedNonEmpty(() ->
-    server.getApplicationContext().createBean(HttpClient.class, server.getURL())); // <2>
-
-@Test
-void testEagerSingleton() {
-    Assertions.assertEquals("eager", client.get().toBlocking().retrieve("/eager")); // <3>
-}
+include::test-junit5/src/test/java/io/micronaut/test/junit5/EagerInitializationTest.java[tags=eager, indent=0]
 ----
 
 <1> Inject the `EmbeddedServer` as normal
