@@ -112,7 +112,8 @@ object MicronautKotestExtension: TestListener, ConstructorExtension, TestCaseExt
                 micronautTest.rebuildContext,
                 micronautTest.contextBuilder.map { kClass -> kClass.java }.toTypedArray(),
                 micronautTest.transactionMode,
-                micronautTest.startApplication
+                micronautTest.startApplication,
+                false
         )
     }
 
