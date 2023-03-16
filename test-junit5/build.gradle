@@ -38,7 +38,7 @@ tasks.withType(Jar).configureEach {
 }
 
 dependencies {
-    api project(":test-core")
+    api projects.micronautTestCore
     api(mn.micronaut.inject)
     api(libs.junit.jupiter.api)
     implementation(mn.micronaut.context)

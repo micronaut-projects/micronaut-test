@@ -16,7 +16,7 @@ micronautBuild {
 
 dependencies {
     annotationProcessor(mn.micronaut.inject.java)
-    api project(":test-core")
+    api projects.micronautTestCore
     api(platform(libs.boms.rest.assured))
     api(mn.micronaut.inject)
     api(libs.rest.assured) {
@@ -28,7 +28,7 @@ dependencies {
 
     testAnnotationProcessor(mn.micronaut.inject.java)
     testImplementation(libs.junit.jupiter.api)
-    testImplementation project(":test-junit5")
+    testImplementation projects.micronautTestJunit5
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(libs.managed.hamcrest)
     testRuntimeOnly(libs.junit.jupiter.engine)

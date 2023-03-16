@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
     api(platform(libs.boms.spock))
-    api project(":test-core")
+    api projects.micronautTestCore
     api(mn.micronaut.inject)
     api(libs.spock.core) {
         exclude group: "org.codehaus.groovy", module: "groovy-all"

@@ -1,4 +1,10 @@
 [versions]
+micronaut-docs = "2.0.0"
+micronaut = "4.0.0-SNAPSHOT"
+micronaut-test = "3.1.1"
+
+groovy = "4.0.10"
+
 managed-assertj = "3.24.2"
 managed-hamcrest = "2.2"
 managed-mockito = "5.1.1"
@@ -9,7 +15,6 @@ managed-kotest = "5.5.5"
 managed-spock = "2.3-groovy-4.0"
 
 kotlin = "1.8.10"
-micronaut = "4.0.0-SNAPSHOT"
 graal-svm = "22.3.1"
 
 micronaut-data = "3.9.6"
@@ -18,7 +23,7 @@ micronaut-serde = "2.0.0-SNAPSHOT"
 micronaut-spring = "4.5.0"
 micronaut-sql = "5.0.0-SNAPSHOT"
 
-micronaut-gradle-plugin = "3.7.3"
+micronaut-gradle-plugin = "4.0.0-SNAPSHOT"
 
 [libraries]
 
@@ -55,3 +60,5 @@ rest-assured = { module = "io.rest-assured:rest-assured" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 groovy = { module = "org.apache.groovy:groovy" }
+
+kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }

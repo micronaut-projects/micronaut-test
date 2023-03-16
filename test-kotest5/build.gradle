@@ -1,6 +1,6 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
-    id "org.jetbrains.kotlin.kapt" version "$kotlinVersion"
+    id "org.jetbrains.kotlin.jvm"
+    id "org.jetbrains.kotlin.kapt"
     id "io.micronaut.build.internal.module"
 }
 
@@ -10,12 +10,12 @@ repositories {
 }
 
 dependencies {
-    api project(":test-core")
+    api projects.micronautTestCore
     api(mn.micronaut.context)
     api(libs.managed.kotest.runner.junit5.jvm)
 
     implementation(mn.micronaut.inject)
-    implementation project(":test-junit5")
+    implementation projects.micronautTestJunit5
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.kotlin.reflect)
 
@@ -48,13 +48,6 @@ test {
     // PTS fails for Kotest because it's not supported, yet.
     // see https://docs.gradle.com/enterprise/predictive-test-selection/#_frameworks_and_languages
     predictiveSelection.enabled = false
-}
-
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = '1.8'
-        javaParameters = true
-    }
 }
 
 // TODO temporarily disable binary compatibility checks
