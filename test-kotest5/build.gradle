@@ -1,12 +1,7 @@
 plugins {
+    id "io.micronaut.build.internal.micronaut-test-module"
     id "org.jetbrains.kotlin.jvm"
     id "org.jetbrains.kotlin.kapt"
-    id "io.micronaut.build.internal.module"
-}
-
-repositories {
-    mavenCentral()
-    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 dependencies {
@@ -41,18 +36,11 @@ dependencies {
     testImplementation(libs.managed.kotest.assertions.core.jvm)
 }
 
-test {
+tasks.named("test") {
     useJUnitPlatform {
         includeEngines("kotest")
     }
     // PTS fails for Kotest because it's not supported, yet.
     // see https://docs.gradle.com/enterprise/predictive-test-selection/#_frameworks_and_languages
     predictiveSelection.enabled = false
-}
-
-// TODO temporarily disable binary compatibility checks
-micronautBuild {
-    binaryCompatibility {
-        enabled = false
-    }
 }

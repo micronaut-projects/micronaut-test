@@ -1,0 +1,32 @@
+plugins {
+    id "io.micronaut.build.internal.module"
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+}
+
+configurations.all {
+    resolutionStrategy {
+        dependencySubstitution {
+            // The internal Micronaut module plugin automatically adds a dependency on
+            // Micronaut test, which causes conflicts in this project, since we _are_ Micronaut test.
+            rootProject.subprojects.name.each {
+                if (it.contains('-bom')) {
+                    substitute(platform(module("io.micronaut.test:$it"))).using(platform(project(":$it")))
+                } else {
+                    substitute(module("io.micronaut.test:$it")).using(project(":$it"))
+                }
+            }
+        }
+    }
+}
+
+// TODO temporarily disable binary compatibility checks
+micronautBuild {
+    binaryCompatibility {
+        def (major, minor, _) = version.split("\\.")
+        enabled = Integer.parseInt(major) >= 4 && Integer.parseInt(minor) > 0
+    }
+}

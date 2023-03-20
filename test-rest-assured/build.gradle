@@ -1,17 +1,5 @@
 plugins {
-    id "io.micronaut.build.internal.base-module"
-}
-
-repositories {
-    mavenCentral()
-    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
-}
-
-micronautBuild {
-    // new module, so no binary check
-    binaryCompatibility {
-        enabled.set(false)
-    }
+    id "io.micronaut.build.internal.micronaut-test-module"
 }
 
 dependencies {

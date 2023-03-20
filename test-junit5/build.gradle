@@ -1,11 +1,6 @@
 plugins {
+    id "io.micronaut.build.internal.micronaut-test-module"
     id 'io.micronaut.graalvm' // Required to configure Graal for nativeTest
-    id "io.micronaut.build.internal.base-module"
-}
-
-repositories {
-    mavenCentral()
-    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 tasks.withType(Test).configureEach {
@@ -73,6 +68,6 @@ graalvmNative {
     }
 }
 
-test {
+tasks.named("test") {
     systemProperty("mockito.test.enabled", "true")
 }
