@@ -18,8 +18,8 @@ kotlin = "1.8.10"
 graal-svm = "22.3.1"
 
 micronaut-data = "3.9.6"
-micronaut-serde = "2.0.0-SNAPSHOT"
 micronaut-hibernate-validator = "4.0.0-M2"
+micronaut-serde = "2.0.0-M1"
 micronaut-spring = "4.5.0"
 micronaut-sql = "5.0.0-SNAPSHOT"
 
