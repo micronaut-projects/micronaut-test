@@ -51,7 +51,6 @@ micronaut-library-plugin = { module = "io.micronaut.library:io.micronaut.library
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
 
 spock-core = { module = "org.spockframework:spock-core" }
-h2 = { module = "com.h2database:h2" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "managed-junit" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "managed-junit" }

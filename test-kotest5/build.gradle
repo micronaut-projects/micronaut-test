@@ -30,7 +30,7 @@ dependencies {
     testImplementation(mnData.micronaut.data.hibernate.jpa)
 
     testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
-    testRuntimeOnly(libs.h2)
+    testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testImplementation(mn.snakeyaml)
     testImplementation(libs.managed.kotest.assertions.core.jvm)

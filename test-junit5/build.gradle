@@ -54,7 +54,7 @@ dependencies {
     testImplementation(mn.snakeyaml)
 
     testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
-    testRuntimeOnly(libs.h2)
+    testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
