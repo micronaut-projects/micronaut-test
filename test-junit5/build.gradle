@@ -60,6 +60,9 @@ dependencies {
 }
 
 graalvmNative {
+    metadataRepository {
+        enabled = true
+    }
     binaries {
         test {
             buildArgs.add('--initialize-at-run-time=io.micronaut.test.junit5.server.ExternalServerTest')
