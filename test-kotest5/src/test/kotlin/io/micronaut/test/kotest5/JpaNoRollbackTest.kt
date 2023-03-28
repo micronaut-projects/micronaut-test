@@ -1,6 +1,5 @@
 package io.micronaut.test.kotest5
 
-import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -8,11 +7,10 @@ import io.kotest.matchers.shouldNotBe
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import io.micronaut.transaction.SynchronousTransactionManager
 import io.micronaut.transaction.support.DefaultTransactionDefinition
-import javax.persistence.EntityManager
+import jakarta.persistence.EntityManager
 
 @MicronautTest(rollback = false)
 @DbProperties
-@Ignored("Disabled until we get a working micronaut-data for 4.0.0")
 class JpaNoRollbackTest(
     private val entityManager: EntityManager,
     private val transactionManager: SynchronousTransactionManager<Any>
