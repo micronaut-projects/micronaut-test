@@ -1,15 +1,10 @@
 plugins {
-    id "io.micronaut.build.internal.module"
-}
-
-repositories {
-    mavenCentral()
-    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    id "io.micronaut.build.internal.micronaut-test-module"
 }
 
 dependencies {
     api(platform(libs.boms.spock))
-    api project(":test-core")
+    api projects.micronautTestCore
     api(mn.micronaut.inject)
     api(libs.spock.core) {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
@@ -29,5 +24,5 @@ dependencies {
     testImplementation(mn.snakeyaml)
 
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
-    testRuntimeOnly(libs.h2)
+    testRuntimeOnly(mnSql.h2)
 }

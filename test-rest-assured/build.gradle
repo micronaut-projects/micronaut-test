@@ -1,22 +1,10 @@
 plugins {
-    id "io.micronaut.build.internal.base-module"
-}
-
-repositories {
-    mavenCentral()
-    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
-}
-
-micronautBuild {
-    // new module, so no binary check
-    binaryCompatibility {
-        enabled.set(false)
-    }
+    id "io.micronaut.build.internal.micronaut-test-module"
 }
 
 dependencies {
     annotationProcessor(mn.micronaut.inject.java)
-    api project(":test-core")
+    api projects.micronautTestCore
     api(platform(libs.boms.rest.assured))
     api(mn.micronaut.inject)
     api(libs.rest.assured) {
@@ -28,7 +16,7 @@ dependencies {
 
     testAnnotationProcessor(mn.micronaut.inject.java)
     testImplementation(libs.junit.jupiter.api)
-    testImplementation project(":test-junit5")
+    testImplementation projects.micronautTestJunit5
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(libs.managed.hamcrest)
     testRuntimeOnly(libs.junit.jupiter.engine)
