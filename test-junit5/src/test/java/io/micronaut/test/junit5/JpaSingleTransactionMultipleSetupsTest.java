@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
 @DbProperties
-@Disabled("Disabled until we get a working micronaut-data for 4.0.0")
 public class JpaSingleTransactionMultipleSetupsTest {
 
     @Inject

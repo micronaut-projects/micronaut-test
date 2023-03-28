@@ -6,7 +6,6 @@ import io.micronaut.transaction.SynchronousTransactionManager;
 import io.micronaut.transaction.TransactionStatus;
 import io.micronaut.transaction.support.DefaultTransactionDefinition;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -22,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @MicronautTest(rollback = false)
 @DbProperties
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Disabled("Disabled until we get a working micronaut-data for 4.0.0")
 public class JpaNoRollbackTest {
 
     @Inject
