@@ -1,17 +1,13 @@
-
 package io.micronaut.test.kotest5
 
-import io.kotest.core.annotation.Ignored
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
-
-import javax.persistence.EntityManager
+import jakarta.persistence.EntityManager
 
 @MicronautTest
 @DbProperties
-@Ignored("Disabled until we get a working micronaut-data for 4.0.0")
 class JpaRollbackTest(private val entityManager: EntityManager): BehaviorSpec({
 
     given("rollback between tests") {
