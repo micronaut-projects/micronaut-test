@@ -1,7 +1,7 @@
 plugins {
     id "io.micronaut.build.internal.micronaut-test-module"
-    alias(libs.plugins.kotlin.gradle.jvm)
-    alias(libs.plugins.kotlin.gradle.kapt)
+    id "org.jetbrains.kotlin.jvm"
+    id "org.jetbrains.kotlin.kapt"
 }
 
 dependencies {
