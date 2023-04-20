@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title>Micronaut Test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
     <link rel="stylesheet" href="../css/custom.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
@@ -52,11 +51,13 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#junit5"><strong>4</strong><span>Testing with JUnit 5</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#kotest5"><strong>5</strong><span>Testing with Kotest 5</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#kotest"><strong>5</strong><span>Testing with Kotest 4</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#restAssured"><strong>6</strong><span>REST Assured</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#kotest5"><strong>6</strong><span>Testing with Kotest 5</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>7</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#restAssured"><strong>7</strong><span>REST Assured</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>8</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -95,11 +96,13 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-junit5"><a href="#junit5"><strong>4</strong><span>Testing with JUnit 5</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-kotest5"><a href="#kotest5"><strong>5</strong><span>Testing with Kotest 5</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-kotest"><a href="#kotest"><strong>5</strong><span>Testing with Kotest 4</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-restAssured"><a href="#restAssured"><strong>6</strong><span>REST Assured</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-kotest5"><a href="#kotest5"><strong>6</strong><span>Testing with Kotest 5</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>7</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-restAssured"><a href="#restAssured"><strong>7</strong><span>REST Assured</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>8</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -115,7 +118,7 @@
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/introduction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/3.10.x/src/main/docs/guide/introduction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -209,11 +212,54 @@ EmbeddedServer server //refers to the server that was started up for this test s
 ApplicationContext context //refers to the current application context within the scope of the test</code></pre>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_eager_singleton_initialization">Eager Singleton Initialization</h3>
+<div class="paragraph">
+<p>If you enable <a href="https://docs.micronaut.io/latest/guide/index.html#eagerInit">eager singleton initialization</a> in your application, the Micronaut Framework eagerly initializes all singletons at startup time. This can be useful for applications that need to perform some initialization at startup time, such as registering a bean with a third party library.</p>
+</div>
+<div class="paragraph">
+<p>However, as tests annotated with <code>@MicronautTest</code> are implicitly in the <code>Singleton</code> scope, this can cause problems injecting some beans (for example an <code>HttpClient</code>) into your test class.</p>
+</div>
+<div class="paragraph">
+<p>To avoid this, you can either disable eager singleton initialization for your tests, or you will need to manually get an instance of the bean you would normally inject.  As an example, to get an <code>HttpClient</code> you could do:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using an HttpClient in a test with eager singleton initialization enabled</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Inject
+EmbeddedServer server; <i class="conum" data-value="1"></i><b>(1)</b>
+
+Supplier&lt;HttpClient&gt; client = SupplierUtil.memoizedNonEmpty(() -&gt;
+    server.getApplicationContext().createBean(HttpClient.class, server.getURL())); <i class="conum" data-value="2"></i><b>(2)</b>
+
+@Test
+void testEagerSingleton() {
+    Assertions.assertEquals("eager", client.get().toBlocking().retrieve("/eager")); <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Inject the <code>EmbeddedServer</code> as normal</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Create a <code>Supplier</code> that will create the <code>HttpClient</code> when it is first called</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Use the <code>Supplier</code> to get the <code>HttpClient</code> and make the request</td>
+</tr>
+</table>
+</div>
+</div>
 
 <h1 id="releaseHistory"><a class="anchor" href="#releaseHistory"></a>2 Release History</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/releaseHistory.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/3.10.x/src/main/docs/guide/releaseHistory.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -229,7 +275,7 @@ ApplicationContext context //refers to the current application context within th
 <h1 id="spock"><a class="anchor" href="#spock"></a>3 Testing with Spock</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/spock.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/3.10.x/src/main/docs/guide/spock.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -801,7 +847,7 @@ class MyServiceChanged implements MyService {}</code></pre>
 <h1 id="junit5"><a class="anchor" href="#junit5"></a>4 Testing with JUnit 5</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/junit5.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/3.10.x/src/main/docs/guide/junit5.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -819,8 +865,9 @@ class MyServiceChanged implements MyService {}</code></pre>
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
     testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("io.micronaut.test:micronaut-test-junit5:4.0.0-SNAPSHOT")
+    testImplementation("io.micronaut.test:micronaut-test-junit5:3.9.3-SNAPSHOT")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:{junitVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:{junitVersion}")
 }
 
 // use JUnit 5 platform
@@ -1500,10 +1547,779 @@ class MyServiceChanged implements MyService {}</code></pre>
 </div>
 </div>
 
-<h1 id="kotest5"><a class="anchor" href="#kotest5"></a>5 Testing with Kotest 5</h1>
+<h1 id="kotest"><a class="anchor" href="#kotest"></a>5 Testing with Kotest 4</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/kotest5.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/3.10.x/src/main/docs/guide/kotest.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="sect2">
+<h3 id="_setting_up_kotest_4">Setting up Kotest 4</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A new <a href="#kotest5">Kotest 5</a> module is now available. This module is maintained for backwards compatibility but new users should move to Kotest 5.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To get started using Kotest 4 you need the following dependencies in your build configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
+    kaptTest "io.micronaut:micronaut-inject-java"
+    testImplementation "io.micronaut.test:micronaut-test-kotest:3.9.3-SNAPSHOT"
+    testImplementation "io.mockk:mockk:{mockkVersion}"
+    testImplementation "io.kotest:kotest-runner-junit5-jvm:{kotestVersion}"
+}
+
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or for Maven:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-test-kotest&lt;/artifactId&gt;
+    &lt;version&gt;3.9.3-SNAPSHOT&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.mockk&lt;/groupId&gt;
+    &lt;artifactId&gt;mockk&lt;/artifactId&gt;
+    &lt;version&gt;{mockkVersion}&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.kotest&lt;/groupId&gt;
+    &lt;artifactId&gt;kotest-runner-junit5-jvm&lt;/artifactId&gt;
+    &lt;version&gt;{kotestVersion}&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that for Maven you will also need to configure the Surefire plugin to use JUnit platform and configure the kotlin maven plugin:</p>
+</div>
+<div class="listingblock">
+<div class="title">pom.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.22.2&lt;/version&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+            &lt;artifactId&gt;junit-jupiter-engine&lt;/artifactId&gt;
+            &lt;version&gt;5.6.2&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/plugin&gt;
+&lt;plugin&gt;
+    &lt;artifactId&gt;kotlin-maven-plugin&lt;/artifactId&gt;
+    &lt;groupId&gt;org.jetbrains.kotlin&lt;/groupId&gt;
+    &lt;version&gt;1.4.10&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;compilerPlugins&gt;
+            &lt;plugin&gt;all-open&lt;/plugin&gt;
+        &lt;/compilerPlugins&gt;
+        &lt;pluginOptions&gt;
+            &lt;option&gt;all-open:annotation=io.micronaut.aop.Around&lt;/option&gt;
+        &lt;/pluginOptions&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;id&gt;kapt&lt;/id&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;kapt&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;sourceDirs&gt;
+                    &lt;sourceDir&gt;${project.baseDir}/src/main/kotlin&lt;/sourceDir&gt;
+                &lt;/sourceDirs&gt;
+                &lt;annotationProcessorPaths&gt;
+                    &lt;annotationProcessorPath&gt;
+                        &lt;groupId&gt;io.micronaut&lt;/groupId&gt;
+                        &lt;artifactId&gt;micronaut-inject-java&lt;/artifactId&gt;
+                        &lt;version&gt;${micronaut.version}&lt;/version&gt;
+                    &lt;/annotationProcessorPath&gt;
+                    &lt;annotationProcessorPath&gt;
+                        &lt;groupId&gt;io.micronaut&lt;/groupId&gt;
+                        &lt;artifactId&gt;micronaut-validation&lt;/artifactId&gt;
+                        &lt;version&gt;${micronaut.version}&lt;/version&gt;
+                    &lt;/annotationProcessorPath&gt;
+                &lt;/annotationProcessorPaths&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+        &lt;execution&gt;
+            &lt;id&gt;compile&lt;/id&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;compile&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;sourceDirs&gt;
+                    &lt;sourceDir&gt;${project.basedir}/src/main/kotlin&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.basedir}/src/main/java&lt;/sourceDir&gt;
+                &lt;/sourceDirs&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+        &lt;execution&gt;
+            &lt;id&gt;test-kapt&lt;/id&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;test-kapt&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;sourceDirs&gt;
+                    &lt;sourceDir&gt;src/test/kotlin&lt;/sourceDir&gt;
+                &lt;/sourceDirs&gt;
+                &lt;annotationProcessorPaths&gt;
+                    &lt;annotationProcessorPath&gt;
+                        &lt;groupId&gt;io.micronaut&lt;/groupId&gt;
+                        &lt;artifactId&gt;micronaut-inject-java&lt;/artifactId&gt;
+                        &lt;version&gt;${micronaut.version}&lt;/version&gt;
+                    &lt;/annotationProcessorPath&gt;
+                &lt;/annotationProcessorPaths&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+        &lt;execution&gt;
+            &lt;id&gt;test-compile&lt;/id&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;test-compile&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;sourceDirs&gt;
+                    &lt;sourceDir&gt;${project.basedir}/src/test/kotlin&lt;/sourceDir&gt;
+                    &lt;sourceDir&gt;${project.basedir}/target/generated-sources/kapt/test&lt;/sourceDir&gt;
+                &lt;/sourceDirs&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.jetbrains.kotlin&lt;/groupId&gt;
+            &lt;artifactId&gt;kotlin-maven-allopen&lt;/artifactId&gt;
+            &lt;version&gt;${kotlinVersion}&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_before_you_begin">Before You Begin</h3>
+<div class="paragraph">
+<p>Before you can get started writing tests with Kotest, it is necessary to inform Kotest of the Micronaut extensions. The way to do that is by providing a <code>ProjectConfig</code>. Here is how to do so for Micronaut Test:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+
+import io.kotest.core.config.AbstractProjectConfig
+import io.micronaut.test.extensions.kotest.MicronautKotestExtension
+
+object ProjectConfig : AbstractProjectConfig() {
+    override fun listeners() = listOf(MicronautKotestExtension)
+    override fun extensions() = listOf(MicronautKotestExtension)
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_writing_a_micronaut_test_with_kotest">Writing a Micronaut Test with Kotest</h3>
+<div class="paragraph">
+<p>Let&#8217;s take a look at an example using Kotest. Consider you have the following interface:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService Interface</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+
+interface MathService {
+
+    fun compute(num: Int): Int
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And a simple implementation that computes the value times 4 and is defined as Micronaut bean:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService implementation</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+
+import jakarta.inject.Singleton
+
+@Singleton
+internal class MathServiceImpl : MathService {
+
+    override fun compute(num: Int): Int {
+        return num * 4
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can define the following test to test the implementation:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService specification</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">package io.micronaut.test.kotest
+
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+
+@MicronautTest <i class="conum" data-value="1"></i><b>(1)</b>
+class MathServiceTest(
+    private val mathService: MathService <i class="conum" data-value="2"></i><b>(2)</b>
+) : BehaviorSpec({
+
+    given("the math service") {
+
+        `when`("the service is called with 2") {
+            val result = mathService.compute(2) <i class="conum" data-value="3"></i><b>(3)</b>
+            then("the result is 8") {
+                result shouldBe 8
+            }
+        }
+
+        `when`("the service is called with 3") {
+            val result = mathService.compute(3)
+            then("the result is 12") {
+                result shouldBe 12
+            }
+        }
+    }
+})</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The test is declared as Micronaut test with <code>@MicronautTest</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The constructor is used to inject the bean</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The test itself tests the injected bean</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_environments_classpath_scanning_etc">Environments, Classpath Scanning etc.</h3>
+<div class="paragraph">
+<p>The <code>@MicronautTest</code> annotation supports specifying the environment names the test should run with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(environments={"foo", "bar"})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition, although Micronaut itself doesn&#8217;t scan the classpath, some integrations do (such as JPA and GORM), for these cases you may wish to specify either the application class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(application=Application.class)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or the packages:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(packages="foo.bar")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To ensure that entities can be found during classpath scanning.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_transaction_semantics">Transaction semantics</h3>
+<div class="paragraph">
+<p>By default, if <code>org.springframework:spring-tx</code> is in the test classpath (e.g. transitively via
+<code>io.micronaut.configuration:micronaut-hibernate-jpa-spring</code>), when using <code>@MicronautTest</code>, each <code>@Test</code> method will be
+wrapped in a transaction that will be rolled back when the test finishes. This behaviour can be changed by using the
+<code>transactional</code> and <code>rollback</code> properties.</p>
+</div>
+<div class="paragraph">
+<p>To avoid creating a transaction:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(transactional = false)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To not rollback the transaction:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(rollback = false)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Additionally, the <code>transactionMode</code> property can be used to further customize the way that transactions are handled for
+each test:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following transaction modes are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>SEPARATE_TRANSACTIONS</code> (default) - Each setup/cleanup method is wrapped in its own transaction, separate from that of
+the test. This transaction is always committed.</p>
+</li>
+<li>
+<p><code>SINGLE_TRANSACTION</code> - All setup methods are wrapped in the same transaction as the test. Cleanup methods are wrapped
+in separate transactions.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Setup and cleanup methods are not wrapped in transactions in Kotest currently. As a result, transaction modes have
+no effect in Kotest.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_mockk_mocks">Using Mockk Mocks</h3>
+<div class="paragraph">
+<p>Now let&#8217;s say you want to replace the implementation with a Mockk. You can do so by defining a method that returns a mock and is annotated with <code>@MockBean</code>, for example:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathService specification</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.kotest.MicronautKotestExtension.getMock
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+
+import kotlin.math.pow
+import kotlin.math.roundToInt
+
+@MicronautTest
+class MathMockServiceTest(
+    private val mathService: MathService <i class="conum" data-value="3"></i><b>(3)</b>
+) : BehaviorSpec({
+
+    given("test compute num to square") {
+
+        `when`("the mock is provided") {
+            val mock = getMock(mathService) <i class="conum" data-value="4"></i><b>(4)</b>
+            every { mock.compute(any()) } answers {
+                firstArg&lt;Int&gt;().toDouble().pow(2).roundToInt()
+            }
+
+            then("the mock implementation is used") {
+                mock.compute(3) shouldBe 9
+                verify { mock.compute(3) } <i class="conum" data-value="5"></i><b>(5)</b>
+            }
+        }
+    }
+
+}) {
+
+    @MockBean(MathServiceImpl::class) <i class="conum" data-value="1"></i><b>(1)</b>
+    fun mathService(): MathService {
+        return mockk() <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>@MockBean</code> annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Mockk&#8217;s <code>mockk(..)</code> method creates the actual mock</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The math service proxy is injected into the test</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The call to <code>getMock</code> is used to retrieve the underlying mock</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Mockk is used to verify the mock is called</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note that because the bean is a method of the test, it will be active only for the scope of the test. This approach allows you to define beans that are isolated per test class.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Because Kotlin uses constructor injection, it&#8217;s not possible to automatically replace the mock proxy with the mock implementation as is done with the other test implementations. The <code>getMock</code> method was created to make retrieving the underlying mock object easier.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mocking_collaborators">Mocking Collaborators</h3>
+<div class="paragraph">
+<p>Note that in most cases you won&#8217;t define a <code>@MockBean</code> and then inject it only to verify interaction with the Mock directly, instead the Mock will be a collaborator within your application. For example say you have a <code>MathController</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">The MathController</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+
+import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Get
+
+@Controller("/math")
+class MathController internal constructor(internal var mathService: MathService) {
+
+    @Get(uri = "/compute/{number}", processes = [MediaType.TEXT_PLAIN])
+    internal fun compute(number: Int): String {
+        return mathService.compute(number).toString()
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above controller uses the <code>MathService</code> to expose a <code>/math/compute/{number}</code> endpoint. See the following example for a test that tests interaction with the mock collaborator:</p>
+</div>
+<div class="listingblock">
+<div class="title">Mocking Collaborators</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.data.blocking.forAll
+import io.kotest.data.row
+import io.kotest.matchers.shouldBe
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.kotest.MicronautKotestExtension.getMock
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import kotlin.math.pow
+import kotlin.math.roundToInt
+
+@MicronautTest
+class MathCollaboratorTest(
+    private val mathService: MathService,
+    @Client("/") private val client: HttpClient <i class="conum" data-value="2"></i><b>(2)</b>
+) : StringSpec({
+
+    "test compute num to square" {
+        val mock = getMock(mathService)
+
+        every { mock.compute(any()) } answers {
+            firstArg&lt;Int&gt;().toDouble().pow(2).roundToInt()
+        }
+
+        forAll(
+            row(2, 4),
+            row(3, 9)
+        ) { a: Int, b: Int -&gt;
+            val result = client.toBlocking().retrieve("/math/compute/$a", Int::class.java) <i class="conum" data-value="3"></i><b>(3)</b>
+            result shouldBe b
+            verify { mock.compute(a) } <i class="conum" data-value="4"></i><b>(4)</b>
+        }
+
+    }
+
+}) {
+
+    @MockBean(MathServiceImpl::class) <i class="conum" data-value="1"></i><b>(1)</b>
+    fun mathService(): MathService {
+        return mockk()
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Like the previous example a Mock is defined using <code>@MockBean</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This time we inject an instance of <code>HttpClient</code> to test the controller.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We invoke the controller and retrieve the result</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The interaction with mock collaborator is verified.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The way this works is that <code>@MicronautTest</code> will inject a proxy that points to the mock instance. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_requires_on_tests">Using <code>@Requires</code> on Tests</h3>
+<div class="paragraph">
+<p>Since <code>@MicronautTest</code> turns tests into beans themselves, it means you can use the <code>@Requires</code> annotation on the test to enable/disable tests. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@MicronautTest
+@Requires(env = "my-env")
+class RequiresTest {
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above test will only run if <code>my-env</code> is active (you can activate it by passing the system property <code>micronaut.environments</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_additional_test_specific_properties">Defining Additional Test Specific Properties</h3>
+<div class="paragraph">
+<p>You can define additional test specific properties using the <code>@Property</code> annotation. The following example demonstrates usage:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>@Property</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+
+import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.matchers.shouldBe
+import io.micronaut.context.annotation.Property
+import io.micronaut.context.annotation.Value
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+
+@MicronautTest
+@Property(name = "foo.bar", value = "stuff")
+class PropertyValueTest: AnnotationSpec() {
+
+    @Value("\${foo.bar}")
+    lateinit var value: String
+
+    @Test
+    fun testInitialValue() {
+        value shouldBe "stuff"
+    }
+
+    @Property(name = "foo.bar", value = "changed")
+    @Test
+    fun testValueChanged() {
+        value shouldBe "changed"
+    }
+
+    @Test
+    fun testValueRestored() {
+        value shouldBe "stuff"
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively you can specify additional <code>propertySources</code> in any supported format (YAML, JSON, Java properties file etc.) using the <code>@MicronautTest</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using <code>propertySources</code> stored in files</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+
+import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
+import io.micronaut.context.annotation.Property
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+
+@MicronautTest(propertySources = ["myprops.properties"])
+@Property(name = "supplied.value", value = "hello")
+class PropertySourceTest(@Property(name = "foo.bar") val value: String,
+                         @Property(name = "supplied.value") val suppliedValue: String) : BehaviorSpec({
+
+    given("a property source") {
+        `when`("the value is injected") {
+            then("the correct value is injected") {
+                value shouldBe "foo"
+                suppliedValue shouldBe "hello"
+            }
+        }
+    }
+
+})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above example expects a file located at <code>src/test/resources/io/micronaut/kotest/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>file:myprops.properties</code> - A relative path to a file somewhere on the file system</p>
+</li>
+<li>
+<p><code>classpath:myprops.properties</code> - A file relative to the root of the classpath</p>
+</li>
+<li>
+<p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Because Kotlin doesn&#8217;t support multiple annotations, the <code>@PropertySource</code> annotation must be used to define multiple properties.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_constructor_injection_caveats">Constructor Injection Caveats</h3>
+<div class="paragraph">
+<p>There are a couple caveats to using constructor injection to be aware of.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In order for <code>TestPropertyProvider</code> to work, test classes must have not have any constructor arguments. This is because the class needs constructed prior to bean creation in order to add the properties to the context. Fields and methods will still be injected.</p>
+</li>
+<li>
+<p><code>@Requires()</code> cannot be used with constructor injection because Kotest requires the instance to be created regardless if the test should be ignored or not. If the requirements disable the bean, it cannot be created from the context and thus construction responsibility will be delegated to the default behavior.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_refreshing_injected_beans_based_on_requires_upon_properties_changes">Refreshing injected beans based on <code>@Requires</code> upon properties changes</h3>
+<div class="paragraph">
+<p>You can use combine the use of <code>@Requires</code> and <code>@Property</code>, so that injected beans will be refreshed if there are
+configuration changes that affect their <code>@Requires</code> condition.</p>
+</div>
+<div class="paragraph">
+<p>For that to work, the test must be annotated with <code>@MicronautTest(rebuildContext = true)</code>. In that case, if there are
+changes in any property for a given test, the application context will be rebuilt so that <code>@Requires</code> conditions are
+re-evaluated again.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Combining <code>@Requires</code> and <code>@Property</code> in a <code>@Refreshable</code> test class.</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">package io.micronaut.test.kotest
+
+import io.kotest.core.spec.style.AnnotationSpec
+import io.kotest.matchers.types.shouldBeInstanceOf
+import io.micronaut.context.annotation.Property
+import io.micronaut.context.annotation.Requires
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
+
+@MicronautTest(rebuildContext = true)
+@Property(name = "foo.bar", value = "stuff")
+class PropertyValueRequiresTest: AnnotationSpec() {
+
+    @Inject
+    lateinit var myService: MyService
+
+    @Test
+    fun testInitialValue() {
+        myService.shouldBeInstanceOf&lt;MyServiceStuff&gt;()
+    }
+
+    @Property(name = "foo.bar", value = "changed")
+    @Test
+    fun testValueChanged() {
+        myService.shouldBeInstanceOf&lt;MyServiceChanged&gt;()
+    }
+
+    @Test
+    fun testValueRestored() {
+        myService.shouldBeInstanceOf&lt;MyServiceStuff&gt;()
+    }
+}
+
+interface MyService
+
+@Singleton
+@Requires(property = "foo.bar", value = "stuff")
+open class MyServiceStuff : MyService
+
+
+@Singleton
+@Requires(property = "foo.bar", value = "changed")
+open class MyServiceChanged : MyService</code></pre>
+</div>
+</div>
+</div>
+
+<h1 id="kotest5"><a class="anchor" href="#kotest5"></a>6 Testing with Kotest 5</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/3.10.x/src/main/docs/guide/kotest5.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1519,7 +2335,7 @@ class MyServiceChanged implements MyService {}</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
-    testImplementation "io.micronaut.test:micronaut-test-kotest5:4.0.0-SNAPSHOT"
+    testImplementation "io.micronaut.test:micronaut-test-kotest5:3.9.3-SNAPSHOT"
     testImplementation "io.mockk:mockk:{mockkVersion}"
     testImplementation "io.kotest:kotest-runner-junit5-jvm:{kotestVersion}"
 }
@@ -1539,7 +2355,7 @@ test {
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-test-kotest5&lt;/artifactId&gt;
-    &lt;version&gt;4.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;3.9.3-SNAPSHOT&lt;/version&gt;
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
@@ -2257,10 +3073,10 @@ open class MyServiceChanged : MyService</code></pre>
 </div>
 </div>
 
-<h1 id="restAssured"><a class="anchor" href="#restAssured"></a>6 REST Assured</h1>
+<h1 id="restAssured"><a class="anchor" href="#restAssured"></a>7 REST Assured</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/restAssured.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/3.10.x/src/main/docs/guide/restAssured.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2313,10 +3129,10 @@ public class RestAssuredHelloWorldTest {
 </div>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>7 Repository</h1>
+<h1 id="repository"><a class="anchor" href="#repository"></a>8 Repository</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/repository.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/3.10.x/src/main/docs/guide/repository.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
