@@ -1,6 +1,6 @@
 [versions]
 micronaut-docs = "2.0.0"
-micronaut = "4.0.0-M1"
+micronaut = "4.0.0-M2"
 micronaut-test = "4.0.0-SNAPSHOT"
 
 groovy = "4.0.10"
@@ -17,13 +17,13 @@ managed-spock = "2.3-groovy-4.0"
 kotlin = "1.8.10"
 graal-svm = "22.3.1"
 
-micronaut-data = "4.0.0-SNAPSHOT"
+micronaut-data = "4.0.0-M2"
 micronaut-hibernate-validator = "4.0.0-M2"
-micronaut-serde = "2.0.0-M1"
+micronaut-serde = "2.0.0-M3"
 micronaut-spring = "5.0.0-M1"
-micronaut-sql = "5.0.0-M1"
+micronaut-sql = "5.0.0-M3"
 
-micronaut-gradle-plugin = "4.0.0-SNAPSHOT"
+micronaut-gradle-plugin = "4.0.0-M1"
 
 [libraries]
 
