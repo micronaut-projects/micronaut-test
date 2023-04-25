@@ -16,6 +16,7 @@ tasks.withType(Test).configureEach {
 configurations {
     nativeImageTestClasspath {
         exclude(group: 'org.apache.groovy')
+        exclude(group: 'org.spockframework')
     }
 }
 
