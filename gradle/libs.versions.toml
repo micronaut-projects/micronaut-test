@@ -1,29 +1,28 @@
 [versions]
 micronaut-docs = "2.0.0"
-micronaut = "4.0.0-M1"
-micronaut-test = "4.0.0-SNAPSHOT"
+micronaut = "4.0.0-M2"
 
-groovy = "4.0.10"
+groovy = "4.0.11"
 
 managed-assertj = "3.24.2"
 managed-hamcrest = "2.2"
-managed-mockito = "5.1.1"
-managed-mockk = "1.12.8"
+managed-mockito = "5.3.0"
+managed-mockk = "1.13.5"
 managed-junit = "5.9.2"
 managed-rest-assured = "5.3.0"
-managed-kotest = "5.5.5"
+managed-kotest = "5.6.1"
 managed-spock = "2.3-groovy-4.0"
 
-kotlin = "1.8.10"
+kotlin = "1.8.20"
 graal-svm = "22.3.1"
 
-micronaut-data = "3.9.6"
+micronaut-data = "4.0.0-M2"
 micronaut-hibernate-validator = "4.0.0-M2"
-micronaut-serde = "2.0.0-M1"
+micronaut-serde = "2.0.0-M3"
 micronaut-spring = "5.0.0-M1"
-micronaut-sql = "5.0.0-M1"
+micronaut-sql = "5.0.0-M3"
 
-micronaut-gradle-plugin = "4.0.0-SNAPSHOT"
+micronaut-gradle-plugin = "4.0.0-M1"
 
 [libraries]
 
