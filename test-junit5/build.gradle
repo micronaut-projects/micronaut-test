@@ -16,6 +16,7 @@ tasks.withType(Test).configureEach {
 configurations {
     nativeImageTestClasspath {
         exclude(group: 'org.apache.groovy')
+        exclude(group: 'org.spockframework')
     }
 }
 
@@ -77,7 +78,7 @@ tasks.named("check") { task ->
         System.getProperty(it)?.toLowerCase(Locale.ENGLISH)?.contains("graal")
     }
     if (graal) {
-        //task.dependsOn("nativeTest")
+        task.dependsOn("nativeTest")
     }
 }
 
