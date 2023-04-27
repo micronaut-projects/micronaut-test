@@ -58,6 +58,7 @@ dependencies {
     testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(testFixtures(projects.micronautTestCore))
 }
 
 graalvmNative {

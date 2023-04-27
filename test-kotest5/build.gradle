@@ -34,6 +34,7 @@ dependencies {
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testImplementation(mn.snakeyaml)
     testImplementation(libs.managed.kotest.assertions.core.jvm)
+    testRuntimeOnly(testFixtures(projects.micronautTestCore))
 }
 
 tasks.named("test") {
