@@ -352,30 +352,31 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 var props = new HashMap<String, Object>();
                 props.putAll(testProperties);
                 var services = SoftServiceLoader.load(PropertySourceLoader.class, this.getClass().getClassLoader());
-                var env = new DefaultEnvironment(dacb);
-                for (ServiceDefinition<PropertySourceLoader> service : services) {
-                    try {
-                        PropertySourceLoader loader = service.load();
-                        loader.load(env).ifPresent(available -> {
-                            for (String key : available) {
-                                props.put(key, available.get(key));
-                            }
-                        });
-                        for (String name : environments) {
-                            Optional<PropertySource> propertySource = loader.load("application-" + name, env);
-                            propertySource.ifPresent(available -> {
-                                    for (String key : available) {
-                                        props.put(key, available.get(key));
-                                    }
+                try (var env = new DefaultEnvironment(dacb)) {
+                    for (ServiceDefinition<PropertySourceLoader> service : services) {
+                        try {
+                            PropertySourceLoader loader = service.load();
+                            loader.load(env).ifPresent(available -> {
+                                for (String key : available) {
+                                    props.put(key, available.get(key));
                                 }
-                            );
-                        }
-                    } catch (ServiceConfigurationError ex) {
-                        // some property source loaders like YAML may be present
-                        // on classpath, but the dependencies like SnakeYAML aren't
-                        // in which case we silently ignore
-                        if (!(ex.getCause() instanceof NoClassDefFoundError)) {
-                            throw ex;
+                            });
+                            for (String name : environments) {
+                                Optional<PropertySource> propertySource = loader.load("application-" + name, env);
+                                propertySource.ifPresent(available -> {
+                                        for (String key : available) {
+                                            props.put(key, available.get(key));
+                                        }
+                                    }
+                                );
+                            }
+                        } catch (ServiceConfigurationError ex) {
+                            // some property source loaders like YAML may be present
+                            // on classpath, but the dependencies like SnakeYAML aren't
+                            // in which case we silently ignore
+                            if (!(ex.getCause() instanceof NoClassDefFoundError)) {
+                                throw ex;
+                            }
                         }
                     }
                 }
