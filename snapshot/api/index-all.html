@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="script-dir/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="script.js"></script>
-<script type="text/javascript" src="script-dir/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="script-dir/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="index-page">
@@ -205,6 +205,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/test/extensions/spock/annotation/MicronautTest.html#contextBuilder()" class="member-name-link">contextBuilder()</a> - Element in annotation interface io.micronaut.test.extensions.spock.annotation.<a href="io/micronaut/test/extensions/spock/annotation/MicronautTest.html" title="annotation interface in io.micronaut.test.extensions.spock.annotation">MicronautTest</a></dt>
 <dd>
 <div class="block">The application context builder to use to construct the context.</div>
+</dd>
+<dt><a href="io/micronaut/test/support/TestPropertyProviderFactory.html#create(java.util.Map,java.lang.Class)" class="member-name-link">create(Map&lt;String, Object&gt;, Class&lt;?&gt;)</a> - Method in interface io.micronaut.test.support.<a href="io/micronaut/test/support/TestPropertyProviderFactory.html" title="interface in io.micronaut.test.support">TestPropertyProviderFactory</a></dt>
+<dd>
+<div class="block">Creates a new test property provider.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:D">D</h2>
@@ -572,6 +576,12 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/test/support/TestPropertyProvider.html" class="type-name-link" title="interface in io.micronaut.test.support">TestPropertyProvider</a> - Interface in <a href="io/micronaut/test/support/package-summary.html">io.micronaut.test.support</a></dt>
 <dd>
 <div class="block">Allows providing application properties dynamically from a test.</div>
+</dd>
+<dt><a href="io/micronaut/test/support/TestPropertyProviderFactory.html" class="type-name-link" title="interface in io.micronaut.test.support">TestPropertyProviderFactory</a> - Interface in <a href="io/micronaut/test/support/package-summary.html">io.micronaut.test.support</a></dt>
+<dd>
+<div class="block">A test property provider factory is responsible for generating
+ a test property provider which is going to be called during test
+ setup, as any other <a href="io/micronaut/test/support/TestPropertyProvider.html" title="interface in io.micronaut.test.support"><code>TestPropertyProvider</code></a>.</div>
 </dd>
 <dt><a href="io/micronaut/test/annotation/MicronautTestValue.html#transactional()" class="member-name-link">transactional()</a> - Method in class io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></dt>
 <dd>
