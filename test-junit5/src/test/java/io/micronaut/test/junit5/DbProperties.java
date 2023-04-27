@@ -18,5 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @Property(name = "datasources.default.name", value = "testdb")
 @Property(name = "jpa.default.properties.hibernate.hbm2ddl.auto", value = "update")
+@Property(name = "jpa.default.compileTimeHibernateProxies", value = "true")
 public @interface DbProperties {
 }
