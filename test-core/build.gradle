@@ -1,5 +1,6 @@
 plugins {
     id "io.micronaut.build.internal.micronaut-test-module"
+    id "java-test-fixtures"
 }
 
 dependencies {
@@ -15,3 +16,7 @@ jar {
     exclude "io/micronaut/test/extensions/spock/*"
     exclude "io/micronaut/test/extensions/junit5/*"
 }
+
+// Temporarily disable publishing of test fixtures until we depend on a released version of Data
+components.java.withVariantsFromConfiguration(configurations.testFixturesApiElements) { skip() }
+components.java.withVariantsFromConfiguration(configurations.testFixturesRuntimeElements) { skip() }

@@ -17,7 +17,9 @@ package io.micronaut.test.extensions;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
+import io.micronaut.context.DefaultApplicationContextBuilder;
 import io.micronaut.context.annotation.Property;
+import io.micronaut.context.env.DefaultEnvironment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.env.PropertySourceLoader;
 import io.micronaut.core.annotation.Nullable;
@@ -41,18 +43,29 @@ import io.micronaut.test.context.TestExecutionListener;
 import io.micronaut.test.context.TestMethodInterceptor;
 import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.support.TestPropertyProvider;
+import io.micronaut.test.support.TestPropertyProviderFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.AnnotatedElement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
+import java.util.Set;
 
 /**
  * Abstract base class for both JUnit 5 and Spock.
  *
+ * @param <C> The extension context
  * @author graemerocher
  * @since 1.0
- * @param <C> The extension context
  */
 public abstract class AbstractMicronautExtension<C> implements TestExecutionListener, TestMethodInterceptor<Object> {
     public static final String TEST_ROLLBACK = "micronaut.test.rollback";
@@ -149,7 +162,9 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         });
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void beforeTestExecution(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestExecution, testContext, false);
@@ -165,19 +180,25 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         fireListeners(TestExecutionListener::afterCleanupTest, testContext, true);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterTestExecution(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestExecution, testContext, true);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestClass, testContext, false);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestClass, testContext, true);
@@ -193,13 +214,17 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         fireListeners(TestExecutionListener::afterSetupTest, testContext, true);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestMethod, testContext, false);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterTestMethod(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestMethod, testContext, true);
@@ -285,10 +310,6 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                     }
                 }
             }
-            if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
-                resolveTestProperties(context, testAnnotationValue, testProperties);
-            }
-
             testProperties.put(TestActiveCondition.ACTIVE_SPEC_CLAZZ, testClass);
             testProperties.put(TEST_ROLLBACK, String.valueOf(testAnnotationValue.rollback()));
             testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
@@ -302,11 +323,14 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 environments = new String[]{"test"};
             }
             builder.packages(testAnnotationValue.packages())
-                   .environments(environments);
-
+                .environments(environments);
+            loadPropertySourcesFromServicesLoaders(environments, testProperties, testClass);
+            if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
+                resolveTestProperties(context, testAnnotationValue, testProperties);
+            }
             PropertySource testPropertySource = PropertySource.of(
-                    TEST_PROPERTY_SOURCE,
-                    testProperties
+                TEST_PROPERTY_SOURCE,
+                testProperties
             );
             builder.propertySources(testPropertySource);
             postProcessBuilder(builder);
@@ -321,8 +345,50 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         }
     }
 
+    private void loadPropertySourcesFromServicesLoaders(String[] environments, Map<String, Object> testProperties, Class<?> testClass) {
+        if (builder instanceof DefaultApplicationContextBuilder dacb) {
+            ServiceLoader<TestPropertyProviderFactory> factories = ServiceLoader.load(TestPropertyProviderFactory.class);
+            for (TestPropertyProviderFactory factory : factories) {
+                var props = new HashMap<String, Object>();
+                props.putAll(testProperties);
+                var services = SoftServiceLoader.load(PropertySourceLoader.class, this.getClass().getClassLoader());
+                try (var env = new DefaultEnvironment(dacb)) {
+                    for (ServiceDefinition<PropertySourceLoader> service : services) {
+                        try {
+                            PropertySourceLoader loader = service.load();
+                            loader.load(env).ifPresent(available -> {
+                                for (String key : available) {
+                                    props.put(key, available.get(key));
+                                }
+                            });
+                            for (String name : environments) {
+                                Optional<PropertySource> propertySource = loader.load("application-" + name, env);
+                                propertySource.ifPresent(available -> {
+                                        for (String key : available) {
+                                            props.put(key, available.get(key));
+                                        }
+                                    }
+                                );
+                            }
+                        } catch (ServiceConfigurationError ex) {
+                            // some property source loaders like YAML may be present
+                            // on classpath, but the dependencies like SnakeYAML aren't
+                            // in which case we silently ignore
+                            if (!(ex.getCause() instanceof NoClassDefFoundError)) {
+                                throw ex;
+                            }
+                        }
+                    }
+                }
+                var provider = factory.create(Collections.unmodifiableMap(props), testClass);
+                this.testProperties.putAll(provider.get());
+            }
+        }
+    }
+
     /**
      * Allows subclasses to customize the builder right before context initialization.
+     *
      * @param builder the application context builder
      */
     protected void postProcessBuilder(ApplicationContextBuilder builder) {
@@ -330,7 +396,8 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
     /**
      * Resolves any test properties.
-     *  @param context The test context
+     *
+     * @param context The test context
      * @param testAnnotationValue The test annotation
      * @param testProperties The test properties
      */
@@ -351,7 +418,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 for (Property property : propertyAnnotations) {
                     final String name = property.name();
                     oldValues.put(name,
-                            testProperties.put(name, property.value())
+                        testProperties.put(name, property.value())
                     );
                 }
             } else {
@@ -379,7 +446,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             if (applicationContext != null) {
                 if (refreshScope != null) {
                     refreshScope.onRefreshEvent(new RefreshEvent(Collections.singletonMap(
-                            TestActiveCondition.ACTIVE_MOCKS, "changed"
+                        TestActiveCondition.ACTIVE_MOCKS, "changed"
                     )));
                 }
                 applicationContext.inject(testInstance);
@@ -411,7 +478,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     public void afterEach(C context) throws Exception {
         if (refreshScope != null) {
             if (!oldValues.isEmpty()) {
-                for (Map.Entry<String, Object> entry: oldValues.entrySet()) {
+                for (Map.Entry<String, Object> entry : oldValues.entrySet()) {
                     Object value = entry.getValue();
                     if (value != null) {
                         testProperties.put(entry.getKey(), value);
@@ -444,7 +511,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         String prefix = requiredTestClass.getPackage().getName() + ".$" + requiredTestClass.getSimpleName();
         final ClassLoader classLoader = requiredTestClass.getClassLoader();
         return ClassUtils.isPresent(prefix + "Definition", classLoader) ||
-                ClassUtils.isPresent(prefix + "$Definition", classLoader);
+               ClassUtils.isPresent(prefix + "$Definition", classLoader);
     }
 
     /**
