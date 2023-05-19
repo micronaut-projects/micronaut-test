@@ -10,8 +10,9 @@ dependencies {
     api(libs.rest.assured) {
         exclude group:"org.codehaus.groovy", module:"groovy"
     }
+    implementation(mn.micronaut.context)
+
     implementation(libs.groovy)
-    implementation(mn.micronaut.runtime)
     testCompileOnly(mn.micronaut.inject)
 
     testAnnotationProcessor(mn.micronaut.inject.java)
