@@ -20,7 +20,7 @@ micronaut-data = "4.0.0-M4"
 micronaut-hibernate-validator = "4.0.0-M2"
 micronaut-serde = "2.0.0-M8"
 micronaut-spring = "5.0.0-M1"
-micronaut-sql = "5.0.0-M5"
+micronaut-sql = "5.0.0-M7"
 
 micronaut-gradle-plugin = "4.0.0-M4"
 
