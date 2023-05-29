@@ -64,6 +64,7 @@ dependencies {
 graalvmNative {
     metadataRepository {
         enabled = true
+        version = "0.3.1"
     }
     binaries {
         test {
