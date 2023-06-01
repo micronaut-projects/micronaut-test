@@ -32,13 +32,31 @@ This is achieved through a set of annotations:
 
 These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within `@MicronautTest` it is running your real application.
 
-In some tests you may need a reference to the `ApplicationContext` and/or the `EmbeddedServer` (for example, to create an instance of an `HttpClient`). Rather than defining these as properties of the test (such as a `@Shared` property in Spock), when using `@MicronautTest` you can reference the server/context that was started up for you, and inject them directly in your test.  
+In some tests you may need a reference to the `ApplicationContext` and/or the `EmbeddedServer` (for example, to create an instance of an `HttpClient`). Rather than defining these as properties of the test (such as a `@Shared` property in Spock), when using `@MicronautTest` you can reference the server/context that was started up for you, and inject them directly in your test.
 
 [source,groovy]
 ----
-@Inject 
+@Inject
 EmbeddedServer server //refers to the server that was started up for this test suite
 
-@Inject 
+@Inject
 ApplicationContext context //refers to the current application context within the scope of the test
+----
 
+### Eager Singleton Initialization
+
+If you enable https://docs.micronaut.io/latest/guide/index.html#eagerInit[eager singleton initialization] in your application, the Micronaut Framework eagerly initializes all singletons at startup time. This can be useful for applications that need to perform some initialization at startup time, such as registering a bean with a third party library.
+
+However, as tests annotated with `@MicronautTest` are implicitly in the `Singleton` scope, this can cause problems injecting some beans (for example an `HttpClient`) into your test class.
+
+To avoid this, you can either disable eager singleton initialization for your tests, or you will need to manually get an instance of the bean you would normally inject.  As an example, to get an `HttpClient` you could do:
+
+[source,java]
+.Using an HttpClient in a test with eager singleton initialization enabled
+----
+include::test-junit5/src/test/java/io/micronaut/test/junit5/EagerInitializationTest.java[tags=eager, indent=0]
+----
+
+<1> Inject the `EmbeddedServer` as normal
+<2> Create a `Supplier` that will create the `HttpClient` when it is first called
+<3> Use the `Supplier` to get the `HttpClient` and make the request

@@ -335,15 +335,23 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        final Argument<?> argument = getArgument(parameterContext, applicationContext);
-        if (argument != null) {
-            if (argument.isAnnotationPresent(Value.class) || argument.isAnnotationPresent(Property.class)) {
-                return true;
+        if (this.testAnnotationValue != null) {
+            if (!this.testAnnotationValue.isResolveParameters()) {
+                return false;
+            }
+
+            final Argument<?> argument = getArgument(parameterContext, applicationContext);
+            if (argument != null) {
+                if (argument.isAnnotationPresent(Value.class) || argument.isAnnotationPresent(Property.class)) {
+                    return true;
+                } else {
+                    return applicationContext.containsBean(argument.getType(), resolveQualifier(argument));
+                }
             } else {
-                return applicationContext.containsBean(argument.getType(), resolveQualifier(argument));
+                return applicationContext.containsBean(parameterContext.getParameter().getType());
             }
         } else {
-            return applicationContext.containsBean(parameterContext.getParameter().getType());
+            return false;
         }
     }
 
@@ -394,7 +402,8 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 micronautTest.rebuildContext(),
                 micronautTest.contextBuilder(),
                 micronautTest.transactionMode(),
-                micronautTest.startApplication());
+                micronautTest.startApplication(),
+                micronautTest.resolveParameters());
     }
 
     private boolean isNestedTestClass(Class<?> testClass) {
