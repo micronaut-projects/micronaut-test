@@ -9,8 +9,9 @@ dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
     testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("io.micronaut.test:micronaut-test-junit5:{version}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:{junitVersion}")
+    testImplementation("io.micronaut.test:micronaut-test-junit5")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
 }
 
 // use JUnit 5 platform
