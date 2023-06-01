@@ -118,23 +118,28 @@ loadScripts(document, 'script');</script>
 <div class="block">Whether to rebuild the application context before each test method.</div>
 </div>
 <div class="col-first even-row-color"><code>boolean</code></div>
-<div class="col-second even-row-color"><code><a href="#rollback()" class="member-name-link">rollback</a></code></div>
+<div class="col-second even-row-color"><code><a href="#resolveParameters()" class="member-name-link">resolveParameters</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Whether to rollback (if possible) any data access code between each test execution.</div>
+<div class="block">By default, with JUnit 5 the test method parameters will be resolved to beans if possible.</div>
 </div>
 <div class="col-first odd-row-color"><code>boolean</code></div>
-<div class="col-second odd-row-color"><code><a href="#startApplication()" class="member-name-link">startApplication</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#rollback()" class="member-name-link">rollback</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Whether to start <code>EmbeddedApplication</code>.</div>
+<div class="block">Whether to rollback (if possible) any data access code between each test execution.</div>
 </div>
 <div class="col-first even-row-color"><code>boolean</code></div>
-<div class="col-second even-row-color"><code><a href="#transactional()" class="member-name-link">transactional</a></code></div>
+<div class="col-second even-row-color"><code><a href="#startApplication()" class="member-name-link">startApplication</a></code></div>
 <div class="col-last even-row-color">
+<div class="block">Whether to start <code>EmbeddedApplication</code>.</div>
+</div>
+<div class="col-first odd-row-color"><code>boolean</code></div>
+<div class="col-second odd-row-color"><code><a href="#transactional()" class="member-name-link">transactional</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Allow disabling or enabling of automatic transaction wrapping.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="../../../annotation/TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#transactionMode()" class="member-name-link">transactionMode</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="../../../annotation/TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></code></div>
+<div class="col-second even-row-color"><code><a href="#transactionMode()" class="member-name-link">transactionMode</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">The transaction mode describing how transactions should be handled for each test.</div>
 </div>
 </div>
@@ -292,6 +297,24 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>true if <code>EmbeddedApplication</code> should be started</dd>
+</dl>
+<dl class="notes">
+<dt>Default:</dt>
+<dd>true</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="resolveParameters()">
+<h3>resolveParameters</h3>
+<div class="member-signature"><span class="return-type">boolean</span>&nbsp;<span class="element-name">resolveParameters</span></div>
+<div class="block">By default, with JUnit 5 the test method parameters will be resolved to beans if possible.
+ This behaviour can be problematic if in combination with the <code>ParameterizedTest</code> annotation.
+ Setting this member to <code>false</code> will completely disable bean resolution for method parameters.
+ <p></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>Whether to resolve test method parameters as beans.</dd>
 </dl>
 <dl class="notes">
 <dt>Default:</dt>

@@ -209,6 +209,49 @@ EmbeddedServer server //refers to the server that was started up for this test s
 ApplicationContext context //refers to the current application context within the scope of the test</code></pre>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_eager_singleton_initialization">Eager Singleton Initialization</h3>
+<div class="paragraph">
+<p>If you enable <a href="https://docs.micronaut.io/latest/guide/index.html#eagerInit">eager singleton initialization</a> in your application, the Micronaut Framework eagerly initializes all singletons at startup time. This can be useful for applications that need to perform some initialization at startup time, such as registering a bean with a third party library.</p>
+</div>
+<div class="paragraph">
+<p>However, as tests annotated with <code>@MicronautTest</code> are implicitly in the <code>Singleton</code> scope, this can cause problems injecting some beans (for example an <code>HttpClient</code>) into your test class.</p>
+</div>
+<div class="paragraph">
+<p>To avoid this, you can either disable eager singleton initialization for your tests, or you will need to manually get an instance of the bean you would normally inject.  As an example, to get an <code>HttpClient</code> you could do:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using an HttpClient in a test with eager singleton initialization enabled</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Inject
+EmbeddedServer server; <i class="conum" data-value="1"></i><b>(1)</b>
+
+Supplier&lt;HttpClient&gt; client = SupplierUtil.memoizedNonEmpty(() -&gt;
+    server.getApplicationContext().createBean(HttpClient.class, server.getURL())); <i class="conum" data-value="2"></i><b>(2)</b>
+
+@Test
+void testEagerSingleton() {
+    Assertions.assertEquals("eager", client.get().toBlocking().retrieve("/eager")); <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Inject the <code>EmbeddedServer</code> as normal</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Create a <code>Supplier</code> that will create the <code>HttpClient</code> when it is first called</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Use the <code>Supplier</code> to get the <code>HttpClient</code> and make the request</td>
+</tr>
+</table>
+</div>
+</div>
 
 <h1 id="releaseHistory"><a class="anchor" href="#releaseHistory"></a>2 Release History</h1>
 
@@ -819,8 +862,9 @@ class MyServiceChanged implements MyService {}</code></pre>
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
     ...
     testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("io.micronaut.test:micronaut-test-junit5:4.0.0-SNAPSHOT")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:{junitVersion}")
+    testImplementation("io.micronaut.test:micronaut-test-junit5")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
 }
 
 // use JUnit 5 platform
