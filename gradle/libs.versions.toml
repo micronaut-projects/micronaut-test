@@ -1,6 +1,6 @@
 [versions]
 micronaut-docs = "2.0.0"
-micronaut = "4.0.0-M5"
+micronaut = "4.0.0-M6"
 
 groovy = "4.0.11"
 
@@ -19,8 +19,8 @@ graal-svm = "22.3.2"
 micronaut-data = "4.0.0-M6"
 micronaut-hibernate-validator = "4.0.0-M4"
 micronaut-serde = "2.0.0-M8"
-micronaut-spring = "5.0.0-M1"
-micronaut-sql = "5.0.0-M7"
+micronaut-spring = "5.0.0-M2"
+micronaut-sql = "5.0.0-M8"
 
 micronaut-gradle-plugin = "4.0.0-M4"
 
