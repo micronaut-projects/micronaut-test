@@ -220,7 +220,7 @@ implements <a href="../context/TestExecutionListener.html" title="interface in i
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#beforeClass(C,java.lang.Class,io.micronaut.test.annotation.MicronautTestValue)" class="member-name-link">beforeClass</a><wbr>(<a href="AbstractMicronautExtension.html" title="type parameter in AbstractMicronautExtension">C</a>&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;testClass,
- <a href="../annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a>&nbsp;testAnnotationValue)</code></div>
+ @Nullable <a href="../annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a>&nbsp;testAnnotationValue)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Executed before tests within a class are run.</div>
 </div>
@@ -231,8 +231,8 @@ implements <a href="../context/TestExecutionListener.html" title="interface in i
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#beforeEach(C,java.lang.Object,java.lang.reflect.AnnotatedElement,java.util.List)" class="member-name-link">beforeEach</a><wbr>(<a href="AbstractMicronautExtension.html" title="type parameter in AbstractMicronautExtension">C</a>&nbsp;context,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;testInstance,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link">AnnotatedElement</a>&nbsp;method,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;testInstance,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link">AnnotatedElement</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;io.micronaut.context.annotation.Property&gt;&nbsp;propertyAnnotations)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">To be called by the different implementations before each test method.</div>
@@ -689,7 +689,7 @@ implements <a href="../context/TestExecutionListener.html" title="interface in i
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeClass</span><wbr><span class="parameters">(<a href="AbstractMicronautExtension.html" title="type parameter in AbstractMicronautExtension">C</a>&nbsp;context,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;testClass,
  @Nullable
- <a href="../annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a>&nbsp;testAnnotationValue)</span></div>
+ @Nullable <a href="../annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a>&nbsp;testAnnotationValue)</span></div>
 <div class="block">Executed before tests within a class are run.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -730,9 +730,9 @@ implements <a href="../context/TestExecutionListener.html" title="interface in i
 <h3 id="beforeEach(java.lang.Object,java.lang.Object,java.lang.reflect.AnnotatedElement,java.util.List)">beforeEach</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">beforeEach</span><wbr><span class="parameters">(<a href="AbstractMicronautExtension.html" title="type parameter in AbstractMicronautExtension">C</a>&nbsp;context,
  @Nullable
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;testInstance,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;testInstance,
  @Nullable
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link">AnnotatedElement</a>&nbsp;method,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link">AnnotatedElement</a>&nbsp;method,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;io.micronaut.context.annotation.Property&gt;&nbsp;propertyAnnotations)</span></div>
 <div class="block">To be called by the different implementations before each test method.</div>
 <dl class="notes">
