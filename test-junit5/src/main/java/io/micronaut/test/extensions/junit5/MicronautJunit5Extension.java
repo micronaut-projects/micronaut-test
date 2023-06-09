@@ -330,7 +330,9 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
           context.getTestClass().orElse(null),
           context.getTestMethod().orElse(null),
           context.getTestInstance().orElse(null),
-          context.getExecutionException().orElse(null));
+          context.getExecutionException().orElse(null),
+          context.getDisplayName(),
+          true);
     }
 
     @Override
