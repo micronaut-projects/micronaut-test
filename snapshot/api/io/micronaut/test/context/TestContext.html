@@ -95,11 +95,13 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.context.ApplicationContext,java.lang.Class,java.lang.reflect.AnnotatedElement,java.lang.Object,java.lang.Throwable)" class="member-name-link">TestContext</a><wbr>(io.micronaut.context.ApplicationContext&nbsp;applicationContext,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.context.ApplicationContext,java.lang.Class,java.lang.reflect.AnnotatedElement,java.lang.Object,java.lang.Throwable,java.lang.String,boolean)" class="member-name-link">TestContext</a><wbr>(io.micronaut.context.ApplicationContext&nbsp;applicationContext,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;testClass,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link">AnnotatedElement</a>&nbsp;testMethod,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;testInstance,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;testException)</code></div>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;testException,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;testName,
+ boolean&nbsp;supportsTestMethodInterceptors)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -130,6 +132,12 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link">AnnotatedElement</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTestMethod()" class="member-name-link">getTestMethod</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getTestName()" class="member-name-link">getTestName</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isSupportsTestMethodInterceptors()" class="member-name-link">isSupportsTestMethodInterceptors</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -148,13 +156,15 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(io.micronaut.context.ApplicationContext,java.lang.Class,java.lang.reflect.AnnotatedElement,java.lang.Object,java.lang.Throwable)">
+<section class="detail" id="&lt;init&gt;(io.micronaut.context.ApplicationContext,java.lang.Class,java.lang.reflect.AnnotatedElement,java.lang.Object,java.lang.Throwable,java.lang.String,boolean)">
 <h3>TestContext</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">TestContext</span><wbr><span class="parameters">(io.micronaut.context.ApplicationContext&nbsp;applicationContext,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;testClass,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link">AnnotatedElement</a>&nbsp;testMethod,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;testInstance,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;testException)</span></div>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;testException,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;testName,
+ boolean&nbsp;supportsTestMethodInterceptors)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>applicationContext</code> - The application context</dd>
@@ -162,6 +172,8 @@ loadScripts(document, 'script');</script>
 <dd><code>testMethod</code> - The test method</dd>
 <dd><code>testInstance</code> - The test instance</dd>
 <dd><code>testException</code> - The exception thrown by the test execution</dd>
+<dd><code>testName</code> - The test name</dd>
+<dd><code>supportsTestMethodInterceptors</code> - The indicator if the test framework supports <a href="TestMethodInterceptor.html" title="interface in io.micronaut.test.context"><code>TestMethodInterceptor</code></a>.</dd>
 </dl>
 </section>
 </li>
@@ -220,6 +232,27 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>The exception thrown by the test execution</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getTestName()">
+<h3>getTestName</h3>
+<div class="member-signature"><span class="annotations">@NonNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NonNull <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getTestName</span>()</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>The test name</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="isSupportsTestMethodInterceptors()">
+<h3>isSupportsTestMethodInterceptors</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isSupportsTestMethodInterceptors</span>()</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>True if <a href="TestMethodInterceptor.html" title="interface in io.micronaut.test.context"><code>TestMethodInterceptor</code></a> is supported</dd>
 </dl>
 </section>
 </li>
