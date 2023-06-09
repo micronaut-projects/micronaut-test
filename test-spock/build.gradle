@@ -22,6 +22,7 @@ dependencies {
 //    testImplementation(mn.micronaut.hibernate.gorm)
     testImplementation(mnSpring.micronaut.spring)
     testImplementation(mn.snakeyaml)
+    testImplementation(mnReactor.micronaut.reactor)
 
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(mnSql.h2)
