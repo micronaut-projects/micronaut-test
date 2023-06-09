@@ -218,12 +218,27 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
     }
 
     private TestContext buildContext(IMethodInvocation invocation, Throwable exception) {
+        String displayName;
+        if (invocation.getFeature() == null) {
+            if (invocation.getMethod() != null) {
+                displayName = invocation.getMethod().getName();
+                if (displayName == null) {
+                    displayName = invocation.getMethod().getKind().name();
+                }
+            } else {
+                displayName = "";
+            }
+        } else {
+            displayName = invocation.getFeature().getDisplayName();
+        }
         return new TestContext(
             applicationContext,
             Optional.ofNullable(invocation.getSpec()).map(SpecInfo::getReflection).orElse(null),
             Optional.ofNullable(invocation.getFeature()).map(FeatureInfo::getFeatureMethod).map(MethodInfo::getReflection).orElse(null),
             invocation.getInstance(),
-            exception);
+            exception,
+            displayName,
+            true);
     }
 
     @Override

@@ -60,7 +60,6 @@ class MicronautKotest5Context(
         afterClass(spec)
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun beforeTest(testCase: TestCase) {
         val filter = testCase.spec::class.memberFunctions.filter { it.name == testCase.name.testName }
         var propertyAnnotations: List<Property>? = emptyList()
@@ -86,7 +85,15 @@ class MicronautKotest5Context(
     fun getSpecDefinition() = specDefinition
 
     fun buildContext(spec: Spec): TestContext {
-        return TestContext(applicationContext, spec.javaClass, null, spec, null)
+        return TestContext(
+            applicationContext,
+            spec.javaClass,
+            null,
+            spec,
+            null,
+            spec.javaClass.simpleName,
+            false
+        )
     }
 
     fun buildContext(testCase: TestCase, result: TestResult?): TestContext {
@@ -98,7 +105,15 @@ class MicronautKotest5Context(
             null -> null
         }
 
-        return TestContext(applicationContext, testCase.spec.javaClass, testCase.test.javaClass, testCase.spec, error)
+        return TestContext(
+            applicationContext,
+            testCase.spec.javaClass,
+            testCase.test.javaClass,
+            testCase.spec,
+            error,
+            testCase.name.testName,
+            false
+        )
     }
 
 }

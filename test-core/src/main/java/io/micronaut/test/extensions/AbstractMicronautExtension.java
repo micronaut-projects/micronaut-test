@@ -90,6 +90,13 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     private List<TestExecutionListener> listeners;
     private List<TestMethodInterceptor<Object>> interceptors;
 
+    /**
+     * @return True if there are interceptors
+     */
+    protected boolean hasInterceptors() {
+        return !interceptors.isEmpty();
+    }
+
     @Override
     public Object interceptBeforeEach(TestMethodInvocationContext<Object> methodInvocationContext) throws Throwable {
         return interceptBeforeEach(methodInvocationContext, interceptors);
@@ -162,9 +169,6 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void beforeTestExecution(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestExecution, testContext, false);
@@ -180,25 +184,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         fireListeners(TestExecutionListener::afterCleanupTest, testContext, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterTestExecution(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestExecution, testContext, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestClass, testContext, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestClass, testContext, true);
@@ -214,17 +209,11 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         fireListeners(TestExecutionListener::afterSetupTest, testContext, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestMethod, testContext, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterTestMethod(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestMethod, testContext, true);
