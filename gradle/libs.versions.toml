@@ -19,7 +19,7 @@ graal-svm = "22.3.2"
 micronaut-data = "4.0.0-M7"
 micronaut-hibernate-validator = "4.0.0-M4"
 micronaut-serde = "2.0.0-M9"
-micronaut-spring = "5.0.0-M2"
+micronaut-spring = "5.0.0-M3"
 micronaut-sql = "5.0.0-M8"
 micronaut-reactor = "3.0.0-M5"
 
