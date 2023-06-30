@@ -21,11 +21,3 @@ configurations.all {
         }
     }
 }
-
-// TODO temporarily disable binary compatibility checks
-micronautBuild {
-    binaryCompatibility {
-        def (major, minor, _) = version.split("\\.")
-        enabled = Integer.parseInt(major) >= 4 && Integer.parseInt(minor) > 0
-    }
-}
