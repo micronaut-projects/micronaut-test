@@ -2,7 +2,7 @@ package io.micronaut.test.junit5;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import io.micronaut.transaction.support.TransactionSynchronizationManager;
+import io.micronaut.transaction.TransactionOperations;
 import io.micronaut.transaction.test.DefaultTestTransactionExecutionListener;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
@@ -17,14 +17,17 @@ class TransactionalTest {
   @Inject
   ApplicationContext applicationContext;
 
+  @Inject
+  TransactionOperations<?> transactionOperations;
+
   @BeforeEach
   void setup() {
-    Assertions.assertTrue(TransactionSynchronizationManager.isSynchronizationActive());
+    Assertions.assertTrue(transactionOperations.findTransactionStatus().isPresent());
   }
 
   @AfterEach
   void cleanup() {
-    Assertions.assertTrue(TransactionSynchronizationManager.isSynchronizationActive());
+      Assertions.assertTrue(transactionOperations.findTransactionStatus().isPresent());
   }
 
   @Test
