@@ -2,6 +2,10 @@ plugins {
     id "io.micronaut.build.internal.bom"
 }
 
+repositories {
+    gradlePluginPortal() // needed for checkBom task to resolve plugin dependencies defined in kotest-pom
+}
+
 micronautBom {
     suppressions {
         acceptedLibraryRegressions.add("micronaut-test-kotest")

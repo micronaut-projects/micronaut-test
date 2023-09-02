@@ -41,11 +41,13 @@ managed-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "managed-ha
 managed-mockito-core = { module = "org.mockito:mockito-core", version.ref = "managed-mockito" }
 managed-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "managed-mockito" }
 managed-mockk = { module = "io.mockk:mockk", version.ref = "managed-mockk" }
+# TODO kotest libs should stop be directly managed, boms-kotest should define the versions
 managed-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "managed-kotest" }
 managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "managed-kotest" }
 
 # BOMs
 boms-junit = { module = "org.junit:junit-bom", version.ref = "managed-junit" }
+boms-kotest = { module = "io.kotest:kotest-bom", version.ref = "managed-kotest" }
 boms-spock = { module = "org.spockframework:spock-bom", version.ref = "managed-spock" }
 boms-rest-assured = { module = "io.rest-assured:rest-assured-bom", version.ref = "managed-rest-assured" }
 
