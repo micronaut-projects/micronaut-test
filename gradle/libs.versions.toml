@@ -13,7 +13,7 @@ managed-rest-assured = "5.3.2"
 managed-kotest = "5.7.2"
 managed-spock = "2.3-groovy-4.0"
 
-kotlin = "1.8.22"
+kotlin = "1.9.10"
 graal-svm = "23.0.1"
 
 micronaut-data = "4.1.2"
