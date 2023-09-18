@@ -211,17 +211,17 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
     private MicronautTestValue buildValueObject(MicronautTest micronautTest) {
         if (micronautTest != null) {
             return new MicronautTestValue(
-                micronautTest.application(),
-                micronautTest.environments(),
-                micronautTest.packages(),
-                micronautTest.propertySources(),
-                micronautTest.rollback(),
-                micronautTest.transactional(),
-                micronautTest.rebuildContext(),
-                micronautTest.contextBuilder(),
-                micronautTest.transactionMode(),
-                micronautTest.startApplication(),
-                false);
+                    micronautTest.application(),
+                    micronautTest.environments(),
+                    micronautTest.packages(),
+                    micronautTest.propertySources(),
+                    micronautTest.rollback(),
+                    micronautTest.transactional(),
+                    micronautTest.rebuildContext(),
+                    micronautTest.contextBuilder(),
+                    micronautTest.transactionMode(),
+                    micronautTest.startApplication(),
+                    false);
         } else {
             return null;
         }
