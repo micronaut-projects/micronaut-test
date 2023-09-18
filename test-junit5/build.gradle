@@ -54,6 +54,7 @@ dependencies {
     testImplementation(mnData.micronaut.data.hibernate.jpa)
     testImplementation(mn.snakeyaml)
 
+    testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
     testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)

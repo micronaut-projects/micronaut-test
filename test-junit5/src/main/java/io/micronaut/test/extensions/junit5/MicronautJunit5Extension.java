@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2023 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 import io.micronaut.aop.Intercepted;
+import io.micronaut.core.io.ResourceLoader;
+import io.micronaut.test.annotation.Sql;
 import io.micronaut.test.context.TestMethodInvocationContext;
+import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -68,6 +71,8 @@ import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 
+import javax.sql.DataSource;
+
 /**
  * Extension for JUnit 5.
  *
@@ -88,6 +93,10 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             if (ti != null && ti.value() == TestInstance.Lifecycle.PER_CLASS) {
                 Object testInstance = extensionContext.getRequiredTestInstance();
                 applicationContext.inject(testInstance);
+            }
+            TestSqlAnnotationHandler bean = applicationContext.getBean(TestSqlAnnotationHandler.class);
+            for (Sql sql : testClass.getAnnotationsByType(Sql.class)) {
+                bean.handleScript(applicationContext.getBean(ResourceLoader.class), sql, applicationContext.getBean(DataSource.class, Qualifiers.byName(sql.datasourceName())));
             }
         }
         beforeTestClass(buildContext(extensionContext));

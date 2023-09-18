@@ -30,7 +30,7 @@ import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
-import io.micronaut.test.support.sql.SqlHandler;
+import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
 import jakarta.inject.Inject;
 import org.spockframework.mock.MockUtil;
 import org.spockframework.runtime.InvalidSpecException;
@@ -131,8 +131,9 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     }
                     beforeTestClass(buildContext(invocation, null));
 
-                    for (Sql sql : spec.getAnnotationsByType(Sql.class)) {
-                        SqlHandler.handleScript(applicationContext.getBean(ResourceLoader.class), sql, applicationContext.getBean(DataSource.class, Qualifiers.byName(sql.datasourceName())));
+            TestSqlAnnotationHandler bean = applicationContext.getBean(TestSqlAnnotationHandler.class);
+            for (Sql sql : spec.getAnnotationsByType(Sql.class)) {
+                        bean.handleScript(applicationContext.getBean(ResourceLoader.class), sql, applicationContext.getBean(DataSource.class, Qualifiers.byName(sql.datasourceName())));
                     }
 
                     invocation.proceed();

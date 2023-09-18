@@ -15,6 +15,7 @@
  */
 package io.micronaut.test.support.sql;
 
+import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.io.ResourceLoader;
 import io.micronaut.test.annotation.Sql;
 import org.slf4j.Logger;
@@ -31,28 +32,20 @@ import java.sql.Statement;
 import java.util.Optional;
 
 /**
- * Utility class for handling SQL scripts.
+ * Utility class that performs the SQL script execution.
  *
  * @since 4.1.0
  * @author Tim Yates
  */
-public final class SqlHandler {
+@Experimental
+final class TestSqlHandlerUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SqlHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TestSqlHandlerUtils.class);
 
-    private SqlHandler() {
+    private TestSqlHandlerUtils() {
     }
 
-    /**
-     * Given a resource loader, a {@link Sql} annotation and a datasource, execute the SQL scripts in order.
-     *
-     * @param loader The resource loader
-     * @param sql The Sql annotation
-     * @param dataSource The datasource
-     * @throws IOException If the script cannot be read
-     * @throws SQLException If the script cannot be executed
-     */
-    public static void handleScript(
+    static void handleScript(
         ResourceLoader loader,
         Sql sql,
         DataSource dataSource
@@ -66,6 +59,9 @@ public final class SqlHandler {
                     Statement statement = connection.createStatement()
                 ) {
                     String scriptBody = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("For connection {} executing SQL script: {}", connection, scriptBody);
+                    }
                     statement.execute(scriptBody);
                 }
             } else {
