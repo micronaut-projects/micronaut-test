@@ -1,0 +1,41 @@
+:icons: font
+When performing a test with a backing database, often some data is required in the database prior to running the tests.
+As of `micronaut-test` version 4.1.0, there is an annotation api:test.annotation.Sql[].
+
+This annotation can be used to specify the location of one or more sql files to be executed prior to the test.
+The files are executed in the order specified in the annotation.
+
+For example given the two SQL scripts
+
+.test/resources/create.sql
+[source,sql]
+----
+include::test-junit5/src/test/resources/create.sql[]
+----
+
+and
+
+.test/resources/datasource_1_insert.sql
+[source,sql]
+----
+include::test-junit5/src/test/resources/datasource_1_insert.sql[]
+----
+
+We can annotate a test to run these two scripts prior to the test.
+
+[source, java, role="multi-language-sample"]
+----
+include::{junit5tests}/SqlDatasourceTest.java[tags="clazz"]
+----
+
+[source, groovy, role="multi-language-sample"]
+----
+include::{spocktests}/SqlDatasourceSpec.groovy[tags="clazz"]
+----
+
+[source, kotlin, role="multi-language-sample"]
+----
+include::{kotest5tests}/SqlDatasourceTest.kt[tags="clazz"]
+----
+
+<1> The annotation is used to specify the location of the SQL scripts to be executed. (The default datasource name is `default`, but this can be overriden by setting the `datasourceName` property for the annotation)

@@ -53,6 +53,7 @@ class MicronautKotest5Context(
     override fun alignMocks(context: Spec?, instance: Any) {
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun beforeSpecClass(spec: Spec) {
         if (!createBean) {
             beforeClass(spec, testClass, micronautTestValue)
@@ -61,7 +62,6 @@ class MicronautKotest5Context(
 
         val sqlAnnotations = testClass.getAnnotationsByType(Sql::class.java)
         if (ArrayUtils.isNotEmpty(sqlAnnotations)) {
-            @SuppressWarnings("kotlin:S6530", "unchecked")
             val handler = applicationContext.getBean(TestSqlAnnotationHandler::class.java) as TestSqlAnnotationHandler<in DataSource>
             val resourceLoader = applicationContext.getBean(ResourceLoader::class.java)
             for (sql in sqlAnnotations) {

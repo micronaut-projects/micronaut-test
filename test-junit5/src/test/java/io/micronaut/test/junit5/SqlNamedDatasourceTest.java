@@ -20,19 +20,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
 
-@Sql(datasourceName = "one", value = {"classpath:data.sql", "classpath:data1.sql"})
+@Sql(datasourceName = "one", value = {"classpath:create.sql", "classpath:datasource_1_insert.sql"})
 @DbProperties
 @Property(name = "datasources.one.dialect", value = "H2")
 @Property(name = "datasources.one.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.one.schema-generate", value = "CREATE_DROP")
-@Property(name = "datasources.one.url", value = "jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.one.url", value = "jdbc:h2:mem:databaseOne;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @Property(name = "datasources.one.username", value = "sa")
 
-@Sql(datasourceName = "two", value = {"classpath:data.sql", "classpath:data2.sql"})
+@Sql(datasourceName = "two", value = {"classpath:create.sql", "classpath:datasource_2_insert.sql"})
 @Property(name = "datasources.two.dialect", value = "H2")
 @Property(name = "datasources.two.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.two.schema-generate", value = "CREATE_DROP")
-@Property(name = "datasources.two.url", value = "jdbc:h2:mem:devDb2;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.two.url", value = "jdbc:h2:mem:databaseTwo;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @Property(name = "datasources.two.username", value = "sa")
 class SqlNamedDatasourceTest {
 
