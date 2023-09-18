@@ -11,20 +11,20 @@ import javax.sql.DataSource
 
 @MicronautTest
 
-@Sql(datasourceName = "one", scripts = ["classpath:data.sql", "classpath:data1.sql"])
+@Sql(datasourceName = "one", value = ["classpath:data.sql", "classpath:data1.sql"])
 @Property(name = "datasources.one.dialect", value = "H2")
 @Property(name = "datasources.one.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.one.schema-generate", value = "CREATE_DROP")
 @Property(name = "datasources.one.url", value = "jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @Property(name = "datasources.one.username", value = "sa")
 
-@Sql(datasourceName = "two", scripts = ["classpath:data.sql", "classpath:data2.sql"])
+@Sql(datasourceName = "two", value = ["classpath:data.sql", "classpath:data2.sql"])
 @Property(name = "datasources.two.dialect", value = "H2")
 @Property(name = "datasources.two.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.two.schema-generate", value = "CREATE_DROP")
 @Property(name = "datasources.two.url", value = "jdbc:h2:mem:devDb2;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @Property(name = "datasources.two.username", value = "sa")
-class SqlSpec extends Specification {
+class SqlNamedDatasourceSpec extends Specification {
 
     @Inject
     @Named("one")

@@ -57,7 +57,7 @@ public final class SqlHandler {
         Sql sql,
         DataSource dataSource
     ) throws IOException, SQLException {
-        for (String script : sql.scripts()) {
+        for (String script : sql.value()) {
             Optional<URL> resource = loader.getResource(script);
             if (resource.isPresent()) {
                 try (
