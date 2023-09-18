@@ -20,6 +20,7 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.io.ResourceLoader;
 import io.micronaut.core.type.Argument;
+import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.inject.qualifiers.Qualifiers;
@@ -131,9 +132,18 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     }
                     beforeTestClass(buildContext(invocation, null));
 
-            TestSqlAnnotationHandler bean = applicationContext.getBean(TestSqlAnnotationHandler.class);
-            for (Sql sql : spec.getAnnotationsByType(Sql.class)) {
-                        bean.handleScript(applicationContext.getBean(ResourceLoader.class), sql, applicationContext.getBean(DataSource.class, Qualifiers.byName(sql.datasourceName())));
+                    Sql[] sqlAnnotations = spec.getAnnotationsByType(Sql.class);
+                    if (ArrayUtils.isNotEmpty(sqlAnnotations)) {
+                        @SuppressWarnings("unchecked")
+                        TestSqlAnnotationHandler<? super DataSource> bean = applicationContext.getBean(TestSqlAnnotationHandler.class);
+                        ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
+                        for (Sql sql : sqlAnnotations) {
+                            bean.handleScript(
+                                resourceLoader,
+                                sql,
+                                applicationContext.getBean(DataSource.class, Qualifiers.byName(sql.datasourceName()))
+                            );
+                        }
                     }
 
                     invocation.proceed();

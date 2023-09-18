@@ -19,10 +19,16 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.micronaut.context.annotation.Property
+import io.micronaut.core.io.ResourceLoader
+import io.micronaut.core.util.ArrayUtils
+import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.test.annotation.MicronautTestValue
+import io.micronaut.test.annotation.Sql
 import io.micronaut.test.context.TestContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.TestPropertyProvider
+import io.micronaut.test.support.sql.TestSqlAnnotationHandler
+import javax.sql.DataSource
 import kotlin.reflect.full.memberFunctions
 
 class MicronautKotest5Context(
@@ -52,6 +58,21 @@ class MicronautKotest5Context(
             beforeClass(spec, testClass, micronautTestValue)
             applicationContext.inject(spec)
         }
+
+        val sqlAnnotations = testClass.getAnnotationsByType(Sql::class.java)
+        if (ArrayUtils.isNotEmpty(sqlAnnotations)) {
+            @SuppressWarnings("kotlin:S6530", "unchecked")
+            val handler = applicationContext.getBean(TestSqlAnnotationHandler::class.java) as TestSqlAnnotationHandler<in DataSource>
+            val resourceLoader = applicationContext.getBean(ResourceLoader::class.java)
+            for (sql in sqlAnnotations) {
+                handler.handleScript(
+                    resourceLoader,
+                    sql,
+                    applicationContext.getBean(DataSource::class.java, Qualifiers.byName(sql.datasourceName))
+                )
+            }
+        }
+
         beforeTestClass(buildContext(spec))
     }
 

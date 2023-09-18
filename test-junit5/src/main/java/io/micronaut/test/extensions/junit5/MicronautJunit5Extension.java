@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import io.micronaut.aop.Intercepted;
 import io.micronaut.core.io.ResourceLoader;
+import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.test.annotation.Sql;
 import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
@@ -94,9 +95,19 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 Object testInstance = extensionContext.getRequiredTestInstance();
                 applicationContext.inject(testInstance);
             }
-            TestSqlAnnotationHandler bean = applicationContext.getBean(TestSqlAnnotationHandler.class);
-            for (Sql sql : testClass.getAnnotationsByType(Sql.class)) {
-                bean.handleScript(applicationContext.getBean(ResourceLoader.class), sql, applicationContext.getBean(DataSource.class, Qualifiers.byName(sql.datasourceName())));
+
+            Sql[] sqlAnnotations = testClass.getAnnotationsByType(Sql.class);
+            if (ArrayUtils.isNotEmpty(sqlAnnotations)) {
+                @SuppressWarnings("unchecked")
+                TestSqlAnnotationHandler<? super DataSource> handler = applicationContext.getBean(TestSqlAnnotationHandler.class);
+                ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
+                for (Sql sql : sqlAnnotations) {
+                    handler.handleScript(
+                        resourceLoader,
+                        sql,
+                        applicationContext.getBean(DataSource.class, Qualifiers.byName(sql.datasourceName()))
+                    );
+                }
             }
         }
         beforeTestClass(buildContext(extensionContext));

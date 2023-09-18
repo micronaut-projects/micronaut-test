@@ -1,0 +1,2 @@
+INSERT INTO TEST (ID, NAME) VALUES (1, 'Aardvark');
+INSERT INTO TEST (ID, NAME) VALUES (2, 'Albatross');
