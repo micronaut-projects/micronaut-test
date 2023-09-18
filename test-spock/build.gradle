@@ -24,6 +24,7 @@ dependencies {
     testImplementation(mn.snakeyaml)
     testImplementation(mnReactor.micronaut.reactor)
 
+    testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(testFixtures(projects.micronautTestCore))

@@ -18,6 +18,7 @@ graal-svm = "23.0.1"
 
 micronaut-data = "4.1.2"
 micronaut-hibernate-validator = "4.0.2"
+micronaut-logging = "1.0.0"
 micronaut-serde = "2.2.4"
 micronaut-spring = "5.0.2"
 micronaut-sql = "5.0.1"
