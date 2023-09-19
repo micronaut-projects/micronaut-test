@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2023 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,25 +53,13 @@ class MicronautKotest5Context(
     override fun alignMocks(context: Spec?, instance: Any) {
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun beforeSpecClass(spec: Spec) {
         if (!createBean) {
             beforeClass(spec, testClass, micronautTestValue)
             applicationContext.inject(spec)
         }
 
-        val sqlAnnotations = testClass.getAnnotationsByType(Sql::class.java)
-        if (ArrayUtils.isNotEmpty(sqlAnnotations)) {
-            val handler = applicationContext.getBean(TestSqlAnnotationHandler::class.java) as TestSqlAnnotationHandler<in DataSource>
-            val resourceLoader = applicationContext.getBean(ResourceLoader::class.java)
-            for (sql in sqlAnnotations) {
-                handler.handleScript(
-                    resourceLoader,
-                    sql,
-                    applicationContext.getBean(DataSource::class.java, Qualifiers.byName(sql.datasourceName))
-                )
-            }
-        }
+        TestSqlAnnotationHandler.handle(specDefinition, applicationContext)
 
         beforeTestClass(buildContext(spec))
     }

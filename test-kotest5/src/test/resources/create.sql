@@ -3,5 +3,3 @@ CREATE TABLE TEST (
     NAME VARCHAR(255),
     PRIMARY KEY (ID)
 );
-
-

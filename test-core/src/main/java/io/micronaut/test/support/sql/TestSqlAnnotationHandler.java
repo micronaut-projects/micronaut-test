@@ -15,26 +15,98 @@
  */
 package io.micronaut.test.support.sql;
 
-import io.micronaut.context.annotation.DefaultImplementation;
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.io.ResourceLoader;
+import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.Sql;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
- * Interface for beans handing scripts for the {@link Sql} annotation.
- *
- * @param <T> the datasource type
+ * Static helper class to handle {@link Sql} annotations.
  *
  * @since 4.1.0
  * @author Tim Yates
  */
-@DefaultImplementation(DefaultTestSqlAnnotationHandler.class)
 @Experimental
-public interface TestSqlAnnotationHandler<T extends DataSource> {
+public final class TestSqlAnnotationHandler {
 
-    void handleScript(ResourceLoader loader, Sql sql, T dataSource) throws IOException, SQLException;
+    private static final Logger LOG = LoggerFactory.getLogger(TestSqlAnnotationHandler.class);
+
+    private TestSqlAnnotationHandler() {
+    }
+
+    /**
+     * Given a spec definition and application context, find and process all {@link Sql} annotations.
+     * @param specDefinition The test class
+     * @param applicationContext The application context
+     * @throws SQLException If an error occurs executing the SQL
+     * @throws IOException If an error occurs reading the SQL
+     */
+    public static void handle(BeanDefinition<?> specDefinition, ApplicationContext applicationContext) throws SQLException, IOException {
+        ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
+
+        var compositeDataSourceHandler = applicationContext.getBean(DataSourceResolver.class);
+
+        Optional<List<AnnotationValue<Sql>>> sqlAnnotations = specDefinition
+            .findAnnotation(Sql.Sqls.class)
+            .map(s -> s.getAnnotations("value", Sql.class));
+
+        if (sqlAnnotations.isPresent()) {
+            for (var sql : sqlAnnotations.get()) {
+                String datasourceName = sql.getRequiredValue("datasourceName", String.class);
+                DataSource dataSource = applicationContext.getBean(DataSource.class, Qualifiers.byName(datasourceName));
+                Optional<DataSource> resolve = compositeDataSourceHandler.resolve(dataSource);
+                if (resolve.isPresent()) {
+                    handleScript(
+                        resourceLoader,
+                        Arrays.asList(sql.stringValues("value")),
+                        resolve.get()
+                    );
+                } else {
+                    LOG.warn("Could not resolve data source: {}", datasourceName);
+                }
+            }
+        }
+    }
+
+    private static void handleScript(
+        ResourceLoader loader,
+        List<String> scripts,
+        DataSource dataSource
+    ) throws IOException, SQLException {
+        for (String script : scripts) {
+            Optional<URL> resource = loader.getResource(script);
+            if (resource.isPresent()) {
+                try (
+                    InputStream in = resource.get().openStream();
+                    Connection connection = dataSource.getConnection();
+                    Statement statement = connection.createStatement()
+                ) {
+                    String scriptBody = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("For connection {} executing SQL script: {}", connection, scriptBody);
+                    }
+                    statement.execute(scriptBody);
+                }
+            } else {
+                LOG.warn("Could not find SQL script: {}", script);
+            }
+        }
+    }
 }

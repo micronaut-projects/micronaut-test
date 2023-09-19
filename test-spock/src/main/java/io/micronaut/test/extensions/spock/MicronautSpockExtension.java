@@ -18,14 +18,10 @@ package io.micronaut.test.extensions.spock;
 import io.micronaut.aop.InterceptedProxy;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.event.BeanCreatedEventListener;
-import io.micronaut.core.io.ResourceLoader;
 import io.micronaut.core.type.Argument;
-import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
-import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.MicronautTestValue;
-import io.micronaut.test.annotation.Sql;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
@@ -43,7 +39,6 @@ import org.spockframework.runtime.model.MethodInfo;
 import org.spockframework.runtime.model.SpecInfo;
 import spock.lang.Specification;
 
-import javax.sql.DataSource;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -132,18 +127,8 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     }
                     beforeTestClass(buildContext(invocation, null));
 
-                    Sql[] sqlAnnotations = spec.getAnnotationsByType(Sql.class);
-                    if (ArrayUtils.isNotEmpty(sqlAnnotations)) {
-                        @SuppressWarnings("unchecked")
-                        TestSqlAnnotationHandler<? super DataSource> bean = applicationContext.getBean(TestSqlAnnotationHandler.class);
-                        ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
-                        for (Sql sql : sqlAnnotations) {
-                            bean.handleScript(
-                                resourceLoader,
-                                sql,
-                                applicationContext.getBean(DataSource.class, Qualifiers.byName(sql.datasourceName()))
-                            );
-                        }
+                    if (specDefinition != null && applicationContext != null) {
+                        TestSqlAnnotationHandler.handle(specDefinition, applicationContext);
                     }
 
                     invocation.proceed();

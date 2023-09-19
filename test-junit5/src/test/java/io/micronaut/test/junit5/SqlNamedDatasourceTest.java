@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Property(name = "datasources.one.url", value = "jdbc:h2:mem:databaseOne;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @Property(name = "datasources.one.username", value = "sa")
 
-@Sql(datasourceName = "two", value = {"classpath:create.sql", "classpath:datasource_2_insert.sql"})
+@Sql(datasourceName = "two", scripts = {"classpath:create.sql", "classpath:datasource_2_insert.sql"})
 @Property(name = "datasources.two.dialect", value = "H2")
 @Property(name = "datasources.two.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.two.schema-generate", value = "CREATE_DROP")

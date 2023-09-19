@@ -15,6 +15,8 @@
  */
 package io.micronaut.test.annotation;
 
+import io.micronaut.context.annotation.AliasFor;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -39,6 +41,7 @@ public @interface Sql {
     /**
      * @return The SQL scripts to execute
      */
+    @AliasFor(member = "scripts")
     String[] value() default {};
 
     /**
@@ -47,6 +50,12 @@ public @interface Sql {
      * @return The datasource name
      */
     String datasourceName() default "default";
+
+    /**
+     * @return The SQL scripts to execute
+     */
+    @AliasFor(member = "value")
+    String[] scripts() default {};
 
     /**
      * Wrapper annotation class to allow multiple Sql annotations per test class or method.

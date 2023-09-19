@@ -28,9 +28,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import io.micronaut.aop.Intercepted;
-import io.micronaut.core.io.ResourceLoader;
-import io.micronaut.core.util.ArrayUtils;
-import io.micronaut.test.annotation.Sql;
 import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
 import org.junit.jupiter.api.Nested;
@@ -72,8 +69,6 @@ import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 
-import javax.sql.DataSource;
-
 /**
  * Extension for JUnit 5.
  *
@@ -96,19 +91,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 applicationContext.inject(testInstance);
             }
 
-            Sql[] sqlAnnotations = testClass.getAnnotationsByType(Sql.class);
-            if (ArrayUtils.isNotEmpty(sqlAnnotations)) {
-                @SuppressWarnings("unchecked")
-                TestSqlAnnotationHandler<? super DataSource> handler = applicationContext.getBean(TestSqlAnnotationHandler.class);
-                ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
-                for (Sql sql : sqlAnnotations) {
-                    handler.handleScript(
-                        resourceLoader,
-                        sql,
-                        applicationContext.getBean(DataSource.class, Qualifiers.byName(sql.datasourceName()))
-                    );
-                }
-            }
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext);
         }
         beforeTestClass(buildContext(extensionContext));
     }
