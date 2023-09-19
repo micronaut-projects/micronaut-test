@@ -19,16 +19,11 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
 import io.micronaut.context.annotation.Property
-import io.micronaut.core.io.ResourceLoader
-import io.micronaut.core.util.ArrayUtils
-import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.test.annotation.MicronautTestValue
-import io.micronaut.test.annotation.Sql
 import io.micronaut.test.context.TestContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.TestPropertyProvider
 import io.micronaut.test.support.sql.TestSqlAnnotationHandler
-import javax.sql.DataSource
 import kotlin.reflect.full.memberFunctions
 
 class MicronautKotest5Context(
