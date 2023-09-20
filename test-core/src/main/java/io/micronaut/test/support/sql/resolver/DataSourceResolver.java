@@ -15,6 +15,7 @@
  */
 package io.micronaut.test.support.sql.resolver;
 
+import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.order.Ordered;
 import io.micronaut.test.support.sql.processor.SqlScriptProcessor;
@@ -28,6 +29,7 @@ import java.util.Optional;
  * @since 4.1.0
  * @author Tim Yates
  */
+@Experimental
 @FunctionalInterface
 public interface DataSourceResolver extends Ordered {
 

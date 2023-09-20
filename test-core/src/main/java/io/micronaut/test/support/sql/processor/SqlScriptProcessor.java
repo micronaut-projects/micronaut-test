@@ -15,6 +15,7 @@
  */
 package io.micronaut.test.support.sql.processor;
 
+import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.NonNull;
 
 import javax.sql.DataSource;
@@ -27,6 +28,7 @@ import java.sql.SQLException;
  * @author Tim Yates
  */
 @FunctionalInterface
+@Experimental
 public interface SqlScriptProcessor {
 
     /**

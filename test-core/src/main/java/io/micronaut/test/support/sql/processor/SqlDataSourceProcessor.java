@@ -15,6 +15,7 @@
  */
 package io.micronaut.test.support.sql.processor;
 
+import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import java.sql.SQLException;
  * @since 4.1.0
  * @author Tim Yates
  */
+@Experimental
 public class SqlDataSourceProcessor implements SqlScriptProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SqlDataSourceProcessor.class);

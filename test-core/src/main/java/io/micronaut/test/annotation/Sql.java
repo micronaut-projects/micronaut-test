@@ -16,6 +16,7 @@
 package io.micronaut.test.annotation;
 
 import io.micronaut.context.annotation.AliasFor;
+import io.micronaut.core.annotation.Experimental;
 
 import javax.sql.DataSource;
 import java.lang.annotation.Documented;
@@ -36,6 +37,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+@Experimental
 @Repeatable(Sql.Sqls.class)
 public @interface Sql {
 
