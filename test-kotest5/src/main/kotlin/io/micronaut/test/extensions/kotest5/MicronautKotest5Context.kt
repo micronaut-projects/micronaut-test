@@ -52,7 +52,6 @@ class MicronautKotest5Context(
             beforeClass(spec, testClass, micronautTestValue)
             applicationContext.inject(spec)
         }
-
         beforeTestClass(buildContext(spec))
     }
 

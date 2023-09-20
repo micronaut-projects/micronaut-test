@@ -21,13 +21,12 @@ import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
+import io.micronaut.test.context.TestMethodInvocationContext;
+import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
-import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
-import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
-import jakarta.inject.Inject;
 import org.spockframework.mock.MockUtil;
 import org.spockframework.runtime.InvalidSpecException;
 import org.spockframework.runtime.extension.IAnnotationDrivenExtension;
@@ -38,6 +37,7 @@ import org.spockframework.runtime.model.MethodInfo;
 import org.spockframework.runtime.model.SpecInfo;
 import spock.lang.Specification;
 
+import jakarta.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -125,7 +125,6 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                         }
                     }
                     beforeTestClass(buildContext(invocation, null));
-
                     invocation.proceed();
             }
         );
