@@ -58,6 +58,9 @@ public @interface Sql {
     @AliasFor(member = "value")
     String[] scripts() default {};
 
+    /**
+     * @return The type of the resource to use for the SQL scripts.
+     */
     Class<?> resourceType() default DataSource.class;
 
     /**

@@ -71,8 +71,7 @@ public final class TestSqlAnnotationHandler {
         if (sqlAnnotations.isPresent()) {
             for (var sql : sqlAnnotations.get()) {
                 String datasourceName = sql.getRequiredValue("datasourceName", String.class);
-
-                Class<?> dataSourceType = sql.get("resourceType", Class.class).filter(c -> c != Object.class).orElse(DataSource.class);
+                Class<?> dataSourceType = sql.getRequiredValue("resourceType", Class.class);
 
                 Object bean = applicationContext.getBean(dataSourceType, Qualifiers.byName(datasourceName));
 
