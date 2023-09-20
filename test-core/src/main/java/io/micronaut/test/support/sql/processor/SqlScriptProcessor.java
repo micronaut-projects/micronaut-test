@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.support.sql;
+package io.micronaut.test.support.sql.processor;
 
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.order.Ordered;
 
 import javax.sql.DataSource;
-import java.util.Optional;
+import java.sql.SQLException;
 
 /**
  * Resolves a {@link DataSource} to a concrete implementation that can be used to execute SQL scripts against.
@@ -28,14 +27,13 @@ import java.util.Optional;
  * @author Tim Yates
  */
 @FunctionalInterface
-public interface DataSourceResolver extends Ordered {
+public interface SqlScriptProcessor {
 
     /**
-     * If the given datasource can be handled by this resolver, return an optional of the resolved datasource, otherwise empty.
+     * Process the given SQL.
      *
-     * @param dataSource The datasource to resolve
-     * @return An optional of the resolved datasource if it's handled by this resolver
+     * @param sql The SQL to process
+     * @throws SQLException If an error occurs
      */
-    @NonNull
-    Optional<DataSource> resolve(@NonNull DataSource dataSource);
+    void process(@NonNull String sql) throws SQLException;
 }

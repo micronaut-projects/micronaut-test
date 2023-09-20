@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.support.sql;
+package io.micronaut.test.support.sql.resolver;
 
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.data.connection.jdbc.advice.DelegatingDataSource;
+import io.micronaut.test.support.sql.processor.SqlScriptProcessor;
+import io.micronaut.test.support.sql.processor.R2DBCConnectionFactoryProcessor;
+import io.r2dbc.spi.ConnectionFactory;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
 import java.util.Optional;
 
 /**
@@ -35,10 +37,10 @@ import java.util.Optional;
  */
 @Singleton
 @Experimental
-@Requires(classes = {DataSource.class, DelegatingDataSource.class})
-public class DelegatingDataSourceResolver implements DataSourceResolver {
+@Requires(classes = {ConnectionFactory.class})
+public class R2DBCConnectionFactoryResolver implements DataSourceResolver {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DelegatingDataSourceResolver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(R2DBCConnectionFactoryResolver.class);
 
     @Override
     public int getOrder() {
@@ -47,12 +49,13 @@ public class DelegatingDataSourceResolver implements DataSourceResolver {
 
     @Override
     @NonNull
-    public Optional<DataSource> resolve(@NonNull DataSource dataSource) {
-        if (dataSource instanceof DelegatingDataSource delegatingDataSource) {
+    public Optional<? extends SqlScriptProcessor> resolve(@NonNull Object source) {
+
+        if (source instanceof ConnectionFactory connectionFactory) {
             if (LOG.isTraceEnabled()) {
-                LOG.trace("Unwrapping and resolving data source: {}", delegatingDataSource);
+                LOG.trace("Found a connection factory: {}", connectionFactory);
             }
-            return Optional.of(DelegatingDataSource.unwrapDataSource(delegatingDataSource));
+            return Optional.of(new R2DBCConnectionFactoryProcessor(connectionFactory));
         }
         return Optional.empty();
     }

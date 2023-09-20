@@ -22,6 +22,8 @@ import io.micronaut.core.io.ResourceLoader;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.Sql;
+import io.micronaut.test.support.sql.processor.SqlScriptProcessor;
+import io.micronaut.test.support.sql.resolver.DataSourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +53,7 @@ public final class TestSqlAnnotationHandler {
 
     /**
      * Given a spec definition and application context, find and process all {@link Sql} annotations.
+     *
      * @param specDefinition The test class
      * @param applicationContext The application context
      * @throws SQLException If an error occurs executing the SQL
@@ -70,8 +71,17 @@ public final class TestSqlAnnotationHandler {
         if (sqlAnnotations.isPresent()) {
             for (var sql : sqlAnnotations.get()) {
                 String datasourceName = sql.getRequiredValue("datasourceName", String.class);
-                DataSource dataSource = applicationContext.getBean(DataSource.class, Qualifiers.byName(datasourceName));
-                Optional<DataSource> resolve = compositeDataSourceHandler.resolve(dataSource);
+
+                Class<?> dataSourceType = sql.get("resourceType", Class.class).filter(c -> c != Object.class).orElse(DataSource.class);
+
+                Object bean = applicationContext.getBean(dataSourceType, Qualifiers.byName(datasourceName));
+
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Looking for resource of type {} with name {}", dataSourceType, datasourceName);
+                }
+
+                Optional<? extends SqlScriptProcessor> resolve = compositeDataSourceHandler.resolve(bean);
+
                 if (resolve.isPresent()) {
                     handleScript(
                         resourceLoader,
@@ -88,21 +98,14 @@ public final class TestSqlAnnotationHandler {
     private static void handleScript(
         ResourceLoader loader,
         List<String> scripts,
-        DataSource dataSource
+        SqlScriptProcessor processor
     ) throws IOException, SQLException {
         for (String script : scripts) {
             Optional<URL> resource = loader.getResource(script);
             if (resource.isPresent()) {
-                try (
-                    InputStream in = resource.get().openStream();
-                    Connection connection = dataSource.getConnection();
-                    Statement statement = connection.createStatement()
-                ) {
+                try (InputStream in = resource.get().openStream()) {
                     String scriptBody = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("For connection {} executing SQL script: {}", connection, scriptBody);
-                    }
-                    statement.execute(scriptBody);
+                    processor.process(scriptBody);
                 }
             } else {
                 LOG.warn("Could not find SQL script: {}", script);

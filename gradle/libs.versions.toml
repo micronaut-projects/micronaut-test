@@ -1,6 +1,7 @@
 [versions]
+micronaut = "4.1.1"
+micronaut-core = "4.1.5"
 micronaut-docs = "2.0.0"
-micronaut = "4.1.5"
 
 groovy = "4.0.11"
 
@@ -19,6 +20,7 @@ graal-svm = "23.0.1"
 micronaut-data = "4.1.2"
 micronaut-hibernate-validator = "4.0.2"
 micronaut-logging = "1.1.2"
+micronaut-r2dbc = "5.0.1"
 micronaut-serde = "2.2.4"
 micronaut-spring = "5.0.2"
 micronaut-sql = "5.0.1"
@@ -28,10 +30,12 @@ micronaut-gradle-plugin = "4.1.0"
 
 [libraries]
 # Core
-micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
+micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut-core' }
+micronaut-platform = { module = 'io.micronaut.platform:micronaut-platform', version.ref = 'micronaut' }
 
 micronaut-data = { module = "io.micronaut.data:micronaut-data-bom", version.ref = "micronaut-data" }
 micronaut-hibernate-validator = { module = "io.micronaut.beanvalidation:micronaut-hibernate-validator", version.ref = "micronaut-hibernate-validator" }
+micronaut-r2dbc = { module = "io.micronaut.r2dbc:micronaut-r2dbc-bom", version.ref = "micronaut-r2dbc" }
 micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
 micronaut-spring = { module = "io.micronaut.spring:micronaut-spring-bom", version.ref = "micronaut-spring" }
 micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "micronaut-sql" }

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.support.sql;
+package io.micronaut.test.support.sql.resolver;
 
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.test.support.sql.processor.SqlScriptProcessor;
 import jakarta.inject.Singleton;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,9 +44,9 @@ public class CompositeDataSourceResolver implements DataSourceResolver {
 
     @Override
     @NonNull
-    public Optional<DataSource> resolve(@NonNull DataSource dataSource) {
+    public Optional<? extends SqlScriptProcessor> resolve(@NonNull Object source) {
         return handlers.stream()
-            .map(handler -> handler.resolve(dataSource))
+            .map(handler -> handler.resolve(source))
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst();

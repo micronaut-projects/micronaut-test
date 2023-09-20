@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.support.sql;
+package io.micronaut.test.support.sql.resolver;
 
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.test.support.sql.processor.SqlDataSourceProcessor;
+import io.micronaut.test.support.sql.processor.SqlScriptProcessor;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,10 +49,14 @@ public class DefaultDataSourceResolver implements DataSourceResolver {
 
     @Override
     @NonNull
-    public Optional<DataSource> resolve(@NonNull DataSource dataSource) {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("Resolving data source: {}", dataSource);
+    public Optional<? extends SqlScriptProcessor> resolve(@NonNull Object source) {
+        if (source instanceof DataSource dataSource) {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Resolving data source: {}", source);
+            }
+            return Optional.of(new SqlDataSourceProcessor(dataSource));
+        } else {
+            return Optional.empty();
         }
-        return Optional.of(dataSource);
     }
 }
