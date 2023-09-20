@@ -23,7 +23,6 @@ import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.context.TestContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.TestPropertyProvider
-import io.micronaut.test.support.sql.TestSqlAnnotationHandler
 import kotlin.reflect.full.memberFunctions
 
 class MicronautKotest5Context(
@@ -53,8 +52,6 @@ class MicronautKotest5Context(
             beforeClass(spec, testClass, micronautTestValue)
             applicationContext.inject(spec)
         }
-
-        TestSqlAnnotationHandler.handle(specDefinition, applicationContext)
 
         beforeTestClass(buildContext(spec))
     }

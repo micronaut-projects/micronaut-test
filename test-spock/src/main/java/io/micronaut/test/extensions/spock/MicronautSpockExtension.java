@@ -27,7 +27,6 @@ import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
-import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
 import jakarta.inject.Inject;
 import org.spockframework.mock.MockUtil;
 import org.spockframework.runtime.InvalidSpecException;
@@ -126,10 +125,6 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                         }
                     }
                     beforeTestClass(buildContext(invocation, null));
-
-                    if (specDefinition != null && applicationContext != null) {
-                        TestSqlAnnotationHandler.handle(specDefinition, applicationContext);
-                    }
 
                     invocation.proceed();
             }

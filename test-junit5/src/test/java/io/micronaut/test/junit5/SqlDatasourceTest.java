@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DbProperties
 // tag::clazz[]
-@MicronautTest
+@MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
 @Property(name = "datasources.default.dialect", value = "H2")
 @Property(name = "datasources.default.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.default.schema-generate", value = "CREATE_DROP")

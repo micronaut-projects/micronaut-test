@@ -29,7 +29,6 @@ import java.util.Optional;
 
 import io.micronaut.aop.Intercepted;
 import io.micronaut.test.context.TestMethodInvocationContext;
-import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -90,8 +89,6 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 Object testInstance = extensionContext.getRequiredTestInstance();
                 applicationContext.inject(testInstance);
             }
-
-            TestSqlAnnotationHandler.handle(specDefinition, applicationContext);
         }
         beforeTestClass(buildContext(extensionContext));
     }

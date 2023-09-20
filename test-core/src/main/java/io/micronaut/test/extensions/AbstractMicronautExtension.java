@@ -44,6 +44,7 @@ import io.micronaut.test.context.TestMethodInterceptor;
 import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.support.TestPropertyProvider;
 import io.micronaut.test.support.TestPropertyProviderFactory;
+import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -192,6 +193,9 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestClass, testContext, false);
+        if (specDefinition != null && applicationContext != null) {
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext);
+        }
     }
 
     @Override

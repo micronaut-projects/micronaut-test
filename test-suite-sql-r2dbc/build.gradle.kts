@@ -15,17 +15,17 @@ tasks.withType(Test::class).configureEach {
 }
 
 dependencies {
-    testAnnotationProcessor("io.micronaut.data:micronaut-data-processor")
-    testAnnotationProcessor("io.micronaut.serde:micronaut-serde-processor")
+    testAnnotationProcessor(mnData.micronaut.data.processor)
+    testAnnotationProcessor(mnSerde.micronaut.serde.processor)
 
     testImplementation(projects.micronautTestJunit5)
-    testImplementation("io.micronaut.data:micronaut-data-r2dbc")
-    testImplementation("io.micronaut.serde:micronaut-serde-jackson")
+    testImplementation(mnData.micronaut.data.r2dbc)
+    testImplementation(mnSerde.micronaut.serde.jackson)
 
-    testRuntimeOnly("ch.qos.logback:logback-classic")
-    testRuntimeOnly("dev.miku:r2dbc-mysql")
+    testRuntimeOnly(mnLogging.logback.classic)
+    testRuntimeOnly(mnR2dbc.r2dbc.mysql)
 
-    testResourcesService("mysql:mysql-connector-java")
+    testResourcesService(mnSql.mysql.connector.java)
 }
 
 micronaut {
