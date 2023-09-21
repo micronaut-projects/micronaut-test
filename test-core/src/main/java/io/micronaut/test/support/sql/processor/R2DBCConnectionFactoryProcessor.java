@@ -16,6 +16,7 @@
 package io.micronaut.test.support.sql.processor;
 
 import io.micronaut.core.annotation.Experimental;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.Result;
@@ -31,6 +32,7 @@ import java.util.List;
  * @since 4.1.0
  * @author Tim Yates
  */
+@Internal
 @Experimental
 public class R2DBCConnectionFactoryProcessor implements SqlScriptProcessor {
 

@@ -18,6 +18,7 @@ package io.micronaut.test.support.sql;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.Experimental;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.io.ResourceLoader;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.qualifiers.Qualifiers;
@@ -42,6 +43,7 @@ import java.util.Optional;
  * @since 4.1.0
  * @author Tim Yates
  */
+@Internal
 @Experimental
 public final class TestSqlAnnotationHandler {
 

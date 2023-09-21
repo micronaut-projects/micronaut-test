@@ -17,6 +17,7 @@ package io.micronaut.test.support.sql.resolver;
 
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.core.annotation.Experimental;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.test.support.sql.processor.SqlScriptProcessor;
 import jakarta.inject.Singleton;
@@ -33,6 +34,7 @@ import java.util.Optional;
  */
 @Primary
 @Singleton
+@Internal
 @Experimental
 public class CompositeDataSourceResolver implements DataSourceResolver {
 

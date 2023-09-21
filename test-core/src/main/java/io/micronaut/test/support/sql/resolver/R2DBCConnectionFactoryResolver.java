@@ -17,6 +17,7 @@ package io.micronaut.test.support.sql.resolver;
 
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Experimental;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.data.connection.jdbc.advice.DelegatingDataSource;
 import io.micronaut.test.support.sql.processor.SqlScriptProcessor;
@@ -36,6 +37,7 @@ import java.util.Optional;
  * @author Tim Yates
  */
 @Singleton
+@Internal
 @Experimental
 @Requires(classes = {ConnectionFactory.class})
 public class R2DBCConnectionFactoryResolver implements DataSourceResolver {
