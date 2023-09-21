@@ -17,6 +17,7 @@ package io.micronaut.test.support.sql;
 
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.NonNull;
 
 /**
  * Interface for handling Sql annotation for different data sources.
@@ -37,5 +38,5 @@ public interface SqlHandler<T> {
      * @param source The data source
      * @param sql The SQL to execute
      */
-    void handle(T source, String sql);
+    void handle(@NonNull T source, @NonNull String sql);
 }

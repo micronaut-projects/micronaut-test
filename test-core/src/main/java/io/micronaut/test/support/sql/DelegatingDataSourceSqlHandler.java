@@ -19,6 +19,7 @@ import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.data.connection.jdbc.advice.DelegatingDataSource;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
@@ -42,7 +43,7 @@ public class DelegatingDataSourceSqlHandler extends DataSourceSqlHandler {
     private static final Logger LOG = LoggerFactory.getLogger(DelegatingDataSourceSqlHandler.class);
 
     @Override
-    public void handle(DataSource dataSource, String sql) {
+    public void handle(@NonNull DataSource dataSource, @NonNull String sql) {
         if (dataSource instanceof DelegatingDataSource delegatingDataSource) {
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Unwrapping DelegatingDataSource: {}", delegatingDataSource);

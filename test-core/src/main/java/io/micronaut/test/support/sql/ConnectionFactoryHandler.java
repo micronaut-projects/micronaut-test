@@ -18,6 +18,7 @@ package io.micronaut.test.support.sql;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.NonNull;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.Result;
 import jakarta.inject.Singleton;
@@ -42,7 +43,7 @@ public class ConnectionFactoryHandler implements SqlHandler<ConnectionFactory> {
     private static final Logger LOG = LoggerFactory.getLogger(ConnectionFactoryHandler.class);
 
     @Override
-    public void handle(ConnectionFactory connectionFactory, String sql) {
+    public void handle(@NonNull ConnectionFactory connectionFactory, @NonNull String sql) {
         List<Long> rowsUpdated = Mono.from(connectionFactory.create())
             .flatMapMany(c -> {
                 if (LOG.isDebugEnabled()) {

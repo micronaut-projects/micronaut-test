@@ -18,6 +18,7 @@ package io.micronaut.test.support.sql;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.NonNull;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class DataSourceSqlHandler implements SqlHandler<DataSource> {
     private static final Logger LOG = LoggerFactory.getLogger(DataSourceSqlHandler.class);
 
     @Override
-    public void handle(DataSource dataSource, String sql) {
+    public void handle(@NonNull DataSource dataSource, @NonNull String sql) {
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()
         ) {
