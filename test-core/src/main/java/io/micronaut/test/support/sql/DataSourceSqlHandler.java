@@ -40,7 +40,7 @@ public class DataSourceSqlHandler implements SqlHandler<DataSource> {
     private static final Logger LOG = LoggerFactory.getLogger(DataSourceSqlHandler.class);
 
     @Override
-    public void handle(DataSource dataSource, String sql) throws SQLException {
+    public void handle(DataSource dataSource, String sql) {
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()
         ) {
@@ -48,6 +48,8 @@ public class DataSourceSqlHandler implements SqlHandler<DataSource> {
                 LOG.debug("{}: Executing SQL: {}", dataSource, sql);
             }
             statement.execute(sql);
+        } catch (SQLException sqlException) {
+            throw new SqlAnnotationHandlingException(sqlException);
         }
     }
 }

@@ -15,27 +15,14 @@
  */
 package io.micronaut.test.support.sql;
 
-import io.micronaut.core.annotation.Experimental;
-import io.micronaut.core.annotation.Internal;
+import io.micronaut.test.annotation.Sql;
 
 /**
- * Interface for handling Sql annotation for different data sources.
- *
- * @param <T> The type of the data source
- *
- * @since 4.1.0
- * @author Tim Yates
+ * Exception thrown when an error occurs handling an {@link Sql} annotation.
  */
-@Internal
-@Experimental
-@FunctionalInterface
-public interface SqlHandler<T> {
+public final class SqlAnnotationHandlingException extends RuntimeException {
 
-    /**
-     * Given a data source and SQL, execute the SQL.
-     *
-     * @param source The data source
-     * @param sql The SQL to execute
-     */
-    void handle(T source, String sql);
+    public SqlAnnotationHandlingException(Exception e) {
+        super(e);
+    }
 }

@@ -83,16 +83,10 @@ public final class TestSqlAnnotationHandler {
         T ds = applicationContext.getBean(dataSourceType, Qualifiers.byName(dataSourceName));
         SqlHandler<T> handler = applicationContext.getBean(SqlHandler.class, Qualifiers.byTypeArguments(dataSourceType));
 
-        return (String s) -> {
-            try {
-                handler.handle(ds, s);
-            } catch (SQLException e) {
-                throw new SqlAnnotationHandlingException(e);
-            }
-        };
+        return (String s) -> handler.handle(ds, s);
     }
 
-    private static <T> void handleScript(ResourceLoader loader, List<String> scripts, Consumer<String> processor) throws IOException {
+    private static void handleScript(ResourceLoader loader, List<String> scripts, Consumer<String> processor) throws IOException {
         for (String script : scripts) {
             Optional<URL> resource = loader.getResource(script);
             if (resource.isPresent()) {
@@ -106,13 +100,4 @@ public final class TestSqlAnnotationHandler {
         }
     }
 
-    /**
-     * Exception thrown when an error occurs handling an {@link Sql} annotation.
-     */
-    public static final class SqlAnnotationHandlingException extends RuntimeException {
-
-        public SqlAnnotationHandlingException(Exception e) {
-            super(e);
-        }
-    }
 }

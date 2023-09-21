@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 
 /**
  * Handler for {@link DataSource} instances which may be a {@link DelegatingDataSource}.
@@ -43,7 +42,7 @@ public class DelegatingDataSourceSqlHandler extends DataSourceSqlHandler {
     private static final Logger LOG = LoggerFactory.getLogger(DelegatingDataSourceSqlHandler.class);
 
     @Override
-    public void handle(DataSource dataSource, String sql) throws SQLException {
+    public void handle(DataSource dataSource, String sql) {
         if (dataSource instanceof DelegatingDataSource delegatingDataSource) {
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Unwrapping DelegatingDataSource: {}", delegatingDataSource);
