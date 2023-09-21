@@ -24,7 +24,7 @@ class SqlDatasourceTest(
     fun readAllNames(dataSource: DataSource): List<String> {
         val result = mutableListOf<String>()
         dataSource.connection.use { ds ->
-            ds.prepareStatement("select name from test").use { ps ->
+            ds.prepareStatement("select name from MyTable").use { ps ->
                 ps.executeQuery().use { rslt ->
                     while (rslt.next()) {
                         result.add(rslt.getString(1))

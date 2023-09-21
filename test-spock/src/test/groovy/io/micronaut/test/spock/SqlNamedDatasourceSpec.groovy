@@ -9,16 +9,17 @@ import spock.lang.Specification
 
 import javax.sql.DataSource
 
-@MicronautTest
 
-@Sql(dataSourceName = "one", value = ["classpath:create.sql", "classpath:datasource_1_insert.sql"])
+// tag::clazz[]
+@MicronautTest
+@Sql(dataSourceName = "one", value = ["classpath:create.sql", "classpath:datasource_1_insert.sql"]) // <1>
 @Property(name = "datasources.one.dialect", value = "H2")
 @Property(name = "datasources.one.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.one.schema-generate", value = "CREATE_DROP")
 @Property(name = "datasources.one.url", value = "jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @Property(name = "datasources.one.username", value = "sa")
 
-@Sql(dataSourceName = "two", value = ["classpath:create.sql", "classpath:datasource_2_insert.sql"])
+@Sql(dataSourceName = "two", value = ["classpath:create.sql", "classpath:datasource_2_insert.sql"]) // <1>
 @Property(name = "datasources.two.dialect", value = "H2")
 @Property(name = "datasources.two.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.two.schema-generate", value = "CREATE_DROP")
@@ -44,7 +45,7 @@ class SqlNamedDatasourceSpec extends Specification {
 
     List<String> readAllNames(DataSource dataSource) {
         dataSource.getConnection().withCloseable {
-            it.prepareStatement("select name from test").withCloseable {
+            it.prepareStatement("select name from MyTable").withCloseable {
                 it.executeQuery().withCloseable {
                     def names = []
                     while (it.next()) {
@@ -56,3 +57,4 @@ class SqlNamedDatasourceSpec extends Specification {
         }
     }
 }
+// end::clazz[]

@@ -8,16 +8,18 @@ import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import jakarta.inject.Named
 import javax.sql.DataSource
 
-@MicronautTest
-@Sql(dataSourceName = "one", value = ["classpath:create.sql", "classpath:datasource_1_insert.sql"])
 @DbProperties
+
+// tag::clazz[]
+@MicronautTest
+@Sql(dataSourceName = "one", value = ["classpath:create.sql", "classpath:datasource_1_insert.sql"]) // <1>
 @Property(name = "datasources.one.dialect", value = "H2")
 @Property(name = "datasources.one.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.one.schema-generate", value = "CREATE_DROP")
 @Property(name = "datasources.one.url", value = "jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @Property(name = "datasources.one.username", value = "sa")
 
-@Sql(dataSourceName = "two", value = ["classpath:create.sql", "classpath:datasource_2_insert.sql"])
+@Sql(dataSourceName = "two", value = ["classpath:create.sql", "classpath:datasource_2_insert.sql"]) // <1>
 @Property(name = "datasources.two.dialect", value = "H2")
 @Property(name = "datasources.two.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.two.schema-generate", value = "CREATE_DROP")
@@ -32,7 +34,7 @@ class SqlNamedDatasourceTest(
         val result = mutableListOf<String>()
         println("Testing datasource: $dataSource")
         dataSource.connection.use { ds ->
-            ds.prepareStatement("select name from test").use { ps ->
+            ds.prepareStatement("select name from MyTable").use { ps ->
                 ps.executeQuery().use { rslt ->
                     while (rslt.next()) {
                         result.add(rslt.getString(1))
@@ -50,3 +52,4 @@ class SqlNamedDatasourceTest(
         }
     }
 })
+// end::clazz[]

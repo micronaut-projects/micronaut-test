@@ -1,4 +1,3 @@
-:icons: font
 When performing a test with a backing database, often some data is required in the database prior to running the tests.
 As of `micronaut-test` version 4.1.0, there is an annotation api:test.annotation.Sql[].
 
@@ -38,4 +37,34 @@ include::{spocktests}/SqlDatasourceSpec.groovy[tags="clazz"]
 include::{kotest5tests}/SqlDatasourceTest.kt[tags="clazz"]
 ----
 
-<1> The annotation is used to specify the location of the SQL scripts to be executed. (The default datasource name is `default`, but this can be overriden by setting the `datasourceName` property for the annotation)
+<1> Specify the location of the SQL scripts to be executed for a DataSource with the name `default`.
+
+== Named Datasources
+
+If you have multiple datasources configured, you can specify the datasource name to use for the SQL scripts.
+
+[source, java, role="multi-language-sample"]
+----
+include::{junit5tests}/SqlNamedDatasourceTest.java[tags="clazz"]
+----
+
+[source, groovy, role="multi-language-sample"]
+----
+include::{spocktests}/SqlNamedDatasourceSpec.groovy[tags="clazz"]
+----
+
+[source, kotlin, role="multi-language-sample"]
+----
+include::{kotest5tests}/SqlNamedDatasourceTest.kt[tags="clazz"]
+----
+
+<1> Specify the location of the SQL scripts to be executed for a DataSource with the given name.
+
+== R2DBC
+
+For R2DBC, the `Sql` annotation can be used in the same way as for JDBC however it is required to pass the `resourceType` as `ConnectionFactory.class`.
+
+[source,java]
+----
+include::test-suite-sql-r2dbc/src/test/java/io/micronaut/test/r2dbc/MySqlConnectionTest.java[tags="clazz"]
+----

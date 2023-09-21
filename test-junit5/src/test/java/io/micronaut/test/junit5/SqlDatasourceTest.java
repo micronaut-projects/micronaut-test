@@ -41,7 +41,7 @@ class SqlDatasourceTest {
         var result = new ArrayList<String>();
         try (
                 Connection ds = dataSource.getConnection();
-                PreparedStatement ps = ds.prepareStatement("select name from test");
+                PreparedStatement ps = ds.prepareStatement("select name from MyTable");
                 ResultSet rslt = ps.executeQuery()
         ) {
             while(rslt.next()) {

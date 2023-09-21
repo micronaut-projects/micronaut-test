@@ -1,2 +1,2 @@
-INSERT INTO TEST (ID, NAME) VALUES (1, 'Bear');
-INSERT INTO TEST (ID, NAME) VALUES (2, 'Bumblebee');
+INSERT INTO MyTable (ID, NAME) VALUES (1, 'Bear');
+INSERT INTO MyTable (ID, NAME) VALUES (2, 'Bumblebee');

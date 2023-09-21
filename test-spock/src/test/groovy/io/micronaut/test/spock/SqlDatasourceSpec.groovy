@@ -29,7 +29,7 @@ class SqlDatasourceSpec extends Specification {
 
     List<String> readAllNames(DataSource dataSource) {
         dataSource.getConnection().withCloseable {
-            it.prepareStatement("select name from test").withCloseable {
+            it.prepareStatement("select name from MyTable").withCloseable {
                 it.executeQuery().withCloseable {
                     def names = []
                     while (it.next()) {

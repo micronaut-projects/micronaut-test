@@ -10,6 +10,7 @@ import reactor.core.publisher.Flux;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+// tag::clazz[]
 @MicronautTest
 @Property(name = "r2dbc.datasources.default.db-type", value = "mysql")
 @Sql(value = {"classpath:create.sql", "classpath:datasource_1_insert.sql"}, resourceType = ConnectionFactory.class)
@@ -31,3 +32,4 @@ class MySqlConnectionTest  {
         assertEquals("Albatross", result);
     }
 }
+// end::clazz[]
