@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.support.sql.resolver;
+package io.micronaut.test.support.sql;
 
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.annotation.NonNull;
 import io.micronaut.data.connection.jdbc.advice.DelegatingDataSource;
-import io.micronaut.test.support.sql.processor.SqlScriptProcessor;
-import io.micronaut.test.support.sql.processor.SqlDataSourceProcessor;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.util.Optional;
+import java.sql.SQLException;
 
 /**
- * Resolver for a {@link DelegatingDataSource}.
- * This will unwrap the datasource and resolve the underlying datasource.
+ * Handler for {@link DataSource} instances which may be a {@link DelegatingDataSource}.
  *
  * @since 4.1.0
  * @author Tim Yates
@@ -39,25 +36,20 @@ import java.util.Optional;
 @Singleton
 @Internal
 @Experimental
-@Requires(classes = {DataSource.class, DelegatingDataSource.class})
-public class DelegatingDataSourceResolver implements DataSourceResolver {
+@Requires(classes = {DelegatingDataSource.class, DataSource.class})
+@Replaces(DataSourceSqlHandler.class)
+public class DelegatingDataSourceSqlHandler extends DataSourceSqlHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DelegatingDataSourceResolver.class);
-
-    @Override
-    public int getOrder() {
-        return DefaultDataSourceResolver.ORDER - 1;
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(DelegatingDataSourceSqlHandler.class);
 
     @Override
-    @NonNull
-    public Optional<? extends SqlScriptProcessor> resolve(@NonNull Object dataSource) {
+    public void handle(DataSource dataSource, String sql) throws SQLException {
         if (dataSource instanceof DelegatingDataSource delegatingDataSource) {
             if (LOG.isTraceEnabled()) {
-                LOG.trace("Unwrapping and resolving data source: {}", delegatingDataSource);
+                LOG.trace("Unwrapping DelegatingDataSource: {}", delegatingDataSource);
             }
-            return Optional.of(new SqlDataSourceProcessor(DelegatingDataSource.unwrapDataSource(delegatingDataSource)));
+            dataSource = delegatingDataSource.getTargetDataSource();
         }
-        return Optional.empty();
+        super.handle(dataSource, sql);
     }
 }

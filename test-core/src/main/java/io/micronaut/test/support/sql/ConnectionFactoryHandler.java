@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.support.sql.processor;
+package io.micronaut.test.support.sql;
 
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.annotation.NonNull;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.Result;
+import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
@@ -27,24 +28,21 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * Processes SQL scripts against an R2DBC {@link ConnectionFactory}.
+ * Handler for r2dbc {@link ConnectionFactory} instances.
  *
  * @since 4.1.0
  * @author Tim Yates
  */
+@Singleton
 @Internal
 @Experimental
-public class R2DBCConnectionFactoryProcessor implements SqlScriptProcessor {
+@Requires(classes = {ConnectionFactory.class})
+public class ConnectionFactoryHandler implements SqlHandler<ConnectionFactory> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(R2DBCConnectionFactoryProcessor.class);
-    private final ConnectionFactory connectionFactory;
-
-    public R2DBCConnectionFactoryProcessor(ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(ConnectionFactoryHandler.class);
 
     @Override
-    public void process(@NonNull String sql) {
+    public void handle(ConnectionFactory connectionFactory, String sql) {
         List<Long> rowsUpdated = Mono.from(connectionFactory.create())
             .flatMapMany(c -> {
                 if (LOG.isDebugEnabled()) {

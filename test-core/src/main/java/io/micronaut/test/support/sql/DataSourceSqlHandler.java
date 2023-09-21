@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.support.sql.processor;
+package io.micronaut.test.support.sql;
 
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.annotation.NonNull;
+import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,25 +26,21 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
- * Processes SQL scripts against a {@link DataSource}.
+ * Handler for raw {@link DataSource} instances.
  *
  * @since 4.1.0
  * @author Tim Yates
  */
+@Singleton
 @Internal
 @Experimental
-public class SqlDataSourceProcessor implements SqlScriptProcessor {
+@Requires(classes = {DataSource.class})
+public class DataSourceSqlHandler implements SqlHandler<DataSource> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SqlDataSourceProcessor.class);
-
-    private final DataSource dataSource;
-
-    public SqlDataSourceProcessor(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(DataSourceSqlHandler.class);
 
     @Override
-    public void process(@NonNull String sql) throws SQLException {
+    public void handle(DataSource dataSource, String sql) throws SQLException {
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()
         ) {

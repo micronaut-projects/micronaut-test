@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
 
-@Sql(datasourceName = "one", value = {"classpath:create.sql", "classpath:datasource_1_insert.sql"})
+@Sql(dataSourceName = "one", value = {"classpath:create.sql", "classpath:datasource_1_insert.sql"})
 @DbProperties
 @Property(name = "datasources.one.dialect", value = "H2")
 @Property(name = "datasources.one.driverClassName", value = "org.h2.Driver")
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Property(name = "datasources.one.url", value = "jdbc:h2:mem:databaseOne;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @Property(name = "datasources.one.username", value = "sa")
 
-@Sql(datasourceName = "two", scripts = {"classpath:create.sql", "classpath:datasource_2_insert.sql"})
+@Sql(dataSourceName = "two", scripts = {"classpath:create.sql", "classpath:datasource_2_insert.sql"})
 @Property(name = "datasources.two.dialect", value = "H2")
 @Property(name = "datasources.two.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.two.schema-generate", value = "CREATE_DROP")

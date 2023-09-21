@@ -11,14 +11,14 @@ import javax.sql.DataSource
 
 @MicronautTest
 
-@Sql(datasourceName = "one", value = ["classpath:create.sql", "classpath:datasource_1_insert.sql"])
+@Sql(dataSourceName = "one", value = ["classpath:create.sql", "classpath:datasource_1_insert.sql"])
 @Property(name = "datasources.one.dialect", value = "H2")
 @Property(name = "datasources.one.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.one.schema-generate", value = "CREATE_DROP")
 @Property(name = "datasources.one.url", value = "jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @Property(name = "datasources.one.username", value = "sa")
 
-@Sql(datasourceName = "two", value = ["classpath:create.sql", "classpath:datasource_2_insert.sql"])
+@Sql(dataSourceName = "two", value = ["classpath:create.sql", "classpath:datasource_2_insert.sql"])
 @Property(name = "datasources.two.dialect", value = "H2")
 @Property(name = "datasources.two.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.two.schema-generate", value = "CREATE_DROP")

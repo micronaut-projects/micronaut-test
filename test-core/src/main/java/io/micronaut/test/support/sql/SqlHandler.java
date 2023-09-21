@@ -13,34 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.test.support.sql.resolver;
+package io.micronaut.test.support.sql;
 
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.order.Ordered;
-import io.micronaut.test.support.sql.processor.SqlScriptProcessor;
 
-import javax.sql.DataSource;
-import java.util.Optional;
+import java.sql.SQLException;
 
 /**
- * Resolves a {@link DataSource} to a concrete implementation that can be used to execute SQL scripts against.
+ * Interface for handling Sql annotation for different data sources.
+ *
+ * @param <T> The type of the data source
  *
  * @since 4.1.0
  * @author Tim Yates
  */
-@Experimental
 @Internal
+@Experimental
 @FunctionalInterface
-public interface DataSourceResolver extends Ordered {
+public interface SqlHandler<T> {
 
     /**
-     * If the given datasource can be handled by this resolver, return an optional of the resolved datasource, otherwise empty.
+     * Given a data source and SQL, execute the SQL.
      *
-     * @param source The datasource to resolve
-     * @return An optional of the resolved source if it's handled by this resolver
+     * @param source The data source
+     * @param sql The SQL to execute
+     * @throws SQLException If an error occurs executing the SQL
      */
-    @NonNull
-    Optional<? extends SqlScriptProcessor> resolve(@NonNull Object source);
+    void handle(T source, String sql) throws SQLException;
 }

@@ -52,7 +52,7 @@ public @interface Sql {
      *
      * @return The datasource name
      */
-    String datasourceName() default "default";
+    String dataSourceName() default "default";
 
     /**
      * @return The SQL scripts to execute
