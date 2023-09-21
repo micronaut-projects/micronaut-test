@@ -1,6 +1,6 @@
 [versions]
-micronaut = "4.1.1"
-micronaut-core = "4.1.5"
+micronaut = "4.1.5"
+micronaut-platform = "4.1.1"
 micronaut-docs = "2.0.0"
 
 groovy = "4.0.11"
@@ -30,8 +30,8 @@ micronaut-gradle-plugin = "4.1.0"
 
 [libraries]
 # Core
-micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut-core' }
-micronaut-platform = { module = 'io.micronaut.platform:micronaut-platform', version.ref = 'micronaut' }
+micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
+micronaut-platform = { module = 'io.micronaut.platform:micronaut-platform', version.ref = 'micronaut-platform' }
 
 micronaut-data = { module = "io.micronaut.data:micronaut-data-bom", version.ref = "micronaut-data" }
 micronaut-hibernate-validator = { module = "io.micronaut.beanvalidation:micronaut-hibernate-validator", version.ref = "micronaut-hibernate-validator" }
