@@ -51,6 +51,7 @@ object MicronautKotest5Extension: TestListener, ConstructorExtension, TestCaseEx
 
     override suspend fun afterSpec(spec: Spec) {
         contexts[spec.javaClass.name]?.afterSpecClass(spec)
+        contexts[spec.javaClass.name]?.close()
     }
 
     override suspend fun beforeTest(testCase: TestCase) {

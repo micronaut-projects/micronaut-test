@@ -116,4 +116,7 @@ class MicronautKotest5Context(
         )
     }
 
+  fun close() {
+      applicationContext.close()
+  }
 }
