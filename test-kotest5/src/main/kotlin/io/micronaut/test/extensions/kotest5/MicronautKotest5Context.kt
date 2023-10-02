@@ -47,6 +47,10 @@ class MicronautKotest5Context(
     override fun alignMocks(context: Spec?, instance: Any) {
     }
 
+    fun isApplicationContextOpen(): Boolean {
+        return applicationContext != null
+    }
+
     fun beforeSpecClass(spec: Spec) {
         if (!createBean) {
             beforeClass(spec, testClass, micronautTestValue)
@@ -115,8 +119,4 @@ class MicronautKotest5Context(
             false
         )
     }
-
-  fun close() {
-      applicationContext.close()
-  }
 }
