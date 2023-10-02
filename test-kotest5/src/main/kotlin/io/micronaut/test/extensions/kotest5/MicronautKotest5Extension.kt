@@ -33,7 +33,6 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
         testCase: TestCase,
         execute: suspend (TestCase) -> TestResult
     ): TestResult {
-//        val context = contexts[testCase.spec]
         val context = testCase.spec.context()
         return if (context != null && context.getSpecDefinition() == null) {
             // It's a MicronautTest test where the bean doesn't exist
@@ -43,9 +42,7 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
             execute(testCase)
         }
     }
-
-//    val contexts: MutableMap<Spec, MicronautKotest5Context> = mutableMapOf()
-
+    
     val contexts: MutableMap<String, List<MicronautKotest5Context>> = mutableMapOf()
 
     private fun Spec.context() =
