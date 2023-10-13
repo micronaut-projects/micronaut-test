@@ -27,14 +27,14 @@ import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
-object MicronautKotest5Extension: TestListener, ConstructorExtension, TestCaseExtension {
+object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseExtension {
 
     override suspend fun intercept(
         testCase: TestCase,
         execute: suspend (TestCase) -> TestResult
     ): TestResult {
-        val context = contexts[testCase.spec.javaClass.name]
-        return if(context != null && context.getSpecDefinition() == null) {
+        val context = testCase.spec.context()
+        return if (context != null && context.getSpecDefinition() == null) {
             // It's a MicronautTest test where the bean doesn't exist
             TestResult.Ignored
         } else {
@@ -42,39 +42,42 @@ object MicronautKotest5Extension: TestListener, ConstructorExtension, TestCaseEx
             execute(testCase)
         }
     }
+    
+    val contexts: MutableMap<String, List<MicronautKotest5Context>> = mutableMapOf()
 
-    val contexts: MutableMap<String, MicronautKotest5Context> = mutableMapOf()
+    private fun Spec.context() =
+        contexts[javaClass.name]?.find { it.bean == this } ?: contexts[javaClass.name]?.find { it.bean == null }
 
     override suspend fun beforeSpec(spec: Spec) {
-        contexts[spec.javaClass.name]?.beforeSpecClass(spec)
+        spec.context()?.beforeSpecClass(spec)
     }
 
     override suspend fun afterSpec(spec: Spec) {
-        contexts[spec.javaClass.name]?.afterSpecClass(spec)
+        spec.context()?.afterSpecClass(spec)
     }
 
     override suspend fun beforeTest(testCase: TestCase) {
-        contexts[testCase.spec.javaClass.name]?.beforeTest(testCase)
+        testCase.spec.context()?.beforeTest(testCase)
     }
 
     override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-        contexts[testCase.spec.javaClass.name]?.afterTest(testCase, result)
+        testCase.spec.context()?.afterTest(testCase, result)
     }
 
     override suspend fun beforeInvocation(testCase: TestCase, iteration: Int) {
-        contexts[testCase.spec.javaClass.name]?.beforeInvocation(testCase)
+        testCase.spec.context()?.beforeInvocation(testCase)
     }
 
     override suspend fun afterInvocation(testCase: TestCase, iteration: Int) {
-        contexts[testCase.spec.javaClass.name]?.afterInvocation(testCase)
+        testCase.spec.context()?.afterInvocation(testCase)
     }
 
     override suspend fun beforeContainer(testCase: TestCase) {
-        contexts[testCase.spec.javaClass.name]?.beforeInvocation(testCase)
+        testCase.spec.context()?.beforeInvocation(testCase)
     }
 
     override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-        contexts[testCase.spec.javaClass.name]?.afterInvocation(testCase)
+        testCase.spec.context()?.afterInvocation(testCase)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -82,16 +85,17 @@ object MicronautKotest5Extension: TestListener, ConstructorExtension, TestCaseEx
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
         val micronautTestValue = testClass
-                    .annotations
-                    .filterIsInstance<MicronautTest>()
-                    .map { micronautTest -> buildValueObject(micronautTest) }
-                    .firstOrNull()
+            .annotations
+            .filterIsInstance<MicronautTest>()
+            .map { micronautTest -> buildValueObject(micronautTest) }
+            .firstOrNull()
         return if (micronautTestValue == null) {
             null
         } else {
             val createBean = constructor != null && constructor.parameters.isNotEmpty()
             val context = MicronautKotest5Context(testClass, micronautTestValue, createBean)
-            contexts[testClass.name] = context
+            val specContexts = contexts[testClass.name] ?: emptyList()
+            contexts[testClass.name] = specContexts + context
             if (createBean) {
                 context.bean
             } else {
@@ -102,17 +106,17 @@ object MicronautKotest5Extension: TestListener, ConstructorExtension, TestCaseEx
 
     private fun buildValueObject(micronautTest: MicronautTest): MicronautTestValue {
         return MicronautTestValue(
-                micronautTest.application.java,
-                micronautTest.environments,
-                micronautTest.packages,
-                micronautTest.propertySources,
-                micronautTest.rollback,
-                micronautTest.transactional,
-                micronautTest.rebuildContext,
-                micronautTest.contextBuilder.map { kClass -> kClass.java }.toTypedArray(),
-                micronautTest.transactionMode,
-                micronautTest.startApplication,
-                false
+            micronautTest.application.java,
+            micronautTest.environments,
+            micronautTest.packages,
+            micronautTest.propertySources,
+            micronautTest.rollback,
+            micronautTest.transactional,
+            micronautTest.rebuildContext,
+            micronautTest.contextBuilder.map { kClass -> kClass.java }.toTypedArray(),
+            micronautTest.transactionMode,
+            micronautTest.startApplication,
+            false
         )
     }
 
