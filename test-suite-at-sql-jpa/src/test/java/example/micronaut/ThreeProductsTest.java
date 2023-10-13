@@ -1,5 +1,6 @@
 package example.micronaut;
 
+import example.micronaut.entities.Product;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.test.annotation.Sql;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -23,5 +24,6 @@ class ThreeProductsTest implements TestPropertyProvider {
     @Test
     void thereAreTwoProducts(ProductRepository productRepository) {
         assertEquals(3L, productRepository.count());
+        productRepository.save(new Product(5L, "foo", "bar"));
     }
 }
