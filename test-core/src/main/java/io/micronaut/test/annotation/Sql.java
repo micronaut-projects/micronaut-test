@@ -61,6 +61,11 @@ public @interface Sql {
     String[] scripts() default {};
 
     /**
+     * @return The SQL scripts to execute after the test to reset the db state
+     */
+    String[] rollback() default {};
+
+    /**
      * @return The type of the resource to use for the SQL scripts.
      */
     Class<?> resourceType() default DataSource.class;

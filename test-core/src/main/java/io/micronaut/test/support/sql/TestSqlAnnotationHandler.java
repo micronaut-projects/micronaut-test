@@ -57,10 +57,12 @@ public final class TestSqlAnnotationHandler {
      *
      * @param specDefinition The test class
      * @param applicationContext The application context
+     * @param member The {@link Sql} member name to use for the scripts
+     *
      * @throws SQLException If an error occurs executing the SQL
      * @throws IOException If an error occurs reading the SQL
      */
-    public static void handle(BeanDefinition<?> specDefinition, ApplicationContext applicationContext) throws IOException {
+    public static void handle(BeanDefinition<?> specDefinition, ApplicationContext applicationContext, String member) throws IOException {
         ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
         Optional<List<AnnotationValue<Sql>>> sqlAnnotations = specDefinition
             .findAnnotation(Sql.Sqls.class)
@@ -70,11 +72,14 @@ public final class TestSqlAnnotationHandler {
             for (var sql : sqlAnnotations.get()) {
                 String dataSourceName = sql.getRequiredValue("dataSourceName", String.class);
                 Class<?> dataSourceType = sql.getRequiredValue("resourceType", Class.class);
-                List<@NonNull String> scripts = Arrays.asList(sql.stringValues("value"));
+                List<@NonNull String> scripts = Arrays.asList(sql.stringValues(member));
 
-                Consumer<String> proc = bean(dataSourceType, dataSourceName, applicationContext);
-
-                handleScript(resourceLoader, scripts, proc);
+                if (!scripts.isEmpty()) {
+                    Consumer<String> proc = bean(dataSourceType, dataSourceName, applicationContext);
+                    handleScript(resourceLoader, scripts, proc, member);
+                } else if (LOG.isTraceEnabled()) {
+                    LOG.trace("No {} SQL scripts found", member);
+                }
             }
         }
     }
@@ -86,10 +91,13 @@ public final class TestSqlAnnotationHandler {
         return (String s) -> handler.handle(ds, s);
     }
 
-    private static void handleScript(ResourceLoader loader, List<String> scripts, Consumer<String> processor) throws IOException {
+    private static void handleScript(ResourceLoader loader, List<String> scripts, Consumer<String> processor, String member) throws IOException {
         for (String script : scripts) {
             Optional<URL> resource = loader.getResource(script);
             if (resource.isPresent()) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing {} SQL script: {}", member, script);
+                }
                 try (InputStream in = resource.get().openStream()) {
                     String scriptBody = new String(in.readAllBytes(), StandardCharsets.UTF_8);
                     processor.accept(scriptBody);

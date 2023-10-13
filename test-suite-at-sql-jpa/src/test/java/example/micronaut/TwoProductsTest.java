@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Sql("classpath:twoproducts.sql")
+@Sql(scripts = "classpath:twoproducts.sql", rollback = "classpath:rollbacktwoproducts.sql")
 @MicronautTest(startApplication = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TwoProductsTest implements TestPropertyProvider {

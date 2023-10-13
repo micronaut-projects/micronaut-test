@@ -194,13 +194,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     public void beforeTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestClass, testContext, false);
         if (specDefinition != null && applicationContext != null) {
-            TestSqlAnnotationHandler.handle(specDefinition, applicationContext);
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext, "value");
         }
     }
 
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestClass, testContext, true);
+        if (specDefinition != null && applicationContext != null) {
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext, "rollback");
+        }
     }
 
     @Override

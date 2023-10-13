@@ -14,6 +14,4 @@
 
     <!--<logger name="io.micronaut.context" level="trace" />-->
     <logger name="io.micronaut.test.support.sql" level="trace" />
-
-    <logger name="io.micronaut.context.condition"  level="trace" />
 </configuration>
