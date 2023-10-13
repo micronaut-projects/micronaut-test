@@ -1,0 +1,12 @@
+Now let's say you want to replace the implementation with a Spock Mock. You can do so by defining a method that returns a Spock mock and is annotated with `@MockBean`, for example:
+
+.The MathService specification
+[source,groovy]
+----
+include::{spocktests}/MathMockServiceSpec.groovy[]
+----
+
+<1> The `@MockBean` annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.
+<2> Spock's `Mock(..)` method creates the actual mock
+<3> The Mock is injected into the test
+<4> Spock is used to verify the mock is called

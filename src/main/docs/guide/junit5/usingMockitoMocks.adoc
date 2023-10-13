@@ -1,0 +1,14 @@
+Now let's say you want to replace the implementation with a Mockito Mock. You can do so by defining a method that returns a mock and is annotated with `@MockBean`, for example:
+
+.The MathService specification
+[source,java]
+----
+include::{junit5tests}/MathMockServiceTest.java[]
+----
+
+<1> The `@MockBean` annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.
+<2> Mockito's `mock(..)` method creates the actual mock
+<3> The Mock is injected into the test
+<4> Mockito is used to verify the mock is called
+
+Note that because the bean is an inner class of the test, it will be active only for the scope of the test. This approach allows you to define beans that are isolated per test class.

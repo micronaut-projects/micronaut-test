@@ -1,0 +1,35 @@
+You can define additional test specific properties using the `@Property` annotation. The following example demonstrates usage:
+
+.Using `@Property`
+[source,java]
+----
+include::{junit5tests}/PropertyValueTest.java[]
+----
+
+Note that when a `@Property` is defined at the test method level, it causes a `RefreshEvent` to be triggered which will update any `@ConfigurationProperties` related  to the property.
+
+Alternatively you can specify additional `propertySources` in any supported format (YAML, JSON, Java properties file etc.) using the `@MicronautTest` annotation:
+
+.Using `propertySources` stored in files
+[source,java]
+----
+include::{junit5tests}/PropertySourceTest.java[]
+----
+
+The above example expects a file located at `src/test/resources/io/micronaut/junit5/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
+
+* `file:myprops.properties` - A relative path to a file somewhere on the file system
+* `classpath:myprops.properties` - A file relative to the root of the classpath
+* `myprops.properties` - A file relative on the classpath relative to the test being run.
+
+If you need more dynamic property definition or the property you want to define requires some setup then you can implement the api:test.support.TestPropertyProvider[] interface in your test and do whatever setup is necessary then return the properties you want to expose the the application.
+
+For example:
+
+.Using the `TestPropertyProvider` interface
+[source,java]
+----
+include::{junit5tests}/PropertySourceMapTest.java[]
+----
+
+NOTE: When using `TestPropertyProvider` your test must be declared with JUnit's `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` annotation.

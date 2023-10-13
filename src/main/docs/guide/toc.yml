@@ -1,9 +1,42 @@
 introduction:
   title: Introduction
 releaseHistory: Release History
-spock: Testing with Spock
-junit5: Testing with JUnit 5
-kotest5: Testing with Kotest 5
+spock:
+  title: Testing with Spock
+  settingUpSpock: Setting up Spock
+  writingAMicronautTestWithSpock: Writing a Micronaut Test with Spock
+  spockEnvironmentClasspathScanning: Environments, Classpath Scanning etc.
+  spockTransactionSemantics: Transaction semantics
+  usingSpockMocks: Using Spock Mocks
+  spockUsingCollaborators: Mocking Collaborators
+  usingRequiresOnTests: Using `@Requires` on Tests
+  definingAdditionalTestSpecificProperties: Defining Additional Test Specific Properties
+  refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
+junit5:
+  title: Testing with JUnit 5
+  settingUpJUnit5: Setting up JUnit 5
+  writingAMicronautTestWithJUnit5: Writing a Micronaut Test with JUnit 5
+  junit5EnvironmentClasspathScanning: Environments, Classpath Scanning etc.
+  junit5TransactionSemantics: Transaction semantics
+  usingMockitoMocks: Using Mockito Mocks
+  junit5MockingCollaborators: Mocking Collaborators
+  junit5UsingRequiresOnTests: Using `@Requires` on Tests
+  junit5DefiningAdditionalTestSpecificProperties: Defining Additional Test Specific Properties
+  junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
+  junit5TestingExternalServers: Testing External Servers
+kotest5:
+  title: Testing with Kotest 5
+  settingUpKoTest5: Setting up Kotest 5
+  kotest5BeforeYouBegin: Before You Begin
+  kotest5WritingAMicronautTest: Writing a Micronaut Test with Kotest
+  kotest5EnvironmentClasspathScanning: Environments, Classpath Scanning etc.
+  kotest5TransactionSemantics: Transaction semantics
+  usingMockkMocks: Using Mockk Mocks
+  kotest5MockingCollaborators: Mocking Collaborators
+  kotestUsingRequiresOnTests: Using `@Requires` on Tests
+  kotest5DefiningAdditionalTestSpecificProperties: Defining Additional Test Specific Properties
+  kotest5ConstructorInjectionCaveats: Constructor Injection Caveats
+  kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
 restAssured: REST Assured
 #spek: Testing with Spek
 repository: Repository

@@ -1,0 +1,148 @@
+To get started using Kotest 5 you need the following dependencies in your build configuration:
+
+.build.gradle
+[source,groovy,subs="attributes"]
+----
+dependencies {
+    kaptTest "io.micronaut:micronaut-inject-java"
+    testImplementation "io.micronaut.test:micronaut-test-kotest5:{version}"
+    testImplementation "io.mockk:mockk:{mockkVersion}"
+    testImplementation "io.kotest:kotest-runner-junit5-jvm:{kotestVersion}"
+}
+
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
+}
+----
+
+Or for Maven:
+
+.pom.xml
+[source,xml,subs="attributes+"]
+----
+<dependency>
+    <groupId>io.micronaut.test</groupId>
+    <artifactId>micronaut-test-kotest5</artifactId>
+    <version>{version}</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>io.mockk</groupId>
+    <artifactId>mockk</artifactId>
+    <version>{mockkVersion}</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>io.kotest</groupId>
+    <artifactId>kotest-runner-junit5-jvm</artifactId>
+    <version>{kotestVersion}</version>
+    <scope>test</scope>
+</dependency>
+----
+
+Note that for Maven you will also need to configure the Surefire plugin to use JUnit platform and configure the kotlin maven plugin:
+
+.pom.xml
+[source,xml]
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.22.2</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.2</version>
+        </dependency>
+    </dependencies>
+</plugin>
+<plugin>
+    <artifactId>kotlin-maven-plugin</artifactId>
+    <groupId>org.jetbrains.kotlin</groupId>
+    <version>1.4.10</version>
+    <configuration>
+        <compilerPlugins>
+            <plugin>all-open</plugin>
+        </compilerPlugins>
+        <pluginOptions>
+            <option>all-open:annotation=io.micronaut.aop.Around</option>
+        </pluginOptions>
+    </configuration>
+    <executions>
+        <execution>
+            <id>kapt</id>
+            <goals>
+                <goal>kapt</goal>
+            </goals>
+            <configuration>
+                <sourceDirs>
+                    <sourceDir>${project.baseDir}/src/main/kotlin</sourceDir>
+                </sourceDirs>
+                <annotationProcessorPaths>
+                    <annotationProcessorPath>
+                        <groupId>io.micronaut</groupId>
+                        <artifactId>micronaut-inject-java</artifactId>
+                        <version>${micronaut.version}</version>
+                    </annotationProcessorPath>
+                    <annotationProcessorPath>
+                        <groupId>io.micronaut</groupId>
+                        <artifactId>micronaut-validation</artifactId>
+                        <version>${micronaut.version}</version>
+                    </annotationProcessorPath>
+                </annotationProcessorPaths>
+            </configuration>
+        </execution>
+        <execution>
+            <id>compile</id>
+            <goals>
+                <goal>compile</goal>
+            </goals>
+            <configuration>
+                <sourceDirs>
+                    <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                    <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                </sourceDirs>
+            </configuration>
+        </execution>
+        <execution>
+            <id>test-kapt</id>
+            <goals>
+                <goal>test-kapt</goal>
+            </goals>
+            <configuration>
+                <sourceDirs>
+                    <sourceDir>src/test/kotlin</sourceDir>
+                </sourceDirs>
+                <annotationProcessorPaths>
+                    <annotationProcessorPath>
+                        <groupId>io.micronaut</groupId>
+                        <artifactId>micronaut-inject-java</artifactId>
+                        <version>${micronaut.version}</version>
+                    </annotationProcessorPath>
+                </annotationProcessorPaths>
+            </configuration>
+        </execution>
+        <execution>
+            <id>test-compile</id>
+            <goals>
+                <goal>test-compile</goal>
+            </goals>
+            <configuration>
+                <sourceDirs>
+                    <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                    <sourceDir>${project.basedir}/target/generated-sources/kapt/test</sourceDir>
+                </sourceDirs>
+            </configuration>
+        </execution>
+    </executions>
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-allopen</artifactId>
+            <version>${kotlinVersion}</version>
+        </dependency>
+    </dependencies>
+</plugin>
+----

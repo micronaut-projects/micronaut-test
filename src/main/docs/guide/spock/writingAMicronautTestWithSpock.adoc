@@ -1,0 +1,27 @@
+Let's take a look at an example using Spock. Consider you have the following interface:
+
+.The MathService Interface
+[source,groovy]
+----
+include::{spocktests}/MathService.java[]
+----
+
+And a simple implementation that computes the value times 4 and is defined as Micronaut bean:
+
+.The MathService implementation
+[source,groovy]
+----
+include::{spocktests}/MathServiceImpl.groovy[]
+----
+
+You can define the following test to test it:
+
+.The MathService specification
+[source,groovy]
+----
+include::{spocktests}/MathServiceSpec.groovy[]
+----
+
+<1> The test is declared as Micronaut test with `@MicronautTest`
+<2> The `@Inject` annotation is used to inject the bean
+<3> The test itself tests the injected bean
