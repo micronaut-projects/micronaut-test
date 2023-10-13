@@ -12,7 +12,7 @@ dependencies {
 
     annotationProcessor(mnData.micronaut.data.processor)
     implementation(mnData.micronaut.data.hibernate.jpa)
-    implementation(mnSql.hikaricp)
+    implementation(mnSql.micronaut.jdbc.hikari)
     runtimeOnly(mnSql.postgresql)
 
     runtimeOnly(mnLogging.logback.classic)
