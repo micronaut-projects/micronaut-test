@@ -30,5 +30,5 @@ include "test-spock"
 include "test-junit5"
 include "test-kotest5"
 include "test-rest-assured"
-
 include 'test-suite-sql-r2dbc'
+include 'test-suite-at-sql-jpa'
