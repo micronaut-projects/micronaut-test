@@ -14,17 +14,12 @@ class IsolationModeTest : FunSpec({
         val a = MicronautKotest5Extension.instantiate(IsolatedTests::class).shouldNotBeNull()
         val b = MicronautKotest5Extension.instantiate(IsolatedTests::class).shouldNotBeNull()
         a.hashCode() shouldNotBe b.hashCode()
-        MicronautKotest5Extension.contexts[IsolatedTests::class.java.name]
-            .shouldNotBeNull()
-            .shouldHaveSize(2)
-        MicronautKotest5Extension.contexts[IsolatedTests::class.java.name]
-            .shouldNotBeNull()
-            .forAll { it.isApplicationContextOpen() }
+        val contexts = MicronautKotest5Extension.contexts[IsolatedTests::class.java.name].shouldNotBeNull().toList()
+        contexts.shouldHaveSize(2)
+        contexts.forAll { it.isApplicationContextOpen() }
         MicronautKotest5Extension.afterSpec(a)
         MicronautKotest5Extension.afterSpec(b)
-        MicronautKotest5Extension.contexts[IsolatedTests::class.java.name]
-            .shouldNotBeNull()
-            .forAll { !it.isApplicationContextOpen() }
+        contexts.forAll { !it.isApplicationContextOpen() }
     }
 })
 
