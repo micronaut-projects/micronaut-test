@@ -19,6 +19,7 @@ micronautBuild {
     importMicronautCatalog("micronaut-spring")
     importMicronautCatalog("micronaut-sql")
     importMicronautCatalog("micronaut-reactor")
+    importMicronautCatalog("micronaut-test")
     importMicronautCatalog("micronaut-r2dbc")
 }
 
