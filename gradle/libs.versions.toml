@@ -21,7 +21,7 @@ micronaut-hibernate-validator = "4.0.2"
 micronaut-serde = "2.2.6"
 micronaut-spring = "5.0.2"
 micronaut-sql = "5.0.3"
-micronaut-reactor = "3.0.2"
+micronaut-reactor = "3.0.3"
 
 micronaut-gradle-plugin = "4.1.1"
 
