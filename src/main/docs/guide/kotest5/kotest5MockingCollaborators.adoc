@@ -1,4 +1,4 @@
-Note that in most cases you won't define a `@MockBean` and then inject it only to verify interaction with the Mock directly, instead the Mock will be a collaborator within your application. For example say you have a `MathController`:
+Note that in most cases you won't define a `@MockBean` and inject it only to verify interaction with the Mock directly. Instead, the Mock will be a collaborator within your application. For example say you have a `MathController`:
 
 .The MathController
 [source,kotlin]
