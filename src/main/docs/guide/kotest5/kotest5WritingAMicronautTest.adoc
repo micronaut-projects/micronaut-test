@@ -6,7 +6,7 @@ Let's take a look at an example using Kotest. Consider you have the following in
 include::{kotest5tests}/MathService.kt[]
 ----
 
-And a simple implementation that computes the value times 4 and is defined as Micronaut bean:
+And a simple implementation that computes the value times 4 and is defined as a Micronaut bean:
 
 .The MathService implementation
 [source,kotlin]
