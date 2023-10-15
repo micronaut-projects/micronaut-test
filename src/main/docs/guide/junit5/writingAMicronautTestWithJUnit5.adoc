@@ -6,7 +6,7 @@ Let's take a look at an example using JUnit 5. Consider you have the following i
 include::{junit5tests}/MathService.java[]
 ----
 
-And a simple implementation that computes the value times 4 and is defined as Micronaut bean:
+And a simple implementation that computes the value times 4 and is defined as a Micronaut bean:
 
 .The MathService implementation
 [source,java]
