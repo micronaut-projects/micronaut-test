@@ -1,0 +1,23 @@
+Note that in most cases you won't define a `@MockBean` and inject it only to verify interaction with the Mock directly. Instead, the Mock will be a collaborator within your application. For example say you have a `MathController`:
+
+.The MathController
+[source,kotlin]
+----
+include::{kotest5tests}/MathController.kt[]
+----
+
+The above controller uses the `MathService` to expose a `/math/compute/{number}` endpoint. See the following example for a test that tests interaction with the mock collaborator:
+
+.Mocking Collaborators
+[source,kotlin]
+----
+include::{kotest5tests}/MathCollaboratorTest.kt[]
+----
+
+<1> Like the previous example a Mock is defined using `@MockBean`
+<2> This time we inject an instance of `HttpClient` to test the controller.
+<3> We invoke the controller and retrieve the result
+<4> The interaction with mock collaborator is verified.
+
+The way this works is that `@MicronautTest` will inject a proxy that points to the mock instance. For each iteration of the test the mock is refreshed (in fact it uses Micronaut's built in `RefreshScope`).
+

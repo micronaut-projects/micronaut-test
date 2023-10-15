@@ -1,0 +1,1 @@
+include::src/main/docs/guide/includes/transaction.adoc[]
