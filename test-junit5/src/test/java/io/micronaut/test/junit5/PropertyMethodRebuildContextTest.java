@@ -4,12 +4,15 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@MicronautTest
-public class PropertyClassTest {
+@MicronautTest(rebuildContext = true)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class PropertyMethodRebuildContextTest {
 
     @ConfigurationProperties("demo")
     static class Config {
@@ -35,7 +38,7 @@ public class PropertyClassTest {
 
     @Test
     @Property(name = "demo.foo", value = "BOO")
-    void testBoo() {
+    void testBar() {
         assertEquals("BOO", config.getFoo());
     }
 }
