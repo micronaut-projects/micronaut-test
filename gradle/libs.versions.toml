@@ -14,7 +14,7 @@ managed-kotest = "5.7.2"
 managed-spock = "2.3-groovy-4.0"
 
 kotlin = "1.9.10"
-graal-svm = "23.1.0"
+graal-svm = "23.1.1"
 
 micronaut-data = "4.1.4"
 micronaut-hibernate-validator = "4.0.2"
