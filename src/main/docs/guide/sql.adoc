@@ -1,7 +1,13 @@
 When performing a test with a backing database, often some data is required in the database prior to running the tests.
 As of `micronaut-test` version 4.1.0, there is an annotation api:test.annotation.Sql[].
 
-This annotation can be used to specify the location of one or more sql files to be executed prior to the test.
+This annotation can be used to specify the location of one or more sql files to be executed at one of four phases in your test execution:
+
+* `BEFORE_CLASS` - executed once before the tests are run (the default).
+* `BEFORE_METHOD` - executed before each test method.
+* `AFTER_METHOD` - executed after each test method.
+* `AFTER_CLASS` - executed once after all the tests are run.
+
 The files are executed in the order specified in the annotation.
 
 For example given the two SQL scripts
@@ -38,6 +44,17 @@ include::{kotest5tests}/SqlDatasourceTest.kt[tags="clazz"]
 ----
 
 <1> Specify the location of the SQL scripts to be executed for a DataSource with the name `default`.
+
+== Phases
+
+The default phase for the scripts to be executed is `BEFORE_CLASS`.
+To run the scripts at a different phase, we can specify the `phase` attribute of the annotation.
+
+[source, java]
+----
+include::test-suite-at-sql-jpa/src/test/java/example/micronaut/TwoProductsThenNoneTest.java[tags="rollback"]
+----
+<1> A script to run after each test in the specification.
 
 == Named Datasources
 
