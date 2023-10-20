@@ -31,7 +31,7 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
 
     override suspend fun intercept(
         testCase: TestCase,
-        execute: suspend (TestCase) -> TestResult
+        execute: suspend (TestCase) -> TestResult,
     ): TestResult {
         val context = testCase.spec.context()
         return if (context != null && context.getSpecDefinition() == null) {
@@ -42,18 +42,32 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
             execute(testCase)
         }
     }
-    
-    val contexts: MutableMap<String, List<MicronautKotest5Context>> = mutableMapOf()
+
+    val contexts: MutableMap<String, MutableList<MicronautKotest5Context>> = mutableMapOf()
 
     private fun Spec.context() =
         contexts[javaClass.name]?.find { it.bean == this } ?: contexts[javaClass.name]?.find { it.bean == null }
+
+    /**
+     * Removes the context from the [contexts] map
+     */
+    private fun MicronautKotest5Context.cleanupContext() {
+        val specClassName: String? = this.bean?.javaClass?.name
+        contexts[specClassName]?.let {
+            it.remove(this)
+            if (it.isEmpty()) contexts.remove(specClassName)
+        }
+    }
 
     override suspend fun beforeSpec(spec: Spec) {
         spec.context()?.beforeSpecClass(spec)
     }
 
     override suspend fun afterSpec(spec: Spec) {
-        spec.context()?.afterSpecClass(spec)
+        spec.context()?.let {
+            it.afterSpecClass(spec)
+            it.cleanupContext()
+        }
     }
 
     override suspend fun beforeTest(testCase: TestCase) {
@@ -94,8 +108,7 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
         } else {
             val createBean = constructor != null && constructor.parameters.isNotEmpty()
             val context = MicronautKotest5Context(testClass, micronautTestValue, createBean)
-            val specContexts = contexts[testClass.name] ?: emptyList()
-            contexts[testClass.name] = specContexts + context
+            contexts.getOrPut(testClass.name, ::mutableListOf).add(context)
             if (createBean) {
                 context.bean
             } else {
@@ -116,7 +129,7 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
             micronautTest.contextBuilder.map { kClass -> kClass.java }.toTypedArray(),
             micronautTest.transactionMode,
             micronautTest.startApplication,
-            false
+            false,
         )
     }
 
