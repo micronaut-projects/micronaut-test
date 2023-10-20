@@ -11,10 +11,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Sql(scripts = "classpath:twoproducts.sql", rollback = "classpath:rollbacktwoproducts.sql")
+@Sql(scripts = "classpath:twoproducts.sql")
+@Sql(scripts = "classpath:rollbacktwoproducts.sql", phase = Sql.Phase.AFTER_ALL)
 @MicronautTest(startApplication = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TwoProductsTest implements TestPropertyProvider {
+
     @Override
     public @NonNull Map<String, String> getProperties() {
         return PostgreSQL.getProperties();
