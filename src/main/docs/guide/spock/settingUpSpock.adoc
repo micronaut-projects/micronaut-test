@@ -1,0 +1,24 @@
+To get started using Spock you need the following dependencies in your build configuration:
+
+.build.gradle
+[source,groovy,subs="attributes"]
+----
+testImplementation "io.micronaut.test:micronaut-test-spock"
+testImplementation("org.spockframework:spock-core") {
+    exclude group: "org.codehaus.groovy", module: "groovy-all"
+}
+----
+
+NOTE: If you plan to define mock beans you will also need `micronaut-inject-groovy` on your `testImplementation` classpath or `micronaut-inject-java` for Java or Kotlin (this should already be configured if you used `mn create-app`).
+
+Or for Maven:
+
+.pom.xml
+[source,xml,subs="attributes+"]
+----
+<dependency>
+    <groupId>io.micronaut.test</groupId>
+    <artifactId>micronaut-test-spock</artifactId>
+    <scope>test</scope>
+</dependency>
+----

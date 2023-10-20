@@ -415,7 +415,6 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @param propertyAnnotations The {@code @Property} annotations found in the test method, if any
      */
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
-        int testCount = (int) testProperties.compute("micronaut.test.count", (k, oldCount) -> (int) (oldCount != null ? oldCount : 0) + 1);
         if (method != null) {
             if (propertyAnnotations != null && !propertyAnnotations.isEmpty()) {
                 for (Property property : propertyAnnotations) {
@@ -425,10 +424,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                     );
                 }
             } else {
-                oldValues.forEach((k, v) -> testProperties.put(k, v));
+                testProperties.putAll(oldValues);
             }
 
-            if (testAnnotationValue.rebuildContext() && testCount > 1) {
+            if (testAnnotationValue.rebuildContext()) {
                 stopEmbeddedApplication();
                 if (applicationContext.isRunning()) {
                     applicationContext.stop();

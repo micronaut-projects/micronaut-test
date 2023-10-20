@@ -1,0 +1,27 @@
+Let's take a look at an example using Kotest. Consider you have the following interface:
+
+.The MathService Interface
+[source,kotlin]
+----
+include::{kotest5tests}/MathService.kt[]
+----
+
+And a simple implementation that computes the value times 4 and is defined as a Micronaut bean:
+
+.The MathService implementation
+[source,kotlin]
+----
+include::{kotest5tests}/MathServiceImpl.kt[]
+----
+
+You can define the following test to test the implementation:
+
+.The MathService specification
+[source,groovy]
+----
+include::{kotest5tests}/MathServiceTest.kt[]
+----
+
+<1> The test is declared as Micronaut test with `@MicronautTest`
+<2> The constructor is used to inject the bean
+<3> The test itself tests the injected bean

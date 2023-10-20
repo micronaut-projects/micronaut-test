@@ -39,6 +39,12 @@ dependencies {
     testRuntimeOnly(testFixtures(projects.micronautTestCore))
 }
 
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 tasks.named("test") {
     useJUnitPlatform {
         includeEngines("kotest")

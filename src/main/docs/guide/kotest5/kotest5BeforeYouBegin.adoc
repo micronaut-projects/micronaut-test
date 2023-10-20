@@ -1,0 +1,6 @@
+Before you can get started writing tests with Kotest, it is necessary to inform Kotest of the Micronaut extensions. The way to do that is by providing a `ProjectConfig`. Here is how to do so for Micronaut Test:
+
+[source,kotlin]
+----
+include::test-kotest5/src/test/kotlin/io/micronaut/test/kotest5/ProjectConfig.kt[]
+----

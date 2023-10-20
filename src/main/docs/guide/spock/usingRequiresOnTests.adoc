@@ -1,0 +1,12 @@
+Since `@MicronautTest` turns tests into beans themselves, it means you can use the `@Requires` annotation on the test to enable/disable tests. For example:
+
+[source,java]
+----
+@MicronautTest
+@Requires(env = "my-env")
+class RequiresSpec extends Specification {
+    ...
+}
+----
+
+The above test will only run if `my-env` is active (you can activate it by passing the system property `micronaut.environments`).
