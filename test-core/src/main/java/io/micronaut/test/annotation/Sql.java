@@ -87,6 +87,9 @@ public @interface Sql {
         Sql[] value();
     }
 
+    /**
+     * The phase of the test to execute the SQL scripts.
+     */
     enum Phase {
         /**
          * Execute the SQL before all tests.
