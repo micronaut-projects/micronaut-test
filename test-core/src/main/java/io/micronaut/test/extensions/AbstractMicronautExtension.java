@@ -37,6 +37,7 @@ import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
 import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.annotation.MicronautTestValue;
+import io.micronaut.test.annotation.Sql;
 import io.micronaut.test.condition.TestActiveCondition;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.context.TestExecutionListener;
@@ -194,13 +195,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     public void beforeTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestClass, testContext, false);
         if (specDefinition != null && applicationContext != null) {
-            TestSqlAnnotationHandler.handle(specDefinition, applicationContext);
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext, Sql.Phase.BEFORE_ALL);
         }
     }
 
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestClass, testContext, true);
+        if (specDefinition != null && applicationContext != null) {
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext, Sql.Phase.AFTER_ALL);
+        }
     }
 
     @Override
@@ -216,11 +220,17 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestMethod, testContext, false);
+        if (specDefinition != null && applicationContext != null) {
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext, Sql.Phase.BEFORE_EACH);
+        }
     }
 
     @Override
     public void afterTestMethod(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestMethod, testContext, true);
+        if (specDefinition != null && applicationContext != null) {
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext, Sql.Phase.AFTER_EACH);
+        }
     }
 
     /**

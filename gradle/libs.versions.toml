@@ -15,7 +15,9 @@ managed-spock = "2.3-groovy-4.0"
 
 kotlin = "1.9.10"
 graal-svm = "23.1.0"
+testcontainers = "1.19.1"
 
+micronaut-test = "4.0.2"
 micronaut-data = "4.1.3"
 micronaut-hibernate-validator = "4.0.2"
 micronaut-logging = "1.1.2"
@@ -39,6 +41,7 @@ micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.r
 micronaut-spring = { module = "io.micronaut.spring:micronaut-spring-bom", version.ref = "micronaut-spring" }
 micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "micronaut-sql" }
 micronaut-reactor = { module = 'io.micronaut.reactor:micronaut-reactor-bom', version.ref = "micronaut-reactor" }
+micronaut-test = { module = 'io.micronaut.test:micronaut-test-bom', version.ref = "micronaut-test" }
 
 managed-assertj-core = { module = "org.assertj:assertj-core", version.ref = "managed-assertj" }
 managed-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "managed-hamcrest" }
@@ -70,3 +73,7 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 groovy = { module = "org.apache.groovy:groovy" }
 
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }
+
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
+testcontainers = { module = "org.testcontainers:testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql"}

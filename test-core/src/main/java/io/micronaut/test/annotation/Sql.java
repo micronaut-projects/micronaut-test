@@ -55,6 +55,13 @@ public @interface Sql {
     String dataSourceName() default "default";
 
     /**
+     * The phase of the test to execute the SQL scripts.
+     * @return The phase
+     */
+    Phase phase() default Phase.BEFORE_ALL;
+
+    /**
+     * Scripts to execute, e.g. {@code "classpath:foo.sql"}.
      * @return The SQL scripts to execute
      */
     @AliasFor(member = "value")
@@ -79,5 +86,26 @@ public @interface Sql {
          */
         Sql[] value();
     }
-}
 
+    enum Phase {
+        /**
+         * Execute the SQL before all tests.
+         */
+        BEFORE_ALL,
+
+        /**
+         * Execute the SQL before each test.
+         */
+        BEFORE_EACH,
+
+        /**
+         * Execute the SQL after all tests.
+         */
+        AFTER_ALL,
+
+        /**
+         * Execute the SQL after each test.
+         */
+        AFTER_EACH
+    }
+}

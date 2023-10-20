@@ -57,10 +57,12 @@ public final class TestSqlAnnotationHandler {
      *
      * @param specDefinition The test class
      * @param applicationContext The application context
+     * @param phase The {@link Sql.Phase} to run the scripts in
+     *
      * @throws SQLException If an error occurs executing the SQL
      * @throws IOException If an error occurs reading the SQL
      */
-    public static void handle(BeanDefinition<?> specDefinition, ApplicationContext applicationContext) throws IOException {
+    public static void handle(BeanDefinition<?> specDefinition, ApplicationContext applicationContext, Sql.Phase phase) throws IOException {
         ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
         Optional<List<AnnotationValue<Sql>>> sqlAnnotations = specDefinition
             .findAnnotation(Sql.Sqls.class)
@@ -68,13 +70,20 @@ public final class TestSqlAnnotationHandler {
 
         if (sqlAnnotations.isPresent()) {
             for (var sql : sqlAnnotations.get()) {
-                String dataSourceName = sql.getRequiredValue("dataSourceName", String.class);
-                Class<?> dataSourceType = sql.getRequiredValue("resourceType", Class.class);
-                List<@NonNull String> scripts = Arrays.asList(sql.stringValues("value"));
-
-                Consumer<String> proc = bean(dataSourceType, dataSourceName, applicationContext);
-
-                handleScript(resourceLoader, scripts, proc);
+                if (sql.getRequiredValue("phase", Sql.Phase.class) != phase) {
+                    continue;
+                }
+                List<@NonNull String> scripts = Arrays.asList(sql.stringValues());
+                if (!scripts.isEmpty()) {
+                    Consumer<String> proc = bean(
+                        sql.getRequiredValue("resourceType", Class.class),
+                        sql.getRequiredValue("dataSourceName", String.class),
+                        applicationContext
+                    );
+                    handleScript(resourceLoader, scripts, proc, phase);
+                } else if (LOG.isTraceEnabled()) {
+                    LOG.trace("No SQL scripts found for {} phase", phase);
+                }
             }
         }
     }
@@ -86,10 +95,13 @@ public final class TestSqlAnnotationHandler {
         return (String s) -> handler.handle(ds, s);
     }
 
-    private static void handleScript(ResourceLoader loader, List<String> scripts, Consumer<String> processor) throws IOException {
+    private static void handleScript(ResourceLoader loader, List<String> scripts, Consumer<String> processor, Sql.Phase phase) throws IOException {
         for (String script : scripts) {
             Optional<URL> resource = loader.getResource(script);
             if (resource.isPresent()) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Processing {} SQL script: {}", phase, script);
+                }
                 try (InputStream in = resource.get().openStream()) {
                     String scriptBody = new String(in.readAllBytes(), StandardCharsets.UTF_8);
                     processor.accept(scriptBody);

@@ -1,0 +1,3 @@
+DELETE FROM products WHERE ID = 1;
+DELETE FROM products WHERE ID = 2;
+DELETE FROM products WHERE ID = 3;
