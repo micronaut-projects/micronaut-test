@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @MicronautTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ExternalServerTest implements TestPropertyProvider {
+class ExternalServerTest implements TestPropertyProvider {
 
     static EmbeddedServer EXTERNAL_SERVER = ApplicationContext.run(
             EmbeddedServer.class,

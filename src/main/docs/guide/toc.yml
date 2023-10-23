@@ -38,5 +38,6 @@ kotest5:
   kotest5ConstructorInjectionCaveats: Constructor Injection Caveats
   kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
 restAssured: REST Assured
+sql: Loading SQL before tests
 #spek: Testing with Spek
 repository: Repository

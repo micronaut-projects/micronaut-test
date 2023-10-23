@@ -37,6 +37,7 @@ import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
 import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.annotation.MicronautTestValue;
+import io.micronaut.test.annotation.Sql;
 import io.micronaut.test.condition.TestActiveCondition;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.context.TestExecutionListener;
@@ -44,6 +45,7 @@ import io.micronaut.test.context.TestMethodInterceptor;
 import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.support.TestPropertyProvider;
 import io.micronaut.test.support.TestPropertyProviderFactory;
+import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -192,11 +194,17 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestClass, testContext, false);
+        if (specDefinition != null && applicationContext != null) {
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext, Sql.Phase.BEFORE_ALL);
+        }
     }
 
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestClass, testContext, true);
+        if (specDefinition != null && applicationContext != null) {
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext, Sql.Phase.AFTER_ALL);
+        }
     }
 
     @Override
@@ -212,11 +220,17 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::beforeTestMethod, testContext, false);
+        if (specDefinition != null && applicationContext != null) {
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext, Sql.Phase.BEFORE_EACH);
+        }
     }
 
     @Override
     public void afterTestMethod(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestMethod, testContext, true);
+        if (specDefinition != null && applicationContext != null) {
+            TestSqlAnnotationHandler.handle(specDefinition, applicationContext, Sql.Phase.AFTER_EACH);
+        }
     }
 
     /**

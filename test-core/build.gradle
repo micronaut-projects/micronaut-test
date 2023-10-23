@@ -6,6 +6,9 @@ plugins {
 dependencies {
     compileOnly(mn.micronaut.http.server)
     compileOnly(libs.junit.jupiter.api)
+    compileOnly(mnData.micronaut.data.connection.jdbc)
+    compileOnly(mnR2dbc.r2dbc.spi)
+    compileOnly(mn.reactor)
 
     api(mn.micronaut.inject)
 

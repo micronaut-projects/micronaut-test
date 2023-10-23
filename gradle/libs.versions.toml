@@ -1,7 +1,7 @@
 [versions]
-micronaut-docs = "2.0.0"
 micronaut = "4.1.9"
-
+micronaut-platform = "4.1.4"
+micronaut-docs = "2.0.0"
 groovy = "4.0.15"
 
 managed-assertj = "3.24.2"
@@ -15,9 +15,13 @@ managed-spock = "2.3-groovy-4.0"
 
 kotlin = "1.9.10"
 graal-svm = "23.1.1"
+testcontainers = "1.19.1"
 
+micronaut-test = "4.0.2"
 micronaut-data = "4.1.4"
 micronaut-hibernate-validator = "4.0.2"
+micronaut-logging = "1.1.2"
+micronaut-r2dbc = "5.0.1"
 micronaut-serde = "2.2.6"
 micronaut-spring = "5.0.2"
 micronaut-sql = "5.0.3"
@@ -28,13 +32,16 @@ micronaut-gradle-plugin = "4.1.1"
 [libraries]
 # Core
 micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
+micronaut-platform = { module = 'io.micronaut.platform:micronaut-platform', version.ref = 'micronaut-platform' }
 
 micronaut-data = { module = "io.micronaut.data:micronaut-data-bom", version.ref = "micronaut-data" }
 micronaut-hibernate-validator = { module = "io.micronaut.beanvalidation:micronaut-hibernate-validator", version.ref = "micronaut-hibernate-validator" }
+micronaut-r2dbc = { module = "io.micronaut.r2dbc:micronaut-r2dbc-bom", version.ref = "micronaut-r2dbc" }
 micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
 micronaut-spring = { module = "io.micronaut.spring:micronaut-spring-bom", version.ref = "micronaut-spring" }
 micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "micronaut-sql" }
 micronaut-reactor = { module = 'io.micronaut.reactor:micronaut-reactor-bom', version.ref = "micronaut-reactor" }
+micronaut-test = { module = 'io.micronaut.test:micronaut-test-bom', version.ref = "micronaut-test" }
 
 managed-assertj-core = { module = "org.assertj:assertj-core", version.ref = "managed-assertj" }
 managed-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "managed-hamcrest" }
@@ -66,3 +73,7 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 groovy = { module = "org.apache.groovy:groovy" }
 
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }
+
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
+testcontainers = { module = "org.testcontainers:testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql"}

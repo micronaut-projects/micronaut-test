@@ -1,0 +1,87 @@
+When performing a test with a backing database, often some data is required in the database prior to running the tests.
+As of `micronaut-test` version 4.1.0, there is an annotation api:test.annotation.Sql[].
+
+This annotation can be used to specify the location of one or more sql files to be executed at one of four phases in your test execution:
+
+* `BEFORE_CLASS` - executed once before the tests are run (the default).
+* `BEFORE_METHOD` - executed before each test method.
+* `AFTER_METHOD` - executed after each test method.
+* `AFTER_CLASS` - executed once after all the tests are run.
+
+The files are executed in the order specified in the annotation.
+
+For example given the two SQL scripts
+
+.test/resources/create.sql
+[source,sql]
+----
+include::test-junit5/src/test/resources/create.sql[]
+----
+
+and
+
+.test/resources/datasource_1_insert.sql
+[source,sql]
+----
+include::test-junit5/src/test/resources/datasource_1_insert.sql[]
+----
+
+We can annotate a test to run these two scripts prior to the test.
+
+[source, java, role="multi-language-sample"]
+----
+include::{junit5tests}/SqlDatasourceTest.java[tags="clazz"]
+----
+
+[source, groovy, role="multi-language-sample"]
+----
+include::{spocktests}/SqlDatasourceSpec.groovy[tags="clazz"]
+----
+
+[source, kotlin, role="multi-language-sample"]
+----
+include::{kotest5tests}/SqlDatasourceTest.kt[tags="clazz"]
+----
+
+<1> Specify the location of the SQL scripts to be executed for a DataSource with the name `default`.
+
+== Phases
+
+The default phase for the scripts to be executed is `BEFORE_CLASS`.
+To run the scripts at a different phase, we can specify the `phase` attribute of the annotation.
+
+[source, java]
+----
+include::test-suite-at-sql-jpa/src/test/java/example/micronaut/TwoProductsThenNoneTest.java[tags="rollback"]
+----
+<1> A script to run after each test in the specification.
+
+== Named Datasources
+
+If you have multiple datasources configured, you can specify the datasource name to use for the SQL scripts.
+
+[source, java, role="multi-language-sample"]
+----
+include::{junit5tests}/SqlNamedDatasourceTest.java[tags="clazz"]
+----
+
+[source, groovy, role="multi-language-sample"]
+----
+include::{spocktests}/SqlNamedDatasourceSpec.groovy[tags="clazz"]
+----
+
+[source, kotlin, role="multi-language-sample"]
+----
+include::{kotest5tests}/SqlNamedDatasourceTest.kt[tags="clazz"]
+----
+
+<1> Specify the location of the SQL scripts to be executed for a DataSource with the given name.
+
+== R2DBC
+
+For R2DBC, the `Sql` annotation can be used in the same way as for JDBC however it is required to pass the `resourceType` as `ConnectionFactory.class`.
+
+[source,java]
+----
+include::test-suite-sql-r2dbc/src/test/java/io/micronaut/test/r2dbc/MySqlConnectionTest.java[tags="clazz"]
+----
