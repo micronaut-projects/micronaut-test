@@ -56,7 +56,9 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#restAssured"><strong>6</strong><span>REST Assured</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>7</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#sql"><strong>7</strong><span>Loading SQL before tests</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>8</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -159,7 +161,9 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-restAssured"><a href="#restAssured"><strong>6</strong><span>REST Assured</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>7</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-sql"><a href="#sql"><strong>7</strong><span>Loading SQL before tests</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>8</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -2630,7 +2634,400 @@ public class RestAssuredHelloWorldTest {
 </div>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>7 Repository</h1>
+<h1 id="sql"><a class="anchor" href="#sql"></a>7 Loading SQL before tests</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/sql.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>When performing a test with a backing database, often some data is required in the database prior to running the tests.
+As of <code>micronaut-test</code> version 4.1.0, there is an annotation <a href="../api/io/micronaut/test/annotation/Sql.html">Sql</a>.</p>
+</div>
+<div class="paragraph">
+<p>This annotation can be used to specify the location of one or more sql files to be executed at one of four phases in your test execution:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>BEFORE_CLASS</code> - executed once before the tests are run (the default).</p>
+</li>
+<li>
+<p><code>BEFORE_METHOD</code> - executed before each test method.</p>
+</li>
+<li>
+<p><code>AFTER_METHOD</code> - executed after each test method.</p>
+</li>
+<li>
+<p><code>AFTER_CLASS</code> - executed once after all the tests are run.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The files are executed in the order specified in the annotation.</p>
+</div>
+<div class="paragraph">
+<p>For example given the two SQL scripts</p>
+</div>
+<div class="listingblock">
+<div class="title">test/resources/create.sql</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">CREATE TABLE MyTable (
+    ID INT NOT NULL,
+    NAME VARCHAR(255),
+    PRIMARY KEY (ID)
+);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and</p>
+</div>
+<div class="listingblock">
+<div class="title">test/resources/datasource_1_insert.sql</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">INSERT INTO MyTable (ID, NAME) VALUES (1, 'Aardvark');
+INSERT INTO MyTable (ID, NAME) VALUES (2, 'Albatross');</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can annotate a test to run these two scripts prior to the test.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
+@Property(name = "datasources.default.dialect", value = "H2")
+@Property(name = "datasources.default.driverClassName", value = "org.h2.Driver")
+@Property(name = "datasources.default.schema-generate", value = "CREATE_DROP")
+@Property(name = "datasources.default.url", value = "jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.default.username", value = "sa")
+
+@Sql({"classpath:create.sql", "classpath:datasource_1_insert.sql"}) <i class="conum" data-value="1"></i><b>(1)</b>
+class SqlDatasourceTest {
+
+    @Inject
+    DataSource dataSource;
+
+    @Test
+    void dataIsInserted() throws Exception {
+        assertEquals(List.of("Aardvark", "Albatross"), readAllNames(dataSource));
+    }
+
+    List&lt;String&gt; readAllNames(DataSource dataSource) throws SQLException {
+        var result = new ArrayList&lt;String&gt;();
+        try (
+                Connection ds = dataSource.getConnection();
+                PreparedStatement ps = ds.prepareStatement("select name from MyTable");
+                ResultSet rslt = ps.executeQuery()
+        ) {
+            while(rslt.next()) {
+                result.add(rslt.getString(1));
+            }
+        }
+        return result;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@MicronautTest
+@Property(name = "datasources.default.dialect", value = "H2")
+@Property(name = "datasources.default.driverClassName", value = "org.h2.Driver")
+@Property(name = "datasources.default.schema-generate", value = "CREATE_DROP")
+@Property(name = "datasources.default.url", value = "jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.default.username", value = "sa")
+
+@Sql(["classpath:create.sql", "classpath:datasource_1_insert.sql"]) <i class="conum" data-value="1"></i><b>(1)</b>
+class SqlDatasourceSpec extends Specification {
+
+    @Inject
+    DataSource dataSource
+
+    def "data is inserted"() {
+        expect:
+        readAllNames(dataSource) == ["Aardvark", "Albatross"]
+    }
+
+    List&lt;String&gt; readAllNames(DataSource dataSource) {
+        dataSource.getConnection().withCloseable {
+            it.prepareStatement("select name from MyTable").withCloseable {
+                it.executeQuery().withCloseable {
+                    def names = []
+                    while (it.next()) {
+                        names &lt;&lt; it.getString(1)
+                    }
+                    names
+                }
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@MicronautTest
+@Property(name = "datasources.default.dialect", value = "H2")
+@Property(name = "datasources.default.driverClassName", value = "org.h2.Driver")
+@Property(name = "datasources.default.schema-generate", value = "CREATE_DROP")
+@Property(name = "datasources.default.url", value = "jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.default.username", value = "sa")
+
+@Sql("classpath:create.sql", "classpath:datasource_1_insert.sql") <i class="conum" data-value="1"></i><b>(1)</b>
+class SqlDatasourceTest(
+    private val dataSource: DataSource
+): BehaviorSpec({
+
+    fun readAllNames(dataSource: DataSource): List&lt;String&gt; {
+        val result = mutableListOf&lt;String&gt;()
+        dataSource.connection.use { ds -&gt;
+            ds.prepareStatement("select name from MyTable").use { ps -&gt;
+                ps.executeQuery().use { rslt -&gt;
+                    while (rslt.next()) {
+                        result.add(rslt.getString(1))
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    given("a test with the Sql annotation") {
+        then("the data is inserted as expected") {
+            readAllNames(dataSource) shouldBe listOf("Aardvark", "Albatross")
+        }
+    }
+})</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Specify the location of the SQL scripts to be executed for a DataSource with the name <code>default</code>.</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="_phases">Phases</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The default phase for the scripts to be executed is <code>BEFORE_CLASS</code>.
+To run the scripts at a different phase, we can specify the <code>phase</code> attribute of the annotation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Sql(scripts = "classpath:rollbacktwoproducts.sql", phase = Sql.Phase.AFTER_EACH) <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A script to run after each test in the specification.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_named_datasources">Named Datasources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you have multiple datasources configured, you can specify the datasource name to use for the SQL scripts.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
+
+@Sql(dataSourceName = "one", value = {"classpath:create.sql", "classpath:datasource_1_insert.sql"}) <i class="conum" data-value="1"></i><b>(1)</b>
+@Property(name = "datasources.one.dialect", value = "H2")
+@Property(name = "datasources.one.driverClassName", value = "org.h2.Driver")
+@Property(name = "datasources.one.schema-generate", value = "CREATE_DROP")
+@Property(name = "datasources.one.url", value = "jdbc:h2:mem:databaseOne;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.one.username", value = "sa")
+
+@Sql(dataSourceName = "two", scripts = {"classpath:create.sql", "classpath:datasource_2_insert.sql"}) <i class="conum" data-value="1"></i><b>(1)</b>
+@Property(name = "datasources.two.dialect", value = "H2")
+@Property(name = "datasources.two.driverClassName", value = "org.h2.Driver")
+@Property(name = "datasources.two.schema-generate", value = "CREATE_DROP")
+@Property(name = "datasources.two.url", value = "jdbc:h2:mem:databaseTwo;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.two.username", value = "sa")
+class SqlNamedDatasourceTest {
+
+    @Inject
+    @Named("one")
+    DataSource dataSource1;
+
+    @Inject
+    @Named("two")
+    DataSource dataSource2;
+
+    @Test
+    void dataIsInserted() throws Exception {
+        assertEquals(List.of("Aardvark", "Albatross"), readAllNames(dataSource1));
+        assertEquals(List.of("Bear", "Bumblebee"), readAllNames(dataSource2));
+    }
+
+    List&lt;String&gt; readAllNames(DataSource dataSource) throws SQLException {
+        var result = new ArrayList&lt;String&gt;();
+        try (
+                Connection ds = dataSource.getConnection();
+                PreparedStatement ps = ds.prepareStatement("select name from MyTable");
+                ResultSet rslt = ps.executeQuery()
+        ) {
+            while(rslt.next()) {
+                result.add(rslt.getString(1));
+            }
+        }
+        return result;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@MicronautTest
+@Sql(dataSourceName = "one", value = ["classpath:create.sql", "classpath:datasource_1_insert.sql"]) <i class="conum" data-value="1"></i><b>(1)</b>
+@Property(name = "datasources.one.dialect", value = "H2")
+@Property(name = "datasources.one.driverClassName", value = "org.h2.Driver")
+@Property(name = "datasources.one.schema-generate", value = "CREATE_DROP")
+@Property(name = "datasources.one.url", value = "jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.one.username", value = "sa")
+
+@Sql(dataSourceName = "two", value = ["classpath:create.sql", "classpath:datasource_2_insert.sql"]) <i class="conum" data-value="1"></i><b>(1)</b>
+@Property(name = "datasources.two.dialect", value = "H2")
+@Property(name = "datasources.two.driverClassName", value = "org.h2.Driver")
+@Property(name = "datasources.two.schema-generate", value = "CREATE_DROP")
+@Property(name = "datasources.two.url", value = "jdbc:h2:mem:devDb2;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.two.username", value = "sa")
+class SqlNamedDatasourceSpec extends Specification {
+
+    @Inject
+    @Named("one")
+    DataSource dataSource1
+
+    @Inject
+    @Named("two")
+    DataSource dataSource2
+
+    def "data is inserted"() {
+        expect:
+        readAllNames(dataSource1) == ["Aardvark", "Albatross"]
+
+        and:
+        readAllNames(dataSource2) == ["Bear", "Bumblebee"]
+    }
+
+    List&lt;String&gt; readAllNames(DataSource dataSource) {
+        dataSource.getConnection().withCloseable {
+            it.prepareStatement("select name from MyTable").withCloseable {
+                it.executeQuery().withCloseable {
+                    def names = []
+                    while (it.next()) {
+                        names &lt;&lt; it.getString(1)
+                    }
+                    names
+                }
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@MicronautTest
+@Sql(dataSourceName = "one", value = ["classpath:create.sql", "classpath:datasource_1_insert.sql"]) <i class="conum" data-value="1"></i><b>(1)</b>
+@Property(name = "datasources.one.dialect", value = "H2")
+@Property(name = "datasources.one.driverClassName", value = "org.h2.Driver")
+@Property(name = "datasources.one.schema-generate", value = "CREATE_DROP")
+@Property(name = "datasources.one.url", value = "jdbc:h2:mem:devDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.one.username", value = "sa")
+
+@Sql(dataSourceName = "two", value = ["classpath:create.sql", "classpath:datasource_2_insert.sql"]) <i class="conum" data-value="1"></i><b>(1)</b>
+@Property(name = "datasources.two.dialect", value = "H2")
+@Property(name = "datasources.two.driverClassName", value = "org.h2.Driver")
+@Property(name = "datasources.two.schema-generate", value = "CREATE_DROP")
+@Property(name = "datasources.two.url", value = "jdbc:h2:mem:devDb2;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
+@Property(name = "datasources.two.username", value = "sa")
+class SqlNamedDatasourceTest(
+    @Named("one") private val dataSource1: DataSource,
+    @Named("two") private val dataSource2: DataSource
+): BehaviorSpec({
+
+    fun readAllNames(dataSource: DataSource): List&lt;String&gt; {
+        val result = mutableListOf&lt;String&gt;()
+        println("Testing datasource: $dataSource")
+        dataSource.connection.use { ds -&gt;
+            ds.prepareStatement("select name from MyTable").use { ps -&gt;
+                ps.executeQuery().use { rslt -&gt;
+                    while (rslt.next()) {
+                        result.add(rslt.getString(1))
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    given("a test with the Sql annotation") {
+        then("the data is inserted as expected") {
+            readAllNames(dataSource1) shouldBe listOf("Aardvark", "Albatross")
+            readAllNames(dataSource2) shouldBe listOf("Bear", "Bumblebee")
+        }
+    }
+})</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Specify the location of the SQL scripts to be executed for a DataSource with the given name.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_r2dbc">R2DBC</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For R2DBC, the <code>Sql</code> annotation can be used in the same way as for JDBC however it is required to pass the <code>resourceType</code> as <code>ConnectionFactory.class</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
+@Property(name = "r2dbc.datasources.default.db-type", value = "mysql")
+@Sql(value = {"classpath:create.sql", "classpath:datasource_1_insert.sql"}, resourceType = ConnectionFactory.class)
+class MySqlConnectionTest  {
+
+    @Inject
+    ConnectionFactory connectionFactory;
+
+    @Test
+    void testSqlHasBeenInjected() {
+        var f = Flux.from(connectionFactory.create());
+
+        var result = f.flatMap(connection -&gt;
+            connection.createStatement("SELECT name from MyTable where id = 2").execute()
+        ).flatMap(rslt -&gt;
+            rslt.map((row, metadata) -&gt; row.get(0, String.class))
+        ).blockFirst();
+
+        assertEquals("Albatross", result);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+<h1 id="repository"><a class="anchor" href="#repository"></a>8 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/master/src/main/docs/guide/repository.adoc"'>

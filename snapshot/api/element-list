@@ -9,3 +9,4 @@ io.micronaut.test.extensions.spock.annotation
 io.micronaut.test.rest.assured
 io.micronaut.test.support
 io.micronaut.test.support.server
+io.micronaut.test.support.sql

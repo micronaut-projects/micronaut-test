@@ -54,7 +54,7 @@ loadScripts(document, 'script');</script>
 <h1 title="All Classes and Interfaces" class="title">All Classes and Interfaces</h1>
 </div>
 <div id="all-classes-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="all-classes-table-tab0" role="tab" aria-selected="true" aria-controls="all-classes-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table', 2)" class="active-table-tab">All Classes and Interfaces</button><button id="all-classes-table-tab1" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab1', 2)" class="table-tab">Interfaces</button><button id="all-classes-table-tab2" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab2', 2)" class="table-tab">Classes</button><button id="all-classes-table-tab3" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab3', 2)" class="table-tab">Enum Classes</button><button id="all-classes-table-tab7" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab7', 2)" class="table-tab">Annotation Interfaces</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="all-classes-table-tab0" role="tab" aria-selected="true" aria-controls="all-classes-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table', 2)" class="active-table-tab">All Classes and Interfaces</button><button id="all-classes-table-tab1" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab1', 2)" class="table-tab">Interfaces</button><button id="all-classes-table-tab2" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab2', 2)" class="table-tab">Classes</button><button id="all-classes-table-tab3" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab3', 2)" class="table-tab">Enum Classes</button><button id="all-classes-table-tab5" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab5', 2)" class="table-tab">Exceptions</button><button id="all-classes-table-tab7" role="tab" aria-selected="false" aria-controls="all-classes-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('all-classes-table', 'all-classes-table-tab7', 2)" class="table-tab">Annotation Interfaces</button></div>
 <div id="all-classes-table.tabpanel" role="tabpanel">
 <div class="summary-table two-column-summary" aria-labelledby="all-classes-table-tab0">
 <div class="table-header col-first">Class</div>
@@ -67,33 +67,65 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Common annotation utilities.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/support/sql/ConnectionFactoryHandler.html" title="class in io.micronaut.test.support.sql">ConnectionFactoryHandler</a></div>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Handler for r2dbc <code>ConnectionFactory</code> instances.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/support/sql/DataSourceSqlHandler.html" title="class in io.micronaut.test.support.sql">DataSourceSqlHandler</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Handler for raw <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/DataSource.html" title="class or interface in javax.sql" class="external-link"><code>DataSource</code></a> instances.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/support/sql/DelegatingDataSourceSqlHandler.html" title="class in io.micronaut.test.support.sql">DelegatingDataSourceSqlHandler</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Handler for <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/DataSource.html" title="class or interface in javax.sql" class="external-link"><code>DataSource</code></a> instances which may be a <code>DelegatingDataSource</code>.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Extension for JUnit 5.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html" title="class in io.micronaut.test.extensions.spock">MicronautSpockExtension</a>&lt;<a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html" title="type parameter in MicronautSpockExtension">T</a> extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>&gt;</div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html" title="class in io.micronaut.test.extensions.spock">MicronautSpockExtension</a>&lt;<a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html" title="type parameter in MicronautSpockExtension">T</a> extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>&gt;</div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Extension for Spock.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab7"><a href="io/micronaut/test/extensions/junit5/annotation/MicronautTest.html" title="annotation interface in io.micronaut.test.extensions.junit5.annotation">MicronautTest</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab7">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab7"><a href="io/micronaut/test/extensions/junit5/annotation/MicronautTest.html" title="annotation interface in io.micronaut.test.extensions.junit5.annotation">MicronautTest</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab7">
 <div class="block">Annotation that can be applied to any JUnit 5 test to make it a Micronaut test.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab7"><a href="io/micronaut/test/extensions/spock/annotation/MicronautTest.html" title="annotation interface in io.micronaut.test.extensions.spock.annotation">MicronautTest</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab7">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab7"><a href="io/micronaut/test/extensions/spock/annotation/MicronautTest.html" title="annotation interface in io.micronaut.test.extensions.spock.annotation">MicronautTest</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab7">
 <div class="block">Annotation that can be applied to any Spock spec or JUnit 5 test to make it a Micronaut test.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Value object for the values from any of the MicronautTest annotations.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab7"><a href="io/micronaut/test/annotation/MockBean.html" title="annotation interface in io.micronaut.test.annotation">MockBean</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab7">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab7"><a href="io/micronaut/test/annotation/MockBean.html" title="annotation interface in io.micronaut.test.annotation">MockBean</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab7">
 <div class="block">Annotation that can be applied on the method level in a test to define a Mock bean using Spock's mocking API.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/rest/assured/RequestSpecificationFactory.html" title="class in io.micronaut.test.rest.assured">RequestSpecificationFactory</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/rest/assured/RequestSpecificationFactory.html" title="class in io.micronaut.test.rest.assured">RequestSpecificationFactory</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Helper class making it easier to create request specifications.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab7"><a href="io/micronaut/test/annotation/Sql.html" title="annotation interface in io.micronaut.test.annotation">Sql</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab7">
+<div class="block">Annotation that can be applied to a test scenario to execute SQL against a test database prior to the sceario being run.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="io/micronaut/test/annotation/Sql.Phase.html" title="enum class in io.micronaut.test.annotation">Sql.Phase</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
+<div class="block">The phase of the test to execute the SQL scripts.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab7"><a href="io/micronaut/test/annotation/Sql.Sqls.html" title="annotation interface in io.micronaut.test.annotation">Sql.Sqls</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab7">
+<div class="block">Wrapper annotation class to allow multiple Sql annotations per test class or method.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab5"><a href="io/micronaut/test/support/sql/SqlAnnotationHandlingException.html" title="class in io.micronaut.test.support.sql">SqlAnnotationHandlingException</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab5">
+<div class="block">Exception thrown when an error occurs handling an <a href="io/micronaut/test/annotation/Sql.html" title="annotation interface in io.micronaut.test.annotation"><code>Sql</code></a> annotation.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab1"><a href="io/micronaut/test/support/sql/SqlHandler.html" title="interface in io.micronaut.test.support.sql">SqlHandler</a>&lt;<a href="io/micronaut/test/support/sql/SqlHandler.html" title="type parameter in SqlHandler">T</a>&gt;</div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab1">
+<div class="block">Interface for handling Sql annotation for different data sources.</div>
 </div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/condition/TestActiveCondition.html" title="class in io.micronaut.test.condition">TestActiveCondition</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
@@ -133,8 +165,12 @@ loadScripts(document, 'script');</script>
  a test property provider which is going to be called during test
  setup, as any other <a href="io/micronaut/test/support/TestPropertyProvider.html" title="interface in io.micronaut.test.support"><code>TestPropertyProvider</code></a>.</div>
 </div>
-<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="io/micronaut/test/annotation/TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></div>
-<div class="col-last even-row-color all-classes-table all-classes-table-tab3">
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/support/sql/TestSqlAnnotationHandler.html" title="class in io.micronaut.test.support.sql">TestSqlAnnotationHandler</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Static helper class to handle <a href="io/micronaut/test/annotation/Sql.html" title="annotation interface in io.micronaut.test.annotation"><code>Sql</code></a> annotations.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="io/micronaut/test/annotation/TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
 <div class="block">Describes how transactions are handled for each test.</div>
 </div>
 </div>

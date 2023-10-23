@@ -60,7 +60,8 @@ loadScripts(document, 'script');</script>
 <li><a href="io/micronaut/test/extensions/spock/annotation/package-tree.html">io.micronaut.test.extensions.spock.annotation</a>, </li>
 <li><a href="io/micronaut/test/rest/assured/package-tree.html">io.micronaut.test.rest.assured</a>, </li>
 <li><a href="io/micronaut/test/support/package-tree.html">io.micronaut.test.support</a>, </li>
-<li><a href="io/micronaut/test/support/server/package-tree.html">io.micronaut.test.support.server</a></li>
+<li><a href="io/micronaut/test/support/server/package-tree.html">io.micronaut.test.support.server</a>, </li>
+<li><a href="io/micronaut/test/support/sql/package-tree.html">io.micronaut.test.support.sql</a></li>
 </ul>
 </div>
 <section class="hierarchy">
@@ -75,12 +76,32 @@ loadScripts(document, 'script');</script>
 </ul>
 </li>
 <li class="circle">io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/AnnotationUtils.html" class="type-name-link" title="class in io.micronaut.test.annotation">AnnotationUtils</a></li>
+<li class="circle">io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/ConnectionFactoryHandler.html" class="type-name-link" title="class in io.micronaut.test.support.sql">ConnectionFactoryHandler</a> (implements io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/SqlHandler.html" title="interface in io.micronaut.test.support.sql">SqlHandler</a>&lt;T&gt;)</li>
+<li class="circle">io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/DataSourceSqlHandler.html" class="type-name-link" title="class in io.micronaut.test.support.sql">DataSourceSqlHandler</a> (implements io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/SqlHandler.html" title="interface in io.micronaut.test.support.sql">SqlHandler</a>&lt;T&gt;)
+<ul>
+<li class="circle">io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/DelegatingDataSourceSqlHandler.html" class="type-name-link" title="class in io.micronaut.test.support.sql">DelegatingDataSourceSqlHandler</a></li>
+</ul>
+</li>
 <li class="circle">io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/MicronautTestValue.html" class="type-name-link" title="class in io.micronaut.test.annotation">MicronautTestValue</a></li>
 <li class="circle">io.micronaut.test.rest.assured.<a href="io/micronaut/test/rest/assured/RequestSpecificationFactory.html" class="type-name-link" title="class in io.micronaut.test.rest.assured">RequestSpecificationFactory</a></li>
 <li class="circle">io.micronaut.test.condition.<a href="io/micronaut/test/condition/TestActiveCondition.html" class="type-name-link" title="class in io.micronaut.test.condition">TestActiveCondition</a> (implements io.micronaut.context.condition.Condition)</li>
 <li class="circle">io.micronaut.test.context.<a href="io/micronaut/test/context/TestContext.html" class="type-name-link" title="class in io.micronaut.test.context">TestContext</a></li>
 <li class="circle">io.micronaut.test.support.server.<a href="io/micronaut/test/support/server/TestEmbeddedServer.html" class="type-name-link" title="class in io.micronaut.test.support.server">TestEmbeddedServer</a> (implements io.micronaut.runtime.server.EmbeddedServer)</li>
 <li class="circle">io.micronaut.test.support.server.<a href="io/micronaut/test/support/server/TestExecutableEmbeddedServer.html" class="type-name-link" title="class in io.micronaut.test.support.server">TestExecutableEmbeddedServer</a> (implements io.micronaut.runtime.server.EmbeddedServer)</li>
+<li class="circle">io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/TestSqlAnnotationHandler.html" class="type-name-link" title="class in io.micronaut.test.support.sql">TestSqlAnnotationHandler</a></li>
+<li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" class="type-name-link external-link" title="class or interface in java.lang">Throwable</a> (implements java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)
+<ul>
+<li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" class="type-name-link external-link" title="class or interface in java.lang">Exception</a>
+<ul>
+<li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/RuntimeException.html" class="type-name-link external-link" title="class or interface in java.lang">RuntimeException</a>
+<ul>
+<li class="circle">io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/SqlAnnotationHandlingException.html" class="type-name-link" title="class in io.micronaut.test.support.sql">SqlAnnotationHandlingException</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -88,6 +109,7 @@ loadScripts(document, 'script');</script>
 <section class="hierarchy">
 <h2 title="Interface Hierarchy">Interface Hierarchy</h2>
 <ul>
+<li class="circle">io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/SqlHandler.html" class="type-name-link" title="interface in io.micronaut.test.support.sql">SqlHandler</a>&lt;T&gt;</li>
 <li class="circle">java.util.function.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Supplier.html" class="type-name-link external-link" title="class or interface in java.util.function">Supplier</a>&lt;T&gt;
 <ul>
 <li class="circle">io.micronaut.test.support.<a href="io/micronaut/test/support/TestPropertyProvider.html" class="type-name-link" title="interface in io.micronaut.test.support">TestPropertyProvider</a></li>
@@ -105,6 +127,8 @@ loadScripts(document, 'script');</script>
 <li class="circle">io.micronaut.test.extensions.junit5.annotation.<a href="io/micronaut/test/extensions/junit5/annotation/MicronautTest.html" class="type-name-link" title="annotation interface in io.micronaut.test.extensions.junit5.annotation">MicronautTest</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
 <li class="circle">io.micronaut.test.extensions.spock.annotation.<a href="io/micronaut/test/extensions/spock/annotation/MicronautTest.html" class="type-name-link" title="annotation interface in io.micronaut.test.extensions.spock.annotation">MicronautTest</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
 <li class="circle">io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/MockBean.html" class="type-name-link" title="annotation interface in io.micronaut.test.annotation">MockBean</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
+<li class="circle">io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/Sql.html" class="type-name-link" title="annotation interface in io.micronaut.test.annotation">Sql</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
+<li class="circle">io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/Sql.Sqls.html" class="type-name-link" title="annotation interface in io.micronaut.test.annotation">Sql.Sqls</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
 </ul>
 </section>
 <section class="hierarchy">
@@ -114,6 +138,7 @@ loadScripts(document, 'script');</script>
 <ul>
 <li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html" class="type-name-link external-link" title="class or interface in java.lang">Enum</a>&lt;E&gt; (implements java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Comparable.html" title="class or interface in java.lang" class="external-link">Comparable</a>&lt;T&gt;, java.lang.constant.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/constant/Constable.html" title="class or interface in java.lang.constant" class="external-link">Constable</a>, java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)
 <ul>
+<li class="circle">io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/Sql.Phase.html" class="type-name-link" title="enum class in io.micronaut.test.annotation">Sql.Phase</a></li>
 <li class="circle">io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/TransactionMode.html" class="type-name-link" title="enum class in io.micronaut.test.annotation">TransactionMode</a></li>
 </ul>
 </li>
