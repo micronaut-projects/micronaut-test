@@ -338,7 +338,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         if (this.testAnnotationValue != null) {
-            if (!this.testAnnotationValue.isResolveParameters()) {
+            if (!this.testAnnotationValue.isResolveParameters() && parameterContext.getDeclaringExecutable() instanceof Method) {
                 return false;
             }
 
