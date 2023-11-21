@@ -15,7 +15,7 @@ managed-spock = "2.3-groovy-4.0"
 
 kotlin = "1.9.20"
 graal-svm = "23.1.1"
-testcontainers = "1.19.1"
+testcontainers = "1.19.3"
 
 micronaut-test = "4.1.0"
 micronaut-data = "4.1.4"
