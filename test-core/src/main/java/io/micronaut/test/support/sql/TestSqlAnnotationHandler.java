@@ -63,27 +63,33 @@ public final class TestSqlAnnotationHandler {
      * @throws IOException If an error occurs reading the SQL
      */
     public static void handle(BeanDefinition<?> specDefinition, ApplicationContext applicationContext, Sql.Phase phase) throws IOException {
-        ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
-        Optional<List<AnnotationValue<Sql>>> sqlAnnotations = specDefinition
-            .findAnnotation(Sql.Sqls.class)
-            .map(s -> s.getAnnotations("value", Sql.class));
+        if  (applicationContext.containsBean(ResourceLoader.class)) {
+            ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
+            Optional<List<AnnotationValue<Sql>>> sqlAnnotations = specDefinition
+                    .findAnnotation(Sql.Sqls.class)
+                    .map(s -> s.getAnnotations("value", Sql.class));
 
-        if (sqlAnnotations.isPresent()) {
-            for (var sql : sqlAnnotations.get()) {
-                if (sql.getRequiredValue("phase", Sql.Phase.class) != phase) {
-                    continue;
+            if (sqlAnnotations.isPresent()) {
+                for (var sql : sqlAnnotations.get()) {
+                    if (sql.getRequiredValue("phase", Sql.Phase.class) != phase) {
+                        continue;
+                    }
+                    List<@NonNull String> scripts = Arrays.asList(sql.stringValues());
+                    if (!scripts.isEmpty()) {
+                        Consumer<String> proc = bean(
+                                sql.getRequiredValue("resourceType", Class.class),
+                                sql.getRequiredValue("dataSourceName", String.class),
+                                applicationContext
+                        );
+                        handleScript(resourceLoader, scripts, proc, phase);
+                    } else if (LOG.isTraceEnabled()) {
+                        LOG.trace("No SQL scripts found for {} phase", phase);
+                    }
                 }
-                List<@NonNull String> scripts = Arrays.asList(sql.stringValues());
-                if (!scripts.isEmpty()) {
-                    Consumer<String> proc = bean(
-                        sql.getRequiredValue("resourceType", Class.class),
-                        sql.getRequiredValue("dataSourceName", String.class),
-                        applicationContext
-                    );
-                    handleScript(resourceLoader, scripts, proc, phase);
-                } else if (LOG.isTraceEnabled()) {
-                    LOG.trace("No SQL scripts found for {} phase", phase);
-                }
+            }
+        } else {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("No bean of type ResourceLoader exists. You cannot use the @Sql annotation");
             }
         }
     }
