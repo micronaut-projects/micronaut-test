@@ -10,3 +10,4 @@ You can then inject instances of https://www.javadoc.io/static/io.rest-assured/r
 include::{restassuredtests}/RestAssuredHelloWorldTest.java[]
 ----
 
+TIP: See the guides for https://guides.micronaut.io/latest/micronaut-rest-assured.html[Using Micronaut Test REST-assured in a Micronaut Application] and https://guides.micronaut.io/latest/testing-rest-api-integrations-using-mockserver.html[Testing REST API Integrations Using Testcontainers with WireMock or MockServer] to learn more.
