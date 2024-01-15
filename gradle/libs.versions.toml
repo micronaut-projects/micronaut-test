@@ -9,7 +9,7 @@ managed-hamcrest = "2.2"
 managed-mockito = "5.9.0"
 managed-mockk = "1.13.9"
 managed-junit = "5.10.1"
-managed-rest-assured = "5.3.2"
+managed-rest-assured = "5.4.0"
 managed-kotest = "5.8.0"
 managed-spock = "2.3-groovy-4.0"
 
