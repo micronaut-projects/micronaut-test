@@ -24,6 +24,7 @@ junit5:
   junit5DefiningAdditionalTestSpecificProperties: Defining Additional Test Specific Properties
   junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
   junit5TestingExternalServers: Testing External Servers
+  junit5TestMethodsInjection: Test Methods Injection
 kotest5:
   title: Testing with Kotest 5
   settingUpKoTest5: Setting up Kotest 5
