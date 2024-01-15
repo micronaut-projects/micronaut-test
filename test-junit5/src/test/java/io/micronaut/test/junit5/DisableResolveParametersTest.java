@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import jakarta.inject.Singleton;
 import java.util.stream.Stream;
 
-@Property(name = "spec.name", value = "ResolveParametersTest")
+@Property(name = "spec.name", value = "DisableResolveParametersTest")
 @MicronautTest(resolveParameters = false)
 class DisableResolveParametersTest {
     static Stream<Arguments> fooArgs() {
@@ -32,7 +32,7 @@ class DisableResolveParametersTest {
         Assertions.assertNotNull(arg);
     }
 
-    @Requires(property = "spec.name", value = "ResolveParametersTest")
+    @Requires(property = "spec.name", value = "DisableResolveParametersTest")
     @Singleton
     static class Foo {
     }
