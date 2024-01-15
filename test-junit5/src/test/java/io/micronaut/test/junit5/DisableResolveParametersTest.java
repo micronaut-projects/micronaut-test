@@ -1,5 +1,7 @@
 package io.micronaut.test.junit5;
 
+import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -11,8 +13,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import jakarta.inject.Singleton;
 import java.util.stream.Stream;
 
+@Property(name = "spec.name", value = "ResolveParametersTest")
 @MicronautTest(resolveParameters = false)
-class FooTest {
+class DisableResolveParametersTest {
     static Stream<Arguments> fooArgs() {
         return Stream.of(Arguments.of(new Foo()));
     }
@@ -29,6 +32,7 @@ class FooTest {
         Assertions.assertNotNull(arg);
     }
 
+    @Requires(property = "spec.name", value = "ResolveParametersTest")
     @Singleton
     static class Foo {
     }
