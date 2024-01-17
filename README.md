@@ -24,7 +24,7 @@ class MathServiceSpec extends Specification {
     MathService mathService // Dependency injection is used to supply the system under test
 
     @Unroll
-    void "should compute #num times 4"() { // This is the test case. #num will be replaces by the values defined in the where: block
+    void "should compute #num times 4"() { // This is the test case. #num will be replaced by the values defined in the where: block
         when:
         def result = mathService.compute(num)
 
