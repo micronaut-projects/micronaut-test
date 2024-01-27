@@ -3,23 +3,25 @@ plugins {
 }
 
 dependencies {
+
+    compileOnly(libs.jakarta.inject.api)
+
     api(platform(libs.boms.spock))
     api projects.micronautTestCore
     api(mn.micronaut.inject)
     api(libs.spock.core) {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
+
     implementation(mn.micronaut.context)
-    compileOnly(libs.jakarta.inject.api)
 
     testCompileOnly(libs.jakarta.inject.api)
+
     testImplementation(mn.micronaut.inject.groovy)
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
-
     testImplementation(mnSql.micronaut.jdbc.hikari)
     testImplementation(libs.micronaut.hibernate.validator)
-//    testImplementation(mn.micronaut.hibernate.gorm)
     testImplementation(mnSpring.micronaut.spring)
     testImplementation(mn.snakeyaml)
     testImplementation(mnReactor.micronaut.reactor)

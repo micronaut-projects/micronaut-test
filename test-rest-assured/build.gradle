@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     annotationProcessor(mn.micronaut.inject.java)
+
     api projects.micronautTestCore
     api(platform(libs.boms.rest.assured))
     api(mn.micronaut.inject)
@@ -11,15 +12,17 @@ dependencies {
         exclude group:"org.codehaus.groovy", module:"groovy"
     }
     implementation(mn.micronaut.context)
-
     implementation(libs.groovy)
-    testCompileOnly(mn.micronaut.inject)
 
     testAnnotationProcessor(mn.micronaut.inject.java)
-    testImplementation(libs.junit.jupiter.api)
+
+    testCompileOnly(mn.micronaut.inject)
+
+    testImplementation(libs.managed.junit.jupiter.api)
     testImplementation projects.micronautTestJunit5
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(libs.managed.hamcrest)
-    testRuntimeOnly(libs.junit.jupiter.engine)
+
+    testRuntimeOnly(libs.managed.junit.jupiter.engine)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
 }
