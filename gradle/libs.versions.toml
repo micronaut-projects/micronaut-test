@@ -27,7 +27,7 @@ micronaut-spring = "5.4.0"
 micronaut-sql = "5.4.0"
 micronaut-reactor = "3.2.1"
 
-micronaut-gradle-plugin = "4.2.1"
+micronaut-gradle-plugin = "4.3.2"
 
 [libraries]
 # Core
