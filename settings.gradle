@@ -18,9 +18,10 @@ micronautBuild {
     importMicronautCatalog("micronaut-serde")
     importMicronautCatalog("micronaut-spring")
     importMicronautCatalog("micronaut-sql")
+    importMicronautCatalog("micronaut-r2dbc")
     importMicronautCatalog("micronaut-reactor")
     importMicronautCatalog("micronaut-test")
-    importMicronautCatalog("micronaut-r2dbc")
+    importMicronautCatalog("micronaut-test-resources")
 }
 
 rootProject.name = 'test-parent'

@@ -21,9 +21,7 @@ dependencies {
     testImplementation(projects.micronautTestJunit5)
     testRuntimeOnly(libs.junit.jupiter.engine)
 
-    testImplementation(platform(libs.testcontainers.bom))
-    testImplementation(libs.testcontainers)
-    testImplementation(libs.testcontainers.postgresql)
+    testImplementation(mnTestResources.testcontainers.postgres)
 }
 tasks.withType<Test> {
     useJUnitPlatform()
