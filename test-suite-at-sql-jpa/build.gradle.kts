@@ -18,14 +18,12 @@ dependencies {
 
     testAnnotationProcessor(mn.micronaut.inject.java)
 
-    testImplementation(platform(libs.testcontainers.bom))
     testImplementation(libs.managed.junit.jupiter.api)
     testImplementation(projects.micronautTestJunit5)
-    testImplementation(libs.testcontainers)
     testImplementation(mnTestResources.testcontainers.postgres)
     testRuntimeOnly(libs.managed.junit.jupiter.engine)
-
 }
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
