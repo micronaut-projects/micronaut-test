@@ -31,6 +31,7 @@ dependencies {
 micronaut {
     importMicronautPlatform.set(false)
     testResources {
+        version.set(libs.versions.micronaut.test.resources)
         additionalModules.add(R2DBC_MYSQL)
     }
 }

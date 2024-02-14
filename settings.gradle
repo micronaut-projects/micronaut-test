@@ -6,7 +6,7 @@ pluginManagement {
 }
 
 plugins {
-    id("io.micronaut.build.shared.settings") version "6.6.1"
+    id("io.micronaut.build.shared.settings") version "6.6.2"
 }
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
@@ -18,9 +18,10 @@ micronautBuild {
     importMicronautCatalog("micronaut-serde")
     importMicronautCatalog("micronaut-spring")
     importMicronautCatalog("micronaut-sql")
+    importMicronautCatalog("micronaut-r2dbc")
     importMicronautCatalog("micronaut-reactor")
     importMicronautCatalog("micronaut-test")
-    importMicronautCatalog("micronaut-r2dbc")
+    importMicronautCatalog("micronaut-test-resources")
 }
 
 rootProject.name = 'test-parent'
