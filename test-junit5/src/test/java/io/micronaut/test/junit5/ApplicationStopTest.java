@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MicronautTest
 class ApplicationStopTest {
@@ -18,8 +19,9 @@ class ApplicationStopTest {
     private ApplicationContext applicationContext;
 
     @Test
-    void embeddedApplicationIsNotStartedWhenContextIsStarted() {
+    void stoppingTheContextDoesntCauseFailures() {
         applicationContext.stop();
+        assertTrue(true);
         // should not error
     }
 }
