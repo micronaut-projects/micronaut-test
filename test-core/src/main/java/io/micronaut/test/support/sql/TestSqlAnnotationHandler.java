@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 original authors
+ * Copyright 2017-2024 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,27 +63,37 @@ public final class TestSqlAnnotationHandler {
      * @throws IOException If an error occurs reading the SQL
      */
     public static void handle(BeanDefinition<?> specDefinition, ApplicationContext applicationContext, Sql.Phase phase) throws IOException {
-        ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
         Optional<List<AnnotationValue<Sql>>> sqlAnnotations = specDefinition
             .findAnnotation(Sql.Sqls.class)
             .map(s -> s.getAnnotations("value", Sql.class));
 
         if (sqlAnnotations.isPresent()) {
-            for (var sql : sqlAnnotations.get()) {
-                if (sql.getRequiredValue("phase", Sql.Phase.class) != phase) {
-                    continue;
+            if (!applicationContext.isRunning()) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn("Application context has been stopped, skipping SQL script annotations");
                 }
-                List<@NonNull String> scripts = Arrays.asList(sql.stringValues());
-                if (!scripts.isEmpty()) {
-                    Consumer<String> proc = bean(
-                        sql.getRequiredValue("resourceType", Class.class),
-                        sql.getRequiredValue("dataSourceName", String.class),
-                        applicationContext
-                    );
-                    handleScript(resourceLoader, scripts, proc, phase);
-                } else if (LOG.isTraceEnabled()) {
-                    LOG.trace("No SQL scripts found for {} phase", phase);
-                }
+            } else {
+                processAnnotations(applicationContext, phase, sqlAnnotations.get());
+            }
+        }
+    }
+
+    private static void processAnnotations(ApplicationContext applicationContext, Sql.Phase phase, List<AnnotationValue<Sql>> sqlAnnotations) throws IOException {
+        ResourceLoader resourceLoader = applicationContext.getBean(ResourceLoader.class);
+        for (var sql : sqlAnnotations) {
+            if (sql.getRequiredValue("phase", Sql.Phase.class) != phase) {
+                continue;
+            }
+            List<@NonNull String> scripts = Arrays.asList(sql.stringValues());
+            if (!scripts.isEmpty()) {
+                Consumer<String> proc = bean(
+                    sql.getRequiredValue("resourceType", Class.class),
+                    sql.getRequiredValue("dataSourceName", String.class),
+                    applicationContext
+                );
+                handleScript(resourceLoader, scripts, proc, phase);
+            } else if (LOG.isTraceEnabled()) {
+                LOG.trace("No SQL scripts found for {} phase", phase);
             }
         }
     }
@@ -111,5 +121,4 @@ public final class TestSqlAnnotationHandler {
             }
         }
     }
-
 }
