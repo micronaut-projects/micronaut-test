@@ -65,26 +65,11 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
 
         spec.getAllFeatures().forEach(feature -> {
 
-            feature.addInterceptor(invocation -> {
-                TestContext testContext = buildContext(invocation, null);
-                try {
-                    beforeTestMethod(testContext);
-                    interceptTest(new TestMethodInvocationContext<Object>() {
-                        @Override
-                        public TestContext getTestContext() {
-                            return testContext;
-                        }
-
-                        @Override
-                        public Object proceed() throws Throwable {
-                            invocation.proceed();
-                            return null;
-                        }
-                    });
-                } finally {
-                    afterTestMethod(testContext);
-                }
-            });
+            if (feature.isParameterized()) {
+                feature.addIterationInterceptor(this::getInvocationInterceptor);
+            } else {
+                feature.addInterceptor(this::getInvocationInterceptor);
+            }
 
             feature.getFeatureMethod().addInterceptor(invocation -> {
                 try {
@@ -196,6 +181,28 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                 afterCleanupTest(testContext);
             }
         });
+    }
+
+    @SuppressWarnings("java:S112") // Throwable is what we deal with here
+    private void getInvocationInterceptor(IMethodInvocation invocation) throws Throwable {
+        TestContext testContext = buildContext(invocation, null);
+        try {
+            beforeTestMethod(testContext);
+            interceptTest(new TestMethodInvocationContext<Object>() {
+                @Override
+                public TestContext getTestContext() {
+                    return testContext;
+                }
+
+                @Override
+                public Object proceed() throws Throwable {
+                    invocation.proceed();
+                    return null;
+                }
+            });
+        } finally {
+            afterTestMethod(testContext);
+        }
     }
 
     private MicronautTestValue buildValueObject(MicronautTest micronautTest) {
