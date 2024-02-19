@@ -74,7 +74,12 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     public static final String TEST_TRANSACTIONAL = "micronaut.test.transactional";
     public static final String TEST_TRANSACTION_MODE = "micronaut.test.transaction-mode";
     public static final String DISABLED_MESSAGE = "Test is not bean. Either the test does not satisfy requirements defined by @Requires or annotation processing is not enabled. If the latter ensure annotation processing is enabled in your IDE.";
-    public static final String MISCONFIGURED_MESSAGE = "@MicronautTest used on test but no bean definition for the test present. This error indicates a misconfigured build or IDE. Please add the 'micronaut-inject-java' annotation processor to your test processor path (for Java this is the testAnnotationProcessor scope, for Kotlin kaptTest and for Groovy testCompile). See the documentation for reference: https://micronaut-projects.github.io/micronaut-test/latest/guide/";
+    public static final String MISCONFIGURED_MESSAGE = """
+        @MicronautTest used on test but no bean definition for the test present. \
+        This error indicates a misconfigured build or IDE. \
+        Please check 'micronaut.processing.group' or 'micronaut.processing.annotations' in your build. \
+        Add the 'micronaut-inject-java' annotation processor to your test processor path (for Java this is the testAnnotationProcessor scope, for Kotlin kaptTest and for Groovy testCompile). \
+        See the documentation for reference: https://micronaut-projects.github.io/micronaut-test/latest/guide/""";
     /**
      * The name of the property source that contains test properties.
      */
