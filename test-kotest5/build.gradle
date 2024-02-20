@@ -5,6 +5,9 @@ plugins {
 }
 
 dependencies {
+
+    compileOnly(libs.jakarta.inject.api)
+
     api projects.micronautTestCore
     api(mn.micronaut.context)
     api(platform(libs.boms.kotest))
@@ -15,27 +18,23 @@ dependencies {
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.kotlin.reflect)
 
-    compileOnly(libs.jakarta.inject.api)
-
-    testCompileOnly(libs.jakarta.inject.api)
-
     kaptTest(platform(mn.micronaut.core.bom))
     kaptTest(mn.micronaut.inject.java)
 
-    testImplementation(libs.managed.mockk)
+    testCompileOnly(libs.jakarta.inject.api)
 
+    testImplementation(libs.managed.mockk)
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
-
     testImplementation(mnData.micronaut.data.tx)
     testImplementation(mnData.micronaut.data.hibernate.jpa)
+    testImplementation(mn.snakeyaml)
+    testImplementation(libs.managed.kotest.assertions.core.jvm)
 
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
     testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
-    testImplementation(mn.snakeyaml)
-    testImplementation(libs.managed.kotest.assertions.core.jvm)
     testRuntimeOnly(testFixtures(projects.micronautTestCore))
 }
 

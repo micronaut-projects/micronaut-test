@@ -8,21 +8,22 @@ repositories {
 
 dependencies {
     annotationProcessor(mn.micronaut.inject.java)
-    testAnnotationProcessor(mn.micronaut.inject.java)
-
     annotationProcessor(mnData.micronaut.data.processor)
+
     implementation(mnData.micronaut.data.hibernate.jpa)
     implementation(mnSql.micronaut.jdbc.hikari)
-    runtimeOnly(mnSql.postgresql)
 
+    runtimeOnly(mnSql.postgresql)
     runtimeOnly(mnLogging.logback.classic)
 
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(projects.micronautTestJunit5)
-    testRuntimeOnly(libs.junit.jupiter.engine)
+    testAnnotationProcessor(mn.micronaut.inject.java)
 
+    testImplementation(libs.managed.junit.jupiter.api)
+    testImplementation(projects.micronautTestJunit5)
     testImplementation(mnTestResources.testcontainers.postgres)
+    testRuntimeOnly(libs.managed.junit.jupiter.engine)
 }
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }

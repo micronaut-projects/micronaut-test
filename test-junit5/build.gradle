@@ -34,18 +34,21 @@ tasks.withType(Jar).configureEach {
 }
 
 dependencies {
+
+    compileOnly(libs.graal.svm)
+
     api projects.micronautTestCore
     api(mn.micronaut.inject)
-    api(libs.junit.jupiter.api)
+    api(libs.managed.junit.jupiter.api)
+
     implementation(mn.micronaut.context)
-    compileOnly(libs.graal.svm)
 
     testCompileOnly(mn.micronaut.inject)
 
     testAnnotationProcessor(mn.micronaut.inject.java)
     testAnnotationProcessor(mn.micronaut.graal)
 
-    testImplementation(libs.junit.jupiter.params)
+    testImplementation(libs.managed.junit.jupiter.params)
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
     testImplementation(libs.managed.mockito.junit.jupiter)
@@ -58,7 +61,7 @@ dependencies {
     testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
     testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
-    testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(libs.managed.junit.jupiter.engine)
     testRuntimeOnly(testFixtures(projects.micronautTestCore))
 }
 
