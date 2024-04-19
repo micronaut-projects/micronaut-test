@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 original authors
+ * Copyright 2017-2024 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,23 @@
 package io.micronaut.test.rest.assured;
 
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Prototype;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 
+import static io.micronaut.test.support.server.TestEmbeddedServer.PROPERTY;
+
 /**
  * Helper class making it easier to create request specifications.
  *
  * @author gkrocher
- * @since 3.4.0 
+ * @since 3.4.0
  */
 @Factory
-@Requires(beans = EmbeddedServer.class) 
+@Requires(beans = EmbeddedServer.class)
 public class RequestSpecificationFactory {
 
     /**
@@ -37,10 +40,20 @@ public class RequestSpecificationFactory {
      * @return A request specification for the current server.
      */
     @Prototype
-    @Requires(beans = EmbeddedServer.class) 
+    @Requires(beans = EmbeddedServer.class, missingProperty = PROPERTY)
     RequestSpecification requestSpecification(EmbeddedServer embeddedServer) {
         return RestAssured.given()
             .port(embeddedServer.getPort());
     }
 
+    /**
+     * @param url            The optional URL for an external service
+     * @return A request specification for the current server.
+     */
+    @Prototype
+    @Requires(property = PROPERTY)
+    RequestSpecification requestSpecificationWithURL(@Property(name = PROPERTY) String url) {
+        return RestAssured.given()
+            .baseUri(url);
+    }
 }
