@@ -47,8 +47,8 @@ public class RequestSpecificationFactory {
     }
 
     /**
-     * @param url            The optional URL for an external service
-     * @return A request specification for the current server.
+     * @param url The optional URL for an external service
+     * @return A request specification for the external server.
      */
     @Prototype
     @Requires(property = PROPERTY)
