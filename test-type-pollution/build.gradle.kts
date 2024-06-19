@@ -16,4 +16,8 @@ dependencies {
 
 tasks.withType<Test> {
     jvmArgs("-XX:+EnableDynamicAgentLoading")
+
+    jacoco {
+        enabled = false
+    }
 }
