@@ -13,3 +13,7 @@ dependencies {
     testImplementation(libs.managed.junit.jupiter.api)
     testRuntimeOnly(libs.managed.junit.jupiter.engine)
 }
+
+tasks.withType<Test> {
+    jvmArgs("-XX:+EnableDynamicAgentLoading")
+}
