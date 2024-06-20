@@ -45,6 +45,10 @@ public final class ThresholdFocusListener implements FocusListener {
      * @return {@code false} iff any concrete class was type checked too often
      */
     public boolean checkThresholds(long threshold) {
+        if (trackers.isEmpty() || trackers.values().stream().noneMatch(c -> c.total.sum() > 0)) {
+            throw new IllegalStateException("No focus events received. Are the hooks installed correctly?");
+        }
+
         boolean failed = false;
         for (ConcreteTracker concrete : trackers.values()) {
             long sum = concrete.total.sum();
