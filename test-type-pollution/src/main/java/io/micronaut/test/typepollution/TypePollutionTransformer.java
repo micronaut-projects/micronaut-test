@@ -20,6 +20,7 @@ import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.TypeConstantAdjustment;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.dynamic.scaffold.InstrumentedType;
 import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
@@ -66,7 +67,9 @@ public final class TypePollutionTransformer implements AgentBuilder.Transformer 
      */
     public static void install(Instrumentation instrumentation) {
         new AgentBuilder.Default()
-            .with(new ByteBuddy().with(TypeValidation.DISABLED))
+            .with(new ByteBuddy()
+                .with(TypeValidation.DISABLED)
+                .with(InstrumentedType.Factory.Default.FROZEN))
             .with(AgentBuilder.Listener.StreamWriting.toSystemError().withErrorsOnly())
             .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
             .with(AgentBuilder.LambdaInstrumentationStrategy.DISABLED)
