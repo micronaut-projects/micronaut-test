@@ -197,6 +197,11 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:C">C</h2>
 <dl class="index">
+<dt><a href="io/micronaut/test/typepollution/ThresholdFocusListener.html#checkThresholds(long)" class="member-name-link">checkThresholds(long)</a> - Method in class io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/ThresholdFocusListener.html" title="class in io.micronaut.test.typepollution">ThresholdFocusListener</a></dt>
+<dd>
+<div class="block">Check whether the number of focus events exceeded the given threshold for any concrete
+ class.</div>
+</dd>
 <dt><a href="io/micronaut/test/support/sql/ConnectionFactoryHandler.html" class="type-name-link" title="class in io.micronaut.test.support.sql">ConnectionFactoryHandler</a> - Class in <a href="io/micronaut/test/support/sql/package-summary.html">io.micronaut.test.support.sql</a></dt>
 <dd>
 <div class="block">Handler for r2dbc <code>ConnectionFactory</code> instances.</div>
@@ -214,6 +219,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/test/extensions/spock/annotation/MicronautTest.html#contextBuilder()" class="member-name-link">contextBuilder()</a> - Element in annotation interface io.micronaut.test.extensions.spock.annotation.<a href="io/micronaut/test/extensions/spock/annotation/MicronautTest.html" title="annotation interface in io.micronaut.test.extensions.spock.annotation">MicronautTest</a></dt>
 <dd>
 <div class="block">The application context builder to use to construct the context.</div>
+</dd>
+<dt><a href="io/micronaut/test/typepollution/TypePollutionTransformer.html#create()" class="member-name-link">create()</a> - Static method in class io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/TypePollutionTransformer.html" title="class in io.micronaut.test.typepollution">TypePollutionTransformer</a></dt>
+<dd>
+<div class="block">Create a new instance of this transformer.</div>
 </dd>
 <dt><a href="io/micronaut/test/support/TestPropertyProviderFactory.html#create(java.util.Map,java.lang.Class)" class="member-name-link">create(Map&lt;String, Object&gt;, Class&lt;?&gt;)</a> - Method in interface io.micronaut.test.support.<a href="io/micronaut/test/support/TestPropertyProviderFactory.html" title="interface in io.micronaut.test.support">TestPropertyProviderFactory</a></dt>
 <dd>
@@ -240,6 +249,15 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#DISABLED_MESSAGE" class="member-name-link">DISABLED_MESSAGE</a> - Static variable in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/typepollution/HookBootstrap.html#dynamicTypeCheck(java.lang.invoke.MethodHandles.Lookup,java.lang.String,java.lang.invoke.MethodType)" class="member-name-link">dynamicTypeCheck(MethodHandles.Lookup, String, MethodType)</a> - Static method in class io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/HookBootstrap.html" title="class in io.micronaut.test.typepollution">HookBootstrap</a></dt>
+<dd>
+<div class="block">Called on successful type check in scenarios where the interface type is not statically
+ known, i.e.</div>
+</dd>
+<dt><a href="io/micronaut/test/typepollution/HookBootstrap.html#dynamicTypeCheckCast(java.lang.invoke.MethodHandles.Lookup,java.lang.String,java.lang.invoke.MethodType)" class="member-name-link">dynamicTypeCheckCast(MethodHandles.Lookup, String, MethodType)</a> - Static method in class io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/HookBootstrap.html" title="class in io.micronaut.test.typepollution">HookBootstrap</a></dt>
+<dd>
+<div class="block">Called on successful type check for <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html#cast(java.lang.Object)" title="class or interface in java.lang" class="external-link"><code>Class.cast(Object)</code></a>.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:E">E</h2>
 <dl class="index">
@@ -261,6 +279,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Find all <em>repeatable</em> <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">annotations</a> of
  <code>annotationType</code> that are either <em>present</em>, <em>indirectly
  present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link"><code>AnnotatedElement</code></a>.</div>
+</dd>
+<dt><a href="io/micronaut/test/typepollution/FocusListener.html" class="type-name-link" title="interface in io.micronaut.test.typepollution">FocusListener</a> - Interface in <a href="io/micronaut/test/typepollution/package-summary.html">io.micronaut.test.typepollution</a></dt>
+<dd>
+<div class="block">Public listener for responding to focus events.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:G">G</h2>
@@ -336,9 +358,17 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#hasInterceptors()" class="member-name-link">hasInterceptors()</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/typepollution/HookBootstrap.html" class="type-name-link" title="class in io.micronaut.test.typepollution">HookBootstrap</a> - Class in <a href="io/micronaut/test/typepollution/package-summary.html">io.micronaut.test.typepollution</a></dt>
+<dd>
+<div class="block">Method handle bootstrap used by generated code to call into the <code>ConcreteCounter</code>.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:I">I</h2>
 <dl class="index">
+<dt><a href="io/micronaut/test/typepollution/TypePollutionTransformer.html#install(java.lang.instrument.Instrumentation)" class="member-name-link">install(Instrumentation)</a> - Static method in class io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/TypePollutionTransformer.html" title="class in io.micronaut.test.typepollution">TypePollutionTransformer</a></dt>
+<dd>
+<div class="block">Install this transformer into the given <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.instrument/java/lang/instrument/Instrumentation.html" title="class or interface in java.lang.instrument" class="external-link"><code>Instrumentation</code></a>.</div>
+</dd>
 <dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#interceptAfterEach(io.micronaut.test.context.TestMethodInvocationContext)" class="member-name-link">interceptAfterEach(TestMethodInvocationContext&lt;Object&gt;)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/context/TestMethodInterceptor.html#interceptAfterEach(io.micronaut.test.context.TestMethodInvocationContext)" class="member-name-link">interceptAfterEach(TestMethodInvocationContext&lt;R&gt;)</a> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestMethodInterceptor.html" title="interface in io.micronaut.test.context">TestMethodInterceptor</a></dt>
@@ -390,6 +420,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/test/support/server/package-summary.html">io.micronaut.test.support.server</a> - package io.micronaut.test.support.server</dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/support/sql/package-summary.html">io.micronaut.test.support.sql</a> - package io.micronaut.test.support.sql</dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/typepollution/package-summary.html">io.micronaut.test.typepollution</a> - package io.micronaut.test.typepollution</dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/annotation/MicronautTestValue.html#isResolveParameters()" class="member-name-link">isResolveParameters()</a> - Method in class io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></dt>
 <dd>&nbsp;</dd>
@@ -453,6 +485,12 @@ loadScripts(document, 'script');</script>
 <h2 class="title" id="I:O">O</h2>
 <dl class="index">
 <dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#oldValues" class="member-name-link">oldValues</a> - Variable in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/typepollution/FocusListener.html#onFocus(java.lang.Class,java.lang.Class)" class="member-name-link">onFocus(Class&lt;?&gt;, Class&lt;?&gt;)</a> - Method in interface io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/FocusListener.html" title="interface in io.micronaut.test.typepollution">FocusListener</a></dt>
+<dd>
+<div class="block">Called on every focus event, potentially concurrently.</div>
+</dd>
+<dt><a href="io/micronaut/test/typepollution/ThresholdFocusListener.html#onFocus(java.lang.Class,java.lang.Class)" class="member-name-link">onFocus(Class&lt;?&gt;, Class&lt;?&gt;)</a> - Method in class io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/ThresholdFocusListener.html" title="class in io.micronaut.test.typepollution">ThresholdFocusListener</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:P">P</h2>
@@ -553,6 +591,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Each setup/cleanup method is wrapped in its own transaction, separate from that of the test.</div>
 </dd>
+<dt><a href="io/micronaut/test/typepollution/FocusListener.html#setFocusListener(io.micronaut.test.typepollution.FocusListener)" class="member-name-link">setFocusListener(FocusListener)</a> - Static method in interface io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/FocusListener.html" title="interface in io.micronaut.test.typepollution">FocusListener</a></dt>
+<dd>
+<div class="block">Set the global focus listener, or <code>null</code> to disable listening for focus events.</div>
+</dd>
 <dt><a href="io/micronaut/test/annotation/TransactionMode.html#SINGLE_TRANSACTION" class="member-name-link">SINGLE_TRANSACTION</a> - Enum constant in enum class io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></dt>
 <dd>
 <div class="block">All setup methods are wrapped in the same transaction as the test.</div>
@@ -599,6 +641,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html#startApplicationContext()" class="member-name-link">startApplicationContext()</a> - Method in class io.micronaut.test.extensions.spock.<a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html" title="class in io.micronaut.test.extensions.spock">MicronautSpockExtension</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/typepollution/HookBootstrap.html#staticTypeCheck(java.lang.invoke.MethodHandles.Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.Class)" class="member-name-link">staticTypeCheck(MethodHandles.Lookup, String, MethodType, Class&lt;?&gt;)</a> - Static method in class io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/HookBootstrap.html" title="class in io.micronaut.test.typepollution">HookBootstrap</a></dt>
+<dd>
+<div class="block">Called on successful type check in scenarios where the interface type is statically known,
+ i.e.</div>
+</dd>
 <dt><a href="io/micronaut/test/support/server/TestExecutableEmbeddedServer.html#stop()" class="member-name-link">stop()</a> - Method in class io.micronaut.test.support.server.<a href="io/micronaut/test/support/server/TestExecutableEmbeddedServer.html" title="class in io.micronaut.test.support.server">TestExecutableEmbeddedServer</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#supportsParameter(org.junit.jupiter.api.extension.ParameterContext,org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">supportsParameter(ParameterContext, ExtensionContext)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
@@ -674,6 +721,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Static helper class to handle <a href="io/micronaut/test/annotation/Sql.html" title="annotation interface in io.micronaut.test.annotation"><code>Sql</code></a> annotations.</div>
 </dd>
+<dt><a href="io/micronaut/test/typepollution/ThresholdFocusListener.html" class="type-name-link" title="class in io.micronaut.test.typepollution">ThresholdFocusListener</a> - Class in <a href="io/micronaut/test/typepollution/package-summary.html">io.micronaut.test.typepollution</a></dt>
+<dd>
+<div class="block"><a href="io/micronaut/test/typepollution/FocusListener.html" title="interface in io.micronaut.test.typepollution"><code>FocusListener</code></a> implementation that counts and tracks all focus events, including stack
+ traces.</div>
+</dd>
+<dt><a href="io/micronaut/test/typepollution/ThresholdFocusListener.html#%3Cinit%3E()" class="member-name-link">ThresholdFocusListener()</a> - Constructor for class io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/ThresholdFocusListener.html" title="class in io.micronaut.test.typepollution">ThresholdFocusListener</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/annotation/MicronautTestValue.html#transactional()" class="member-name-link">transactional()</a> - Method in class io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></dt>
 <dd>
 <div class="block">Allow disabling or enabling of automatic transaction wrapping.</div>
@@ -701,6 +755,13 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/test/annotation/TransactionMode.html" class="type-name-link" title="enum class in io.micronaut.test.annotation">TransactionMode</a> - Enum Class in <a href="io/micronaut/test/annotation/package-summary.html">io.micronaut.test.annotation</a></dt>
 <dd>
 <div class="block">Describes how transactions are handled for each test.</div>
+</dd>
+<dt><a href="io/micronaut/test/typepollution/TypePollutionTransformer.html#transform(net.bytebuddy.dynamic.DynamicType.Builder,net.bytebuddy.description.type.TypeDescription,java.lang.ClassLoader,net.bytebuddy.utility.JavaModule,java.security.ProtectionDomain)" class="member-name-link">transform(DynamicType.Builder&lt;?&gt;, TypeDescription, ClassLoader, JavaModule, ProtectionDomain)</a> - Method in class io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/TypePollutionTransformer.html" title="class in io.micronaut.test.typepollution">TypePollutionTransformer</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/typepollution/TypePollutionTransformer.html" class="type-name-link" title="class in io.micronaut.test.typepollution">TypePollutionTransformer</a> - Class in <a href="io/micronaut/test/typepollution/package-summary.html">io.micronaut.test.typepollution</a></dt>
+<dd>
+<div class="block"><code>AgentBuilder.Transformer</code> implementation that installs the necessary hooks to call into
+ the <a href="io/micronaut/test/typepollution/FocusListener.html" title="interface in io.micronaut.test.typepollution"><code>FocusListener</code></a>.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:V">V</h2>

@@ -10,3 +10,4 @@ io.micronaut.test.rest.assured
 io.micronaut.test.support
 io.micronaut.test.support.server
 io.micronaut.test.support.sql
+io.micronaut.test.typepollution

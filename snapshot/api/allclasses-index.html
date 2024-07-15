@@ -79,6 +79,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Handler for <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/DataSource.html" title="class or interface in javax.sql" class="external-link"><code>DataSource</code></a> instances which may be a <code>DelegatingDataSource</code>.</div>
 </div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab1"><a href="io/micronaut/test/typepollution/FocusListener.html" title="interface in io.micronaut.test.typepollution">FocusListener</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab1">
+<div class="block">Public listener for responding to focus events.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/typepollution/HookBootstrap.html" title="class in io.micronaut.test.typepollution">HookBootstrap</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab2">
+<div class="block">Method handle bootstrap used by generated code to call into the <code>ConcreteCounter</code>.</div>
+</div>
 <div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></div>
 <div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Extension for JUnit 5.</div>
@@ -169,9 +177,19 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color all-classes-table all-classes-table-tab2">
 <div class="block">Static helper class to handle <a href="io/micronaut/test/annotation/Sql.html" title="annotation interface in io.micronaut.test.annotation"><code>Sql</code></a> annotations.</div>
 </div>
-<div class="col-first odd-row-color all-classes-table all-classes-table-tab3"><a href="io/micronaut/test/annotation/TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></div>
-<div class="col-last odd-row-color all-classes-table all-classes-table-tab3">
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/typepollution/ThresholdFocusListener.html" title="class in io.micronaut.test.typepollution">ThresholdFocusListener</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block"><a href="io/micronaut/test/typepollution/FocusListener.html" title="interface in io.micronaut.test.typepollution"><code>FocusListener</code></a> implementation that counts and tracks all focus events, including stack
+ traces.</div>
+</div>
+<div class="col-first even-row-color all-classes-table all-classes-table-tab3"><a href="io/micronaut/test/annotation/TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></div>
+<div class="col-last even-row-color all-classes-table all-classes-table-tab3">
 <div class="block">Describes how transactions are handled for each test.</div>
+</div>
+<div class="col-first odd-row-color all-classes-table all-classes-table-tab2"><a href="io/micronaut/test/typepollution/TypePollutionTransformer.html" title="class in io.micronaut.test.typepollution">TypePollutionTransformer</a></div>
+<div class="col-last odd-row-color all-classes-table all-classes-table-tab2">
+<div class="block"><code>AgentBuilder.Transformer</code> implementation that installs the necessary hooks to call into
+ the <a href="io/micronaut/test/typepollution/FocusListener.html" title="interface in io.micronaut.test.typepollution"><code>FocusListener</code></a>.</div>
 </div>
 </div>
 </div>
