@@ -28,7 +28,7 @@ micronaut-sql = "5.7.0"
 micronaut-reactor = "3.4.1"
 micronaut-test-resources = "2.5.4"
 
-micronaut-gradle-plugin = "4.4.0"
+micronaut-gradle-plugin = "4.4.2"
 
 [libraries]
 # Core
