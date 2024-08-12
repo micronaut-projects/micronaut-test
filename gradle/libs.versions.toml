@@ -5,7 +5,7 @@ micronaut-docs = "2.0.0"
 groovy = "4.0.15"
 
 managed-assertj = "3.26.3"
-managed-hamcrest = "2.2"
+managed-hamcrest = "3.0"
 managed-mockito = "5.12.0"
 managed-mockk = "1.13.12"
 managed-junit = "5.11.0"
