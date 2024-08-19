@@ -6,6 +6,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.r2dbc.spi.ConnectionFactory;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.publisher.Flux;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @MicronautTest
 @Property(name = "r2dbc.datasources.default.db-type", value = "mysql")
 @Sql(value = {"classpath:create.sql", "classpath:datasource_1_insert.sql"}, resourceType = ConnectionFactory.class)
+@Testcontainers(disabledWithoutDocker = true)
 class MySqlConnectionTest  {
 
     @Inject

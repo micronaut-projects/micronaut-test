@@ -7,15 +7,15 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Sql(scripts = "classpath:threeproducts.sql")
 @Sql(scripts = "classpath:rollbackthreeproducts.sql", phase = Sql.Phase.AFTER_ALL)
 @MicronautTest(startApplication = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Testcontainers(disabledWithoutDocker = true)
 class ThreeProductsTest implements TestPropertyProvider {
 
     @Override
