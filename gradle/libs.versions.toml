@@ -14,7 +14,7 @@ managed-kotest = "5.9.1"
 managed-spock = "2.3-groovy-4.0"
 managed-bytebuddy = "1.14.19"
 
-kotlin = "1.9.25"
+kotlin = "2.0.10"
 graal-svm = "24.0.2"
 
 micronaut-test = "4.3.0"
