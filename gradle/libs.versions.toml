@@ -62,6 +62,7 @@ managed-junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engin
 managed-bytebuddy = { module = "net.bytebuddy:byte-buddy", version.ref = "managed-bytebuddy" }
 managed-bytebuddy-agent = { module = "net.bytebuddy:byte-buddy-agent", version.ref = "managed-bytebuddy" }
 
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter"}
 # BOMs
 boms-junit = { module = "org.junit:junit-bom", version.ref = "managed-junit" }
 boms-kotest = { module = "io.kotest:kotest-bom", version.ref = "managed-kotest" }

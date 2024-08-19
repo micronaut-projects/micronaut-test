@@ -6,6 +6,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Sql(scripts = "classpath:rollbacktwoproducts.sql", phase = Sql.Phase.AFTER_ALL)
 @MicronautTest(startApplication = false)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Testcontainers(disabledWithoutDocker = true)
 class TwoProductsTest implements TestPropertyProvider {
 
     @Override
