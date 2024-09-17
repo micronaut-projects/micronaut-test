@@ -22,6 +22,7 @@ micronautBuild {
     importMicronautCatalog("micronaut-reactor")
     importMicronautCatalog("micronaut-test")
     importMicronautCatalog("micronaut-test-resources")
+    importMicronautCatalog("micronaut-hibernate-validator")
 }
 
 rootProject.name = 'test-parent'

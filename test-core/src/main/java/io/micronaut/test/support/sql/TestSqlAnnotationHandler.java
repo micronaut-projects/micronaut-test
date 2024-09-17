@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +58,6 @@ public final class TestSqlAnnotationHandler {
      * @param applicationContext The application context
      * @param phase The {@link Sql.Phase} to run the scripts in
      *
-     * @throws SQLException If an error occurs executing the SQL
      * @throws IOException If an error occurs reading the SQL
      */
     public static void handle(BeanDefinition<?> specDefinition, ApplicationContext applicationContext, Sql.Phase phase) throws IOException {

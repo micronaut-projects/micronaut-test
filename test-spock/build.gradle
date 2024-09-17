@@ -7,7 +7,7 @@ dependencies {
     compileOnly(libs.jakarta.inject.api)
 
     api(platform(libs.boms.spock))
-    api projects.micronautTestCore
+    api(projects.micronautTestCore)
     api(mn.micronaut.inject)
     api(libs.spock.core) {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
@@ -21,11 +21,11 @@ dependencies {
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
     testImplementation(mnSql.micronaut.jdbc.hikari)
-    testImplementation(libs.micronaut.hibernate.validator)
+    testImplementation(mnHibernateValidator.micronaut.hibernate.validator)
     testImplementation(mnSpring.micronaut.spring)
-    testImplementation(mn.snakeyaml)
     testImplementation(mnReactor.micronaut.reactor)
 
+    testRuntimeOnly(mn.snakeyaml)
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(mnSql.h2)
