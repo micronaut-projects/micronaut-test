@@ -23,6 +23,7 @@ dependencies {
     testImplementation(mnTestResources.testcontainers.postgres)
     testImplementation(platform(mnTestResources.boms.testcontainers))
     testImplementation(libs.testcontainers.junit.jupiter)
+
     testRuntimeOnly(libs.managed.junit.jupiter.engine)
 }
 

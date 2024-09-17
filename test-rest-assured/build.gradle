@@ -12,7 +12,7 @@ dependencies {
         exclude group:"org.codehaus.groovy", module:"groovy"
     }
     implementation(mn.micronaut.context)
-    implementation(libs.groovy)
+    implementation(mn.groovy)
 
     testAnnotationProcessor(mn.micronaut.inject.java)
 

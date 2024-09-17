@@ -23,8 +23,7 @@ tasks.withType<Test> {
 }
 
 micronautBuild {
-    // todo: enable after 4.4.0
     binaryCompatibility {
-        enabled.set(false)
+        enabled.set(true)
     }
 }
