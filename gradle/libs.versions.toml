@@ -26,7 +26,7 @@ micronaut-serde = "2.11.0"
 micronaut-spring = "5.8.0"
 micronaut-sql = "5.8.2"
 micronaut-reactor = "3.5.0"
-micronaut-test-resources = "2.5.4"
+micronaut-test-resources = "2.6.2"
 
 micronaut-gradle-plugin = "4.4.2"
 
