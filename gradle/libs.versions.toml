@@ -12,7 +12,7 @@ managed-junit = "5.11.3"
 managed-rest-assured = "5.5.0"
 managed-kotest = "5.9.1"
 managed-spock = "2.3-groovy-4.0"
-managed-bytebuddy = "1.14.19"
+managed-bytebuddy = "1.15.7"
 
 kotlin = "1.9.25"
 graal-svm = "24.0.2"
