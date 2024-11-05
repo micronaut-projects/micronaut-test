@@ -10,7 +10,6 @@ managed-kotest = "5.9.1"
 managed-spock = "2.3-groovy-4.0"
 managed-bytebuddy = "1.15.10"
 
-groovy = "4.0.23"
 graal-svm = "24.1.1"
 
 micronaut = "4.7.2"
@@ -19,6 +18,7 @@ micronaut-docs = "2.0.0"
 micronaut-test = "4.5.0"
 micronaut-data = "4.9.6"
 micronaut-hibernate-validator = "4.6.0"
+micronaut-logging = "1.4.0"
 micronaut-r2dbc = "5.6.1"
 micronaut-serde = "2.12.0"
 micronaut-spring = "5.9.0"
@@ -32,6 +32,7 @@ micronaut-gradle-plugin = "4.4.4"
 # Core
 micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
 micronaut-platform = { module = 'io.micronaut.platform:micronaut-platform', version.ref = 'micronaut-platform' }
+micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 micronaut-data = { module = "io.micronaut.data:micronaut-data-bom", version.ref = "micronaut-data" }
 micronaut-hibernate-validator = { module = "io.micronaut.beanvalidation:micronaut-hibernate-validator-bom", version.ref = "micronaut-hibernate-validator" }
 micronaut-r2dbc = { module = "io.micronaut.r2dbc:micronaut-r2dbc-bom", version.ref = "micronaut-r2dbc" }
