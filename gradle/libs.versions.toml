@@ -1,37 +1,37 @@
 [versions]
 managed-assertj = "3.26.3"
 managed-hamcrest = "3.0"
-managed-mockito = "5.12.0"
+managed-mockito = "5.14.2"
 managed-mockk = "1.13.13"
 managed-junit = "5.11.3"
 managed-junit-platform = "1.11.0"
 managed-rest-assured = "5.5.0"
 managed-kotest = "5.9.1"
 managed-spock = "2.3-groovy-4.0"
-managed-bytebuddy = "1.14.19"
-groovy = "4.0.23"
-graal-svm = "24.0.2"
+managed-bytebuddy = "1.15.10"
 
-micronaut = "4.6.6"
+groovy = "4.0.23"
+graal-svm = "24.1.1"
+
+micronaut = "4.7.2"
 micronaut-platform = "4.6.3"
 micronaut-docs = "2.0.0"
-micronaut-test = "4.4.0"
+micronaut-test = "4.5.0"
 micronaut-data = "4.9.6"
-micronaut-hibernate-validator = "4.5.0"
-micronaut-logging = "1.4.0"
+micronaut-hibernate-validator = "4.6.0"
 micronaut-r2dbc = "5.6.1"
-micronaut-serde = "2.11.2"
-micronaut-spring = "5.8.1"
+micronaut-serde = "2.12.0"
+micronaut-spring = "5.9.0"
 micronaut-sql = "5.8.2"
-micronaut-reactor = "3.5.0"
-micronaut-test-resources = "2.5.4"
+micronaut-reactor = "3.6.0"
+micronaut-test-resources = "2.6.2"
+
 micronaut-gradle-plugin = "4.4.4"
 
 [libraries]
 # Core
 micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
 micronaut-platform = { module = 'io.micronaut.platform:micronaut-platform', version.ref = 'micronaut-platform' }
-micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 micronaut-data = { module = "io.micronaut.data:micronaut-data-bom", version.ref = "micronaut-data" }
 micronaut-hibernate-validator = { module = "io.micronaut.beanvalidation:micronaut-hibernate-validator-bom", version.ref = "micronaut-hibernate-validator" }
 micronaut-r2dbc = { module = "io.micronaut.r2dbc:micronaut-r2dbc-bom", version.ref = "micronaut-r2dbc" }
