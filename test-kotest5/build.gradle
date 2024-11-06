@@ -1,7 +1,7 @@
 plugins {
     id "io.micronaut.build.internal.micronaut-test-module"
-    id "org.jetbrains.kotlin.jvm"
-    id "org.jetbrains.kotlin.kapt"
+    alias(mn.plugins.kotlin.jvm)
+    alias(mn.plugins.kotlin.kapt)
 }
 
 dependencies {
@@ -14,9 +14,9 @@ dependencies {
     api(libs.managed.kotest.runner.junit5.jvm)
 
     implementation(mn.micronaut.inject)
-    implementation projects.micronautTestJunit5
-    implementation(libs.kotlin.stdlib.jdk8)
-    implementation(libs.kotlin.reflect)
+    implementation(projects.micronautTestJunit5)
+    implementation(mn.kotlin.stdlib.jdk8)
+    implementation(mn.kotlin.reflect)
 
     kaptTest(platform(mn.micronaut.core.bom))
     kaptTest(mn.micronaut.inject.java)

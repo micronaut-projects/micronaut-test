@@ -37,13 +37,11 @@ dependencies {
 
     compileOnly(libs.graal.svm)
 
-    api projects.micronautTestCore
+    api(projects.micronautTestCore)
     api(mn.micronaut.inject)
     api(libs.managed.junit.jupiter.api)
 
     implementation(mn.micronaut.context)
-
-    testCompileOnly(mn.micronaut.inject)
 
     testAnnotationProcessor(mn.micronaut.inject.java)
     testAnnotationProcessor(mn.micronaut.graal)
@@ -55,8 +53,8 @@ dependencies {
     testImplementation(libs.managed.hamcrest)
     testImplementation(mnData.micronaut.data.tx)
     testImplementation(mnData.micronaut.data.hibernate.jpa)
-    testImplementation(mn.snakeyaml)
 
+    testRuntimeOnly(mn.snakeyaml)
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
     testRuntimeOnly(mnSql.h2)

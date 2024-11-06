@@ -9,5 +9,4 @@ repositories {
 
 dependencies {
     implementation(libs.micronaut.library.plugin)
-    implementation (libs.kotlin.gradle.plugin)
 }
