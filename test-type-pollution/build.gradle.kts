@@ -16,6 +16,8 @@ dependencies {
 
 tasks.withType<Test> {
     jvmArgs("-XX:+EnableDynamicAgentLoading")
+
+    extensions.findByType(JacocoTaskExtension::class)?.isEnabled = false
 }
 
 micronautBuild {
