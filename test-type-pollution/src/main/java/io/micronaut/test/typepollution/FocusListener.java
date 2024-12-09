@@ -21,7 +21,7 @@ import io.micronaut.core.annotation.Nullable;
  * Public listener for responding to focus events.<p>
  * A focus event happens when a certain concrete type is successfully type checked against an
  * interface that it was not checked against immediately before:
- * <code><pre>
+ * <pre>{@code
  * Impl impl = new Impl();
  * impl instanceof A // focus event
  * impl instanceof A // no focus event
@@ -29,7 +29,7 @@ import io.micronaut.core.annotation.Nullable;
  * impl instanceof B // focus event
  * impl instanceof B // no focus event
  * impl instanceof A // focus event
- * </pre></code>
+ * }</pre>
  * Each focus event may invalidate a cache field on the concrete class which can be especially
  * expensive on machines with many cores (JDK-8180450). Thus, such focus events should be kept off
  * the hot path when running on JDK versions that still have this bug.

@@ -30,6 +30,7 @@ import net.bytebuddy.jar.asm.Opcodes;
 import net.bytebuddy.jar.asm.Type;
 import net.bytebuddy.pool.TypePool;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 final class VisitorWrapperImpl extends AsmVisitorWrapper.AbstractBase {
@@ -142,6 +143,24 @@ final class VisitorWrapperImpl extends AsmVisitorWrapper.AbstractBase {
                 } else {
                     super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
                 }
+            } else if (opcode == Opcodes.INVOKEVIRTUAL && owner.equals(Type.getInternalName(Method.class)) && name.equals("invoke")) {
+                // method callee args
+                super.visitInsn(Opcodes.DUP2_X1);
+                // callee args method callee args
+                indy(HookBootstrap.METHOD_REFLECTION_METHOD_CALL, Type.getMethodDescriptor(Type.getType(Method.class), Type.getType(Method.class), Type.getType(Object.class), Type.getType(Object[].class)));
+                // callee args method
+                super.visitInsn(Opcodes.DUP_X2);
+                // method callee args method
+                super.visitInsn(Opcodes.POP);
+                // method callee args
+                super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+            } else if (opcode == Opcodes.INVOKEVIRTUAL && owner.equals(Type.getInternalName(Constructor.class)) && name.equals("newInstance")) {
+                // constructor args
+                super.visitInsn(Opcodes.DUP2);
+                // constructor args constructor args
+                indy(HookBootstrap.METHOD_REFLECTION_CONSTRUCTOR_CALL, Type.getMethodDescriptor(Type.getType(void.class), Type.getType(Constructor.class), Type.getType(Object[].class)));
+                // constructor args
+                super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
             } else {
                 super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
             }

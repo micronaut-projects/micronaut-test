@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -211,6 +213,72 @@ class VisitorWrapperImplTest {
         );
     }
 
+    @Test
+    public void reflInvoke() throws ReflectiveOperationException {
+        hook(ReflInvoke.class);
+
+        TrackingFocusListener listener = new TrackingFocusListener().install();
+
+        ReflInvoke cl = new ReflInvoke();
+
+        cl.a(new Impl());
+        cl.a(new Impl());
+
+        cl.b(new Impl());
+        cl.b(new Impl());
+        cl.b(new Impl());
+
+        cl.a(new Impl());
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cl.a(new Object()));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cl.a(5));
+
+        cl.concrete(new Impl());
+
+        List<Entry> entries = listener.uninstall();
+        Assertions.assertEquals(
+            List.of(
+                new Entry(Impl.class, A.class),
+                new Entry(Impl.class, B.class),
+                new Entry(Impl.class, A.class)
+            ),
+            entries
+        );
+    }
+
+    @Test
+    public void reflNewInstance() throws ReflectiveOperationException {
+        hook(ReflNewInstance.class);
+
+        TrackingFocusListener listener = new TrackingFocusListener().install();
+
+        ReflNewInstance cl = new ReflNewInstance();
+
+        cl.a(new Impl());
+        cl.a(new Impl());
+
+        cl.b(new Impl());
+        cl.b(new Impl());
+        cl.b(new Impl());
+
+        cl.a(new Impl());
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cl.a(new Object()));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cl.a(5));
+
+        cl.concrete(new Impl());
+
+        List<Entry> entries = listener.uninstall();
+        Assertions.assertEquals(
+            List.of(
+                new Entry(Impl.class, A.class),
+                new Entry(Impl.class, B.class),
+                new Entry(Impl.class, A.class)
+            ),
+            entries
+        );
+    }
+
     private interface A {
     }
 
@@ -335,6 +403,85 @@ class VisitorWrapperImplTest {
 
         boolean concrete(Class<?> cl) {
             return impl.isAssignableFrom(cl);
+        }
+    }
+
+    @SuppressWarnings("JavaReflectionInvocation")
+    static final class ReflInvoke {
+        private static final Method A_IMPL;
+        private static final Method B_IMPL;
+        private static final Method CONCRETE_IMPL;
+
+        static {
+            try {
+                A_IMPL = ReflInvoke.class.getDeclaredMethod("aImpl", A.class);
+                B_IMPL = ReflInvoke.class.getDeclaredMethod("bImpl", B.class);
+                CONCRETE_IMPL = ReflInvoke.class.getDeclaredMethod("concreteImpl", Impl.class);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        void a(Object o) throws ReflectiveOperationException {
+            A_IMPL.invoke(this, o);
+        }
+
+        void b(Object o) throws ReflectiveOperationException {
+            B_IMPL.invoke(this, o);
+        }
+
+        void concrete(Object o) throws ReflectiveOperationException {
+            CONCRETE_IMPL.invoke(this, o);
+        }
+
+        void aImpl(A a) {
+        }
+
+        void bImpl(B b) {
+        }
+
+        void concreteImpl(Impl impl) {
+        }
+    }
+
+    @SuppressWarnings("JavaReflectionInvocation")
+    static final class ReflNewInstance {
+        private static final Constructor<ReflNewInstance> A_CONSTRUCTOR;
+        private static final Constructor<ReflNewInstance> B_CONSTRUCTOR;
+        private static final Constructor<ReflNewInstance> IMPL_CONSTRUCTOR;
+
+        static {
+            try {
+                A_CONSTRUCTOR = ReflNewInstance.class.getDeclaredConstructor(A.class);
+                B_CONSTRUCTOR = ReflNewInstance.class.getDeclaredConstructor(B.class);
+                IMPL_CONSTRUCTOR = ReflNewInstance.class.getDeclaredConstructor(Impl.class);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        ReflNewInstance() {
+        }
+
+        ReflNewInstance(A a) {
+        }
+
+        ReflNewInstance(B b) {
+        }
+
+        ReflNewInstance(Impl impl) {
+        }
+
+        void a(Object o) throws ReflectiveOperationException {
+            A_CONSTRUCTOR.newInstance(o);
+        }
+
+        void b(Object o) throws ReflectiveOperationException {
+            B_CONSTRUCTOR.newInstance(o);
+        }
+
+        void concrete(Object o) throws ReflectiveOperationException {
+            IMPL_CONSTRUCTOR.newInstance(o);
         }
     }
 }
