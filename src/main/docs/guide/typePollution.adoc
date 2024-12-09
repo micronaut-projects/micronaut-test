@@ -35,6 +35,10 @@ checks somewhat, but also makes it easy to use from tests. The covered type chec
 This is not an exhaustive list of all the code in the JDK that can trigger the JVM to do a type check, but this is
 meant to cover most type checks that happen in practice.
 
+NOTE: Missing entries in this list are considered a bug, even though we know about them. That means this list may be
+expanded _in a patch release_ of micronaut-test, causing your tests to fail if there were previously undiscovered
+type pollution sites.
+
 WARNING: The type pollution test uses a Java agent to instrument all classes of the test suite. This does not play well
 with other agents, in particular jacoco. It is recommended to run type pollution tests in a separate module / source
 root with no other Java agents.
