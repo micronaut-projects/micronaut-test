@@ -31,6 +31,7 @@ import net.bytebuddy.jar.asm.Type;
 import net.bytebuddy.pool.TypePool;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 final class VisitorWrapperImpl extends AsmVisitorWrapper.AbstractBase {
@@ -160,6 +161,17 @@ final class VisitorWrapperImpl extends AsmVisitorWrapper.AbstractBase {
                 // constructor args constructor args
                 indy(HookBootstrap.METHOD_REFLECTION_CONSTRUCTOR_CALL, Type.getMethodDescriptor(Type.getType(void.class), Type.getType(Constructor.class), Type.getType(Object[].class)));
                 // constructor args
+                super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+            } else if (opcode == Opcodes.INVOKEVIRTUAL && owner.equals(Type.getInternalName(Field.class)) && name.equals("set")) {
+                // field callee args
+                super.visitInsn(Opcodes.DUP2_X1);
+                // callee args field callee args
+                indy(HookBootstrap.METHOD_REFLECTION_FIELD_SET, Type.getMethodDescriptor(Type.getType(Field.class), Type.getType(Field.class), Type.getType(Object.class), Type.getType(Object.class)));
+                // callee args field
+                super.visitInsn(Opcodes.DUP_X2);
+                // field callee args field
+                super.visitInsn(Opcodes.POP);
+                // field callee args
                 super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
             } else {
                 super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);

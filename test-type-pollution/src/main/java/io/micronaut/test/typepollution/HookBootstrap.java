@@ -23,6 +23,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
@@ -37,9 +38,11 @@ public final class HookBootstrap {
     static final Method METHOD_DYNAMIC_TYPE_CHECK_CAST;
     static final Method METHOD_REFLECTION_METHOD_CALL;
     static final Method METHOD_REFLECTION_CONSTRUCTOR_CALL;
+    static final Method METHOD_REFLECTION_FIELD_SET;
 
     private static final MethodHandle REFLECTION_METHOD_CALL_IMPL;
     private static final MethodHandle REFLECTION_CONSTRUCTOR_CALL_IMPL;
+    private static final MethodHandle REFLECTION_FIELD_SET_IMPL;
 
     static {
         try {
@@ -48,9 +51,11 @@ public final class HookBootstrap {
             METHOD_DYNAMIC_TYPE_CHECK_CAST = HookBootstrap.class.getDeclaredMethod("dynamicTypeCheckCast", MethodHandles.Lookup.class, String.class, MethodType.class);
             METHOD_REFLECTION_METHOD_CALL = HookBootstrap.class.getDeclaredMethod("reflectionMethodCall", MethodHandles.Lookup.class, String.class, MethodType.class);
             METHOD_REFLECTION_CONSTRUCTOR_CALL = HookBootstrap.class.getDeclaredMethod("reflectionConstructorCall", MethodHandles.Lookup.class, String.class, MethodType.class);
+            METHOD_REFLECTION_FIELD_SET = HookBootstrap.class.getDeclaredMethod("reflectionFieldSet", MethodHandles.Lookup.class, String.class, MethodType.class);
 
             REFLECTION_METHOD_CALL_IMPL = MethodHandles.lookup().findStatic(HookBootstrap.class, "reflectionMethodCallImpl", MethodType.methodType(Method.class, Method.class, Object.class, Object[].class));
             REFLECTION_CONSTRUCTOR_CALL_IMPL = MethodHandles.lookup().findStatic(HookBootstrap.class, "reflectionConstructorCallImpl", MethodType.methodType(void.class, Constructor.class, Object[].class));
+            REFLECTION_FIELD_SET_IMPL = MethodHandles.lookup().findStatic(HookBootstrap.class, "reflectionFieldSetImpl", MethodType.methodType(Field.class, Field.class, Object.class, Object.class));
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
@@ -165,10 +170,11 @@ public final class HookBootstrap {
     }
 
     private static Method reflectionMethodCallImpl(Method method, Object target, Object[] args) throws Throwable {
-        reflectiveCheck(method.getDeclaringClass(), target);
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        for (int i = 0; i < args.length && i < parameterTypes.length; i++) {
-            reflectiveCheck(parameterTypes[i], args[i]);
+        if (method != null) {
+            reflectiveCheck(method.getDeclaringClass(), target);
+            if (args != null) {
+                reflectiveCheck(method.getParameterTypes(), args);
+            }
         }
         return method;
     }
@@ -188,14 +194,42 @@ public final class HookBootstrap {
     }
 
     private static void reflectionConstructorCallImpl(Constructor<?> constructor, Object[] args) throws Throwable {
-        Class<?>[] parameterTypes = constructor.getParameterTypes();
+        if (constructor != null && args != null) {
+            reflectiveCheck(constructor.getParameterTypes(), args);
+        }
+    }
+
+    /**
+     * Called before any call to {@link Field#set(Object, Object)}. Returned method type is
+     * {@code (Ljava/lang/reflect/Field;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/reflect/Field;},
+     * where the first parameter is the field, the second the object that the field is set on, and
+     * the third parameter the field value. The return value is the same field that was passed in.
+     *
+     * @param lookup Required bootstrap method parameter
+     * @param name   Required bootstrap method parameter
+     * @param type   Required bootstrap method parameter
+     * @return {@code (Ljava/lang/reflect/Field;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/reflect/Field;}
+     */
+    public static CallSite reflectionFieldSet(MethodHandles.Lookup lookup, String name, MethodType type) throws NoSuchMethodException, IllegalAccessException {
+        return new ConstantCallSite(REFLECTION_FIELD_SET_IMPL);
+    }
+
+    private static Field reflectionFieldSetImpl(Field field, Object target, Object value) throws Throwable {
+        if (field != null) {
+            reflectiveCheck(field.getDeclaringClass(), value);
+            reflectiveCheck(field.getType(), value);
+        }
+        return field;
+    }
+
+    private static void reflectiveCheck(Class<?>[] parameterTypes, Object[] args) throws Throwable {
         for (int i = 0; i < args.length && i < parameterTypes.length; i++) {
             reflectiveCheck(parameterTypes[i], args[i]);
         }
     }
 
     private static void reflectiveCheck(Class<?> type, Object obj) throws Throwable {
-        if (type.isInterface() && type.isInstance(obj)) { // also checks for null
+        if (type != null && type.isInterface() && type.isInstance(obj)) { // also checks obj for null
             ConcreteCounter.COUNTERS.get(obj.getClass()).typeCheckHandle(type).invokeExact();
         }
     }
