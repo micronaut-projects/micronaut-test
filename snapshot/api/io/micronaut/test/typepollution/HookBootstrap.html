@@ -110,6 +110,20 @@ loadScripts(document, 'script');</script>
 <div class="block">Called on successful type check for <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html#cast(java.lang.Object)" title="class or interface in java.lang" class="external-link"><code>Class.cast(Object)</code></a>.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/CallSite.html" title="class or interface in java.lang.invoke" class="external-link">CallSite</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#reflectionConstructorCall(java.lang.invoke.MethodHandles.Lookup,java.lang.String,java.lang.invoke.MethodType)" class="member-name-link">reflectionConstructorCall</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/MethodHandles.Lookup.html" title="class or interface in java.lang.invoke" class="external-link">MethodHandles.Lookup</a>&nbsp;lookup,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/MethodType.html" title="class or interface in java.lang.invoke" class="external-link">MethodType</a>&nbsp;type)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Called before any call to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Constructor.html#newInstance(java.lang.Object...)" title="class or interface in java.lang.reflect" class="external-link"><code>Constructor.newInstance(Object...)</code></a>.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/CallSite.html" title="class or interface in java.lang.invoke" class="external-link">CallSite</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#reflectionMethodCall(java.lang.invoke.MethodHandles.Lookup,java.lang.String,java.lang.invoke.MethodType)" class="member-name-link">reflectionMethodCall</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/MethodHandles.Lookup.html" title="class or interface in java.lang.invoke" class="external-link">MethodHandles.Lookup</a>&nbsp;lookup,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/MethodType.html" title="class or interface in java.lang.invoke" class="external-link">MethodType</a>&nbsp;type)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Called before any call to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html#invoke(java.lang.Object,java.lang.Object...)" title="class or interface in java.lang.reflect" class="external-link"><code>Method.invoke(Object, Object...)</code></a>.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/CallSite.html" title="class or interface in java.lang.invoke" class="external-link">CallSite</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#staticTypeCheck(java.lang.invoke.MethodHandles.Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.Class)" class="member-name-link">staticTypeCheck</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/MethodHandles.Lookup.html" title="class or interface in java.lang.invoke" class="external-link">MethodHandles.Lookup</a>&nbsp;lookup,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/MethodType.html" title="class or interface in java.lang.invoke" class="external-link">MethodType</a>&nbsp;type,
@@ -206,6 +220,50 @@ loadScripts(document, 'script');</script>
 <dd><code>type</code> - Required bootstrap method parameter</dd>
 <dt>Returns:</dt>
 <dd><code>(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object;</code></dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NoSuchMethodException.html" title="class or interface in java.lang" class="external-link">NoSuchMethodException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalAccessException.html" title="class or interface in java.lang" class="external-link">IllegalAccessException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="reflectionMethodCall(java.lang.invoke.MethodHandles.Lookup,java.lang.String,java.lang.invoke.MethodType)">
+<h3>reflectionMethodCall</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/CallSite.html" title="class or interface in java.lang.invoke" class="external-link">CallSite</a></span>&nbsp;<span class="element-name">reflectionMethodCall</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/MethodHandles.Lookup.html" title="class or interface in java.lang.invoke" class="external-link">MethodHandles.Lookup</a>&nbsp;lookup,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/MethodType.html" title="class or interface in java.lang.invoke" class="external-link">MethodType</a>&nbsp;type)</span></div>
+<div class="block">Called before any call to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Method.html#invoke(java.lang.Object,java.lang.Object...)" title="class or interface in java.lang.reflect" class="external-link"><code>Method.invoke(Object, Object...)</code></a>. Returned method type is
+ <code>(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/reflect/Method;</code>,
+ where the first parameter is the method, the second parameter the <code>this</code> argument,
+ and the third parameter the argument array. The returned type is the same method passed in.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>lookup</code> - Required bootstrap method parameter</dd>
+<dd><code>name</code> - Required bootstrap method parameter</dd>
+<dd><code>type</code> - Required bootstrap method parameter</dd>
+<dt>Returns:</dt>
+<dd><code>(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/reflect/Method;</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="reflectionConstructorCall(java.lang.invoke.MethodHandles.Lookup,java.lang.String,java.lang.invoke.MethodType)">
+<h3>reflectionConstructorCall</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/CallSite.html" title="class or interface in java.lang.invoke" class="external-link">CallSite</a></span>&nbsp;<span class="element-name">reflectionConstructorCall</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/MethodHandles.Lookup.html" title="class or interface in java.lang.invoke" class="external-link">MethodHandles.Lookup</a>&nbsp;lookup,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/invoke/MethodType.html" title="class or interface in java.lang.invoke" class="external-link">MethodType</a>&nbsp;type)</span>
+                                          throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NoSuchMethodException.html" title="class or interface in java.lang" class="external-link">NoSuchMethodException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalAccessException.html" title="class or interface in java.lang" class="external-link">IllegalAccessException</a></span></div>
+<div class="block">Called before any call to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/Constructor.html#newInstance(java.lang.Object...)" title="class or interface in java.lang.reflect" class="external-link"><code>Constructor.newInstance(Object...)</code></a>. Returned method type is
+ <code>(Ljava/lang/reflect/Constructor;[Ljava/lang/Object;)V</code>, where the first parameter is
+ the constructor and the second parameter the argument array.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>lookup</code> - Required bootstrap method parameter</dd>
+<dd><code>name</code> - Required bootstrap method parameter</dd>
+<dd><code>type</code> - Required bootstrap method parameter</dd>
+<dt>Returns:</dt>
+<dd><code>(Ljava/lang/reflect/Constructor;[Ljava/lang/Object;)V</code></dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NoSuchMethodException.html" title="class or interface in java.lang" class="external-link">NoSuchMethodException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalAccessException.html" title="class or interface in java.lang" class="external-link">IllegalAccessException</a></code></dd>

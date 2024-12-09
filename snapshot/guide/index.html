@@ -58,7 +58,9 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#sql"><strong>7</strong><span>Loading SQL before tests</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>8</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#typePollution"><strong>8</strong><span>Type pollution</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>9</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -165,7 +167,9 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-sql"><a href="#sql"><strong>7</strong><span>Loading SQL before tests</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>8</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-typePollution"><a href="#typePollution"><strong>8</strong><span>Type pollution</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>9</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -3111,7 +3115,185 @@ class MySqlConnectionTest  {
 </div>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>8 Repository</h1>
+<h1 id="typePollution"><a class="anchor" href="#typePollution"></a>8 Type pollution</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/4.6.x/src/main/docs/guide/typePollution.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Before OpenJDK 23, the Hotspot runtime has a <a href="https://bugs.openjdk.org/browse/JDK-8180450">performance issue</a> relating to
+interface type checks. When the JVM has to do a type check against an interface, such as in <code>arrayList instanceof List</code>,
+it has to do a fairly complicated iteration of the whole inheritance tree of <code>arrayList</code>. To make this fast, if the
+check succeeds, the interface is stored in a <code>secondary_super_cache</code> on the JVM Klass structure representing the object
+type, in this case <code>ArrayList</code>. The next time the JVM has to do a similar type check of an <code>ArrayList</code> against <code>List</code>,
+the JVM can just check this field instead and avoid walking the whole type tree.</p>
+</div>
+<div class="paragraph">
+<p>The issue arises when the same concrete type (i.e. <code>ArrayList</code>) is checked against <em>multiple</em> interface types (e.g.
+<code>List</code> but also <code>Collection</code>) repeatedly. An <code>instanceof List</code> will set the <code>secondary_super_cache</code> to <code>List</code>, then an
+<code>instanceof Collection</code> will set the cache to <code>Collection</code>, and an <code>instanceof List</code> will set it back to <code>List</code>. Not
+only can the second type check not take advantage of the cache because it had been overwritten, but crucially, each
+type checks writes the cache field anew. If this happens concurrently on multi-core machines, this can lead to major
+inter-core traffic for cache coherency of the cache line where the <code>secondary_super_cache</code> is located. This is called a
+"scalability issue" because it can lead to poor performance in code running in parallel.</p>
+</div>
+<div class="paragraph">
+<p>This bug can be triggered by the interplay of multiple usually independent libraries and is very hard to reproduce in
+practice. For this reason, the folks at RedHat built a
+<a href="https://github.com/RedHatPerf/type-pollution-agent">type pollution agent</a> that transforms the bytecode of <em>all</em> classes
+of an application to specifically track these type checks and report any scenarios where the <code>secondary_super_cache</code>
+may be switching back and forth between multiple types.</p>
+</div>
+<div class="sect1">
+<h2 id="_testing_for_type_pollution">Testing for type pollution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>micronaut-test-type-pollution</code> is an adaptation of the RedHat type pollution agent that expands its covered type
+checks somewhat, but also makes it easy to use from tests. The covered type checks are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>instanceof</code></p>
+</li>
+<li>
+<p>casts</p>
+</li>
+<li>
+<p>reflective <code>Class.cast</code></p>
+</li>
+<li>
+<p>reflective <code>Class.isAssignableFrom</code></p>
+</li>
+<li>
+<p>reflective <code>Class.isInstance</code></p>
+</li>
+<li>
+<p>reflective <code>Method.invoke</code></p>
+</li>
+<li>
+<p>reflective <code>Constructor.newInstance</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This is not an exhaustive list of all the code in the JDK that can trigger the JVM to do a type check, but this is
+meant to cover most type checks that happen in practice.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Missing entries in this list are considered a bug, even though we know about them. That means this list may be
+expanded <em>in a patch release</em> of micronaut-test, causing your tests to fail if there were previously undiscovered
+type pollution sites.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The type pollution test uses a Java agent to instrument all classes of the test suite. This does not play well
+with other agents, in particular jacoco. It is recommended to run type pollution tests in a separate module / source
+root with no other Java agents.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When a type check changes the <code>secondary_super_cache</code> (or rather the agent&#8217;s model of it), what we call a "focus event",
+it invokes a static <a href="../api/io/micronaut/test/typepollution/FocusListener.html">FocusListener</a>. A <a href="../api/io/micronaut/test/typepollution/ThresholdFocusListener.html">ThresholdFocusListener</a> will
+count these events and keep track of their exact stack trace. You then run the code that will be hot in production
+repeatedly. At the end of the test case, you call the <code>checkThresholds</code> method to verify that there were not too many
+focus events:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">private static final int THRESHOLD = 10_000;
+private ThresholdFocusListener focusListener;
+
+@BeforeAll
+static void setupAgent() {
+    TypePollutionTransformer.install(net.bytebuddy.agent.ByteBuddyAgent.install()); <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+@BeforeEach
+void setUp() {
+    focusListener = new ThresholdFocusListener(); <i class="conum" data-value="2"></i><b>(2)</b>
+    FocusListener.setFocusListener(focusListener);
+}
+
+@AfterEach
+void verifyNoTypeThrashing() {
+    FocusListener.setFocusListener(null); <i class="conum" data-value="4"></i><b>(4)</b>
+    Assertions.assertTrue(focusListener.checkThresholds(THRESHOLD), "Threshold exceeded, check logs.");
+}
+
+@Test
+public void sample() { <i class="conum" data-value="3"></i><b>(3)</b>
+    Object c = new Concrete();
+    int j = 0;
+    for (int i = 0; i &lt; THRESHOLD * 2; i++) {
+        if (c instanceof A) {
+            j++;
+        }
+        if (c instanceof B) {
+            j++;
+        }
+    }
+    System.out.println(j);
+}
+
+interface A { <i class="conum" data-value="5"></i><b>(5)</b>
+}
+
+interface B {
+}
+
+static class Concrete implements A, B {
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Install the agent into the JVM running the tests</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Set up the <a href="../api/io/micronaut/test/typepollution/ThresholdFocusListener.html">ThresholdFocusListener</a> for the current test</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Run the code that should be tested</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Clear the focus listener, and check whether the threshold for this test was exceeded</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Types used for this example only</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+
+<h1 id="repository"><a class="anchor" href="#repository"></a>9 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/4.6.x/src/main/docs/guide/repository.adoc"'>
