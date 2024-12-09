@@ -1,0 +1,98 @@
+Before OpenJDK 23, the Hotspot runtime has a https://bugs.openjdk.org/browse/JDK-8180450[performance issue] relating to
+interface type checks. When the JVM has to do a type check against an interface, such as in `arrayList instanceof List`,
+it has to do a fairly complicated iteration of the whole inheritance tree of `arrayList`. To make this fast, if the
+check succeeds, the interface is stored in a `secondary_super_cache` on the JVM Klass structure representing the object
+type, in this case `ArrayList`. The next time the JVM has to do a similar type check of an `ArrayList` against `List`,
+the JVM can just check this field instead and avoid walking the whole type tree.
+
+The issue arises when the same concrete type (i.e. `ArrayList`) is checked against _multiple_ interface types (e.g.
+`List` but also `Collection`) repeatedly. An `instanceof List` will set the `secondary_super_cache` to `List`, then an
+`instanceof Collection` will set the cache to `Collection`, and an `instanceof List` will set it back to `List`. Not
+only can the second type check not take advantage of the cache because it had been overwritten, but crucially, each
+type checks writes the cache field anew. If this happens concurrently on multi-core machines, this can lead to major
+inter-core traffic for cache coherency of the cache line where the `secondary_super_cache` is located. This is called a
+"scalability issue" because it can lead to poor performance in code running in parallel.
+
+This bug can be triggered by the interplay of multiple usually independent libraries and is very hard to reproduce in
+practice. For this reason, the folks at RedHat built a
+https://github.com/RedHatPerf/type-pollution-agent[type pollution agent] that transforms the bytecode of _all_ classes
+of an application to specifically track these type checks and report any scenarios where the `secondary_super_cache`
+may be switching back and forth between multiple types.
+
+== Testing for type pollution
+
+`micronaut-test-type-pollution` is an adaptation of the RedHat type pollution agent that expands its covered type
+checks somewhat, but also makes it easy to use from tests. The covered type checks are:
+
+* `instanceof`
+* casts
+* reflective `Class.cast`
+* reflective `Class.isAssignableFrom`
+* reflective `Class.isInstance`
+* reflective `Method.invoke`
+* reflective `Constructor.newInstance`
+
+This is not an exhaustive list of all the code in the JDK that can trigger the JVM to do a type check, but this is
+meant to cover most type checks that happen in practice.
+
+WARNING: The type pollution test uses a Java agent to instrument all classes of the test suite. This does not play well
+with other agents, in particular jacoco. It is recommended to run type pollution tests in a separate module / source
+root with no other Java agents.
+
+When a type check changes the `secondary_super_cache` (or rather the agent's model of it), what we call a "focus event",
+it invokes a static api:test.typepollution.FocusListener[]. A api:test.typepollution.ThresholdFocusListener[] will
+count these events and keep track of their exact stack trace. You then run the code that will be hot in production
+repeatedly. At the end of the test case, you call the `checkThresholds` method to verify that there were not too many
+focus events:
+
+[source,java]
+----
+private static final int THRESHOLD = 10_000;
+private ThresholdFocusListener focusListener;
+
+@BeforeAll
+static void setupAgent() {
+    TypePollutionTransformer.install(net.bytebuddy.agent.ByteBuddyAgent.install()); // <1>
+}
+
+@BeforeEach
+void setUp() {
+    focusListener = new ThresholdFocusListener(); // <2>
+    FocusListener.setFocusListener(focusListener);
+}
+
+@AfterEach
+void verifyNoTypeThrashing() {
+    FocusListener.setFocusListener(null); // <4>
+    Assertions.assertTrue(focusListener.checkThresholds(THRESHOLD), "Threshold exceeded, check logs.");
+}
+
+@Test
+public void sample() { // <3>
+    Object c = new Concrete();
+    int j = 0;
+    for (int i = 0; i < THRESHOLD * 2; i++) {
+        if (c instanceof A) {
+            j++;
+        }
+        if (c instanceof B) {
+            j++;
+        }
+    }
+    System.out.println(j);
+}
+
+interface A { // <5>
+}
+
+interface B {
+}
+
+static class Concrete implements A, B {
+}
+----
+<1> Install the agent into the JVM running the tests
+<2> Set up the api:test.typepollution.ThresholdFocusListener[] for the current test
+<3> Run the code that should be tested
+<4> Clear the focus listener, and check whether the threshold for this test was exceeded
+<5> Types used for this example only

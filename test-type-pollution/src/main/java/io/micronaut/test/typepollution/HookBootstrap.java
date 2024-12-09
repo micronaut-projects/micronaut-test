@@ -22,6 +22,7 @@ import java.lang.invoke.ConstantCallSite;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 /**
@@ -34,13 +35,23 @@ public final class HookBootstrap {
     static final Method METHOD_STATIC_TYPE_CHECK;
     static final Method METHOD_DYNAMIC_TYPE_CHECK;
     static final Method METHOD_DYNAMIC_TYPE_CHECK_CAST;
+    static final Method METHOD_REFLECTION_METHOD_CALL;
+    static final Method METHOD_REFLECTION_CONSTRUCTOR_CALL;
+
+    private static final MethodHandle REFLECTION_METHOD_CALL_IMPL;
+    private static final MethodHandle REFLECTION_CONSTRUCTOR_CALL_IMPL;
 
     static {
         try {
             METHOD_STATIC_TYPE_CHECK = HookBootstrap.class.getDeclaredMethod("staticTypeCheck", MethodHandles.Lookup.class, String.class, MethodType.class, Class.class);
             METHOD_DYNAMIC_TYPE_CHECK = HookBootstrap.class.getDeclaredMethod("dynamicTypeCheck", MethodHandles.Lookup.class, String.class, MethodType.class);
             METHOD_DYNAMIC_TYPE_CHECK_CAST = HookBootstrap.class.getDeclaredMethod("dynamicTypeCheckCast", MethodHandles.Lookup.class, String.class, MethodType.class);
-        } catch (NoSuchMethodException e) {
+            METHOD_REFLECTION_METHOD_CALL = HookBootstrap.class.getDeclaredMethod("reflectionMethodCall", MethodHandles.Lookup.class, String.class, MethodType.class);
+            METHOD_REFLECTION_CONSTRUCTOR_CALL = HookBootstrap.class.getDeclaredMethod("reflectionConstructorCall", MethodHandles.Lookup.class, String.class, MethodType.class);
+
+            REFLECTION_METHOD_CALL_IMPL = MethodHandles.lookup().findStatic(HookBootstrap.class, "reflectionMethodCallImpl", MethodType.methodType(Method.class, Method.class, Object.class, Object[].class));
+            REFLECTION_CONSTRUCTOR_CALL_IMPL = MethodHandles.lookup().findStatic(HookBootstrap.class, "reflectionConstructorCallImpl", MethodType.methodType(void.class, Constructor.class, Object[].class));
+        } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
@@ -132,5 +143,60 @@ public final class HookBootstrap {
             switcher,
             MethodHandles.empty(MethodType.methodType(void.class, Class.class, Class.class))
         );
+    }
+
+    /**
+     * Called before any call to {@link Method#invoke(Object, Object...)}. Returned method type is
+     * {@code (Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/reflect/Method;},
+     * where the first parameter is the method, the second parameter the {@code this} argument,
+     * and the third parameter the argument array. The returned type is the same method passed in.
+     *
+     * @param lookup Required bootstrap method parameter
+     * @param name   Required bootstrap method parameter
+     * @param type   Required bootstrap method parameter
+     * @return {@code (Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/reflect/Method;}
+     */
+    public static CallSite reflectionMethodCall(MethodHandles.Lookup lookup, String name, MethodType type) {
+        // for now, directly call reflectionMethodCallImpl and do everything dynamically, because
+        // - reflection is slow anyway
+        // - the arg/type array zipping is complicated in MHs
+        // - I'm lazy
+        return new ConstantCallSite(REFLECTION_METHOD_CALL_IMPL);
+    }
+
+    private static Method reflectionMethodCallImpl(Method method, Object target, Object[] args) throws Throwable {
+        reflectiveCheck(method.getDeclaringClass(), target);
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        for (int i = 0; i < args.length && i < parameterTypes.length; i++) {
+            reflectiveCheck(parameterTypes[i], args[i]);
+        }
+        return method;
+    }
+
+    /**
+     * Called before any call to {@link Constructor#newInstance(Object...)}. Returned method type is
+     * {@code (Ljava/lang/reflect/Constructor;[Ljava/lang/Object;)V}, where the first parameter is
+     * the constructor and the second parameter the argument array.
+     *
+     * @param lookup Required bootstrap method parameter
+     * @param name   Required bootstrap method parameter
+     * @param type   Required bootstrap method parameter
+     * @return {@code (Ljava/lang/reflect/Constructor;[Ljava/lang/Object;)V}
+     */
+    public static CallSite reflectionConstructorCall(MethodHandles.Lookup lookup, String name, MethodType type) throws NoSuchMethodException, IllegalAccessException {
+        return new ConstantCallSite(REFLECTION_CONSTRUCTOR_CALL_IMPL);
+    }
+
+    private static void reflectionConstructorCallImpl(Constructor<?> constructor, Object[] args) throws Throwable {
+        Class<?>[] parameterTypes = constructor.getParameterTypes();
+        for (int i = 0; i < args.length && i < parameterTypes.length; i++) {
+            reflectiveCheck(parameterTypes[i], args[i]);
+        }
+    }
+
+    private static void reflectiveCheck(Class<?> type, Object obj) throws Throwable {
+        if (type.isInterface() && type.isInstance(obj)) { // also checks for null
+            ConcreteCounter.COUNTERS.get(obj.getClass()).typeCheckHandle(type).invokeExact();
+        }
     }
 }
