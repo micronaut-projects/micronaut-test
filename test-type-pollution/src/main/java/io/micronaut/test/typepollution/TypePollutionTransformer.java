@@ -16,6 +16,7 @@
 package io.micronaut.test.typepollution;
 
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.NamingStrategy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.TypeConstantAdjustment;
 import net.bytebuddy.description.type.TypeDescription;
@@ -75,6 +76,12 @@ public final class TypePollutionTransformer implements AgentBuilder.Transformer 
             .with(AgentBuilder.LambdaInstrumentationStrategy.DISABLED)
             .with(AgentBuilder.TypeStrategy.Default.REDEFINE)
             .with(AgentBuilder.InitializationStrategy.NoOp.INSTANCE)
+            // this is the default ignore matcher except we don't ignore synthetic types
+            .ignore(
+                new AgentBuilder.RawMatcher.ForElementMatchers(ElementMatchers.any(), ElementMatchers.isBootstrapClassLoader().or(ElementMatchers.isExtensionClassLoader())))
+            .or(new AgentBuilder.RawMatcher.ForElementMatchers(ElementMatchers.nameStartsWith("net.bytebuddy.")
+                .and(ElementMatchers.not(ElementMatchers.nameStartsWith(NamingStrategy.BYTE_BUDDY_RENAME_PACKAGE + ".")))
+                .or(ElementMatchers.nameStartsWith("sun.reflect.").or(ElementMatchers.nameStartsWith("jdk.internal.reflect.")))))
             .type(ElementMatchers.any()
                 .and(ElementMatchers.not(ElementMatchers.nameStartsWith("net.bytebuddy.")))
                 .and(ElementMatchers.not(ElementMatchers.nameStartsWith("com.sun")))
