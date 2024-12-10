@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -279,6 +280,39 @@ class VisitorWrapperImplTest {
         );
     }
 
+    @Test
+    public void reflFieldSet() throws ReflectiveOperationException {
+        hook(ReflFieldSet.class);
+
+        TrackingFocusListener listener = new TrackingFocusListener().install();
+
+        ReflFieldSet cl = new ReflFieldSet();
+
+        cl.a(new Impl());
+        cl.a(new Impl());
+
+        cl.b(new Impl());
+        cl.b(new Impl());
+        cl.b(new Impl());
+
+        cl.a(new Impl());
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cl.a(new Object()));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cl.a(5));
+
+        cl.concrete(new Impl());
+
+        List<Entry> entries = listener.uninstall();
+        Assertions.assertEquals(
+            List.of(
+                new Entry(Impl.class, A.class),
+                new Entry(Impl.class, B.class),
+                new Entry(Impl.class, A.class)
+            ),
+            entries
+        );
+    }
+
     private interface A {
     }
 
@@ -482,6 +516,38 @@ class VisitorWrapperImplTest {
 
         void concrete(Object o) throws ReflectiveOperationException {
             IMPL_CONSTRUCTOR.newInstance(o);
+        }
+    }
+
+    static final class ReflFieldSet {
+        private static final Field A_IMPL;
+        private static final Field B_IMPL;
+        private static final Field CONCRETE_IMPL;
+
+        static {
+            try {
+                A_IMPL = ReflFieldSet.class.getDeclaredField("a");
+                B_IMPL = ReflFieldSet.class.getDeclaredField("b");
+                CONCRETE_IMPL = ReflFieldSet.class.getDeclaredField("impl");
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        A a;
+        B b;
+        Impl impl;
+
+        void a(Object o) throws ReflectiveOperationException {
+            A_IMPL.set(this, o);
+        }
+
+        void b(Object o) throws ReflectiveOperationException {
+            B_IMPL.set(this, o);
+        }
+
+        void concrete(Object o) throws ReflectiveOperationException {
+            CONCRETE_IMPL.set(this, o);
         }
     }
 }

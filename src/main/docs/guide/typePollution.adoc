@@ -31,6 +31,7 @@ checks somewhat, but also makes it easy to use from tests. The covered type chec
 * reflective `Class.isInstance`
 * reflective `Method.invoke`
 * reflective `Constructor.newInstance`
+* reflective `Field.set`
 
 This is not an exhaustive list of all the code in the JDK that can trigger the JVM to do a type check, but this is
 meant to cover most type checks that happen in practice.
