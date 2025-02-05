@@ -1,5 +1,28 @@
 Now let's say you want to replace the implementation with a Mockito Mock. You can do so by defining a method that returns a mock and is annotated with `@MockBean`, for example:
 
+[NOTE]
+====
+To use `@MockBean` with Mockito, you must include the `mockito-core` library on your test classpath. For example, if you use Gradle:
+
+.build.gradle
+[source,groovy,subs="attributes"]
+----
+testImplementation("org.mockito:mockito-core")
+----
+
+And for Maven:
+
+.pom.xml
+[source,xml]
+----
+<dependency>
+  <groupId>org.mockito</groupId>
+  <artifactId>mockito-core</artifactId>
+  <scope>test</scope>
+</dependency>
+----
+====
+
 .The MathService specification
 [source,java]
 ----
