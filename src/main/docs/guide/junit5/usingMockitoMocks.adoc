@@ -1,4 +1,8 @@
-Now let's say you want to replace the implementation with a Mockito Mock. You can do so by defining a method that returns a mock and is annotated with `@MockBean`, for example:
+To use Mockito, you must include the `mockito-core` library on your test classpath.
+
+dependency:mockito-core[groupId="org.mockito",scope=test]
+
+Now, let's say you want to replace the implementation with a https://site.mockito.org[Mockito] Mock. You can do so by defining a method that returns a mock and is annotated with `@MockBean`, for example:
 
 .The MathService specification
 [source,java]
