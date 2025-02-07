@@ -2,7 +2,7 @@ Now let's say you want to replace the implementation with a Mockito Mock. You ca
 
 [NOTE]
 ====
-To use `@MockBean` with Mockito, you must include the `mockito-core` library on your test classpath. For example, if you use Gradle:
+To use `@MockBean` with Mockito, you must include the `mockito-core` library on your test classpath. 
 
 dependency:mockito-core[groupId="org.mockito",scope=test]
 ====
