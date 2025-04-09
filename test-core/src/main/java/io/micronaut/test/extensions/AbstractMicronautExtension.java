@@ -421,7 +421,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
         if (method != null) {
+            int testCount = (int) testProperties.compute("micronaut.test.count", (k, oldCount) -> (int) (oldCount != null ? oldCount : 0) + 1);
+            boolean shouldRebuildContext = testCount > 1;
             if (propertyAnnotations != null && !propertyAnnotations.isEmpty()) {
+                shouldRebuildContext = true;
                 for (Property property : propertyAnnotations) {
                     final String name = property.name();
                     oldValues.put(name,
@@ -432,7 +435,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 testProperties.putAll(oldValues);
             }
 
-            if (testAnnotationValue.rebuildContext()) {
+            if (testAnnotationValue.rebuildContext() && shouldRebuildContext) {
                 stopEmbeddedApplication();
                 if (applicationContext.isRunning()) {
                     applicationContext.stop();
