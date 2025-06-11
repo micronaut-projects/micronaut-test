@@ -47,7 +47,7 @@ jobs:
           fetch-depth: 0
 
       - name: "🔧 Setup GraalVM CE"
-        uses: graalvm/setup-graalvm@v1.2.8
+        uses: graalvm/setup-graalvm@v1.3.3
         with:
           distribution: 'graalvm'
           java-version: ${{ matrix.java }}
@@ -59,6 +59,11 @@ jobs:
       - name: "❓ Optional setup step"
         run: |
           [ -f ./setup.sh ] && ./setup.sh || [ ! -f ./setup.sh ]
+
+      - name: "🚔 Sonatype Scan"
+        id: sonatypescan
+        run: |
+          ./gradlew ossIndexAudit --no-parallel --info
 
       - name: "🛠 Build with Gradle"
         id: gradle
