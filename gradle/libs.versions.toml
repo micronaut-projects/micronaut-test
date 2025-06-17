@@ -13,7 +13,7 @@ managed-bytebuddy = "1.17.5"
 graal-svm = "24.2.1"
 
 micronaut-platform = "4.8.3"
-micronaut = "4.8.18"
+micronaut = "4.9.2"
 micronaut-docs = "2.0.0"
 micronaut-test = "4.7.0"
 micronaut-data = "4.12.2"
