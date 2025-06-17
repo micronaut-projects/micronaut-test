@@ -19,6 +19,7 @@ dependencies {
     testAnnotationProcessor(mn.micronaut.inject.java)
 
     testImplementation(libs.managed.junit.jupiter.api)
+    testImplementation(libs.managed.junit.platform.launcher)
     testImplementation(projects.micronautTestJunit5)
     testImplementation(mnTestResources.testcontainers.postgres)
     testImplementation(platform(mnTestResources.boms.testcontainers))
