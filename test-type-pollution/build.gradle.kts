@@ -1,3 +1,5 @@
+import io.micronaut.build.TestFramework
+
 plugins {
     id("io.micronaut.build.internal.micronaut-test-module")
 }
@@ -28,4 +30,5 @@ micronautBuild {
     binaryCompatibility {
         enabled.set(true)
     }
+    testFramework = TestFramework.JUNIT5
 }
