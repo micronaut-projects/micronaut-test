@@ -24,6 +24,7 @@ dependencies {
 
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnR2dbc.r2dbc.mysql)
+    testRuntimeOnly(mn.micronaut.http.server.netty)
     testImplementation(platform(mnTestResources.boms.testcontainers))
     testImplementation(libs.testcontainers.junit.jupiter)
     testResourcesService(mnSql.mysql.connector.java)
