@@ -1,7 +1,7 @@
 import io.micronaut.testresources.buildtools.KnownModules.R2DBC_MYSQL
 
 plugins {
-    id("io.micronaut.library")
+    id("io.micronaut.minimal.library")
     id("io.micronaut.test-resources")
     id("io.micronaut.graalvm") // Required to configure Graal for nativeTest
 }
@@ -30,6 +30,7 @@ dependencies {
 }
 
 micronaut {
+    testRuntime("junit5")
     importMicronautPlatform.set(false)
     testResources {
         version.set(libs.versions.micronaut.test.resources)
