@@ -3,7 +3,6 @@ import io.micronaut.testresources.buildtools.KnownModules.R2DBC_MYSQL
 plugins {
     id("io.micronaut.minimal.library")
     id("io.micronaut.test-resources")
-    id("io.micronaut.graalvm") // Required to configure Graal for nativeTest
 }
 
 repositories {
