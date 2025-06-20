@@ -21,12 +21,13 @@ dependencies {
     testImplementation(projects.micronautTestJunit5)
     testImplementation(mnData.micronaut.data.r2dbc)
     testImplementation(mnSerde.micronaut.serde.jackson)
+    testImplementation(platform(mnTestResources.boms.testcontainers))
+    testImplementation(libs.testcontainers.junit.jupiter)
 
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnR2dbc.r2dbc.mysql)
+    testRuntimeOnly(libs.managed.junit.platform.launcher)
     testRuntimeOnly(mn.micronaut.http.server.netty)
-    testImplementation(platform(mnTestResources.boms.testcontainers))
-    testImplementation(libs.testcontainers.junit.jupiter)
     testResourcesService(mnSql.mysql.connector.java)
 }
 

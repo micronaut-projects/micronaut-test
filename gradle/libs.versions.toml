@@ -3,8 +3,8 @@ managed-assertj = "3.27.3"
 managed-hamcrest = "3.0"
 managed-mockito = "5.18.0"
 managed-mockk = "1.13.17"
-managed-junit = "5.11.4"
-managed-junit-platform = "1.11.4"
+managed-junit = "5.12.2"
+managed-junit-platform = "1.12.2"
 managed-rest-assured = "5.5.5"
 managed-kotest = "5.9.1"
 managed-spock = "2.3-groovy-4.0"
@@ -58,12 +58,13 @@ managed-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", ve
 managed-junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "managed-junit" }
 
 managed-junit-platform-suite-engine = { module = "org.junit.platform:junit-platform-suite-engine", version.ref = "managed-junit-platform" }
-managed-junit-platform-suite = { module = "org.junit.platform:junit-platform-suite-engine", version.ref = "managed-junit-platform" }
-managed-junit-platform-suite-api = { module = "org.junit.platform:junit-platform-suite-engine", version.ref = "managed-junit-platform" }
-managed-junit-platform-launcher = { module = "org.junit.platform:junit-platform-suite-engine", version.ref = "managed-junit-platform" }
-managed-junit-platform-runner = { module = "org.junit.platform:junit-platform-suite-engine", version.ref = "managed-junit-platform" }
-managed-junit-platform-engine = { module = "org.junit.platform:junit-platform-suite-engine", version.ref = "managed-junit-platform" }
-managed-junit-platform-console = { module = "org.junit.platform:junit-platform-suite-engine", version.ref = "managed-junit-platform" }
+managed-junit-platform-suite = { module = "org.junit.platform:junit-platform-suite", version.ref = "managed-junit-platform" }
+managed-junit-platform-suite-api = { module = "org.junit.platform:junit-platform-suite-api", version.ref = "managed-junit-platform" }
+managed-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "managed-junit-platform" }
+managed-junit-platform-runner = { module = "org.junit.platform:junit-platform-runner", version.ref = "managed-junit-platform" }
+managed-junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "managed-junit-platform" }
+managed-junit-platform-console = { module = "org.junit.platform:junit-platform-console", version.ref = "managed-junit-platform" }
+managed-junit-platform-jfr = { module = "org.junit.platform:junit-platform-jfr", version.ref = "managed-junit-platform" }
 
 managed-bytebuddy = { module = "net.bytebuddy:byte-buddy", version.ref = "managed-bytebuddy" }
 managed-bytebuddy-agent = { module = "net.bytebuddy:byte-buddy-agent", version.ref = "managed-bytebuddy" }
