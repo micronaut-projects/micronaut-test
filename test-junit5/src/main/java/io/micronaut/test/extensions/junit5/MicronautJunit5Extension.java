@@ -15,20 +15,30 @@
  */
 package io.micronaut.test.extensions.junit5;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
 import io.micronaut.aop.Intercepted;
+import io.micronaut.aop.InterceptedProxy;
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.DefaultBeanResolutionContext;
+import io.micronaut.context.Qualifier;
+import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Value;
+import io.micronaut.core.annotation.AnnotationMetadata;
+import io.micronaut.core.annotation.AnnotationUtil;
+import io.micronaut.core.type.Argument;
+import io.micronaut.core.util.CollectionUtils;
+import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.ExecutableMethod;
+import io.micronaut.inject.FieldInjectionPoint;
+import io.micronaut.inject.InjectableBeanDefinition;
+import io.micronaut.inject.ProxyBeanDefinition;
+import io.micronaut.inject.qualifiers.Qualifiers;
+import io.micronaut.test.annotation.MicronautTestValue;
+import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.context.TestContext;
 import io.micronaut.test.context.TestMethodInvocationContext;
+import io.micronaut.test.extensions.AbstractMicronautExtension;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -48,25 +58,17 @@ import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import io.micronaut.aop.InterceptedProxy;
-import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.Qualifier;
-import io.micronaut.context.annotation.Property;
-import io.micronaut.context.annotation.Value;
-import io.micronaut.core.annotation.AnnotationMetadata;
-import io.micronaut.core.annotation.AnnotationUtil;
-import io.micronaut.core.type.Argument;
-import io.micronaut.core.util.CollectionUtils;
-import io.micronaut.inject.BeanDefinition;
-import io.micronaut.inject.ExecutableMethod;
-import io.micronaut.inject.FieldInjectionPoint;
-import io.micronaut.inject.qualifiers.Qualifiers;
-import io.micronaut.test.annotation.MicronautTestValue;
-import io.micronaut.test.annotation.MockBean;
-import io.micronaut.test.context.TestContext;
-import io.micronaut.test.extensions.AbstractMicronautExtension;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import io.micronaut.test.support.TestPropertyProvider;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Extension for JUnit 5.
@@ -87,7 +89,17 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             TestInstance ti = AnnotationSupport.findAnnotation(testClass, TestInstance.class).orElse(null);
             if (ti != null && ti.value() == TestInstance.Lifecycle.PER_CLASS) {
                 Object testInstance = extensionContext.getRequiredTestInstance();
-                applicationContext.inject(testInstance);
+                if (specDefinition instanceof ProxyBeanDefinition<?>) {
+                    // Proxy bean is not going to resolve bean definition, we need a small hack
+                    if (specDefinition instanceof InjectableBeanDefinition injectableBeanDefinition) {
+                        injectableBeanDefinition.inject(
+                            new DefaultBeanResolutionContext(applicationContext, injectableBeanDefinition),
+                            applicationContext,
+                            testInstance);
+                    }
+                } else {
+                    applicationContext.inject(testInstance);
+                }
             }
         }
         beforeTestClass(buildContext(extensionContext));
@@ -101,16 +113,16 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
      */
     protected MicronautTestValue buildMicronautTestValue(Class<?> testClass) {
         return AnnotationSupport
-                .findAnnotation(testClass, MicronautTest.class)
-                .map(this::buildValueObject)
-                .orElse(null);
+            .findAnnotation(testClass, MicronautTest.class)
+            .map(this::buildValueObject)
+            .orElse(null);
     }
 
     @Override
     public void interceptBeforeEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
-        TestContext testContext = buildContext(extensionContext);
+        TestContext testContext = buildContext(invocationContext);
         beforeSetupTest(testContext);
-        interceptBeforeEach(new TestMethodInvocationContext<Object>() {
+        interceptBeforeEach(new TestMethodInvocationContext<>() {
             @Override
             public TestContext getTestContext() {
                 return testContext;
@@ -126,7 +138,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public void interceptTestMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
-        interceptTest(new TestMethodInvocationContext<Object>() {
+        interceptTest(new TestMethodInvocationContext<>() {
             TestContext testContext;
 
             @Override
@@ -141,12 +153,13 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             public Object proceed() throws Throwable {
                 return invocation.proceed();
             }
+
         });
     }
 
     @Override
     public void interceptTestTemplateMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
-        interceptTest(new TestMethodInvocationContext<Object>() {
+        interceptTest(new TestMethodInvocationContext<>() {
             TestContext testContext;
 
             @Override
@@ -166,7 +179,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public <T> T interceptTestFactoryMethod(Invocation<T> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
-        return (T) interceptTest(new TestMethodInvocationContext<Object>() {
+        return (T) interceptTest(new TestMethodInvocationContext<>() {
             TestContext testContext;
 
             @Override
@@ -186,7 +199,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public void interceptAfterEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
-        TestContext testContext = buildContext(extensionContext);
+        TestContext testContext = buildContext(invocationContext);
         beforeCleanupTest(testContext);
         interceptAfterEach(new TestMethodInvocationContext<Object>() {
             @Override
@@ -324,15 +337,26 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         beforeTestExecution(buildContext(context));
     }
 
+    private TestContext buildContext(ReflectiveInvocationContext<?> context) {
+        return new TestContext(
+            applicationContext,
+            context.getTargetClass(),
+            context.getExecutable(),
+            context.getTarget(),
+            null,
+            context.getExecutable().getName(),
+            true);
+    }
+
     private TestContext buildContext(ExtensionContext context) {
-      return new TestContext(
-          applicationContext,
-          context.getTestClass().orElse(null),
-          context.getTestMethod().orElse(null),
-          context.getTestInstance().orElse(null),
-          context.getExecutionException().orElse(null),
-          context.getDisplayName(),
-          true);
+        return new TestContext(
+            applicationContext,
+            context.getTestClass().orElse(null),
+            context.getTestMethod().orElse(null),
+            context.getTestInstance().orElse(null),
+            context.getExecutionException().orElse(null),
+            context.getDisplayName(),
+            true);
     }
 
     @Override
@@ -365,17 +389,17 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             if (v.isPresent()) {
                 Optional<String> finalV = v;
                 return applicationContext.getEnvironment().getProperty(v.get(), argument)
-                        .orElseThrow(() ->
-                    new ParameterResolutionException("Unresolvable property specified to @Value: " + finalV.get())
-                );
+                    .orElseThrow(() ->
+                        new ParameterResolutionException("Unresolvable property specified to @Value: " + finalV.get())
+                    );
             } else {
                 v = argument.getAnnotationMetadata().stringValue(Property.class, "name");
                 if (v.isPresent()) {
                     Optional<String> finalV1 = v;
                     return applicationContext.getEnvironment()
-                            .getProperty(v.get(), argument).orElseThrow(() ->
-                                    new ParameterResolutionException("Unresolvable property specified to @Property: " + finalV1.get())
-                            );
+                        .getProperty(v.get(), argument).orElseThrow(() ->
+                            new ParameterResolutionException("Unresolvable property specified to @Property: " + finalV1.get())
+                        );
                 } else {
                     return applicationContext.getBean(argument, resolveQualifier(argument));
                 }
@@ -395,17 +419,17 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     private MicronautTestValue buildValueObject(MicronautTest micronautTest) {
         return new MicronautTestValue(
-                micronautTest.application(),
-                micronautTest.environments(),
-                micronautTest.packages(),
-                micronautTest.propertySources(),
-                micronautTest.rollback(),
-                micronautTest.transactional(),
-                micronautTest.rebuildContext(),
-                micronautTest.contextBuilder(),
-                micronautTest.transactionMode(),
-                micronautTest.startApplication(),
-                micronautTest.resolveParameters());
+            micronautTest.application(),
+            micronautTest.environments(),
+            micronautTest.packages(),
+            micronautTest.propertySources(),
+            micronautTest.rollback(),
+            micronautTest.transactional(),
+            micronautTest.rebuildContext(),
+            micronautTest.contextBuilder(),
+            micronautTest.transactionMode(),
+            micronautTest.startApplication(),
+            micronautTest.resolveParameters());
     }
 
     private boolean isNestedTestClass(Class<?> testClass) {
@@ -434,9 +458,9 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             } else {
 
                 final ExecutableMethod<?, Object> executableMethod = applicationContext.getExecutableMethod(
-                        declaringExecutable.getDeclaringClass(),
-                        declaringExecutable.getName(),
-                        declaringExecutable.getParameterTypes()
+                    declaringExecutable.getDeclaringClass(),
+                    declaringExecutable.getName(),
+                    declaringExecutable.getParameterTypes()
                 );
                 final Argument<?>[] arguments = executableMethod.getArguments();
                 if (index < arguments.length) {
@@ -452,8 +476,9 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     /**
      * Build a qualifier for the given argument.
+     *
      * @param argument The argument
-     * @param <T> The type
+     * @param <T>      The type
      * @return The resolved qualifier
      */
     @SuppressWarnings("unchecked")
@@ -465,15 +490,15 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         if (CollectionUtils.isNotEmpty(qualifierTypes)) {
             if (qualifierTypes.size() == 1) {
                 return Qualifiers.byAnnotation(
-                        annotationMetadata,
-                        qualifierTypes.iterator().next()
+                    annotationMetadata,
+                    qualifierTypes.iterator().next()
                 );
             } else {
                 final Qualifier[] qualifiers = qualifierTypes
-                        .stream().map((type) -> Qualifiers.byAnnotation(annotationMetadata, type))
-                        .toArray(Qualifier[]::new);
+                    .stream().map((type) -> Qualifiers.byAnnotation(annotationMetadata, type))
+                    .toArray(Qualifier[]::new);
                 return Qualifiers.<T>byQualifiers(
-                        qualifiers
+                    qualifiers
                 );
             }
         }

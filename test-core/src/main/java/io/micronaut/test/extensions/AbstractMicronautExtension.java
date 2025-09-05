@@ -15,8 +15,13 @@
  */
 package io.micronaut.test.extensions;
 
+import io.micronaut.aop.Interceptor;
+import io.micronaut.aop.InterceptorRegistry;
+import io.micronaut.aop.chain.InterceptorChain;
+import io.micronaut.aop.chain.MethodInterceptorChain;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
+import io.micronaut.context.BeanRegistration;
 import io.micronaut.context.DefaultApplicationContextBuilder;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.env.DefaultEnvironment;
@@ -29,9 +34,12 @@ import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.reflect.InstantiationUtils;
+import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.ExecutableMethod;
+import io.micronaut.inject.ProxyBeanDefinition;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
@@ -50,6 +58,7 @@ import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -91,8 +100,8 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected BeanDefinition<?> specDefinition;
     protected Map<String, Object> testProperties = new LinkedHashMap<>();
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
-
     protected MicronautTestValue testAnnotationValue;
+
     private ApplicationContextBuilder builder = ApplicationContext.builder();
     private List<TestExecutionListener> listeners;
     private List<TestMethodInterceptor<Object>> interceptors;
@@ -119,13 +128,13 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         return interceptEach(methodInvocationContext, interceptors);
     }
 
-    private <T> Object interceptBeforeEach(TestMethodInvocationContext<Object> methodInvocationContext, List<TestMethodInterceptor<Object>> interceptors) throws Throwable {
+    private Object interceptBeforeEach(TestMethodInvocationContext<Object> methodInvocationContext, List<TestMethodInterceptor<Object>> interceptors) throws Throwable {
         if (interceptors == null || interceptors.isEmpty()) {
             return methodInvocationContext.proceed();
         }
         TestMethodInterceptor<Object> next = interceptors.iterator().next();
         List<TestMethodInterceptor<Object>> rest = interceptors.subList(1, interceptors.size());
-        return next.interceptBeforeEach(new TestMethodInvocationContext<Object>() {
+        return next.interceptBeforeEach(new TestMethodInvocationContext<>() {
             @Override
             public TestContext getTestContext() {
                 return methodInvocationContext.getTestContext();
@@ -144,7 +153,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         }
         TestMethodInterceptor<Object> next = interceptors.iterator().next();
         List<TestMethodInterceptor<Object>> rest = interceptors.subList(1, interceptors.size());
-        return next.interceptAfterEach(new TestMethodInvocationContext<Object>() {
+        return next.interceptAfterEach(new TestMethodInvocationContext<>() {
             @Override
             public TestContext getTestContext() {
                 return methodInvocationContext.getTestContext();
@@ -163,7 +172,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         }
         TestMethodInterceptor<Object> next = interceptors.iterator().next();
         List<TestMethodInterceptor<Object>> rest = interceptors.subList(1, interceptors.size());
-        return next.interceptTest(new TestMethodInvocationContext<Object>() {
+        return next.interceptTest(new TestMethodInvocationContext<>() {
             @Override
             public TestContext getTestContext() {
                 return methodInvocationContext.getTestContext();
@@ -345,6 +354,14 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             this.applicationContext = builder.build();
             startApplicationContext();
             specDefinition = applicationContext.findBeanDefinition(testClass).orElse(null);
+            if (specDefinition instanceof ProxyBeanDefinition<?>) {
+                interceptors = new ArrayList<>(interceptors);
+                interceptors.add(new MicronautIntercepted(
+                    specDefinition,
+                    applicationContext.getBean(InterceptorRegistry.class),
+                    new ArrayList<>(applicationContext.getBeanRegistrations(Argument.of(Interceptor.class), null))
+                ));
+            }
             if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
                 embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
                 embeddedApplication.start();
@@ -566,6 +583,66 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
         void apply(TestExecutionListener listener, TestContext context) throws Exception;
 
+    }
+
+    private record MicronautIntercepted(BeanDefinition<?> specDefinition,
+                                        InterceptorRegistry interceptorRegistry,
+                                        List<BeanRegistration<Interceptor>> micronautInterceptors) implements TestMethodInterceptor<Object> {
+
+        @Override
+        public Object interceptBeforeEach(TestMethodInvocationContext<Object> methodInvocationContext) {
+            return intercept(methodInvocationContext);
+        }
+
+        @Override
+        public Object interceptTest(TestMethodInvocationContext<Object> methodInvocationContext) {
+            return intercept(methodInvocationContext);
+        }
+
+        @Override
+        public Object interceptAfterEach(TestMethodInvocationContext<Object> methodInvocationContext) {
+            return intercept(methodInvocationContext);
+        }
+
+        private Object intercept(TestMethodInvocationContext<Object> methodInvocationContext) {
+            AnnotatedElement testMethod = methodInvocationContext.getTestContext().getTestMethod();
+            if (testMethod instanceof Method executable) {
+                Optional<? extends ExecutableMethod<?, Object>> method = specDefinition.findMethod(executable.getName(), executable.getParameterTypes());
+                if (method.isPresent()) {
+                    ExecutableMethod<Object, ?> executableMethod = (ExecutableMethod<Object, ?>) method.get();
+                    List<BeanRegistration<Interceptor<Object, ?>>> micronautInterceptors1 = (List) micronautInterceptors;
+                    Interceptor<Object, ?>[] interceptors = InterceptorChain.resolveAroundInterceptors(interceptorRegistry, executableMethod, micronautInterceptors1);
+                    Interceptor<Object, ?> valueResolver = (Interceptor<Object, Object>) context -> {
+                        try {
+                            return methodInvocationContext.proceed();
+                        } catch (Throwable e) {
+                            return sneakyThrow(e);
+                        }
+                    };
+                    interceptors = ArrayUtils.concat(interceptors, valueResolver);
+                    if (interceptors.length > 0) {
+                        // Interceptor doesn't support argument values or the target
+                        return new MethodInterceptorChain(
+                            interceptors,
+                            this,
+                            executableMethod,
+                            new Object[0])
+                            .proceed();
+                    }
+
+                }
+            }
+            try {
+                return methodInvocationContext.proceed();
+            } catch (Throwable e) {
+                return sneakyThrow(e);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        public static <T extends Throwable, R> R sneakyThrow(Throwable t) throws T {
+            throw (T) t;
+        }
     }
 
 }

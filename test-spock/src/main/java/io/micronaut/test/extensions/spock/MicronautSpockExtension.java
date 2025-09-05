@@ -188,7 +188,7 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         TestContext testContext = buildContext(invocation, null);
         try {
             beforeTestMethod(testContext);
-            interceptTest(new TestMethodInvocationContext<Object>() {
+            interceptTest(new TestMethodInvocationContext<>() {
                 @Override
                 public TestContext getTestContext() {
                     return testContext;
