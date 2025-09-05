@@ -605,7 +605,8 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         }
 
         private Object intercept(TestMethodInvocationContext<Object> methodInvocationContext) {
-            AnnotatedElement testMethod = methodInvocationContext.getTestContext().getTestMethod();
+            TestContext testContext = methodInvocationContext.getTestContext();
+            AnnotatedElement testMethod = testContext.getTestMethod();
             if (testMethod instanceof Method executable) {
                 Optional<? extends ExecutableMethod<?, Object>> method = specDefinition.findMethod(executable.getName(), executable.getParameterTypes());
                 if (method.isPresent()) {
@@ -621,10 +622,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                     };
                     interceptors = ArrayUtils.concat(interceptors, valueResolver);
                     if (interceptors.length > 0) {
-                        // Interceptor doesn't support argument values or the target
+                        // Interceptor doesn't support argument values, no support for altering values
                         return new MethodInterceptorChain(
                             interceptors,
-                            this,
+                            testContext.getTestInstance(),
                             executableMethod,
                             new Object[0])
                             .proceed();
