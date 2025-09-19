@@ -25,7 +25,6 @@ micronaut-spring = "5.11.0"
 micronaut-sql = "6.2.1"
 micronaut-reactor = "3.8.0"
 micronaut-test-resources = "2.10.1"
-sonatype-scan = "3.0.0"
 micronaut-gradle-plugin = "4.5.4"
 
 [libraries]
@@ -79,7 +78,6 @@ boms-rest-assured = { module = "io.rest-assured:rest-assured-bom", version.ref =
 micronaut-library-plugin = { module = "io.micronaut.library:io.micronaut.library.gradle.plugin", version.ref = "micronaut-gradle-plugin" }
 
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" }
-sonatype-scan = { module = "org.sonatype.gradle.plugins:scan-gradle-plugin", version.ref = "sonatype-scan" }
 spock-core = { module = "org.spockframework:spock-core" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
 rest-assured = { module = "io.rest-assured:rest-assured" }
