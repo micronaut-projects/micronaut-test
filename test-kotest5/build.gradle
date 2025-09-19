@@ -50,5 +50,5 @@ tasks.named("test") {
     }
     // PTS fails for Kotest because it's not supported, yet.
     // see https://docs.gradle.com/enterprise/predictive-test-selection/#_frameworks_and_languages
-    predictiveSelection.enabled = false
+    develocity.predictiveTestSelection.enabled = false
 }
