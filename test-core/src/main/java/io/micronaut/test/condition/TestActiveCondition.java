@@ -23,6 +23,7 @@ import io.micronaut.context.condition.Condition;
 import io.micronaut.context.condition.ConditionContext;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.ProxyBeanDefinition;
 import io.micronaut.test.annotation.MockBean;
 
 /**
@@ -42,8 +43,7 @@ public class TestActiveCondition implements Condition {
         if (context.getComponent() instanceof BeanDefinition) {
             BeanDefinition<?> definition = (BeanDefinition<?>) context.getComponent();
             final BeanContext beanContext = context.getBeanContext();
-            final Optional<Class<?>> declaringType = definition.getDeclaringType();
-
+            Optional<Class<?>> declaringType = definition.getDeclaringType();
             if (beanContext instanceof ApplicationContext) {
                 ApplicationContext applicationContext = (ApplicationContext) beanContext;
                 final Class activeSpecClazz = applicationContext.get(ACTIVE_SPEC_CLAZZ, Class.class).orElse(null);
@@ -70,6 +70,9 @@ public class TestActiveCondition implements Condition {
                         return false;
                     }
                 } else {
+                    if (definition instanceof ProxyBeanDefinition<?> proxyBeanDefinition) {
+                        declaringType = Optional.of(proxyBeanDefinition.getTargetType());
+                    }
                     if (activeSpecName != null) {
                         boolean beanTypeMatches = activeSpecName.equals(definition.getBeanType().getName());
                         return beanTypeMatches || (declaringType.isPresent() && activeSpecClazz == declaringType.get());
