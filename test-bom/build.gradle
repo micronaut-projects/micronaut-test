@@ -11,3 +11,26 @@ micronautBom {
         acceptedLibraryRegressions.add("micronaut-test-kotest")
     }
 }
+
+tasks.named("checkVersionCatalogCompatibility").configure { t ->
+    // Resolve the BOM as a version-catalog artifact and wire its TOML as the baseline RegularFile
+    def baselineConf = configurations.create("mnTestBaselineCatalog") {
+        canBeConsumed = false
+        canBeResolved = true
+        attributes {
+            attribute(org.gradle.api.attributes.Category.CATEGORY_ATTRIBUTE, project.objects.named(org.gradle.api.attributes.Category, "platform"))
+            attribute(org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE, project.objects.named(org.gradle.api.attributes.Usage, "version-catalog"))
+        }
+    }
+    dependencies.add("mnTestBaselineCatalog", libs.micronaut.test)
+    def baselineFile = baselineConf.singleFile
+    if (t.hasProperty("baseline")) {
+        t.baseline.set(project.layout.file(project.provider { baselineFile }))
+    }
+}
+
+extensions.findByName("versionCatalogCompatibility")?.with {
+    // If the plugin exposes this extension, make sure it also points to the BOM
+    baseline = "io.micronaut.test:micronaut-test-bom:${libs.versions['micronaut-test'].get()}"
+}
+

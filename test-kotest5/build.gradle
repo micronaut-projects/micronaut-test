@@ -1,7 +1,7 @@
 plugins {
     id "io.micronaut.build.internal.micronaut-test-module"
-    alias(mn.plugins.kotlin.jvm)
-    alias(mn.plugins.kotlin.kapt)
+    id "org.jetbrains.kotlin.jvm"
+    id "org.jetbrains.kotlin.kapt"
 }
 
 dependencies {
@@ -36,11 +36,18 @@ dependencies {
     testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(testFixtures(projects.micronautTestCore))
+
 }
 
 kotlin {
     jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -50,5 +57,5 @@ tasks.named("test") {
     }
     // PTS fails for Kotest because it's not supported, yet.
     // see https://docs.gradle.com/enterprise/predictive-test-selection/#_frameworks_and_languages
-    develocity.predictiveTestSelection.enabled = false
+//    predictiveSelection.enabled = false
 }
