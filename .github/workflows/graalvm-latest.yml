@@ -25,6 +25,12 @@ jobs:
       matrix: ${{ steps.build-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v5
+      - name: "🔧 Setup GraalVM CE (for build-matrix)"
+        uses: graalvm/setup-graalvm@v1.3.6
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Matrix
         uses: micronaut-projects/github-actions/graalvm/build-matrix@master
         id: build-matrix
@@ -35,7 +41,7 @@ jobs:
     strategy:
       max-parallel: 6
       matrix:
-        java: ['17', '21']
+        java: ['21']
         native_test_task: ${{ fromJson(needs.build_matrix.outputs.matrix).native_test_task }}
     env:
       DEVELOCITY_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
