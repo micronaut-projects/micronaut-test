@@ -3,11 +3,6 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-    // Force Gradle 9–compatible Kotlin/Kapt plugin versions
-    plugins {
-        id("org.jetbrains.kotlin.jvm") version "2.1.21"
-        id("org.jetbrains.kotlin.kapt") version "2.1.21"
-    }
 }
 
 plugins {
