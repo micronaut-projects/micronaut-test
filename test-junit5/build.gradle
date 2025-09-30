@@ -60,6 +60,7 @@ dependencies {
     testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(libs.managed.junit.jupiter.engine)
+    testRuntimeOnly(libs.managed.junit.platform.launcher)
     testRuntimeOnly(testFixtures(projects.micronautTestCore))
 }
 
