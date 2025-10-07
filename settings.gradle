@@ -6,7 +6,7 @@ pluginManagement {
 }
 
 plugins {
-    id("io.micronaut.build.shared.settings") version "7.6.4"
+    id("io.micronaut.build.shared.settings") version "8.0.0-M3"
 }
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
@@ -35,5 +35,4 @@ include "test-kotest5"
 include "test-rest-assured"
 include 'test-suite-sql-r2dbc'
 include 'test-suite-at-sql-jpa'
-include 'test-suite-micronaut-data-jdbc'
 include 'test-type-pollution'
