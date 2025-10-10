@@ -15,7 +15,7 @@
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" href="../css/multi-language-sample.css"/>
     <script src="../js/docs.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
     <script type="text/javascript">
         function addJsClass(el) {
             var classes = document.body.className.split(" ");
@@ -1275,7 +1275,8 @@ no effect in Kotest.
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Now, let&#8217;s say you want to replace the implementation with a <a href="https://site.mockito.org">Mockito</a> Mock. You can do so by defining a method that returns a mock and is annotated with <code>@MockBean</code>, for example:</p>
@@ -2700,7 +2701,8 @@ open class MyServiceChanged : MyService</code></pre>
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>You can then inject instances of <a href="https://www.javadoc.io/static/io.rest-assured/rest-assured/5.1.0/io/restassured/specification/RequestSpecification.html">RequestSpecification</a> into test fields or method parameters (parameters are only supported with JUnit 5):</p>
