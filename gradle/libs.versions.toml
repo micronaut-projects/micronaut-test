@@ -9,6 +9,7 @@ managed-rest-assured = "5.5.6"
 managed-kotest = "5.9.1"
 managed-spock = "2.3-groovy-4.0"
 managed-bytebuddy = "1.17.6"
+kotlin = "2.1.21"
 
 graal-svm = "24.2.2"
 
@@ -39,7 +40,7 @@ micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.r
 micronaut-spring = { module = "io.micronaut.spring:micronaut-spring-bom", version.ref = "micronaut-spring" }
 micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "micronaut-sql" }
 micronaut-reactor = { module = 'io.micronaut.reactor:micronaut-reactor-bom', version.ref = "micronaut-reactor" }
-micronaut-test = { module = 'io.micronaut.test:micronaut-test-bom', version.ref = "micronaut-test" }
+micronaut-test = { module = "io.micronaut.test:micronaut-test-bom", version.ref = "micronaut-test" }
 micronaut-test-resources = { module = "io.micronaut.testresources:micronaut-test-resources-bom", version.ref = "micronaut-test-resources" }
 
 managed-assertj-core = { module = "org.assertj:assertj-core", version.ref = "managed-assertj" }
@@ -81,3 +82,6 @@ graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" 
 spock-core = { module = "org.spockframework:spock-core" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
 rest-assured = { module = "io.rest-assured:rest-assured" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
