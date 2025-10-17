@@ -22,7 +22,7 @@ dependencies {
 
 micronautBuild {
     binaryCompatibility {
-        enabledAfter("4.9.1")
+        enabledAfter("4.10.0")
     }
     testFramework = TestFramework.JUNIT5
 }
