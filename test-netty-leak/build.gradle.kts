@@ -1,0 +1,33 @@
+import io.micronaut.build.TestFramework
+
+plugins {
+    id("io.micronaut.build.internal.micronaut-test-module")
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly(libs.managed.junit.jupiter.api)
+    compileOnly(platform(libs.boms.spock))
+    compileOnly(libs.spock.core)
+    implementation(libs.netty.common)
+    testImplementation(libs.managed.junit.platform.testkit)
+    testImplementation(libs.netty.buffer)
+    testImplementation(platform(libs.boms.spock))
+    testImplementation(libs.spock.core)
+    testRuntimeOnly(libs.managed.junit.jupiter.engine)
+}
+
+micronautBuild {
+    binaryCompatibility {
+        enabled.set(true)
+    }
+    testFramework = TestFramework.JUNIT5
+}
+
+tasks.withType(Test::class.java) {
+    // these are run explicitly by LeakPresenceExtensionTest
+    exclude("io/micronaut/test/leak/LeakyTest.class", "io/micronaut/test/leak/LeakySpec.class")
+}

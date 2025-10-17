@@ -10,6 +10,8 @@ managed-kotest = "5.9.1"
 managed-spock = "2.3-groovy-4.0"
 managed-bytebuddy = "1.17.7"
 
+netty = "4.2.7.Final"
+
 graal-svm = "24.2.2"
 
 micronaut-platform = "4.9.3"
@@ -55,6 +57,7 @@ managed-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engin
 managed-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "managed-junit" }
 managed-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "managed-junit" }
 managed-junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "managed-junit" }
+junit-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "managed-junit-platform" }
 
 managed-junit-platform-suite-engine = { module = "org.junit.platform:junit-platform-suite-engine", version.ref = "managed-junit-platform" }
 managed-junit-platform-suite = { module = "org.junit.platform:junit-platform-suite", version.ref = "managed-junit-platform" }
@@ -64,6 +67,7 @@ managed-junit-platform-runner = { module = "org.junit.platform:junit-platform-ru
 managed-junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "managed-junit-platform" }
 managed-junit-platform-console = { module = "org.junit.platform:junit-platform-console", version.ref = "managed-junit-platform" }
 managed-junit-platform-jfr = { module = "org.junit.platform:junit-platform-jfr", version.ref = "managed-junit-platform" }
+managed-junit-platform-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "managed-junit-platform" }
 
 managed-bytebuddy = { module = "net.bytebuddy:byte-buddy", version.ref = "managed-bytebuddy" }
 managed-bytebuddy-agent = { module = "net.bytebuddy:byte-buddy-agent", version.ref = "managed-bytebuddy" }
@@ -81,3 +85,5 @@ graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" 
 spock-core = { module = "org.spockframework:spock-core" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
 rest-assured = { module = "io.rest-assured:rest-assured" }
+netty-common = { module = "io.netty:netty-common", version.ref = "netty" }
+netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
