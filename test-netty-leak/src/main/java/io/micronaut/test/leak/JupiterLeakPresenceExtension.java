@@ -103,6 +103,8 @@ public final class JupiterLeakPresenceExtension
 
     /**
      * Prevent junit from closing the ResourceScope automatically.
+     *
+     * @param scope The resource scope
      */
     private record ScopeWrapper(LeakPresenceDetector.ResourceScope scope) {
     }

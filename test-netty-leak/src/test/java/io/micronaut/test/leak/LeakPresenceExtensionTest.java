@@ -26,10 +26,10 @@ class LeakPresenceExtensionTest {
             .engine("spock")
             .selectors(selectClass("io.micronaut.test.leak.LeakySpec"))
             .execute()
-            .testEvents()
+            .containerEvents()
             .assertStatistics(stats -> stats
-                .started(1)
-                .succeeded(0)
+                .started(2)
+                .succeeded(1)
                 .failed(1)
             );
     }
