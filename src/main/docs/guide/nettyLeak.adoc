@@ -41,4 +41,5 @@ tasks {
 }
 ----
 
-For Spock tests, you do not need to make any change, the extension is added automatically.
+For Spock tests, you do not need to use a system property or add the extension to your tests manually, the extension
+is added automatically.
