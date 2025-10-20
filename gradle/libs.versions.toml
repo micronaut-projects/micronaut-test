@@ -1,4 +1,5 @@
 [versions]
+kotlin = "2.1.21"
 managed-assertj = "3.27.4"
 managed-hamcrest = "3.0"
 managed-mockito = "5.20.0"
