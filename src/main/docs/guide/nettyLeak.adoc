@@ -8,7 +8,7 @@ JUnit Jupiter and Spock extensions that performs leak detection on all tests.
 
 dependency:io.micronaut.test:micronaut-test-netty-leak[scope="testRuntimeOnly"]
 
-WARNING: This extension will only work with Netty 4.2.7 and later.
+WARNING: This extension will only work with Netty 4.2.7 and later. [Micronaut 4.10.0](https://github.com/micronaut-projects/micronaut-platform/releases/tag/v4.10.0) ships with Netty 4.2.7.
 
 To enable JUnit leak detection, either extend your test like this:
 
