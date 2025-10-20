@@ -9,5 +9,6 @@ repositories {
 micronautBom {
     suppressions {
         acceptedLibraryRegressions.add("micronaut-test-kotest")
+        acceptedLibraryRegressions.add("micronaut-test-netty-leak")
     }
 }
