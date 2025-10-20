@@ -54,13 +54,15 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#kotest5"><strong>5</strong><span>Testing with Kotest 5</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#restAssured"><strong>6</strong><span>REST Assured</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#nettyLeak"><strong>6</strong><span>Netty Leak Detection</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#sql"><strong>7</strong><span>Loading SQL before tests</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#restAssured"><strong>7</strong><span>REST Assured</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#typePollution"><strong>8</strong><span>Type pollution</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#sql"><strong>8</strong><span>Loading SQL before tests</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>9</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#typePollution"><strong>9</strong><span>Type pollution</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>10</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -163,13 +165,15 @@
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a href="#kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><strong>5.11</strong><span>Refreshing injected beans based on `@Requires` upon properties changes</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-restAssured"><a href="#restAssured"><strong>6</strong><span>REST Assured</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-nettyLeak"><a href="#nettyLeak"><strong>6</strong><span>Netty Leak Detection</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-sql"><a href="#sql"><strong>7</strong><span>Loading SQL before tests</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-restAssured"><a href="#restAssured"><strong>7</strong><span>REST Assured</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-typePollution"><a href="#typePollution"><strong>8</strong><span>Type pollution</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-sql"><a href="#sql"><strong>8</strong><span>Loading SQL before tests</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>9</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-typePollution"><a href="#typePollution"><strong>9</strong><span>Type pollution</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>10</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -2673,7 +2677,93 @@ open class MyServiceChanged : MyService</code></pre>
 </div>
 </div>
 
-<h1 id="restAssured"><a class="anchor" href="#restAssured"></a>6 REST Assured</h1>
+<h1 id="nettyLeak"><a class="anchor" href="#nettyLeak"></a>6 Netty Leak Detection</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/4.10.x/src/main/docs/guide/nettyLeak.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Netty applications, including e.g. Micronaut HTTP Server Netty, use a reference count based resource management
+approach that is more performant than normal Java garbage collection. These reference counts come with the risk of
+resource and memory leaks, however. Broad leak detection in tests is a crucial instrument to avoid these bugs.</p>
+</div>
+<div class="paragraph">
+<p>Netty 4.2.7 introduces a new, light-weight leak detection mechanism specifically designed for tests, called
+<a href="https://netty.io/4.2/api/io/netty/util/LeakPresenceDetector.html">the leak presence detector</a>. Micronaut Test includes
+JUnit Jupiter and Spock extensions that performs leak detection on all tests.</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">testRuntimeOnly(<span class="hljs-string">"io.micronaut.test:micronaut-test-netty-leak")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.test&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-test-netty-leak&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This extension will only work with Netty 4.2.7 and later. [Micronaut 4.10.0](<a href="https://github.com/micronaut-projects/micronaut-platform/releases/tag/v4.10.0" class="bare">https://github.com/micronaut-projects/micronaut-platform/releases/tag/v4.10.0</a>) ships with Netty 4.2.7.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To enable JUnit leak detection, either extend your test like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import io.netty.buffer.ByteBufAllocator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(JupiterLeakPresenceExtension.class)
+public class LeakyTest {
+    // this test triggers leak detection.
+
+    @Test
+    void test() {
+        ByteBufAllocator.DEFAULT.buffer();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or enable extension auto detection using the <code>-Djunit.jupiter.extensions.autodetection.enabled=true</code> system property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">tasks {
+    test {
+        useJUnitPlatform()
+        systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For Spock tests, you do not need to use a system property or add the extension to your tests manually, the extension
+is added automatically.</p>
+</div>
+
+<h1 id="restAssured"><a class="anchor" href="#restAssured"></a>7 REST Assured</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/4.10.x/src/main/docs/guide/restAssured.adoc"'>
@@ -2741,7 +2831,7 @@ See the guides for <a href="https://guides.micronaut.io/latest/micronaut-rest-as
 </table>
 </div>
 
-<h1 id="sql"><a class="anchor" href="#sql"></a>7 Loading SQL before tests</h1>
+<h1 id="sql"><a class="anchor" href="#sql"></a>8 Loading SQL before tests</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/4.10.x/src/main/docs/guide/sql.adoc"'>
@@ -3135,7 +3225,7 @@ class MySqlConnectionTest  {
 </div>
 </div>
 
-<h1 id="typePollution"><a class="anchor" href="#typePollution"></a>8 Type pollution</h1>
+<h1 id="typePollution"><a class="anchor" href="#typePollution"></a>9 Type pollution</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/4.10.x/src/main/docs/guide/typePollution.adoc"'>
@@ -3316,7 +3406,7 @@ static class Concrete implements A, B {
 </div>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>9 Repository</h1>
+<h1 id="repository"><a class="anchor" href="#repository"></a>10 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/4.10.x/src/main/docs/guide/repository.adoc"'>
