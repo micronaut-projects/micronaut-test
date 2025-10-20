@@ -1,0 +1,45 @@
+Netty applications, including e.g. Micronaut HTTP Server Netty, use a reference count based resource management
+approach that is more performant than normal Java garbage collection. These reference counts come with the risk of
+resource and memory leaks, however. Broad leak detection in tests is a crucial instrument to avoid these bugs.
+
+Netty 4.2.7 introduces a new, light-weight leak detection mechanism specifically designed for tests, called
+https://netty.io/4.2/api/io/netty/util/LeakPresenceDetector.html[the leak presence detector]. Micronaut Test includes
+JUnit Jupiter and Spock extensions that performs leak detection on all tests.
+
+dependency:io.micronaut.test:micronaut-test-netty-leak[scope="testRuntimeOnly"]
+
+WARNING: This extension will only work with Netty 4.2.7 and later.
+
+To enable JUnit leak detection, either extend your test like this:
+
+[source,java]
+----
+import io.netty.buffer.ByteBufAllocator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(JupiterLeakPresenceExtension.class)
+public class LeakyTest {
+    // this test triggers leak detection.
+
+    @Test
+    void test() {
+        ByteBufAllocator.DEFAULT.buffer();
+    }
+}
+----
+
+Or enable extension auto detection using the `-Djunit.jupiter.extensions.autodetection.enabled=true` system property:
+
+[source,kotlin]
+----
+tasks {
+    test {
+        useJUnitPlatform()
+        systemProperty("junit.jupiter.extensions.autodetection.enabled", "true")
+    }
+}
+----
+
+For Spock tests, you do not need to use a system property or add the extension to your tests manually, the extension
+is added automatically.
