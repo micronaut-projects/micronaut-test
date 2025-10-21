@@ -26,7 +26,7 @@ public final class SpockLeakPresenceExtension implements IGlobalExtension {
 
     @Override
     public void visitSpec(SpecInfo spec) {
-        spec.addSetupSpecInterceptor(invocation -> {
+        spec.addSharedInitializerInterceptor(invocation -> {
             WithTransferableScope.SCOPE.set(new LeakPresenceDetector.ResourceScope(spec.getDisplayName()));
             invocation.proceed();
         });
