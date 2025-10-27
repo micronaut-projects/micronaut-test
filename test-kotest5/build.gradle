@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id "io.micronaut.build.internal.micronaut-test-module"
     id "org.jetbrains.kotlin.jvm"
@@ -39,8 +41,8 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
     }
 }
 
