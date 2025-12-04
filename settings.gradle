@@ -20,7 +20,6 @@ micronautBuild {
     importMicronautCatalog("micronaut-sql")
     importMicronautCatalog("micronaut-r2dbc")
     importMicronautCatalog("micronaut-reactor")
-    importMicronautCatalog("micronaut-test")
     importMicronautCatalog("micronaut-test-resources")
     importMicronautCatalog("micronaut-hibernate-validator")
 }
