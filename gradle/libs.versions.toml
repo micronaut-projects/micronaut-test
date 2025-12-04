@@ -11,7 +11,7 @@ managed-bytebuddy = "1.17.8"
 kotlin = "2.1.21"
 graal-svm = "24.2.2"
 
-micronaut-platform = "4.9.4"
+micronaut-platform = "4.10.3"
 micronaut = "4.10.9"
 micronaut-docs = "3.0.0"
 micronaut-test = "4.9.0"
