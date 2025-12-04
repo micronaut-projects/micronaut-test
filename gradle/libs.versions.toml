@@ -20,7 +20,7 @@ micronaut-r2dbc = "6.1.0"
 micronaut-serde = "3.0.0-M1"
 micronaut-spring = "5.11.2"
 micronaut-sql = "6.3.2"
-micronaut-reactor = "3.9.1"
+micronaut-reactor = "4.0.0-M1"
 micronaut-test-resources = "2.10.1"
 micronaut-gradle-plugin = "4.6.1"
 
