@@ -24,12 +24,11 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.BeanRegistration;
 import io.micronaut.context.DefaultApplicationContextBuilder;
 import io.micronaut.context.annotation.Property;
-import io.micronaut.context.env.DefaultEnvironment;
+import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.env.PropertySourceLoader;
+import io.micronaut.context.env.PropertySourcesLocator;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.core.io.ResourceResolver;
-import io.micronaut.core.io.service.ServiceDefinition;
 import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.ClassUtils;
@@ -56,7 +55,6 @@ import io.micronaut.test.support.TestPropertyProviderFactory;
 import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -67,9 +65,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
-import java.util.Set;
 
 /**
  * Abstract base class for both JUnit 5 and Spock.
@@ -78,7 +73,7 @@ import java.util.Set;
  * @author graemerocher
  * @since 1.0
  */
-public abstract class AbstractMicronautExtension<C> implements TestExecutionListener, TestMethodInterceptor<Object> {
+public abstract class AbstractMicronautExtension<C> implements TestExecutionListener, TestMethodInterceptor<Object>, PropertySourcesLocator {
     public static final String TEST_ROLLBACK = "micronaut.test.rollback";
     public static final String TEST_TRANSACTIONAL = "micronaut.test.transactional";
     public static final String TEST_TRANSACTION_MODE = "micronaut.test.transaction-mode";
@@ -93,7 +88,6 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * The name of the property source that contains test properties.
      */
     public static final String TEST_PROPERTY_SOURCE = "test-properties";
-    private static Map<String, PropertySourceLoader> loaderMap;
     protected ApplicationContext applicationContext;
     protected EmbeddedApplication embeddedApplication;
     protected RefreshScope refreshScope;
@@ -101,8 +95,15 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected Map<String, Object> testProperties = new LinkedHashMap<>();
     protected Map<String, Object> oldValues = new LinkedHashMap<>();
     protected MicronautTestValue testAnnotationValue;
+    protected Class<?> testClass;
 
-    private ApplicationContextBuilder builder = ApplicationContext.builder();
+    private ApplicationContextBuilder builder = new DefaultApplicationContextBuilder() {
+
+        @Override
+        public Collection<PropertySourcesLocator> getPropertySourcesLocators() {
+            return List.of(AbstractMicronautExtension.this);
+        }
+    };
     private List<TestExecutionListener> listeners;
     private List<TestMethodInterceptor<Object>> interceptors;
 
@@ -268,6 +269,61 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         }
     }
 
+    @Override
+    public Collection<PropertySource> load(Environment environment) {
+        List<PropertySource> loadedPropertySources = new ArrayList<>();
+        if (testAnnotationValue != null) {
+            for (String propertySourceName : testAnnotationValue.propertySources()) {
+                String ext = NameUtils.extension(propertySourceName);
+                if (StringUtils.isEmpty(ext)) {
+                    continue;
+                }
+                for (PropertySourceLoader loader : environment.getPropertySourceLoaders()) {
+                    if (!loader.getExtensions().contains(ext)) {
+                        continue;
+                    }
+
+                    environment.getResourceAsStream(propertySourceName)
+                        .or(() -> Optional.ofNullable(testClass.getResourceAsStream(propertySourceName)))
+                        .ifPresent(inputStream -> {
+                            try (inputStream) {
+                                String filename = NameUtils.filename(propertySourceName);
+                                try {
+                                    loadedPropertySources.add(PropertySource.of(filename, loader.read(filename, inputStream)));
+                                } catch (IOException e) {
+                                    throw new RuntimeException("Error loading property source reference for @MicronautTest: " + filename);
+                                }
+                            } catch (IOException e) {
+                                // ignore
+                            }
+                        });
+                }
+            }
+        }
+        List<TestPropertyProviderFactory> testPropertyProviderFactories = SoftServiceLoader.load(TestPropertyProviderFactory.class).collectAll();
+        if (!testPropertyProviderFactories.isEmpty()) {
+            var props = new HashMap<>(testProperties);
+            for (PropertySource source : environment.getPropertySources()) {
+                for (String key : source) {
+                    props.put(key, source.get(key));
+                }
+            }
+            for (PropertySource source : loadedPropertySources) {
+                for (String key : source) {
+                    props.put(key, source.get(key));
+                }
+            }
+            for (TestPropertyProviderFactory factory : testPropertyProviderFactories) {
+                var provider = factory.create(Collections.unmodifiableMap(props), testClass);
+                this.testProperties.putAll(provider.get());
+            }
+        }
+        if (!this.testProperties.isEmpty()) {
+            loadedPropertySources.add(PropertySource.of(TEST_PROPERTY_SOURCE, this.testProperties));
+        }
+        return loadedPropertySources;
+    }
+
     /**
      * Executed before tests within a class are run.
      *
@@ -282,6 +338,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 this.builder = InstantiationUtils.instantiate(cb[0]);
             }
             this.testAnnotationValue = testAnnotationValue;
+            this.testClass = testClass;
 
             final Package aPackage = testClass.getPackage();
             builder.packages(aPackage.getName());
@@ -291,42 +348,6 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 testProperties.put(property.name(), property.value());
             }
 
-            String[] propertySources = testAnnotationValue.propertySources();
-            if (ArrayUtils.isNotEmpty(propertySources)) {
-
-                Map<String, PropertySourceLoader> loaderMap = readPropertySourceLoaderMap();
-                ResourceResolver resourceResolver = new ResourceResolver();
-
-                for (String propertySource : propertySources) {
-                    String ext = NameUtils.extension(propertySource);
-                    if (StringUtils.isNotEmpty(ext)) {
-
-                        String filename = NameUtils.filename(propertySource);
-                        PropertySourceLoader loader = loaderMap.get(ext);
-
-                        if (loader != null) {
-                            Optional<InputStream> resourceAsStream = resourceResolver.getResourceAsStream(propertySource);
-                            InputStream inputStream = resourceAsStream.orElse(testClass.getResourceAsStream(propertySource));
-
-                            if (inputStream != null) {
-                                Map<String, Object> properties;
-                                try {
-                                    properties = loader.read(filename, inputStream);
-                                    builder.propertySources(PropertySource.of(filename, properties));
-                                } catch (IOException e) {
-                                    throw new RuntimeException("Error loading property source reference for @MicronautTest: " + filename);
-                                } finally {
-                                    try {
-                                        inputStream.close();
-                                    } catch (IOException e) {
-                                        // ignore
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
             testProperties.put(TestActiveCondition.ACTIVE_SPEC_CLAZZ, testClass);
             testProperties.put(TEST_ROLLBACK, String.valueOf(testAnnotationValue.rollback()));
             testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
@@ -341,15 +362,9 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             }
             builder.packages(testAnnotationValue.packages())
                 .environments(environments);
-            loadPropertySourcesFromServicesLoaders(environments, testProperties, testClass);
             if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
                 resolveTestProperties(context, testAnnotationValue, testProperties);
             }
-            PropertySource testPropertySource = PropertySource.of(
-                TEST_PROPERTY_SOURCE,
-                testProperties
-            );
-            builder.propertySources(testPropertySource);
             postProcessBuilder(builder);
             this.applicationContext = builder.build();
             startApplicationContext();
@@ -367,47 +382,6 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 embeddedApplication.start();
             }
             refreshScope = applicationContext.findBean(RefreshScope.class).orElse(null);
-        }
-    }
-
-    private void loadPropertySourcesFromServicesLoaders(String[] environments, Map<String, Object> testProperties, Class<?> testClass) {
-        if (builder instanceof DefaultApplicationContextBuilder dacb) {
-            ServiceLoader<TestPropertyProviderFactory> factories = ServiceLoader.load(TestPropertyProviderFactory.class);
-            for (TestPropertyProviderFactory factory : factories) {
-                var props = new HashMap<String, Object>();
-                props.putAll(testProperties);
-                var services = SoftServiceLoader.load(PropertySourceLoader.class, this.getClass().getClassLoader());
-                try (var env = new DefaultEnvironment(dacb)) {
-                    for (ServiceDefinition<PropertySourceLoader> service : services) {
-                        try {
-                            PropertySourceLoader loader = service.load();
-                            loader.load(env).ifPresent(available -> {
-                                for (String key : available) {
-                                    props.put(key, available.get(key));
-                                }
-                            });
-                            for (String name : environments) {
-                                Optional<PropertySource> propertySource = loader.load("application-" + name, env);
-                                propertySource.ifPresent(available -> {
-                                        for (String key : available) {
-                                            props.put(key, available.get(key));
-                                        }
-                                    }
-                                );
-                            }
-                        } catch (ServiceConfigurationError ex) {
-                            // some property source loaders like YAML may be present
-                            // on classpath, but the dependencies like SnakeYAML aren't
-                            // in which case we silently ignore
-                            if (!(ex.getCause() instanceof NoClassDefFoundError)) {
-                                throw ex;
-                            }
-                        }
-                    }
-                }
-                var provider = factory.create(Collections.unmodifiableMap(props), testClass);
-                this.testProperties.putAll(provider.get());
-            }
         }
     }
 
@@ -543,25 +517,6 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @param instance The mock instance to inject
      */
     protected abstract void alignMocks(C context, Object instance);
-
-    private Map<String, PropertySourceLoader> readPropertySourceLoaderMap() {
-        Map<String, PropertySourceLoader> loaderMap = AbstractMicronautExtension.loaderMap;
-        if (loaderMap == null) {
-            loaderMap = new HashMap<>();
-            AbstractMicronautExtension.loaderMap = loaderMap;
-            SoftServiceLoader<PropertySourceLoader> loaders = SoftServiceLoader.load(PropertySourceLoader.class);
-            for (ServiceDefinition<PropertySourceLoader> loader : loaders) {
-                if (loader.isPresent()) {
-                    PropertySourceLoader psl = loader.load();
-                    Set<String> extensions = psl.getExtensions();
-                    for (String extension : extensions) {
-                        loaderMap.put(extension, psl);
-                    }
-                }
-            }
-        }
-        return loaderMap;
-    }
 
     private void startEmbeddedApplication() {
         if (embeddedApplication != null) {

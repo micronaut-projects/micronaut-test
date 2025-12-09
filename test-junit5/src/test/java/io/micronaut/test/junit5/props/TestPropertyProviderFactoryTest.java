@@ -18,10 +18,12 @@ package io.micronaut.test.junit5.props;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.junit5.BaseTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled("Pending fix in Core")
 @MicronautTest(environments = "testenv1")
 public class TestPropertyProviderFactoryTest extends BaseTest {
 
