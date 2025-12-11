@@ -22,13 +22,15 @@ import io.micronaut.aop.chain.MethodInterceptorChain;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.BeanRegistration;
-import io.micronaut.context.DefaultApplicationContextBuilder;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.env.PropertySourceLoader;
 import io.micronaut.context.env.PropertySourcesLocator;
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.io.scan.ClassClassPathResourceLoader;
+import io.micronaut.core.io.scan.ClassLoaderClassPathResourceLoader;
+import io.micronaut.core.io.scan.CombinedClassPathResourceLoader;
 import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.ClassUtils;
@@ -73,7 +75,7 @@ import java.util.Optional;
  * @author graemerocher
  * @since 1.0
  */
-public abstract class AbstractMicronautExtension<C> implements TestExecutionListener, TestMethodInterceptor<Object>, PropertySourcesLocator {
+public abstract class AbstractMicronautExtension<C> implements TestExecutionListener, TestMethodInterceptor<Object> {
     public static final String TEST_ROLLBACK = "micronaut.test.rollback";
     public static final String TEST_TRANSACTIONAL = "micronaut.test.transactional";
     public static final String TEST_TRANSACTION_MODE = "micronaut.test.transaction-mode";
@@ -89,7 +91,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     public static final String TEST_PROPERTY_SOURCE = "test-properties";
     protected ApplicationContext applicationContext;
-    protected EmbeddedApplication embeddedApplication;
+    protected EmbeddedApplication<?> embeddedApplication;
     protected RefreshScope refreshScope;
     protected BeanDefinition<?> specDefinition;
     protected Map<String, Object> testProperties = new LinkedHashMap<>();
@@ -97,13 +99,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected MicronautTestValue testAnnotationValue;
     protected Class<?> testClass;
 
-    private ApplicationContextBuilder builder = new DefaultApplicationContextBuilder() {
-
-        @Override
-        public Collection<PropertySourcesLocator> getPropertySourcesLocators() {
-            return List.of(AbstractMicronautExtension.this);
-        }
-    };
+    private ApplicationContextBuilder builder = ApplicationContext.builder();
     private List<TestExecutionListener> listeners;
     private List<TestMethodInterceptor<Object>> interceptors;
 
@@ -269,66 +265,11 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         }
     }
 
-    @Override
-    public Collection<PropertySource> load(Environment environment) {
-        List<PropertySource> loadedPropertySources = new ArrayList<>();
-        if (testAnnotationValue != null) {
-            for (String propertySourceName : testAnnotationValue.propertySources()) {
-                String ext = NameUtils.extension(propertySourceName);
-                if (StringUtils.isEmpty(ext)) {
-                    continue;
-                }
-                for (PropertySourceLoader loader : environment.getPropertySourceLoaders()) {
-                    if (!loader.getExtensions().contains(ext)) {
-                        continue;
-                    }
-
-                    environment.getResourceAsStream(propertySourceName)
-                        .or(() -> Optional.ofNullable(testClass.getResourceAsStream(propertySourceName)))
-                        .ifPresent(inputStream -> {
-                            try (inputStream) {
-                                String filename = NameUtils.filename(propertySourceName);
-                                try {
-                                    loadedPropertySources.add(PropertySource.of(filename, loader.read(filename, inputStream)));
-                                } catch (IOException e) {
-                                    throw new RuntimeException("Error loading property source reference for @MicronautTest: " + filename);
-                                }
-                            } catch (IOException e) {
-                                // ignore
-                            }
-                        });
-                }
-            }
-        }
-        List<TestPropertyProviderFactory> testPropertyProviderFactories = SoftServiceLoader.load(TestPropertyProviderFactory.class).collectAll();
-        if (!testPropertyProviderFactories.isEmpty()) {
-            var props = new HashMap<>(testProperties);
-            for (PropertySource source : environment.getPropertySources()) {
-                for (String key : source) {
-                    props.put(key, source.get(key));
-                }
-            }
-            for (PropertySource source : loadedPropertySources) {
-                for (String key : source) {
-                    props.put(key, source.get(key));
-                }
-            }
-            for (TestPropertyProviderFactory factory : testPropertyProviderFactories) {
-                var provider = factory.create(Collections.unmodifiableMap(props), testClass);
-                this.testProperties.putAll(provider.get());
-            }
-        }
-        if (!this.testProperties.isEmpty()) {
-            loadedPropertySources.add(PropertySource.of(TEST_PROPERTY_SOURCE, this.testProperties));
-        }
-        return loadedPropertySources;
-    }
-
     /**
      * Executed before tests within a class are run.
      *
-     * @param context The test context
-     * @param testClass The test class
+     * @param context             The test context
+     * @param testClass           The test class
      * @param testAnnotationValue The test annotation values
      */
     protected void beforeClass(C context, Class<?> testClass, @Nullable MicronautTestValue testAnnotationValue) {
@@ -342,7 +283,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
             final Package aPackage = testClass.getPackage();
             builder.packages(aPackage.getName());
-
+            builder.resourceResolver(CombinedClassPathResourceLoader.of(
+                new ClassLoaderClassPathResourceLoader(),
+                new ClassClassPathResourceLoader(testClass)
+            ));
             final List<Property> ps = AnnotationUtils.findRepeatableAnnotations(testClass, Property.class);
             for (Property property : ps) {
                 testProperties.put(property.name(), property.value());
@@ -365,6 +309,59 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
                 resolveTestProperties(context, testAnnotationValue, testProperties);
             }
+            builder.propertySourcesLocator(new PropertySourcesLocator() {
+                @Override
+                public Collection<PropertySource> load(Environment environment) {
+                    List<PropertySource> loadedPropertySources = new ArrayList<>();
+                    for (String propertySourceName : testAnnotationValue.propertySources()) {
+                        String ext = NameUtils.extension(propertySourceName);
+                        if (StringUtils.isEmpty(ext)) {
+                            continue;
+                        }
+                        for (PropertySourceLoader loader : environment.getPropertySourceLoaders()) {
+                            if (!loader.getExtensions().contains(ext)) {
+                                continue;
+                            }
+
+                            environment.getResourceAsStream(propertySourceName).ifPresent(inputStream -> {
+                                try (inputStream) {
+                                    String filename = NameUtils.filename(propertySourceName);
+                                    try {
+                                        loadedPropertySources.add(PropertySource.of(filename, loader.read(filename, inputStream)));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException("Error loading property source reference for @MicronautTest: " + filename);
+                                    }
+                                } catch (IOException e) {
+                                    // ignore
+                                }
+                            });
+                        }
+                    }
+                    List<TestPropertyProviderFactory> testPropertyProviderFactories = SoftServiceLoader.load(TestPropertyProviderFactory.class).collectAll();
+                    if (!testPropertyProviderFactories.isEmpty()) {
+                        var props = new HashMap<>(testProperties);
+                        for (PropertySource source : environment.getPropertySources()) {
+                            for (String key : source) {
+                                props.put(key, source.get(key));
+                            }
+                        }
+                        for (PropertySource source : loadedPropertySources) {
+                            for (String key : source) {
+                                props.put(key, source.get(key));
+                            }
+                        }
+                        for (TestPropertyProviderFactory factory : testPropertyProviderFactories) {
+                            var provider = factory.create(Collections.unmodifiableMap(props), testClass);
+                            testProperties.putAll(provider.get());
+                        }
+                    }
+                    if (!testProperties.isEmpty()) {
+                        loadedPropertySources.add(PropertySource.of(TEST_PROPERTY_SOURCE, testProperties));
+                    }
+                    return loadedPropertySources;
+                }
+            });
+
             postProcessBuilder(builder);
             this.applicationContext = builder.build();
             startApplicationContext();
