@@ -30,7 +30,9 @@ import io.micronaut.context.env.PropertySourcesLocator;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.io.scan.ClassClassPathResourceLoader;
 import io.micronaut.core.io.scan.ClassLoaderClassPathResourceLoader;
+import io.micronaut.core.io.scan.ClassPathResourceLoader;
 import io.micronaut.core.io.scan.CombinedClassPathResourceLoader;
+import io.micronaut.core.io.scan.DefaultClassPathResourceLoader;
 import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.ClassUtils;
@@ -284,7 +286,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             final Package aPackage = testClass.getPackage();
             builder.packages(aPackage.getName());
             builder.resourceResolver(CombinedClassPathResourceLoader.of(
-                new ClassLoaderClassPathResourceLoader(),
+                ClassPathResourceLoader.defaultLoader(null),
                 new ClassClassPathResourceLoader(testClass)
             ));
             final List<Property> ps = AnnotationUtils.findRepeatableAnnotations(testClass, Property.class);
@@ -309,6 +311,12 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
                 resolveTestProperties(context, testAnnotationValue, testProperties);
             }
+            PropertySource testPropertySource = PropertySource.of(
+                TEST_PROPERTY_SOURCE,
+                testProperties
+            );
+            builder.propertySources(testPropertySource);
+
             builder.propertySourcesLocator(new PropertySourcesLocator() {
                 @Override
                 public Collection<PropertySource> load(Environment environment) {
