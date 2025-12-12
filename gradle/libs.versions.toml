@@ -10,6 +10,7 @@ managed-spock = "2.4-M7-groovy-5.0"
 managed-bytebuddy = "1.17.8"
 kotlin = "2.1.21"
 graal-svm = "24.2.2"
+managed-testcontainers = "2.0.2"
 
 micronaut-platform = "4.10.3"
 micronaut = "5.0.0-M3"
@@ -21,7 +22,6 @@ micronaut-serde = "3.0.0-M1"
 micronaut-spring = "5.12.0"
 micronaut-sql = "6.3.2"
 micronaut-reactor = "4.0.0-M1"
-micronaut-test-resources = "2.10.1"
 micronaut-gradle-plugin = "4.6.1"
 
 [libraries]
@@ -36,7 +36,6 @@ micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.r
 micronaut-spring = { module = "io.micronaut.spring:micronaut-spring-bom", version.ref = "micronaut-spring" }
 micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "micronaut-sql" }
 micronaut-reactor = { module = 'io.micronaut.reactor:micronaut-reactor-bom', version.ref = "micronaut-reactor" }
-micronaut-test-resources = { module = "io.micronaut.testresources:micronaut-test-resources-bom", version.ref = "micronaut-test-resources" }
 
 managed-assertj-core = { module = "org.assertj:assertj-core", version.ref = "managed-assertj" }
 managed-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "managed-hamcrest" }
@@ -63,8 +62,14 @@ managed-junit-platform-testkit = { module = "org.junit.platform:junit-platform-t
 managed-bytebuddy = { module = "net.bytebuddy:byte-buddy", version.ref = "managed-bytebuddy" }
 managed-bytebuddy-agent = { module = "net.bytebuddy:byte-buddy-agent", version.ref = "managed-bytebuddy" }
 
-testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter"}
+testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql" }
+testcontainers-mysql = { module = "org.testcontainers:testcontainers-mysql" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-junit-jupiter" }
+testcontainers-r2dbc = { module = "org.testcontainers:testcontainers-r2dbc" }
+
 # BOMs
+boms-testcontainers = { module = "org.testcontainers:testcontainers-bom", version.ref = "managed-testcontainers" }
+
 boms-junit = { module = "org.junit:junit-bom", version.ref = "managed-junit" }
 boms-kotest = { module = "io.kotest:kotest-bom", version.ref = "managed-kotest" }
 boms-spock = { module = "org.spockframework:spock-bom", version.ref = "managed-spock" }

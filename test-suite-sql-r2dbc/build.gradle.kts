@@ -2,7 +2,6 @@ import io.micronaut.testresources.buildtools.KnownModules.R2DBC_MYSQL
 
 plugins {
     id("io.micronaut.minimal.library")
-    id("io.micronaut.test-resources")
     id("io.micronaut.graalvm") // Required to configure Graal for nativeTest
 }
 
@@ -21,21 +20,19 @@ dependencies {
     testImplementation(projects.micronautTestJunit5)
     testImplementation(mnData.micronaut.data.r2dbc)
     testImplementation(mnSerde.micronaut.serde.jackson)
-    testImplementation(platform(mnTestResources.boms.testcontainers))
-    testImplementation(libs.testcontainers.junit.jupiter)
 
+    testImplementation(platform(libs.boms.testcontainers))
+    testImplementation(libs.testcontainers.junit.jupiter)
+    testImplementation(libs.testcontainers.mysql)
+    testImplementation(libs.testcontainers.r2dbc)
+    testRuntimeOnly(mnSql.mysql.connector.j)
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnR2dbc.r2dbc.mysql)
     testRuntimeOnly(libs.managed.junit.platform.launcher)
     testRuntimeOnly(mn.micronaut.http.server.netty)
-    testResourcesService(mnSql.mysql.connector.java)
 }
 
 micronaut {
     testRuntime("junit5")
     importMicronautPlatform.set(false)
-    testResources {
-        version.set(libs.versions.micronaut.test.resources)
-        additionalModules.add(R2DBC_MYSQL)
-    }
 }
