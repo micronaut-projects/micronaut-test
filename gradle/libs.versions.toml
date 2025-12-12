@@ -10,7 +10,7 @@ managed-spock = "2.4-M7-groovy-5.0"
 managed-bytebuddy = "1.17.8"
 kotlin = "2.1.21"
 graal-svm = "24.2.2"
-testcontainers = "2.0.2"
+managed-testcontainers = "2.0.2"
 
 micronaut-platform = "4.10.3"
 micronaut = "5.0.0-M3"
@@ -68,7 +68,7 @@ testcontainers-junit-jupiter = { module = "org.testcontainers:testcontainers-jun
 testcontainers-r2dbc = { module = "org.testcontainers:testcontainers-r2dbc" }
 
 # BOMs
-boms-testcontainers = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
+boms-testcontainers = { module = "org.testcontainers:testcontainers-bom", version.ref = "managed-testcontainers" }
 
 boms-junit = { module = "org.junit:junit-bom", version.ref = "managed-junit" }
 boms-kotest = { module = "io.kotest:kotest-bom", version.ref = "managed-kotest" }
