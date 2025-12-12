@@ -129,7 +129,7 @@ implements <a href="../context/TestExecutionListener.html" title="interface in i
 <div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#DISABLED_MESSAGE" class="member-name-link">DISABLED_MESSAGE</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>protected io.micronaut.runtime.EmbeddedApplication</code></div>
+<div class="col-first even-row-color"><code>protected io.micronaut.runtime.EmbeddedApplication<wbr>&lt;?&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#embeddedApplication" class="member-name-link">embeddedApplication</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
@@ -161,9 +161,12 @@ implements <a href="../context/TestExecutionListener.html" title="interface in i
 <div class="col-first odd-row-color"><code>protected <a href="../annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#testAnnotationValue" class="member-name-link">testAnnotationValue</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
-<div class="col-first even-row-color"><code>protected <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</code></div>
-<div class="col-second even-row-color"><code><a href="#testProperties" class="member-name-link">testProperties</a></code></div>
+<div class="col-first even-row-color"><code>protected <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a><wbr>&lt;?&gt;</code></div>
+<div class="col-second even-row-color"><code><a href="#testClass" class="member-name-link">testClass</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&gt;</code></div>
+<div class="col-second odd-row-color"><code><a href="#testProperties" class="member-name-link">testProperties</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -420,7 +423,7 @@ implements <a href="../context/TestExecutionListener.html" title="interface in i
 <li>
 <section class="detail" id="embeddedApplication">
 <h3>embeddedApplication</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">io.micronaut.runtime.EmbeddedApplication</span>&nbsp;<span class="element-name">embeddedApplication</span></div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">io.micronaut.runtime.EmbeddedApplication&lt;?&gt;</span>&nbsp;<span class="element-name">embeddedApplication</span></div>
 </section>
 </li>
 <li>
@@ -451,6 +454,12 @@ implements <a href="../context/TestExecutionListener.html" title="interface in i
 <section class="detail" id="testAnnotationValue">
 <h3>testAnnotationValue</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="../annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></span>&nbsp;<span class="element-name">testAnnotationValue</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="testClass">
+<h3>testClass</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;</span>&nbsp;<span class="element-name">testClass</span></div>
 </section>
 </li>
 </ul>
