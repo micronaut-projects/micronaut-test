@@ -21,10 +21,9 @@ dependencies {
     testImplementation(libs.managed.junit.jupiter.api)
     testImplementation(libs.managed.junit.platform.launcher)
     testImplementation(projects.micronautTestJunit5)
-    testImplementation(mnTestResources.testcontainers.postgres)
-    testImplementation(platform(mnTestResources.boms.testcontainers))
+    testImplementation(platform(libs.boms.testcontainers))
     testImplementation(libs.testcontainers.junit.jupiter)
-
+    testImplementation(libs.testcontainers.postgresql)
     testRuntimeOnly(libs.managed.junit.jupiter.engine)
 }
 

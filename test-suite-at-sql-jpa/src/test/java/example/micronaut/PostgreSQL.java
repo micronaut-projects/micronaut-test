@@ -1,7 +1,6 @@
 package example.micronaut;
 
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.test.support.TestPropertyProvider;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.Map;
