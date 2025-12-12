@@ -12,7 +12,7 @@ kotlin = "2.1.21"
 graal-svm = "24.2.2"
 
 micronaut-platform = "4.10.3"
-micronaut = "5.0.0-M2"
+micronaut = "5.0.0-M3"
 micronaut-data = "4.14.1"
 micronaut-hibernate-validator = "4.8.0"
 micronaut-logging = "1.7.1"
