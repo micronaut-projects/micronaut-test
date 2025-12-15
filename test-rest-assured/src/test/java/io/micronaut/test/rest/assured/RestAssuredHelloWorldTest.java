@@ -3,10 +3,10 @@ package io.micronaut.test.rest.assured;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.jupiter.api.Test;
 
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit.annotation.MicronautTest;
 import io.restassured.specification.RequestSpecification;
 
-@MicronautTest 
+@MicronautTest
 public class RestAssuredHelloWorldTest {
     @Test
     void testHelloWorld(RequestSpecification spec) {

@@ -1,0 +1,27 @@
+package io.micronaut.test.junit;
+
+import io.micronaut.test.extensions.junit.annotation.MicronautTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import jakarta.inject.Inject;
+
+@MicronautTest
+public class NewAnnotationTest {
+
+    @Inject
+    MathService mathService; // <2>
+
+
+    @ParameterizedTest
+    @CsvSource({"2,8", "3,12"})
+    void testComputeNumToSquare(Integer num, Integer square) {
+        final Integer result = mathService.compute(num); // <3>
+
+        Assertions.assertEquals(
+                square,
+                result
+        );
+    }
+}

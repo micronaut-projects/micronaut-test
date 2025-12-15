@@ -3,7 +3,7 @@ Note that in most cases you won't define a `@MockBean` and inject it, only to ve
 .The MathController
 [source,java]
 ----
-include::{junit5tests}/MathController.java[]
+include::{junittests}/MathController.java[]
 ----
 
 The above controller uses the `MathService` to expose a `/math/compute/{number}` endpoint. See the following example for a test that tests interaction with the mock collaborator:
@@ -11,7 +11,7 @@ The above controller uses the `MathService` to expose a `/math/compute/{number}`
 .Mocking Collaborators
 [source,java]
 ----
-include::{junit5tests}/MathCollaboratorTest.java[]
+include::{junittests}/MathCollaboratorTest.java[]
 ----
 
 <1> Like the previous example a Mock is defined using `@MockBean`

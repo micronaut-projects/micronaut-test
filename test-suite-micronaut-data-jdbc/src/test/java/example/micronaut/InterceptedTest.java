@@ -4,7 +4,7 @@ import example.micronaut.entities.Product;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.data.connection.ConnectionOperations;
 import io.micronaut.data.connection.annotation.Connectable;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit.annotation.MicronautTest;
 import io.micronaut.transaction.TransactionOperations;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

@@ -12,10 +12,10 @@ spock:
   usingRequiresOnTests: Using `@Requires` on Tests
   definingAdditionalTestSpecificProperties: Defining Additional Test Specific Properties
   refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
-junit5:
-  title: Testing with JUnit 5
-  settingUpJUnit5: Setting up JUnit 5
-  writingAMicronautTestWithJUnit5: Writing a Micronaut Test with JUnit 5
+junit:
+  title: Testing with JUnit
+  settingUpJUnit5: Setting up JUnit
+  writingAMicronautTestWithJUnit5: Writing a Micronaut Test with JUnit
   junit5EnvironmentClasspathScanning: Environments, Classpath Scanning etc.
   junit5TransactionSemantics: Transaction semantics
   usingMockitoMocks: Using Mockito Mocks

@@ -2,7 +2,7 @@ package example.micronaut;
 
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.test.annotation.Sql;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

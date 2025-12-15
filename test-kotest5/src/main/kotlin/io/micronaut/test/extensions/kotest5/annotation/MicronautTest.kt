@@ -20,7 +20,7 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
 import io.micronaut.test.annotation.TransactionMode
 import io.micronaut.test.condition.TestActiveCondition
-import io.micronaut.test.extensions.junit5.MicronautJunit5Extension
+import io.micronaut.test.extensions.junit.MicronautJunit5Extension
 import org.junit.jupiter.api.extension.ExtendWith
 import java.lang.annotation.Inherited
 import kotlin.reflect.KClass

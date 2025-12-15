@@ -17,7 +17,7 @@ dependencies {
 
 jar {
     exclude "io/micronaut/test/extensions/spock/*"
-    exclude "io/micronaut/test/extensions/junit5/*"
+    exclude "io/micronaut/test/extensions/junit/*"
 }
 
 // Temporarily disable publishing of test fixtures until we depend on a released version of Data

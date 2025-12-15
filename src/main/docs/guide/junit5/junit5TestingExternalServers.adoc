@@ -9,7 +9,7 @@ For example:
 .Using `micronaut.test.server.executable`
 [source,java]
 ----
-include::{junit5tests}/server/ProcessServerTest.java[tags="executable"]
+include::{junittests}/server/ProcessServerTest.java[tags="executable"]
 ----
 
 Alternatively if you have independently started an `EmbeddedServer` instance programmatically you can also specify the URL to the server with the `micronaut.test.server.url` property.

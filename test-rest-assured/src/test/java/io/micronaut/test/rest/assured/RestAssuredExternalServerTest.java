@@ -1,7 +1,7 @@
 package io.micronaut.test.rest.assured;
 
 import io.micronaut.context.annotation.Property;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit.annotation.MicronautTest;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 

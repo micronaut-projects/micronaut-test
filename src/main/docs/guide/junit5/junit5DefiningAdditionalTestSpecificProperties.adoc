@@ -3,7 +3,7 @@ You can define additional test specific properties using the `@Property` annotat
 .Using `@Property`
 [source,java]
 ----
-include::{junit5tests}/PropertyValueTest.java[]
+include::{junittests}/PropertyValueTest.java[]
 ----
 
 Note that when a `@Property` is defined at the test method level, it causes a `RefreshEvent` to be triggered which will update any `@ConfigurationProperties` related  to the property.
@@ -13,7 +13,7 @@ Alternatively you can specify additional `propertySources` in any supported form
 .Using `propertySources` stored in files
 [source,java]
 ----
-include::{junit5tests}/PropertySourceTest.java[]
+include::{junittests}/PropertySourceTest.java[]
 ----
 
 The above example expects a file located at `src/test/resources/io/micronaut/junit5/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
@@ -29,7 +29,7 @@ For example:
 .Using the `TestPropertyProvider` interface
 [source,java]
 ----
-include::{junit5tests}/PropertySourceMapTest.java[]
+include::{junittests}/PropertySourceMapTest.java[]
 ----
 
 NOTE: When using `TestPropertyProvider` your test must be declared with JUnit's `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` annotation.

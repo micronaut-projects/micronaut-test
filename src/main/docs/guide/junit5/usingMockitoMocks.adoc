@@ -7,7 +7,7 @@ Now, let's say you want to replace the implementation with a https://site.mockit
 .The MathService specification
 [source,java]
 ----
-include::{junit5tests}/MathMockServiceTest.java[]
+include::{junittests}/MathMockServiceTest.java[]
 ----
 
 <1> The `@MockBean` annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.

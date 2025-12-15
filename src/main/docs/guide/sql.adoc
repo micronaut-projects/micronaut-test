@@ -30,7 +30,7 @@ We can annotate a test to run these two scripts prior to the test.
 
 [source, java, role="multi-language-sample"]
 ----
-include::{junit5tests}/SqlDatasourceTest.java[tags="clazz"]
+include::{junittests}/SqlDatasourceTest.java[tags="clazz"]
 ----
 
 [source, groovy, role="multi-language-sample"]
@@ -62,7 +62,7 @@ If you have multiple datasources configured, you can specify the datasource name
 
 [source, java, role="multi-language-sample"]
 ----
-include::{junit5tests}/SqlNamedDatasourceTest.java[tags="clazz"]
+include::{junittests}/SqlNamedDatasourceTest.java[tags="clazz"]
 ----
 
 [source, groovy, role="multi-language-sample"]

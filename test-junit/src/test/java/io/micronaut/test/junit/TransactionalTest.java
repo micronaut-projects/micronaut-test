@@ -1,0 +1,38 @@
+package io.micronaut.test.junit;
+
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.test.extensions.junit.annotation.MicronautTest;
+import io.micronaut.transaction.TransactionOperations;
+import io.micronaut.transaction.test.DefaultTestTransactionExecutionListener;
+import jakarta.inject.Inject;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+@MicronautTest(transactional = true)
+@DbProperties
+class TransactionalTest {
+
+  @Inject
+  ApplicationContext applicationContext;
+
+  @Inject
+  TransactionOperations<?> transactionOperations;
+
+  @BeforeEach
+  void setup() {
+    Assertions.assertTrue(transactionOperations.findTransactionStatus().isPresent());
+  }
+
+  @AfterEach
+  void cleanup() {
+      Assertions.assertTrue(transactionOperations.findTransactionStatus().isPresent());
+  }
+
+  @Test
+  void testSpringTransactionListenerMissing() {
+    Assertions.assertTrue(applicationContext.containsBean(DefaultTestTransactionExecutionListener.class));
+  }
+
+}

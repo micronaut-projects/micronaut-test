@@ -3,5 +3,5 @@ include::src/main/docs/guide/includes/refreshing-requires.adoc[]
 .Combining `@Requires` and `@Property` in a `@Refreshable` test class.
 [source,java]
 ----
-include::{junit5tests}/PropertyValueRequiresTest.java[]
+include::{junittests}/PropertyValueRequiresTest.java[]
 ----

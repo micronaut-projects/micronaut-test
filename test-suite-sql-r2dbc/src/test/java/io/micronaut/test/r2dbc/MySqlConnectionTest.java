@@ -2,7 +2,7 @@ package io.micronaut.test.r2dbc;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.annotation.Sql;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 import io.r2dbc.spi.ConnectionFactory;
 import jakarta.inject.Inject;

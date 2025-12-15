@@ -3,7 +3,7 @@ Let's take a look at an example using JUnit 5. Consider you have the following i
 .The MathService Interface
 [source,java]
 ----
-include::{junit5tests}/MathService.java[]
+include::{junittests}/MathService.java[]
 ----
 
 And a simple implementation that computes the value times 4 and is defined as a Micronaut bean:
@@ -11,7 +11,7 @@ And a simple implementation that computes the value times 4 and is defined as a 
 .The MathService implementation
 [source,java]
 ----
-include::{junit5tests}/MathServiceImpl.java[]
+include::{junittests}/MathServiceImpl.java[]
 ----
 
 You can define the following test to test the implementation:
@@ -19,7 +19,7 @@ You can define the following test to test the implementation:
 .The MathService specification
 [source,groovy]
 ----
-include::{junit5tests}/MathServiceTest.java[]
+include::{junittests}/MathServiceTest.java[]
 ----
 
 <1> The test is declared as Micronaut test with `@MicronautTest`
