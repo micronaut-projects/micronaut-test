@@ -26,7 +26,7 @@ dependencies {
     testImplementation(libs.managed.junit.jupiter.api)
     testImplementation(libs.managed.junit.jupiter.params)
     testImplementation(libs.managed.junit.platform.launcher)
-    testImplementation(projects.micronautTestJunit5)
+    testImplementation(projects.micronautTestJunit)
     testImplementation(projects.micronautTestSpock)
 
     testRuntimeOnly(libs.managed.junit.jupiter.engine)

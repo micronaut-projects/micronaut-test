@@ -16,7 +16,7 @@ dependencies {
     api(libs.managed.kotest.runner.junit5.jvm)
 
     implementation(mn.micronaut.inject)
-    implementation(projects.micronautTestJunit5)
+    implementation(projects.micronautTestJunit)
     implementation(mn.kotlin.stdlib.jdk8)
     implementation(mn.kotlin.reflect)
 

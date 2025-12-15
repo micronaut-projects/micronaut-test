@@ -28,7 +28,7 @@ rootProject.name = 'test-parent'
 include 'test-bom'
 include 'test-core'
 include "test-spock"
-include "test-junit5"
+include "test-junit"
 include "test-kotest5"
 include "test-netty-leak"
 //include "test-rest-assured"

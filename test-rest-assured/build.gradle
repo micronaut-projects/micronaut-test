@@ -19,7 +19,7 @@ dependencies {
     testCompileOnly(mn.micronaut.inject)
 
     testImplementation(libs.managed.junit.jupiter.api)
-    testImplementation projects.micronautTestJunit5
+    testImplementation(projects.micronautTestJunit)
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(libs.managed.hamcrest)
 

@@ -20,7 +20,7 @@ dependencies {
 
     testImplementation(libs.managed.junit.jupiter.api)
     testImplementation(libs.managed.junit.platform.launcher)
-    testImplementation(projects.micronautTestJunit5)
+    testImplementation(projects.micronautTestJunit)
     testImplementation(platform(libs.boms.testcontainers))
     testImplementation(libs.testcontainers.junit.jupiter)
     testImplementation(libs.testcontainers.postgresql)

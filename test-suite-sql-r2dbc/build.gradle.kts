@@ -17,7 +17,7 @@ dependencies {
     testAnnotationProcessor(mnData.micronaut.data.processor)
     testAnnotationProcessor(mnSerde.micronaut.serde.processor)
 
-    testImplementation(projects.micronautTestJunit5)
+    testImplementation(projects.micronautTestJunit)
     testImplementation(mnData.micronaut.data.r2dbc)
     testImplementation(mnSerde.micronaut.serde.jackson)
 
