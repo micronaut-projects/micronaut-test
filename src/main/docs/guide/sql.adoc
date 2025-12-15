@@ -15,7 +15,7 @@ For example given the two SQL scripts
 .test/resources/create.sql
 [source,sql]
 ----
-include::test-junit5/src/test/resources/create.sql[]
+include::test-junit/src/test/resources/create.sql[]
 ----
 
 and
@@ -23,7 +23,7 @@ and
 .test/resources/datasource_1_insert.sql
 [source,sql]
 ----
-include::test-junit5/src/test/resources/datasource_1_insert.sql[]
+include::test-junit/src/test/resources/datasource_1_insert.sql[]
 ----
 
 We can annotate a test to run these two scripts prior to the test.

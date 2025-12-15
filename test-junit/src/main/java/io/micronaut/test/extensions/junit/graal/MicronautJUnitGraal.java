@@ -22,7 +22,7 @@ import com.oracle.svm.core.annotate.TargetClass;
  * Extensions for Graal testing.
  */
 @TargetClass(className = "io.micronaut.test.extensions.AbstractMicronautExtension")
-final class MicronautJUnit5Graal {
+final class MicronautJUnitGraal {
 
     @Substitute
     protected boolean isTestSuiteBeanPresent(Class<?> requiredTestClass) {

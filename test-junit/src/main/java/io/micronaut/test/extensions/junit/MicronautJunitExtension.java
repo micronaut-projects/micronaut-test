@@ -71,13 +71,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Extension for JUnit 5.
+ * Extension for JUnit.
  *
  * @author graemerocher
  * @since 1.0
  */
-public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor {
-    private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
+public class MicronautJunitExtension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor {
+    private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunitExtension.class);
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {

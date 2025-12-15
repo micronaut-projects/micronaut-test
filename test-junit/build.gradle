@@ -70,7 +70,7 @@ graalvmNative {
     }
     binaries {
         test {
-            buildArgs.add('--initialize-at-run-time=io.micronaut.test.junit5.server.ExternalServerTest')
+            buildArgs.add('--initialize-at-run-time=io.micronaut.test.junit.server.ExternalServerTest')
             resources.autodetect()
         }
     }
