@@ -14,17 +14,17 @@ spock:
   refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
 junit:
   title: Testing with JUnit
-  settingUpJUnit5: Setting up JUnit
-  writingAMicronautTestWithJUnit5: Writing a Micronaut Test with JUnit
-  junit5EnvironmentClasspathScanning: Environments, Classpath Scanning etc.
-  junit5TransactionSemantics: Transaction semantics
+  settingUpJUnit: Setting up JUnit
+  writingAMicronautTestWithJUnit: Writing a Micronaut Test with JUnit
+  junitEnvironmentClasspathScanning: Environments, Classpath Scanning etc.
+  junitTransactionSemantics: Transaction semantics
   usingMockitoMocks: Using Mockito Mocks
-  junit5MockingCollaborators: Mocking Collaborators
-  junit5UsingRequiresOnTests: Using `@Requires` on Tests
-  junit5DefiningAdditionalTestSpecificProperties: Defining Additional Test Specific Properties
-  junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
-  junit5TestingExternalServers: Testing External Servers
-  junit5TestMethodsInjection: Test Methods Injection
+  junitMockingCollaborators: Mocking Collaborators
+  junitUsingRequiresOnTests: Using `@Requires` on Tests
+  junitDefiningAdditionalTestSpecificProperties: Defining Additional Test Specific Properties
+  junitRefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
+  junitTestingExternalServers: Testing External Servers
+  junitTestMethodsInjection: Test Methods Injection
 kotest5:
   title: Testing with Kotest 5
   settingUpKoTest5: Setting up Kotest 5

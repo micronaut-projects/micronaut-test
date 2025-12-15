@@ -33,6 +33,6 @@ dependencies {
 }
 
 micronaut {
-    testRuntime("junit5")
+    testRuntime("junit")
     importMicronautPlatform.set(false)
 }
