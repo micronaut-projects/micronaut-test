@@ -8,6 +8,7 @@ repositories {
 
 micronautBom {
     suppressions {
+        acceptedLibraryRegressions.add("micronaut-test-junit5") // has been renamed to micronaut-test-junit
         acceptedLibraryRegressions.add("micronaut-test-rest-assured")
         acceptedLibraryRegressions.add("micronaut-test-kotest")
         acceptedLibraryRegressions.add("junit-platform-runner")
