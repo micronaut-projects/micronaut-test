@@ -1,5 +1,6 @@
 introduction:
   title: Introduction
+breaks: Breaking Changes
 releaseHistory: Release History
 spock:
   title: Testing with Spock

@@ -1,0 +1,39 @@
+Micronaut Test 5.0.0 updates to Junit 6.
+
+The `io.micronaut.test:micronaut-test-junit5` has been replaced with `io.micronaut.test:micronaut-test-junit`.
+
+If you are using the Micronaut Gradle Plugin, you will need to replace in your
+
+[source, kotlin]
+----
+micronaut {
+  testRuntime("junit5")
+...
+----
+
+with:
+
+[source, kotlin]
+----
+micronaut {
+    testRuntime("junit")
+...
+----
+
+
+Moreover, classes within the package `io.micronaut.test.extensions.junit5` have been moved to `io.micronaut.test.extensions.junit`.
+
+This will require you for example to replace `MicronauTest` annotations imports such as:
+
+[source, java]
+----
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+----
+
+with:
+
+[source, java]
+----
+import io.micronaut.test.extensions.junit.annotation.MicronautTest;
+----
+
