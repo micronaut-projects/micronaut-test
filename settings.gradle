@@ -20,7 +20,6 @@ micronautBuild {
     importMicronautCatalog("micronaut-sql")
     importMicronautCatalog("micronaut-r2dbc")
     importMicronautCatalog("micronaut-reactor")
-    importMicronautCatalog("micronaut-test-resources")
     importMicronautCatalog("micronaut-hibernate-validator")
 }
 
@@ -33,6 +32,6 @@ include "test-junit5"
 include "test-kotest5"
 include "test-netty-leak"
 include "test-rest-assured"
-//include 'test-suite-sql-r2dbc'
+include 'test-suite-sql-r2dbc'
 include 'test-suite-at-sql-jpa'
 include 'test-type-pollution'
