@@ -8,6 +8,7 @@ io.micronaut.test.extensions.spock
 io.micronaut.test.extensions.spock.annotation
 io.micronaut.test.info
 io.micronaut.test.leak
+io.micronaut.test.rest.assured
 io.micronaut.test.support
 io.micronaut.test.support.server
 io.micronaut.test.support.sql
