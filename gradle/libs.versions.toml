@@ -13,7 +13,7 @@ graal-svm = "24.2.2"
 managed-testcontainers = "2.0.2"
 
 micronaut-platform = "4.10.3"
-micronaut = "5.0.0-M5"
+micronaut = "5.0.0-M6"
 micronaut-data = "4.14.2"
 micronaut-hibernate-validator = "4.8.0"
 micronaut-logging = "1.7.1"
