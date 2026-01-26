@@ -8,7 +8,7 @@ managed-rest-assured = "6.0.0"
 managed-kotest = "5.9.1"
 managed-spock = "2.4-groovy-5.0"
 managed-bytebuddy = "1.17.8"
-kotlin = "2.1.21"
+kotlin = "2.3.0"
 graal-svm = "24.2.2"
 managed-testcontainers = "2.0.3"
 
