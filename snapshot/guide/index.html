@@ -3206,8 +3206,14 @@ class SqlNamedDatasourceTest(
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
 @Property(name = "r2dbc.datasources.default.db-type", value = "mysql")
 @Sql(value = {"classpath:create.sql", "classpath:datasource_1_insert.sql"}, resourceType = ConnectionFactory.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Testcontainers(disabledWithoutDocker = true)
-class MySqlConnectionTest  {
+class MySqlConnectionTest implements TestPropertyProvider {
+    @Override
+    @NonNull
+    public Map&lt;String, String&gt; getProperties() {
+        return MySQL.getProperties();
+    }
 
     @Inject
     ConnectionFactory connectionFactory;
