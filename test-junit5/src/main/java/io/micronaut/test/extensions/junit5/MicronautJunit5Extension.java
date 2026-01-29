@@ -301,6 +301,14 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         if (specDefinition == null) {
             return;
         }
+        // When rebuildContext=true with nested tests, the outer test instance persists across nested tests
+        // but was injected before the context rebuild. After rebuilding, its fields still reference beans
+        // from the old (now stopped) context. We must re-inject it with beans from the new context before
+        // attempting to unwrap proxies, otherwise interceptedTarget() will fail trying to resolve beans
+        // from the stopped context.
+        if (testAnnotationValue != null && testAnnotationValue.rebuildContext() && isNestedTestClass(context.getRequiredTestClass())) {
+            injectEnclosingTestInstances(context);
+        }
         findSpecInstance(context).ifPresent(specInstance -> {
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
                 final boolean isMock = applicationContext.resolveMetadata(injectedField.getType()).isAnnotationPresent(MockBean.class);
