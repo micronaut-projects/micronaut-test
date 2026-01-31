@@ -24,12 +24,15 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.AnnotationUtil;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.InjectableBeanDefinition;
+import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.inject.ProxyBeanDefinition;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.MicronautTestValue;
@@ -302,24 +305,74 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             return;
         }
         findSpecInstance(context).ifPresent(specInstance -> {
+            // Handle field injection (Java-style @Inject fields)
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
                 final boolean isMock = applicationContext.resolveMetadata(injectedField.getType()).isAnnotationPresent(MockBean.class);
                 if (isMock) {
                     final Field field = injectedField.getField();
-                    field.setAccessible(true);
-                    try {
-                        final Object mock = field.get(specInstance);
-                        if (mock instanceof InterceptedProxy) {
-                            InterceptedProxy ip = (InterceptedProxy) mock;
-                            final Object target = ip.interceptedTarget();
-                            field.set(specInstance, target);
-                        }
-                    } catch (IllegalAccessException e) {
-                        // continue
+                    alignField(field, specInstance);
+                }
+            }
+
+            // Handle method injection (Micronaut's KSP processor generates setter injection for Kotlin,
+            // even when @Inject is on the field, unlike the Java annotation processor which uses field injection)
+            for (MethodInjectionPoint<?, ?> injectedMethod : specDefinition.getInjectedMethods()) {
+                final Argument<?>[] args = injectedMethod.getArguments();
+                if (args.length != 1) {
+                    continue;
+                }
+                final boolean isMock = applicationContext.resolveMetadata(args[0].getType()).isAnnotationPresent(MockBean.class);
+                if (!isMock) {
+                    continue;
+                }
+
+                // Derive field name from setter method name (e.g., setEchoService -> echoService)
+                String methodName = injectedMethod.getName();
+                if (methodName.startsWith("set") && methodName.length() > 3) {
+                    String fieldName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+                    Field field = findField(specInstance.getClass(), fieldName);
+                    if (field != null) {
+                        alignField(field, specInstance);
                     }
                 }
             }
         });
+    }
+
+    /**
+     * Sets the field to have the underlying mock rather than the InterceptedProxy.
+     *
+     * @param field to modify
+     * @param specInstance the context container
+     */
+    private void alignField(@NonNull Field field, @NonNull Object specInstance) {
+        field.setAccessible(true);
+        try {
+            final Object mock = field.get(specInstance);
+            if (mock instanceof InterceptedProxy) {
+                InterceptedProxy ip = (InterceptedProxy) mock;
+                final Object target = ip.interceptedTarget();
+                field.set(specInstance, target);
+            }
+        } catch (IllegalAccessException e) {
+            // continue
+        }
+    }
+
+    /**
+     * Find a field by name, searching up the class hierarchy.
+     */
+    @Nullable
+    private Field findField(@NonNull Class<?> clazz, @NonNull String fieldName) {
+        Class<?> current = clazz;
+        while (current != null && current != Object.class) {
+            try {
+                return current.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                current = current.getSuperclass();
+            }
+        }
+        return null;
     }
 
     private Optional<?> findSpecInstance(ExtensionContext context) {
