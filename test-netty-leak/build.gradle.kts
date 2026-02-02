@@ -24,7 +24,7 @@ micronautBuild {
     binaryCompatibility {
         enabledAfter("4.10.0")
     }
-    testFramework = TestFramework.JUNIT5
+    testFramework = TestFramework.JUNIT6
 }
 
 tasks.withType(Test::class.java) {
