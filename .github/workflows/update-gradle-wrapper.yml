@@ -26,7 +26,7 @@ jobs:
           latest=`curl -s https://services.gradle.org/versions/current | jq -cr ".version"`
           echo ::set-output name=latest_version::${latest}
           ./gradlew wrapper --gradle-version $latest
-      - uses: gradle/actions/wrapper-validation@v4
+      - uses: gradle/actions/wrapper-validation@v5
       - uses: stefanzweifel/git-auto-commit-action@v5.2.0
         with:
           commit_message: Upgrade Gradle Wrapper to ${{ steps.update.outputs.latest_version }}
