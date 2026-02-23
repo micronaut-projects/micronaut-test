@@ -73,11 +73,11 @@ class MathServiceTest {
 
 ## Snapshots and Releases
 
-Snaphots are automatically published to [JFrog OSS](https://oss.jfrog.org/artifactory/oss-snapshot-local/) using [Github Actions](https://github.com/micronaut-projects/micronaut-test/actions).
+Snapshots are automatically published to [JFrog OSS](https://oss.jfrog.org/artifactory/oss-snapshot-local/) using [GitHub Actions](https://github.com/micronaut-projects/micronaut-test/actions).
 
 See the documentation in the [Micronaut Docs](https://docs.micronaut.io/latest/guide/index.html#usingsnapshots) for how to configure your build to use snapshots.
 
-Releases are published to JCenter and Maven Central via [Github Actions](https://github.com/micronaut-projects/micronaut-test/actions).
+Releases are published to JCenter and Maven Central via [GitHub Actions](https://github.com/micronaut-projects/micronaut-test/actions).
 
 A release is performed with the following steps:
 

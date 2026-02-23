@@ -48,7 +48,7 @@ You MUST annotate the code with nullability annotations (`io.micronaut.core.anno
 Micronaut projects are intended to be used in consumer applications and therefore follow semantic versioning. As a consequence:
 - You MUST NOT break any public facing API without explicit consent
 - You SHOULD run the `./gradlew japiCmp` task to get a report about binary breaking changes
-- You SHOULD reduce the visibility of members for non user-facing APIs.
+- You SHOULD reduce the visibility of members for non-user-facing APIs.
 - You MUST annotate non-user facing APIs with `@io.micronaut.core.annotation.Internal`
 
 ## Implementation Workflow (Required Checklist)
@@ -163,7 +163,7 @@ You SHOULD try to prefer composition of convention plugins.
 
 ## Key Requirements
 
-You MUST confirm all of the following BEFORE using `attempt_completion`:
+You MUST confirm all the following BEFORE using `attempt_completion`:
 
 - Changes compile successfully (affected modules)
 - Targeted tests pass

@@ -1,4 +1,4 @@
-By default, with JUnit 5 the test method parameters will be resolved to beans if possible. As this behaviour can be problematic if in combination with the `@ParameterizedTest` annotation, it can be disabled.
+By default, with JUnit 5 the test method parameters will be resolved to beans if possible. As this behavior can be problematic if in combination with the `@ParameterizedTest` annotation, it can be disabled.
 
 [source,java]
 ----

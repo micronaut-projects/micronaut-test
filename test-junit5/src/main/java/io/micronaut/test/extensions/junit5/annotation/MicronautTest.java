@@ -110,7 +110,7 @@ public @interface MicronautTest {
 
     /**
      * By default, with JUnit 5 the test method parameters will be resolved to beans if possible.
-     * This behaviour can be problematic if in combination with the {@code ParameterizedTest} annotation.
+     * This behavior can be problematic if in combination with the {@code ParameterizedTest} annotation.
      * Setting this member to {@code false} will completely disable bean resolution for method parameters.
      *
      * @return Whether to resolve test method parameters as beans.

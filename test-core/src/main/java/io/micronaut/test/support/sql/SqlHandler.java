@@ -20,7 +20,7 @@ import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 
 /**
- * Interface for handling Sql annotation for different data sources.
+ * Interface for handling SQL annotation for different data sources.
  *
  * @param <T> The type of the data source
  *

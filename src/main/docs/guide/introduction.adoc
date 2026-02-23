@@ -43,7 +43,7 @@ EmbeddedServer server //refers to the server that was started up for this test s
 ApplicationContext context //refers to the current application context within the scope of the test
 ----
 
-### Eager Singleton Initialization
+=== Eager Singleton Initialization
 
 If you enable https://docs.micronaut.io/latest/guide/index.html#eagerInit[eager singleton initialization] in your application, the Micronaut Framework eagerly initializes all singletons at startup time. This can be useful for applications that need to perform some initialization at startup time, such as registering a bean with a third party library.
 

@@ -73,7 +73,7 @@ public @interface Sql {
     Class<?> resourceType() default DataSource.class;
 
     /**
-     * Wrapper annotation class to allow multiple Sql annotations per test class or method.
+     * Wrapper annotation class to allow multiple SQL annotations per test class or method.
      */
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)

@@ -24,7 +24,7 @@ package io.micronaut.test.context;
 public interface TestExecutionListener {
 
   /**
-   * Executed before all of the tests of a class are executed.
+   * Executed before all the tests of a class are executed.
    *
    * @param testContext the test context
    * @throws Exception allows any exception to propagate
@@ -115,7 +115,7 @@ public interface TestExecutionListener {
   }
 
   /**
-   * Executed after all of the tests of a class have bean executed.
+   * Executed after all the tests of a class have bean executed.
    *
    * @param testContext the test context
    * @throws Exception allows any exception to propagate

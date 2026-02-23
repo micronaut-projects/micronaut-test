@@ -1,7 +1,7 @@
 When performing a test with a backing database, often some data is required in the database prior to running the tests.
 As of `micronaut-test` version 4.1.0, there is an annotation api:test.annotation.Sql[].
 
-This annotation can be used to specify the location of one or more sql files to be executed at one of four phases in your test execution:
+This annotation can be used to specify the location of one or more SQL files to be executed at one of four phases in your test execution:
 
 * `BEFORE_CLASS` - executed once before the tests are run (the default).
 * `BEFORE_METHOD` - executed before each test method.
@@ -56,9 +56,9 @@ include::test-suite-at-sql-jpa/src/test/java/example/micronaut/TwoProductsThenNo
 ----
 <1> A script to run after each test in the specification.
 
-== Named Datasources
+== Named DataSources
 
-If you have multiple datasources configured, you can specify the datasource name to use for the SQL scripts.
+If you have multiple data-sources configured, you can specify the datasource name to use for the SQL scripts.
 
 [source, java, role="multi-language-sample"]
 ----

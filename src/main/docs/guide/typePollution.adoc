@@ -9,8 +9,8 @@ The issue arises when the same concrete type (i.e. `ArrayList`) is checked again
 `List` but also `Collection`) repeatedly. An `instanceof List` will set the `secondary_super_cache` to `List`, then an
 `instanceof Collection` will set the cache to `Collection`, and an `instanceof List` will set it back to `List`. Not
 only can the second type check not take advantage of the cache because it had been overwritten, but crucially, each
-type checks writes the cache field anew. If this happens concurrently on multi-core machines, this can lead to major
-inter-core traffic for cache coherency of the cache line where the `secondary_super_cache` is located. This is called a
+type checks writes the cache field anew. If this happens concurrently on multicore machines, this can lead to major
+intercore traffic for cache coherency of the cache line where the `secondary_super_cache` is located. This is called a
 "scalability issue" because it can lead to poor performance in code running in parallel.
 
 This bug can be triggered by the interplay of multiple usually independent libraries and is very hard to reproduce in

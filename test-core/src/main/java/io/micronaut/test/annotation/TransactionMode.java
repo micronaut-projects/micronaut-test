@@ -30,5 +30,5 @@ public enum TransactionMode {
      * All setup methods are wrapped in the same transaction as the test.
      * Cleanup methods are wrapped in separate transactions.
      */
-    SINGLE_TRANSACTION;
+    SINGLE_TRANSACTION,
 }

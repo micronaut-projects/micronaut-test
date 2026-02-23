@@ -1,11 +1,10 @@
-
 package io.micronaut.test.junit5.base;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class InjectSharedTest2 extends AbstractSharedTest {
+public class InjectShared2Test extends AbstractSharedTest {
 
     @BeforeAll
     void setupTest() {

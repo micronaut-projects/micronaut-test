@@ -1,23 +1,26 @@
-When using `@MicronautTest` each `@Test` method will be wrapped in a transaction that will be rolled back when the test finishes. This behaviour can be changed by using the `transactional` and `rollback` properties.
+When using `@MicronautTest` each `@Test` method will be wrapped in a transaction that will be rolled back when the test finishes. This behavior can be changed by using the `transactional` and `rollback` properties.
 
 To avoid creating a transaction:
 
-```java
+[source,java]
+----
 @MicronautTest(transactional = false)
-```
+----
 
-To not rollback the transaction:
+To not roll back the transaction:
 
-```java
+[source,java]
+----
 @MicronautTest(rollback = false)
-```
+----
 
 Additionally, the `transactionMode` property can be used to further customize the way that transactions are handled for
 each test:
 
-```java
+[source,java]
+----
 @MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
-```
+----
 
 The following transaction modes are supported:
 
