@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * LeakPresenceDetector that uses an InheritableThreadLocal to transfer the resource scope from
  * test methods to event loops created within those threads.
+ *
+ * @param <T>
  */
 @Internal
 public final class WithTransferableScope<T> extends LeakPresenceDetector<T> {

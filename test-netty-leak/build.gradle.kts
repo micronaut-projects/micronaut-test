@@ -15,6 +15,7 @@ dependencies {
     implementation(mn.netty.common)
     testImplementation(libs.managed.junit.platform.testkit)
     testImplementation(mn.netty.buffer)
+    testImplementation(libs.managed.assertj.core)
     testImplementation(platform(libs.boms.spock))
     testImplementation(libs.spock.core)
     testRuntimeOnly(libs.managed.junit.jupiter.engine)

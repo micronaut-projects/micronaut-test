@@ -20,6 +20,9 @@ import io.micronaut.test.support.TestPropertyProviderFactory;
 
 import java.util.Map;
 
+/**
+ * Dummy test property provider factory.
+ */
 public class DummyTestPropertyProviderFactory implements TestPropertyProviderFactory {
     @Override
     public TestPropertyProvider create(Map<String, Object> availableProperties, Class<?> testClass) {

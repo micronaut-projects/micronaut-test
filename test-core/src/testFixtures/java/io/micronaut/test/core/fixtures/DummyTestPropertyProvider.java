@@ -19,6 +19,9 @@ import io.micronaut.test.support.TestPropertyProvider;
 
 import java.util.Map;
 
+/**
+ * Dummy test property provider.
+ */
 public class DummyTestPropertyProvider implements TestPropertyProvider {
     private final Map<String, Object> availableProperties;
     private final Class<?> testClass;

@@ -19,6 +19,9 @@ import io.netty.util.LeakPresenceDetector;
 import org.spockframework.runtime.extension.IGlobalExtension;
 import org.spockframework.runtime.model.SpecInfo;
 
+/**
+ * Spock leak presence extension.
+ */
 public final class SpockLeakPresenceExtension implements IGlobalExtension {
     static {
         WithTransferableScope.init();
