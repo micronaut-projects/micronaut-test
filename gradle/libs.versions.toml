@@ -2,7 +2,7 @@
 managed-assertj = "3.27.7"
 managed-hamcrest = "3.0"
 managed-mockito = "5.21.0"
-managed-mockk = "1.13.17"
+managed-mockk = "1.14.9"
 managed-junit = "6.0.3"
 managed-rest-assured = "6.0.0"
 managed-kotest = "5.9.1"
