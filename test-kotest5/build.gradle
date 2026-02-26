@@ -35,6 +35,7 @@ dependencies {
     testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(testFixtures(projects.micronautTestCore))
+    testImplementation(libs.kotest.assertation.table)
 }
 
 tasks.named("test") {
