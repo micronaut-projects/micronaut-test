@@ -8,7 +8,6 @@ managed-rest-assured = "6.0.0"
 managed-kotest = "5.9.1"
 managed-spock = "2.4-groovy-5.0"
 managed-bytebuddy = "1.18.5"
-kotlin = "2.3.10"
 graal-svm = "25.0.2"
 managed-testcontainers = "2.0.3"
 
@@ -16,7 +15,6 @@ micronaut-platform = "4.10.8"
 micronaut = "5.0.0-M13"
 micronaut-data = "4.14.3"
 micronaut-hibernate-validator = "4.8.0"
-micronaut-logging = "1.7.3"
 micronaut-r2dbc = "7.0.0"
 micronaut-serde = "3.0.0-M2"
 micronaut-spring = "5.12.1"
@@ -28,7 +26,6 @@ micronaut-gradle-plugin = "4.6.2"
 # Core
 micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
 micronaut-platform = { module = 'io.micronaut.platform:micronaut-platform', version.ref = 'micronaut-platform' }
-micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 micronaut-data = { module = "io.micronaut.data:micronaut-data-bom", version.ref = "micronaut-data" }
 micronaut-hibernate-validator = { module = "io.micronaut.beanvalidation:micronaut-hibernate-validator-bom", version.ref = "micronaut-hibernate-validator" }
 micronaut-r2dbc = { module = "io.micronaut.r2dbc:micronaut-r2dbc-bom", version.ref = "micronaut-r2dbc" }
@@ -81,6 +78,4 @@ graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" 
 spock-core = { module = "org.spockframework:spock-core" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
 rest-assured = { module = "io.rest-assured:rest-assured" }
-kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
