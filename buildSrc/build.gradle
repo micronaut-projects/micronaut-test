@@ -10,5 +10,5 @@ repositories {
 dependencies {
     implementation(libs.micronaut.library.plugin)
     // Ensure Kotlin Gradle plugin is on buildSrc classpath so convention plugins can apply it without versions
-    implementation(libs.kotlin.gradle.plugin)
+    implementation(providers.gradleProperty("micronaut-build-version").map { "io.micronaut.build.internal:micronaut-kotlin-build-plugins:${it}" }.get())
 }
