@@ -22,21 +22,21 @@ testCase.name.name
 
 ---
 
-== `TestResult` moved to `io.kotest.core.test`
+== `TestResult` moved to `io.kotest.engine.test`
 
-In Kotest 5, `TestResult` was imported from `io.kotest.engine.test`.
-In Kotest 6, it lives in `io.kotest.core.test`.
+In Kotest 5, `TestResult` was imported from `io.kotest.core.test`.
+In Kotest 6, it lives in `io.kotest.engine.test`.
 
 .Before
 [source,kotlin]
 ----
-import io.kotest.engine.test.TestResult
+import io.kotest.core.test.TestResult
 ----
 
 .After
 [source,kotlin]
 ----
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 ----
 
 ---
