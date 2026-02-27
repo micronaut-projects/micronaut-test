@@ -29,15 +29,13 @@ dependencies {
     testImplementation(mnData.micronaut.data.hibernate.jpa)
     testImplementation(mn.snakeyaml)
     testImplementation(libs.managed.kotest.assertions.core.jvm)
+    testImplementation(libs.kotest.assertation.table)
 
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
     testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(mnSerde.micronaut.serde.jackson)
     testRuntimeOnly(testFixtures(projects.micronautTestCore))
-}
-
-    testImplementation(libs.kotest.assertation.table)
 }
 
 tasks.named("test") {
