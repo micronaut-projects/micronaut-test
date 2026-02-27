@@ -11,7 +11,7 @@ import kotlinx.coroutines.delay
 class ConcurrentTestsSpec : FreeSpec({
 
     // Configure this spec to run tests concurrently
-    testExecutionMode = TestExecutionMode.Sequential
+    testExecutionMode = TestExecutionMode.Concurrent
 
     "test 1" {
         // This test will run concurrently with other tests
