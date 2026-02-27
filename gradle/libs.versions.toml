@@ -41,7 +41,7 @@ managed-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", 
 managed-mockk = { module = "io.mockk:mockk", version.ref = "managed-mockk" }
 # TODO kotest libs should stop be directly managed, boms-kotest should define the versions
 managed-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "managed-kotest" }
-managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "managed-kotest" }
+managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit6-jvm", version.ref = "managed-kotest" }
 
 managed-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "managed-junit" }
 managed-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "managed-junit" }
