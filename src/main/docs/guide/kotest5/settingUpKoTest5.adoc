@@ -7,7 +7,7 @@ dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
     testImplementation "io.micronaut.test:micronaut-test-kotest5"
     testImplementation "io.mockk:mockk:{mockkVersion}"
-    testImplementation "io.kotest:kotest-runner-junit5-jvm:{kotestVersion}"
+    testImplementation "io.kotest:kotest-runner-junit6-jvm:{kotestVersion}"
 }
 
 // use JUnit 5 platform
@@ -35,7 +35,7 @@ Or for Maven:
 </dependency>
 <dependency>
     <groupId>io.kotest</groupId>
-    <artifactId>kotest-runner-junit5-jvm</artifactId>
+    <artifactId>kotest-runner-junit6-jvm</artifactId>
     <version>{kotestVersion}</version>
     <scope>test</scope>
 </dependency>
