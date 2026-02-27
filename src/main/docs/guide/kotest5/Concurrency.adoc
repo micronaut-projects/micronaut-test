@@ -18,7 +18,7 @@ The following example demonstrates running root tests concurrently:
 
 [source,kotlin]
 ----
-include::test-kotest5/src/test/kotlin/io/micronaut/test/kotest5/ConcurrentTestsSpec.kt[tag=concurrent]
+include::{kotest5tests}/ConcurrentTestsSpec.kt[]
 ----
 
 When `TestExecutionMode.Concurrent` is enabled, all root tests in the spec start at approximately the same time and execute in parallel. This can significantly reduce execution time.
