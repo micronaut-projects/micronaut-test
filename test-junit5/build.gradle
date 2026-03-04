@@ -1,6 +1,8 @@
 plugins {
     id "io.micronaut.build.internal.micronaut-test-module"
     id 'io.micronaut.graalvm' // Required to configure Graal for nativeTest
+    alias(mn.plugins.kotlin.jvm)
+    alias(mn.plugins.ksp)
 }
 
 tasks.withType(Test).configureEach {
@@ -43,6 +45,7 @@ dependencies {
 
     implementation(mn.micronaut.context)
 
+    ksp(mn.micronaut.inject.kotlin)
     testAnnotationProcessor(mn.micronaut.inject.java)
     testAnnotationProcessor(mn.micronaut.graal)
 
