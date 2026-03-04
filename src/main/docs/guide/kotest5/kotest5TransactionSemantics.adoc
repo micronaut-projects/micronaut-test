@@ -1,1 +1,4 @@
 include::src/main/docs/guide/includes/transaction.adoc[]
+
+NOTE: Setup and cleanup methods are not wrapped in transactions in Kotest currently. As a result, transaction modes have
+no effect in Kotest.
