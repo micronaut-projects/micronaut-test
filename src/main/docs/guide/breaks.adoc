@@ -78,15 +78,6 @@ override fun extensions() = listOf(MicronautKotest5Extension)
 override val extensions = listOf(MicronautKotest5Extension)
 ----
 
----
-
-== References
-
-- Kotest 6.0 release notes: https://github.com/kotest/kotest/blob/master/documentation/docs/release_6.0.md
-- Kotest docs: https://kotest.io/docs/release6/
-
----
-
 == JUnit Runner artifact renamed
 
 In Kotest 5, the JUnit 5 runner artifact was:
@@ -104,3 +95,8 @@ testImplementation("io.kotest:kotest-runner-junit6-jvm:<kotest6-version>")
 ----
 
 Make sure to update your build configuration accordingly when upgrading.
+
+== References
+
+- Kotest 6.0 release notes: https://github.com/kotest/kotest/blob/master/documentation/docs/release_6.0.md
+- Kotest docs: https://kotest.io/docs/release6/
