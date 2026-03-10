@@ -10,13 +10,7 @@ The above controller uses the `MathService` to expose a `/math/compute/{number}`
 
 IMPORTANT: Table-driven testing requires new dependency
 
-.build.gradle
-[source,groovy,subs="attributes"]
-----
-dependencies {
-testImplementation("io.kotest:kotest-assertions-table")
-}
-----
+dependency:io.kotest:kotest-assertions-table[scope="testImplementation"]
 
 .Mocking Collaborators
 [source,kotlin]
