@@ -79,5 +79,5 @@ spock-core = { module = "org.spockframework:spock-core" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
 rest-assured = { module = "io.rest-assured:rest-assured" }
 
-kotest-assertation-table = { module = "io.kotest:kotest-assertions-table" }
+kotest-assertions-table = { module = "io.kotest:kotest-assertions-table" }
 

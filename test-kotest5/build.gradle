@@ -29,7 +29,7 @@ dependencies {
     testImplementation(mnData.micronaut.data.hibernate.jpa)
     testImplementation(mn.snakeyaml)
     testImplementation(libs.managed.kotest.assertions.core.jvm)
-    testImplementation(libs.kotest.assertation.table)
+    testImplementation(libs.kotest.assertions.table)
 
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
