@@ -17,7 +17,7 @@ package io.micronaut.test.extensions.kotest5
 
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.micronaut.context.annotation.Property
 import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.context.TestContext
@@ -65,7 +65,7 @@ class MicronautKotest5Context(
     }
 
     fun beforeTest(testCase: TestCase) {
-        val filter = testCase.spec::class.memberFunctions.filter { it.name == testCase.name.testName }
+        val filter = testCase.spec::class.memberFunctions.filter { it.name == testCase.name.name }
         var propertyAnnotations: List<Property>? = emptyList()
         if (filter.isNotEmpty()) {
             propertyAnnotations = filter.first().annotations.filterIsInstance<Property>()
@@ -115,7 +115,7 @@ class MicronautKotest5Context(
             testCase.test.javaClass,
             testCase.spec,
             error,
-            testCase.name.testName,
+            testCase.name.name,
             false
         )
     }

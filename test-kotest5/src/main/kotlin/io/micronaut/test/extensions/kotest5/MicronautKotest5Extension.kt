@@ -20,7 +20,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.micronaut.aop.InterceptedProxy
 import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest

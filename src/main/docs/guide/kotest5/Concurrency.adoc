@@ -1,0 +1,24 @@
+== Concurrency with Kotest 6
+
+Micronaut Test fully supports the concurrency features introduced in
+link:https://kotest.io/[Kotest 6].
+
+Kotest provides two levels of concurrency control:
+
+* *Spec Concurrency Mode* — Controls whether multiple test classes (specs) execute concurrently.
+* *Test Concurrency Mode* — Controls whether multiple root tests within a single spec execute concurrently.
+
+By default, all tests run sequentially. This is the safest configuration, as it avoids race conditions and does not require tests to be thread-safe.
+
+=== Test Concurrency Mode
+
+Test concurrency mode determines whether root tests within a spec are executed sequentially or concurrently.
+
+The following example demonstrates running root tests concurrently:
+
+[source,kotlin]
+----
+include::{kotest5tests}/ConcurrentTestsSpec.kt[]
+----
+
+When `TestExecutionMode.Concurrent` is enabled, all root tests in the spec start at approximately the same time and execute in parallel. This can significantly reduce execution time.

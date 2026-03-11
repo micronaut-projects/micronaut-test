@@ -8,6 +8,10 @@ include::{kotest5tests}/MathController.kt[]
 
 The above controller uses the `MathService` to expose a `/math/compute/{number}` endpoint. See the following example for a test that tests interaction with the mock collaborator:
 
+IMPORTANT: Table-driven testing requires new dependency
+
+dependency:kotest-assertions-table[groupId="io.kotest",scope="test"]
+
 .Mocking Collaborators
 [source,kotlin]
 ----

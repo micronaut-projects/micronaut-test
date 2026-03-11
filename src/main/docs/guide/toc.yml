@@ -26,8 +26,8 @@ junit5:
   junit5TestingExternalServers: Testing External Servers
   junit5TestMethodsInjection: Test Methods Injection
 kotest5:
-  title: Testing with Kotest 5
-  settingUpKoTest5: Setting up Kotest 5
+  title: Testing with Kotest
+  settingUpKoTest5: Setting up Kotest
   kotest5BeforeYouBegin: Before You Begin
   kotest5WritingAMicronautTest: Writing a Micronaut Test with Kotest
   kotest5EnvironmentClasspathScanning: Environments, Classpath Scanning etc.

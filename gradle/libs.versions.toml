@@ -5,7 +5,7 @@ managed-mockito = "5.22.0"
 managed-mockk = "1.14.9"
 managed-junit = "6.0.3"
 managed-rest-assured = "6.0.0"
-managed-kotest = "5.9.1"
+managed-kotest = "6.1.4"
 managed-spock = "2.4-groovy-5.0"
 managed-bytebuddy = "1.18.7"
 graal-svm = "25.0.2"
@@ -41,7 +41,7 @@ managed-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", 
 managed-mockk = { module = "io.mockk:mockk", version.ref = "managed-mockk" }
 # TODO kotest libs should stop be directly managed, boms-kotest should define the versions
 managed-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "managed-kotest" }
-managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "managed-kotest" }
+managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit6-jvm", version.ref = "managed-kotest" }
 
 managed-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "managed-junit" }
 managed-junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "managed-junit" }
@@ -78,4 +78,6 @@ graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm" 
 spock-core = { module = "org.spockframework:spock-core" }
 jakarta-inject-api = { module = "jakarta.inject:jakarta.inject-api" }
 rest-assured = { module = "io.rest-assured:rest-assured" }
+
+kotest-assertions-table = { module = "io.kotest:kotest-assertions-table" }
 
