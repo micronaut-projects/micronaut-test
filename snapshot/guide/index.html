@@ -54,7 +54,7 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#junit5"><strong>4</strong><span>Testing with JUnit 5</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#kotest5"><strong>5</strong><span>Testing with Kotest 5</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#kotest5"><strong>5</strong><span>Testing with Kotest</span></a></div>
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#nettyLeak"><strong>6</strong><span>Netty Leak Detection</span></a></div>
                                 
@@ -143,9 +143,9 @@
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-junit5TestMethodsInjection"><a href="#junit5TestMethodsInjection"><strong>4.11</strong><span>Test Methods Injection</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-kotest5"><a href="#kotest5"><strong>5</strong><span>Testing with Kotest 5</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-kotest5"><a href="#kotest5"><strong>5</strong><span>Testing with Kotest</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-settingUpKoTest5"><a href="#settingUpKoTest5"><strong>5.1</strong><span>Setting up Kotest 5</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-settingUpKoTest5"><a href="#settingUpKoTest5"><strong>5.1</strong><span>Setting up Kotest</span></a></div>
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5BeforeYouBegin"><a href="#kotest5BeforeYouBegin"><strong>5.2</strong><span>Before You Begin</span></a></div>
         
@@ -1822,7 +1822,7 @@ class DisableResolveParametersTest {
 </table>
 </div>
 
-<h1 id="kotest5"><a class="anchor" href="#kotest5"></a>5 Testing with Kotest 5</h1>
+<h1 id="kotest5"><a class="anchor" href="#kotest5"></a>5 Testing with Kotest</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5.adoc"'>
@@ -1833,7 +1833,7 @@ class DisableResolveParametersTest {
 
 
 
-<h2 id="settingUpKoTest5"><a class="anchor" href="#settingUpKoTest5"></a>5.1 Setting up Kotest 5</h2>
+<h2 id="settingUpKoTest5"><a class="anchor" href="#settingUpKoTest5"></a>5.1 Setting up Kotest</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/settingUpKoTest5.adoc"'>
@@ -1850,9 +1850,9 @@ class DisableResolveParametersTest {
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">dependencies {
     kaptTest "io.micronaut:micronaut-inject-java"
-    testImplementation "io.micronaut.test:micronaut-test-kotest5:5.0.0-SNAPSHOT"
+    testImplementation "io.micronaut.test:micronaut-test-kotest5"
     testImplementation "io.mockk:mockk:{mockkVersion}"
-    testImplementation "io.kotest:kotest-runner-junit5-jvm:{kotestVersion}"
+    testImplementation "io.kotest:kotest-runner-junit6-jvm:{kotestVersion}"
 }
 
 // use JUnit 5 platform
@@ -1881,7 +1881,7 @@ test {
 &lt;/dependency&gt;
 &lt;dependency&gt;
     &lt;groupId&gt;io.kotest&lt;/groupId&gt;
-    &lt;artifactId&gt;kotest-runner-junit5-jvm&lt;/artifactId&gt;
+    &lt;artifactId&gt;kotest-runner-junit6-jvm&lt;/artifactId&gt;
     &lt;version&gt;{kotestVersion}&lt;/version&gt;
     &lt;scope&gt;test&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
@@ -2016,7 +2016,7 @@ import io.micronaut.test.extensions.kotest5.MicronautKotest5Extension
 
 @Suppress("unused")
 object ProjectConfig : AbstractProjectConfig() {
-    override fun extensions() = listOf(MicronautKotest5Extension)
+    override val extensions = listOf(MicronautKotest5Extension)
 }</code></pre>
 </div>
 </div>
@@ -2350,6 +2350,36 @@ class MathController internal constructor(internal var mathService: MathService)
 </div>
 <div class="paragraph">
 <p>The above controller uses the <code>MathService</code> to expose a <code>/math/compute/{number}</code> endpoint. See the following example for a test that tests interaction with the mock collaborator:</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Table-driven testing requires new dependency
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">testImplementation(<span class="hljs-string">"io.kotest:kotest-assertions-table")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.kotest&lt;/groupId&gt;
+    &lt;artifactId&gt;kotest-assertions-table&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
 </div>
 <div class="listingblock">
 <div class="title">Mocking Collaborators</div>
