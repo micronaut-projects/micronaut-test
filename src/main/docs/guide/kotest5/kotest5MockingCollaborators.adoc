@@ -10,7 +10,7 @@ The above controller uses the `MathService` to expose a `/math/compute/{number}`
 
 IMPORTANT: Table-driven testing requires new dependency
 
-dependency:io.kotest:kotest-assertions-table[scope="testImplementation"]
+dependency:kotest-assertions-table[groupdId="io.kotest",scope="testImplementation"]
 
 .Mocking Collaborators
 [source,kotlin]
