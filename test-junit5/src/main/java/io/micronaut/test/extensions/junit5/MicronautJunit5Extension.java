@@ -290,8 +290,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         }
         findSpecInstance(context).ifPresent(specInstance -> {
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
-                final boolean isMock = applicationContext.resolveMetadata(injectedField.getType()).isAnnotationPresent(MockBean.class);
-                if (isMock) {
+                if (isMockedInjectionPoint(injectedField)) {
                     final Field field = injectedField.getField();
                     field.setAccessible(true);
                     try {
@@ -307,6 +306,21 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 }
             }
         });
+    }
+
+    private boolean isMockedInjectionPoint(FieldInjectionPoint<?, ?> injectedField) {
+        if (injectedField.getAnnotationMetadata().isAnnotationPresent(MockBean.class)) {
+            return true;
+        }
+        return isMockedInjectionPoint(injectedField.asArgument());
+    }
+
+    private <T> boolean isMockedInjectionPoint(Argument<T> injectedArgument) {
+        Qualifier<T> qualifier = resolveQualifier(injectedArgument);
+        return applicationContext.getBeanDefinitions(injectedArgument, qualifier)
+            .stream()
+            .filter(definition -> definition.isCandidateBean(injectedArgument))
+            .anyMatch(definition -> definition.getAnnotationMetadata().isAnnotationPresent(MockBean.class));
     }
 
     private Optional<?> findSpecInstance(ExtensionContext context) {
