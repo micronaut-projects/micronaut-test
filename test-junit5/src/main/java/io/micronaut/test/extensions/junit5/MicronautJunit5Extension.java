@@ -429,7 +429,8 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             micronautTest.contextBuilder(),
             micronautTest.transactionMode(),
             micronautTest.startApplication(),
-            micronautTest.resolveParameters());
+            micronautTest.resolveParameters(),
+            micronautTest.deduceEnvironment());
     }
 
     private boolean isNestedTestClass(Class<?> testClass) {

@@ -93,4 +93,5 @@ annotation class MicronautTest(
          *
          * @return true if [io.micronaut.runtime.EmbeddedApplication] should be started
          */
-        val startApplication: Boolean = true)
+        val startApplication: Boolean = true,
+        val deduceEnvironment: Boolean = true)

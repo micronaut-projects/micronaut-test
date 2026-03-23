@@ -218,7 +218,8 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     micronautTest.contextBuilder(),
                     micronautTest.transactionMode(),
                     micronautTest.startApplication(),
-                    false);
+                    false,
+                    micronautTest.deduceEnvironment());
         } else {
             return null;
         }

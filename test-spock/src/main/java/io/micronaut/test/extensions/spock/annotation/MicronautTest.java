@@ -105,4 +105,11 @@ public @interface MicronautTest {
      * @return true if {@link io.micronaut.runtime.EmbeddedApplication} should be started
      */
     boolean startApplication() default true;
+
+    /**
+     * Controls whether Micronaut should deduce additional active environments.
+     *
+     * @return {@code false} to mimic setting {@code MICRONAUT_ENV_DEDUCTION=false}
+     */
+    boolean deduceEnvironment() default true;
 }

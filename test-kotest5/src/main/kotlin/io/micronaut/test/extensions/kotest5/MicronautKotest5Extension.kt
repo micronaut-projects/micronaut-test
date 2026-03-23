@@ -130,6 +130,7 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
             micronautTest.transactionMode,
             micronautTest.startApplication,
             false,
+            micronautTest.deduceEnvironment,
         )
     }
 
