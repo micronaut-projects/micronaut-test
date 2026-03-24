@@ -296,6 +296,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             testProperties.put(TEST_ROLLBACK, String.valueOf(testAnnotationValue.rollback()));
             testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
             testProperties.put(TEST_TRANSACTION_MODE, String.valueOf(testAnnotationValue.transactionMode()));
+            testProperties.put(Environment.DEDUCE_ENVIRONMENT_PROPERTY, String.valueOf(testAnnotationValue.deduceEnvironment()));
             final Class<?> application = testAnnotationValue.application();
             if (application != void.class) {
                 builder.mainClass(application);

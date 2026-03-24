@@ -40,6 +40,7 @@ public class MicronautTestValue {
     private final boolean startApplication;
 
     private final boolean resolveParameters;
+    private final boolean deduceEnvironment;
 
     /**
      * Default constructor.
@@ -55,13 +56,15 @@ public class MicronautTestValue {
      * @param transactionMode The transaction mode
      * @param startApplication Whether the start the app
      * @param resolveParameters Whether to resolve parameters to beans
+     * @param deduceEnvironment Whether to deduce additional active environments
      */
     @Creator
     public MicronautTestValue(Class<?> application, String[] environments, String[] packages, String[] propertySources,
                               boolean rollback, boolean transactional, boolean rebuildContext,
                               Class<? extends ApplicationContextBuilder>[] contextBuilder, TransactionMode transactionMode,
                               boolean startApplication,
-                              boolean resolveParameters) {
+                              boolean resolveParameters,
+                              boolean deduceEnvironment) {
         this.application = application;
         this.environments = environments;
         this.packages = packages;
@@ -73,6 +76,7 @@ public class MicronautTestValue {
         this.transactionMode = transactionMode;
         this.startApplication = startApplication;
         this.resolveParameters = resolveParameters;
+        this.deduceEnvironment = deduceEnvironment;
     }
 
     /**
@@ -162,5 +166,12 @@ public class MicronautTestValue {
      */
     public boolean isResolveParameters() {
         return resolveParameters;
+    }
+
+    /**
+     * @return Whether to deduce additional active environments
+     */
+    public boolean deduceEnvironment() {
+        return deduceEnvironment;
     }
 }
