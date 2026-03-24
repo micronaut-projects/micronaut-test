@@ -66,6 +66,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#contextBuilder()" tabindex="0">contextBuilder</a></li>
 <li><a href="#transactionMode()" tabindex="0">transactionMode</a></li>
 <li><a href="#startApplication()" tabindex="0">startApplication</a></li>
+<li><a href="#deduceEnvironment()" tabindex="0">deduceEnvironment</a></li>
 </ol>
 </li>
 </ol>
@@ -112,40 +113,45 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color">
 <div class="block">The application context builder to use to construct the context.</div>
 </div>
-<div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
-<div class="col-second even-row-color"><code><a href="#environments()" class="member-name-link">environments</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>boolean</code></div>
+<div class="col-second even-row-color"><code><a href="#deduceEnvironment()" class="member-name-link">deduceEnvironment</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Controls whether Micronaut should deduce additional active environments.</div>
+</div>
 <div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
-<div class="col-second odd-row-color"><code><a href="#packages()" class="member-name-link">packages</a></code></div>
+<div class="col-second odd-row-color"><code><a href="#environments()" class="member-name-link">environments</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
-<div class="col-second even-row-color"><code><a href="#propertySources()" class="member-name-link">propertySources</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-second even-row-color"><code><a href="#packages()" class="member-name-link">packages</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second odd-row-color"><code><a href="#propertySources()" class="member-name-link">propertySources</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">One or many references to classpath.</div>
 </div>
-<div class="col-first odd-row-color"><code>boolean</code></div>
-<div class="col-second odd-row-color"><code><a href="#rebuildContext()" class="member-name-link">rebuildContext</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code>boolean</code></div>
+<div class="col-second even-row-color"><code><a href="#rebuildContext()" class="member-name-link">rebuildContext</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Whether to rebuild the application context before each test method.</div>
 </div>
-<div class="col-first even-row-color"><code>boolean</code></div>
-<div class="col-second even-row-color"><code><a href="#rollback()" class="member-name-link">rollback</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code>boolean</code></div>
+<div class="col-second odd-row-color"><code><a href="#rollback()" class="member-name-link">rollback</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Whether to rollback (if possible) any data access code between each test execution.</div>
 </div>
-<div class="col-first odd-row-color"><code>boolean</code></div>
-<div class="col-second odd-row-color"><code><a href="#startApplication()" class="member-name-link">startApplication</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code>boolean</code></div>
+<div class="col-second even-row-color"><code><a href="#startApplication()" class="member-name-link">startApplication</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Whether to start <code>EmbeddedApplication</code>.</div>
 </div>
-<div class="col-first even-row-color"><code>boolean</code></div>
-<div class="col-second even-row-color"><code><a href="#transactional()" class="member-name-link">transactional</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-first odd-row-color"><code>boolean</code></div>
+<div class="col-second odd-row-color"><code><a href="#transactional()" class="member-name-link">transactional</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Allow disabling or enabling of automatic transaction wrapping.</div>
 </div>
-<div class="col-first odd-row-color"><code><a href="../../../annotation/TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#transactionMode()" class="member-name-link">transactionMode</a></code></div>
-<div class="col-last odd-row-color">
+<div class="col-first even-row-color"><code><a href="../../../annotation/TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></code></div>
+<div class="col-second even-row-color"><code><a href="#transactionMode()" class="member-name-link">transactionMode</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">The transaction mode describing how transactions should be handled for each test.</div>
 </div>
 </div>
@@ -322,6 +328,23 @@ This can be used to disable <code>EmbeddedServer</code>.</p></div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>true if <code>EmbeddedApplication</code> should be started</dd>
+</dl>
+<dl class="notes">
+<dt>Default:</dt>
+<dd><code>true</code></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="deduceEnvironment()">
+<h3>deduceEnvironment</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="return-type">boolean</span>&nbsp;<span class="element-name">deduceEnvironment</span></div>
+<div class="block">Controls whether Micronaut should deduce additional active environments.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd><code>false</code> to mimic setting <code>MICRONAUT_ENV_DEDUCTION=false</code></dd>
 </dl>
 <dl class="notes">
 <dt>Default:</dt>

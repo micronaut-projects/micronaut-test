@@ -57,7 +57,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#constructor-detail" tabindex="0">Constructor Details</a>
 <ol class="toc-list">
-<li><a href="#%3Cinit%3E(java.lang.Class,java.lang.String%5B%5D,java.lang.String%5B%5D,java.lang.String%5B%5D,boolean,boolean,boolean,java.lang.Class%5B%5D,io.micronaut.test.annotation.TransactionMode,boolean,boolean)" tabindex="0">MicronautTestValue(Class, String[], String[], String[], boolean, boolean, boolean, Class[], TransactionMode, boolean, boolean)</a></li>
+<li><a href="#%3Cinit%3E(java.lang.Class,java.lang.String%5B%5D,java.lang.String%5B%5D,java.lang.String%5B%5D,boolean,boolean,boolean,java.lang.Class%5B%5D,io.micronaut.test.annotation.TransactionMode,boolean,boolean,boolean)" tabindex="0">MicronautTestValue(Class, String[], String[], String[], boolean, boolean, boolean, Class[], TransactionMode, boolean, boolean, boolean)</a></li>
 </ol>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
@@ -73,6 +73,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#transactionMode()" tabindex="0">transactionMode()</a></li>
 <li><a href="#startApplication()" tabindex="0">startApplication()</a></li>
 <li><a href="#isResolveParameters()" tabindex="0">isResolveParameters()</a></li>
+<li><a href="#deduceEnvironment()" tabindex="0">deduceEnvironment()</a></li>
 </ol>
 </li>
 </ol>
@@ -110,7 +111,7 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.Class,java.lang.String%5B%5D,java.lang.String%5B%5D,java.lang.String%5B%5D,boolean,boolean,boolean,java.lang.Class%5B%5D,io.micronaut.test.annotation.TransactionMode,boolean,boolean)" class="member-name-link">MicronautTestValue</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;application,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.Class,java.lang.String%5B%5D,java.lang.String%5B%5D,java.lang.String%5B%5D,boolean,boolean,boolean,java.lang.Class%5B%5D,io.micronaut.test.annotation.TransactionMode,boolean,boolean,boolean)" class="member-name-link">MicronautTestValue</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;application,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;environments,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;packages,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;propertySources,
@@ -120,7 +121,8 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends io.micronaut.context.ApplicationContextBuilder&gt;[]&nbsp;contextBuilder,
  <a href="TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a>&nbsp;transactionMode,
  boolean&nbsp;startApplication,
- boolean&nbsp;resolveParameters)</code></div>
+ boolean&nbsp;resolveParameters,
+ boolean&nbsp;deduceEnvironment)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Default constructor.</div>
 </div>
@@ -146,41 +148,44 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">The application context builder to use to construct the context.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#environments()" class="member-name-link">environments</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isResolveParameters()" class="member-name-link">isResolveParameters</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#packages()" class="member-name-link">packages</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deduceEnvironment()" class="member-name-link">deduceEnvironment</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#propertySources()" class="member-name-link">propertySources</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#environments()" class="member-name-link">environments</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isResolveParameters()" class="member-name-link">isResolveParameters</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#packages()" class="member-name-link">packages</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#propertySources()" class="member-name-link">propertySources</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">One or many references to classpath.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rebuildContext()" class="member-name-link">rebuildContext</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rebuildContext()" class="member-name-link">rebuildContext</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Whether to rebuild the application context before each test method.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rollback()" class="member-name-link">rollback</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rollback()" class="member-name-link">rollback</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Whether to rollback (if possible) any data access code between each test execution.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#startApplication()" class="member-name-link">startApplication</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#transactional()" class="member-name-link">transactional</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#startApplication()" class="member-name-link">startApplication</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#transactional()" class="member-name-link">transactional</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Allow disabling or enabling of automatic transaction wrapping.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#transactionMode()" class="member-name-link">transactionMode</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#transactionMode()" class="member-name-link">transactionMode</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">The <a href="TransactionMode.html" title="enum class in io.micronaut.test.annotation"><code>TransactionMode</code></a>.</div>
 </div>
 </div>
@@ -201,7 +206,7 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(java.lang.Class,java.lang.String[],java.lang.String[],java.lang.String[],boolean,boolean,boolean,java.lang.Class[],io.micronaut.test.annotation.TransactionMode,boolean,boolean)">
+<section class="detail" id="&lt;init&gt;(java.lang.Class,java.lang.String[],java.lang.String[],java.lang.String[],boolean,boolean,boolean,java.lang.Class[],io.micronaut.test.annotation.TransactionMode,boolean,boolean,boolean)">
 <h3>MicronautTestValue</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="annotations">@Creator
@@ -215,7 +220,8 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends io.micronaut.context.ApplicationContextBuilder&gt;[]&nbsp;contextBuilder,
  <a href="TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a>&nbsp;transactionMode,
  boolean&nbsp;startApplication,
- boolean&nbsp;resolveParameters)</span></div>
+ boolean&nbsp;resolveParameters,
+ boolean&nbsp;deduceEnvironment)</span></div>
 <div class="block">Default constructor.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -230,6 +236,7 @@ loadScripts(document, 'script');</script>
 <dd><code>transactionMode</code> - The transaction mode</dd>
 <dd><code>startApplication</code> - Whether the start the app</dd>
 <dd><code>resolveParameters</code> - Whether to resolve parameters to beans</dd>
+<dd><code>deduceEnvironment</code> - Whether to deduce additional active environments</dd>
 </dl>
 </div>
 </section>
@@ -376,6 +383,18 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>Whether to resolve test method parameters.</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="deduceEnvironment()">
+<h3>deduceEnvironment</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">deduceEnvironment</span>()</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>Whether to deduce additional active environments</dd>
 </dl>
 </div>
 </section>
