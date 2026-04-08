@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DbProperties
-@MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
+@MicronautTest
 @Property(name = "datasources.default.dialect", value = "H2")
 @Property(name = "datasources.default.driverClassName", value = "org.h2.Driver")
 @Property(name = "datasources.default.schema-generate", value = "CREATE_DROP")
