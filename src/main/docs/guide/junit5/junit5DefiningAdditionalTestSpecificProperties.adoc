@@ -32,4 +32,4 @@ For example:
 include::{junit5tests}/PropertySourceMapTest.java[]
 ----
 
-NOTE: When using `TestPropertyProvider` your test must be declared with JUnit's `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` annotation.
+NOTE: When using `TestPropertyProvider` your test must use JUnit's `PER_CLASS` test instance lifecycle, for example with `@TestInstance(TestInstance.Lifecycle.PER_CLASS)`. The properties are resolved from the test instance before the Micronaut context starts.
