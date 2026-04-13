@@ -43,6 +43,19 @@ EmbeddedServer server //refers to the server that was started up for this test s
 ApplicationContext context //refers to the current application context within the scope of the test
 ----
 
+### Limiting Active Test Contexts
+
+If your build runs tests in parallel and each `@MicronautTest` starts its own datasource, connection pool, or other expensive shared resource, you can limit how many Micronaut test application contexts are active at the same time with the `micronaut.test.context.parallelism` JVM system property.
+
+The value must be greater than `0` and applies across Micronaut Test integrations such as JUnit 5, Spock, and Kotest.
+
+[source,groovy]
+----
+test {
+    systemProperty "micronaut.test.context.parallelism", "1"
+}
+----
+
 ### Eager Singleton Initialization
 
 If you enable https://docs.micronaut.io/latest/guide/index.html#eagerInit[eager singleton initialization] in your application, the Micronaut Framework eagerly initializes all singletons at startup time. This can be useful for applications that need to perform some initialization at startup time, such as registering a bean with a third party library.
