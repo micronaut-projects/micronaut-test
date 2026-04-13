@@ -387,11 +387,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         if (argument != null) {
             Optional<String> v = argument.getAnnotationMetadata().stringValue(Value.class);
             if (v.isPresent()) {
-                Optional<String> finalV = v;
-                return applicationContext.getEnvironment().getProperty(v.get(), argument)
-                    .orElseThrow(() ->
-                        new ParameterResolutionException("Unresolvable property specified to @Value: " + finalV.get())
-                    );
+                return resolveValueParameter(parameterContext, argument, v.get());
             } else {
                 v = argument.getAnnotationMetadata().stringValue(Property.class, "name");
                 if (v.isPresent()) {
@@ -407,6 +403,25 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         } else {
             return applicationContext.getBean(parameterContext.getParameter().getType());
         }
+    }
+
+    private Object resolveValueParameter(ParameterContext parameterContext, Argument<?> argument, String value) {
+        BeanDefinition<?> beanDefinition = applicationContext
+            .findBeanDefinition(parameterContext.getDeclaringExecutable().getDeclaringClass())
+            .orElse(null);
+        if (beanDefinition == null) {
+            beanDefinition = specDefinition;
+        }
+        if (beanDefinition != null) {
+            try (DefaultBeanResolutionContext resolutionContext = new DefaultBeanResolutionContext(applicationContext, beanDefinition)) {
+                return resolutionContext.resolvePropertyValue(argument, value, null, true);
+            } catch (RuntimeException e) {
+                throw new ParameterResolutionException("Unresolvable property specified to @Value: " + value, e);
+            }
+        }
+        return applicationContext.resolvePlaceholders(value)
+            .flatMap(resolved -> applicationContext.getConversionService().convert(resolved, argument))
+            .orElseThrow(() -> new ParameterResolutionException("Unresolvable property specified to @Value: " + value));
     }
 
     /**
