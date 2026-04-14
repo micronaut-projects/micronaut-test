@@ -17,7 +17,7 @@ open class KotlinJunitTest {
     lateinit var application: EmbeddedApplication<*>
 
     @Inject
-    lateinit var echoService: EchoServiceImpl
+    lateinit var echoService: EchoService
 
     @Test
     fun testItWorks() {
@@ -31,14 +31,18 @@ open class KotlinJunitTest {
     }
 
     @MockBean(EchoServiceImpl::class)
-    open fun echoService(): EchoServiceImpl {
-        return Mockito.mock(EchoServiceImpl::class.java)
+    open fun echoService(): EchoService {
+        return Mockito.mock(EchoService::class.java)
     }
 }
 
+interface EchoService {
+    fun echo(message: String): String
+}
+
 @Singleton
-open class EchoServiceImpl {
-    open fun echo(message: String): String {
+open class EchoServiceImpl : EchoService {
+    override fun echo(message: String): String {
         return message
     }
 }
