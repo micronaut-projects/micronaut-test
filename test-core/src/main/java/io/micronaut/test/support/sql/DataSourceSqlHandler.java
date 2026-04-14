@@ -45,10 +45,12 @@ public class DataSourceSqlHandler implements SqlHandler<DataSource> {
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()
         ) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("{}: Executing SQL: {}", dataSource, sql);
+            for (String sqlStatement : SqlScriptStatementSplitter.split(sql)) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("{}: Executing SQL: {}", dataSource, sqlStatement);
+                }
+                statement.execute(sqlStatement);
             }
-            statement.execute(sql);
         } catch (SQLException sqlException) {
             throw new SqlAnnotationHandlingException(sqlException);
         }

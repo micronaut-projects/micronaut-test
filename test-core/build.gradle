@@ -13,6 +13,11 @@ dependencies {
     api(mn.micronaut.inject)
 
     implementation(mn.micronaut.context)
+
+    testImplementation(libs.managed.junit.jupiter.api)
+    testImplementation(mnR2dbc.r2dbc.spi)
+    testImplementation(mn.reactor)
+    testRuntimeOnly(libs.managed.junit.jupiter.engine)
 }
 
 jar {
