@@ -8,7 +8,6 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 
 @MicronautTest
 open class KotlinJunitTest {
@@ -25,19 +24,26 @@ open class KotlinJunitTest {
     }
 
     @Test
-    fun echoServiceIsMocked() {
+    fun echoServiceUsesMockBeanInstance() {
         Assertions.assertFalse(echoService is InterceptedProxy<*>)
-        Assertions.assertTrue(Mockito.mockingDetails(echoService).isMock)
+        Assertions.assertTrue(echoService is MockEchoService)
+        Assertions.assertEquals("mocked: hello", echoService.echo("hello"))
     }
 
     @MockBean(EchoServiceImpl::class)
     open fun echoService(): EchoService {
-        return Mockito.mock(EchoService::class.java)
+        return MockEchoService()
     }
 }
 
 interface EchoService {
     fun echo(message: String): String
+}
+
+class MockEchoService : EchoService {
+    override fun echo(message: String): String {
+        return "mocked: $message"
+    }
 }
 
 @Singleton
