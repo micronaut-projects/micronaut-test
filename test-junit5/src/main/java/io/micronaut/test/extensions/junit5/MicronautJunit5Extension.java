@@ -452,7 +452,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     private boolean isApplicationContextParameter(ParameterContext parameterContext) {
-        return parameterContext.getParameter().getType().isInstance(applicationContext);
+        return ApplicationContext.class.isAssignableFrom(parameterContext.getParameter().getType());
     }
 
     private Argument<?> getArgument(ParameterContext parameterContext, ApplicationContext applicationContext) {
