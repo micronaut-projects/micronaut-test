@@ -33,4 +33,9 @@ public class ArgumentInjectionTest {
     void testValueArgumentInjected(@Value("${foo.bar}") String val) {
         assertEquals("test", val);
     }
+
+    @Test
+    void testExpressionValueArgumentInjected(@Value("#{1 + 1}") Integer val) {
+        assertEquals(2, val);
+    }
 }

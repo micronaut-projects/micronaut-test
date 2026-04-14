@@ -406,6 +406,13 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     private Object resolveValueParameter(ParameterContext parameterContext, Argument<?> argument, String value) {
+        if (argument.getAnnotationMetadata().hasEvaluatedExpressions()) {
+            Object resolved = argument.getAnnotationMetadata().getValue(Value.class, argument).orElse(null);
+            if (resolved != null || argument.isDeclaredNullable()) {
+                return resolved;
+            }
+            throw new ParameterResolutionException("Unresolvable property specified to @Value: " + value);
+        }
         BeanDefinition<?> beanDefinition = applicationContext
             .findBeanDefinition(parameterContext.getDeclaringExecutable().getDeclaringClass())
             .orElse(null);
