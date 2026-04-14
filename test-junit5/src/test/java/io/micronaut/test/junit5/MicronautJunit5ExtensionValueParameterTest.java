@@ -3,7 +3,7 @@ package io.micronaut.test.junit5;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Executable;
 import io.micronaut.context.annotation.Value;
-import io.micronaut.core.annotation.AnnotationMetadata;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.type.Argument;
 import io.micronaut.test.extensions.junit5.MicronautJunit5Extension;
 import jakarta.inject.Singleton;
@@ -20,9 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class MicronautJunit5ExtensionValueParameterTest {
 
@@ -59,11 +56,9 @@ class MicronautJunit5ExtensionValueParameterTest {
             TestMicronautJunit5Extension extension = new TestMicronautJunit5Extension();
             extension.setApplicationContext(applicationContext);
 
-            Argument<String> argument = expressionArgument(true);
-
             assertNull(extension.invokeResolveValueParameter(
                 parameterContextFor(NonBeanExecutable.class.getDeclaredMethod("placeholderMethod", String.class)),
-                argument,
+                expressionArgument(applicationContext, "nullableExpressionMethod"),
                 "#{ null }"
             ));
         }
@@ -74,13 +69,12 @@ class MicronautJunit5ExtensionValueParameterTest {
         try (ApplicationContext applicationContext = ApplicationContext.run()) {
             TestMicronautJunit5Extension extension = new TestMicronautJunit5Extension();
             extension.setApplicationContext(applicationContext);
-            Argument<String> argument = expressionArgument(false);
 
             ParameterResolutionException exception = assertThrows(
                 ParameterResolutionException.class,
                 () -> extension.invokeResolveValueParameter(
                     parameterContextFor(NonBeanExecutable.class.getDeclaredMethod("placeholderMethod", String.class)),
-                    argument,
+                    expressionArgument(applicationContext, "nonNullableExpressionMethod"),
                     "#{ null }"
                 )
             );
@@ -126,22 +120,11 @@ class MicronautJunit5ExtensionValueParameterTest {
     }
 
     private static ParameterContext parameterContextFor(Method method) {
-        ParameterContext parameterContext = mock(ParameterContext.class);
-        when(parameterContext.getDeclaringExecutable()).thenReturn(method);
-        when(parameterContext.getIndex()).thenReturn(0);
-        when(parameterContext.getParameter()).thenReturn(method.getParameters()[0]);
-        return parameterContext;
+        return new TestParameterContext(method, 0);
     }
 
-    @SuppressWarnings("unchecked")
-    private static Argument<String> expressionArgument(boolean nullable) {
-        Argument<String> argument = mock(Argument.class);
-        AnnotationMetadata annotationMetadata = mock(AnnotationMetadata.class);
-        when(argument.getAnnotationMetadata()).thenReturn(annotationMetadata);
-        when(argument.isDeclaredNullable()).thenReturn(nullable);
-        when(annotationMetadata.hasEvaluatedExpressions()).thenReturn(true);
-        when(annotationMetadata.getValue(eq(Value.class), eq(argument))).thenReturn(Optional.empty());
-        return argument;
+    private static Argument<?> expressionArgument(ApplicationContext applicationContext, String methodName) throws NoSuchMethodException {
+        return applicationContext.getExecutableMethod(TestBean.class, methodName, String.class).getArguments()[0];
     }
 
     @Singleton
@@ -157,10 +140,35 @@ class MicronautJunit5ExtensionValueParameterTest {
         @Executable
         void missingPropertyMethod(@Value("${missing.property}") String value) {
         }
+
+        @Executable
+        void nullableExpressionMethod(@Nullable @Value("#{ null }") String value) {
+        }
+
+        @Executable
+        void nonNullableExpressionMethod(@Value("#{ null }") String value) {
+        }
     }
 
     static final class NonBeanExecutable {
         void placeholderMethod(String value) {
+        }
+    }
+
+    private record TestParameterContext(java.lang.reflect.Executable declaringExecutable, int index) implements ParameterContext {
+        @Override
+        public java.lang.reflect.Parameter getParameter() {
+            return declaringExecutable.getParameters()[index];
+        }
+
+        @Override
+        public int getIndex() {
+            return index;
+        }
+
+        @Override
+        public Optional<Object> getTarget() {
+            return Optional.empty();
         }
     }
 
