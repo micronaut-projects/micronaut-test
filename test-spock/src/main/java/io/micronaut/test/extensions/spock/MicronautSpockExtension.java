@@ -115,22 +115,33 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         );
 
         spec.addCleanupSpecInterceptor(invocation -> {
-            Throwable failure = null;
+            Throwable primary = null;
             try {
                 invocation.proceed();
             } catch (Throwable e) {
-                failure = e;
-                throw e;
-            } finally {
-                try {
-                    afterTestClass(buildContext(invocation, failure));
-                } finally {
-                    try {
-                        afterClass(invocation);
-                    } finally {
-                        singletonMocks.clear();
-                    }
+                primary = e;
+            }
+            try {
+                afterTestClass(buildContext(invocation, primary));
+            } catch (Throwable e) {
+                if (primary == null) {
+                    primary = e;
+                } else {
+                    primary.addSuppressed(e);
                 }
+            }
+            try {
+                afterClass(invocation);
+            } catch (Throwable e) {
+                if (primary == null) {
+                    primary = e;
+                } else {
+                    primary.addSuppressed(e);
+                }
+            }
+            singletonMocks.clear();
+            if (primary != null) {
+                throw primary;
             }
         });
 
