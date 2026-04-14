@@ -9,22 +9,21 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtensionConfigurationException;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class TestPropertyProviderLifecycleValidationTest {
 
     @Test
     void testPropertyProviderRequiresPerClassLifecycle() throws Exception {
-        ExtensionContext extensionContext = mock(ExtensionContext.class);
-        doReturn(MisconfiguredTestPropertyProviderLifecycleSubject.class).when(extensionContext).getRequiredTestClass();
-        when(extensionContext.getTestInstanceLifecycle()).thenReturn(Optional.of(TestInstance.Lifecycle.PER_METHOD));
+        ExtensionContext extensionContext = extensionContext(
+            MisconfiguredTestPropertyProviderLifecycleSubject.class,
+            TestInstance.Lifecycle.PER_METHOD
+        );
 
         ExtensionConfigurationException e = assertThrows(
             ExtensionConfigurationException.class,
@@ -32,6 +31,21 @@ class TestPropertyProviderLifecycleValidationTest {
         );
 
         assertEquals("Tests that implement TestPropertyProvider must use the PER_CLASS test instance lifecycle.", e.getMessage());
+    }
+
+    private static ExtensionContext extensionContext(Class<?> testClass, TestInstance.Lifecycle lifecycle) {
+        return (ExtensionContext) Proxy.newProxyInstance(
+            ExtensionContext.class.getClassLoader(),
+            new Class<?>[]{ExtensionContext.class},
+            (proxy, method, args) -> switch (method.getName()) {
+                case "getRequiredTestClass" -> testClass;
+                case "getTestInstanceLifecycle" -> Optional.of(lifecycle);
+                case "toString" -> "TestExtensionContext[" + testClass.getName() + "]";
+                case "hashCode" -> System.identityHashCode(proxy);
+                case "equals" -> proxy == args[0];
+                default -> throw new UnsupportedOperationException("Unexpected ExtensionContext method: " + method.getName());
+            }
+        );
     }
 
     @MicronautTest
