@@ -71,6 +71,32 @@ class DataSourceSqlHandlerTest {
         assertEquals(List.of(block.trim()), SqlScriptStatementSplitter.split(block));
     }
 
+    @Test
+    void detectsPlSqlBlocksWithLeadingComments() {
+        String block = """
+            -- This script creates a PL/SQL block
+            /* Another comment */
+            BEGIN
+                DELETE FROM foo;
+                COMMIT;
+            END;
+            """;
+
+        assertEquals(List.of(block.trim()), SqlScriptStatementSplitter.split(block));
+    }
+
+    @Test
+    void ignoresTrailingCommentOnlyFragments() {
+        assertEquals(List.of(
+            "DELETE FROM foo",
+            "DELETE FROM bar"
+        ), SqlScriptStatementSplitter.split("""
+            DELETE FROM foo;
+            DELETE FROM bar;
+            -- trailing comment only
+            """));
+    }
+
     private static DataSource dataSource(List<String> executedStatements) {
         Statement statement = (Statement) Proxy.newProxyInstance(
             Statement.class.getClassLoader(),

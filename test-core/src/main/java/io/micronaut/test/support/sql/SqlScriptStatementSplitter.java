@@ -130,15 +130,77 @@ final class SqlScriptStatementSplitter {
     }
 
     private static boolean looksLikePlSqlBlock(String script) {
-        String upper = script.toUpperCase(Locale.ROOT);
+        String upper = firstNonCommentToken(script).toUpperCase(Locale.ROOT);
         boolean startsWithBlock = upper.startsWith("BEGIN") || upper.startsWith("DECLARE");
-        return startsWithBlock && upper.matches("(?s).*\\bEND\\s*;?\\s*$");
+        return startsWithBlock && script.toUpperCase(Locale.ROOT).matches("(?s).*\\bEND\\s*;?\\s*$");
+    }
+
+    /**
+     * Returns the script with leading block/line comments and whitespace stripped,
+     * so that PL/SQL block detection works even when a script starts with comments.
+     */
+    private static String firstNonCommentToken(String script) {
+        int i = 0;
+        int len = script.length();
+        while (i < len) {
+            char c = script.charAt(i);
+            char next = i + 1 < len ? script.charAt(i + 1) : '\0';
+            if (Character.isWhitespace(c)) {
+                i++;
+            } else if (c == '-' && next == '-') {
+                // skip line comment
+                i += 2;
+                while (i < len && script.charAt(i) != '\n' && script.charAt(i) != '\r') {
+                    i++;
+                }
+            } else if (c == '/' && next == '*') {
+                // skip block comment
+                i += 2;
+                while (i + 1 < len && !(script.charAt(i) == '*' && script.charAt(i + 1) == '/')) {
+                    i++;
+                }
+                i = Math.min(i + 2, len); // skip closing */
+            } else {
+                break;
+            }
+        }
+        return script.substring(i);
     }
 
     private static void addStatement(List<String> statements, StringBuilder currentStatement) {
         String statement = currentStatement.toString().trim();
-        if (!statement.isEmpty()) {
+        if (!statement.isEmpty() && !isCommentOnly(statement)) {
             statements.add(statement);
         }
+    }
+
+    /**
+     * Returns true if the given statement contains only whitespace or SQL comments,
+     * with no actual SQL tokens.
+     */
+    private static boolean isCommentOnly(String statement) {
+        int i = 0;
+        int len = statement.length();
+        while (i < len) {
+            char c = statement.charAt(i);
+            char next = i + 1 < len ? statement.charAt(i + 1) : '\0';
+            if (Character.isWhitespace(c)) {
+                i++;
+            } else if (c == '-' && next == '-') {
+                i += 2;
+                while (i < len && statement.charAt(i) != '\n' && statement.charAt(i) != '\r') {
+                    i++;
+                }
+            } else if (c == '/' && next == '*') {
+                i += 2;
+                while (i + 1 < len && !(statement.charAt(i) == '*' && statement.charAt(i + 1) == '/')) {
+                    i++;
+                }
+                i = Math.min(i + 2, len); // skip closing */
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 }

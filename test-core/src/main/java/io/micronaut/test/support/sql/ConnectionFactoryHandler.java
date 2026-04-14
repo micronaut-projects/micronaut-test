@@ -46,17 +46,22 @@ public class ConnectionFactoryHandler implements SqlHandler<ConnectionFactory> {
     @Override
     public void handle(@NonNull ConnectionFactory connectionFactory, @NonNull String sql) {
         List<String> statements = SqlScriptStatementSplitter.split(sql);
-        List<Long> rowsUpdated = Mono.from(connectionFactory.create())
-            .flatMapMany(c -> Flux.fromIterable(statements)
+        if (statements.isEmpty()) {
+            return;
+        }
+        List<Long> rowsUpdated = Mono.usingWhen(
+            connectionFactory.create(),
+            c -> Flux.fromIterable(statements)
                 .concatMap(sqlStatement -> {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("{}: Executing SQL: {}", connectionFactory, sqlStatement);
                     }
                     return c.createStatement(sqlStatement).execute();
-                }))
-            .flatMap(Result::getRowsUpdated)
-            .collectList()
-            .block();
+                })
+                .flatMap(Result::getRowsUpdated)
+                .collectList(),
+            c -> Mono.from(c.close())
+        ).block();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("{}: Updated rows: {}", connectionFactory, rowsUpdated);

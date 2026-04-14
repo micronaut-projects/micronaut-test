@@ -60,6 +60,7 @@ class ConnectionFactoryHandlerTest {
             new Class<?>[]{Connection.class},
             (proxy, method, args) -> switch (method.getName()) {
                 case "createStatement" -> statement((String) args[0], executedStatements, result);
+                case "close" -> Mono.empty();
                 case "toString" -> "RecordingConnection";
                 default -> throw new UnsupportedOperationException(method.getName());
             }
