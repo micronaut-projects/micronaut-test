@@ -139,7 +139,15 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     primary.addSuppressed(e);
                 }
             }
-            singletonMocks.clear();
+            try {
+                singletonMocks.clear();
+            } catch (Throwable e) {
+                if (primary == null) {
+                    primary = e;
+                } else {
+                    primary.addSuppressed(e);
+                }
+            }
             if (primary != null) {
                 throw primary;
             }
