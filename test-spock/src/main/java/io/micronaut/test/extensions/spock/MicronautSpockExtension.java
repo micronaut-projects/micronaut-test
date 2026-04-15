@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.Callable;
 
 /**
  * Extension for Spock.
@@ -115,39 +116,20 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         );
 
         spec.addCleanupSpecInterceptor(invocation -> {
-            Throwable primary = null;
-            try {
-                invocation.proceed();
-            } catch (Throwable e) {
-                primary = e;
-            }
-            try {
-                afterTestClass(buildContext(invocation, primary));
-            } catch (Throwable e) {
-                if (primary == null) {
-                    primary = e;
-                } else {
-                    primary.addSuppressed(e);
-                }
-            }
-            try {
+            Throwable primary = captureCleanupSpecFailure(invocation);
+            TestContext testContext = buildContext(invocation, primary);
+            primary = collectCleanupFailure(primary, () -> {
+                afterTestClass(testContext);
+                return null;
+            });
+            primary = collectCleanupFailure(primary, () -> {
                 afterClass(invocation);
-            } catch (Throwable e) {
-                if (primary == null) {
-                    primary = e;
-                } else {
-                    primary.addSuppressed(e);
-                }
-            }
-            try {
+                return null;
+            });
+            primary = collectCleanupFailure(primary, () -> {
                 singletonMocks.clear();
-            } catch (Throwable e) {
-                if (primary == null) {
-                    primary = e;
-                } else {
-                    primary.addSuppressed(e);
-                }
-            }
+                return null;
+            });
             if (primary != null) {
                 throw primary;
             }
@@ -254,6 +236,36 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         } else {
             return null;
         }
+    }
+
+    private Throwable captureCleanupSpecFailure(IMethodInvocation invocation) throws Throwable {
+        try {
+            invocation.proceed();
+            return null;
+        } catch (Exception e) {
+            return e;
+        } catch (Error e) {
+            return e;
+        }
+    }
+
+    private Throwable collectCleanupFailure(Throwable primary, Callable<Void> cleanupStep) {
+        try {
+            cleanupStep.call();
+        } catch (Exception e) {
+            return addCleanupFailure(primary, e);
+        } catch (Error e) {
+            return addCleanupFailure(primary, e);
+        }
+        return primary;
+    }
+
+    private Throwable addCleanupFailure(Throwable primary, Throwable cleanupFailure) {
+        if (primary == null) {
+            return cleanupFailure;
+        }
+        primary.addSuppressed(cleanupFailure);
+        return primary;
     }
 
     private TestContext buildContext(IMethodInvocation invocation, Throwable exception) {
