@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Handler for raw {@link DataSource} instances.
@@ -42,14 +44,22 @@ public class DataSourceSqlHandler implements SqlHandler<DataSource> {
 
     @Override
     public void handle(@NonNull DataSource dataSource, @NonNull String sql) {
+        List<String> statements = SqlScriptStatementSplitter.split(sql);
+        if (statements.isEmpty()) {
+            return;
+        }
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()
         ) {
-            for (String sqlStatement : SqlScriptStatementSplitter.split(sql)) {
+            for (String sqlStatement : statements) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("{}: Executing SQL: {}", dataSource, sqlStatement);
                 }
-                statement.execute(sqlStatement);
+                statement.addBatch(sqlStatement);
+            }
+            int[] rowsUpdated = statement.executeBatch();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("{}: Updated rows: {}", dataSource, Arrays.toString(rowsUpdated));
             }
         } catch (SQLException sqlException) {
             throw new SqlAnnotationHandlingException(sqlException);

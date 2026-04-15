@@ -17,30 +17,21 @@ package io.micronaut.test.support.sql;
 
 import org.junit.jupiter.api.Test;
 
-import javax.sql.DataSource;
-import java.lang.reflect.Proxy;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class DataSourceSqlHandlerTest {
-
-    private final DataSourceSqlHandler handler = new DataSourceSqlHandler();
+class SqlScriptStatementSplitterTest {
 
     @Test
-    void executesMultiStatementScriptsOneStatementAtATime() {
-        List<String> executedStatements = new ArrayList<>();
-
-        handler.handle(dataSource(executedStatements), """
+    void splitsMultiStatementScripts() {
+        assertEquals(List.of(
+            "DELETE FROM foo",
+            "DELETE FROM bar"
+        ), SqlScriptStatementSplitter.split("""
             DELETE FROM foo;
             DELETE FROM bar;
-            """);
-
-        assertEquals(List.of("DELETE FROM foo", "DELETE FROM bar"), executedStatements);
+            """));
     }
 
     @Test
@@ -55,6 +46,17 @@ class DataSourceSqlHandlerTest {
             INSERT INTO foo(message) VALUES ('done');
             /* another ; comment */
             DELETE FROM foo WHERE message = 'done';
+            """));
+    }
+
+    @Test
+    void keepsSemicolonsInsideDoubleQuotedIdentifiers() {
+        assertEquals(List.of(
+            "INSERT INTO \"semi;colon\"(message) VALUES ('done')",
+            "DELETE FROM foo"
+        ), SqlScriptStatementSplitter.split("""
+            INSERT INTO "semi;colon"(message) VALUES ('done');
+            DELETE FROM foo;
             """));
     }
 
@@ -95,46 +97,5 @@ class DataSourceSqlHandlerTest {
             DELETE FROM bar;
             -- trailing comment only
             """));
-    }
-
-    private static DataSource dataSource(List<String> executedStatements) {
-        Statement statement = (Statement) Proxy.newProxyInstance(
-            Statement.class.getClassLoader(),
-            new Class<?>[]{Statement.class},
-            (proxy, method, args) -> switch (method.getName()) {
-                case "execute" -> {
-                    String sql = (String) args[0];
-                    if (sql.chars().filter(ch -> ch == ';').count() > 1) {
-                        throw new SQLException("multiple statements are not supported");
-                    }
-                    executedStatements.add(sql);
-                    yield true;
-                }
-                case "close" -> null;
-                case "toString" -> "RecordingStatement";
-                default -> throw new UnsupportedOperationException(method.getName());
-            }
-        );
-
-        Connection connection = (Connection) Proxy.newProxyInstance(
-            Connection.class.getClassLoader(),
-            new Class<?>[]{Connection.class},
-            (proxy, method, args) -> switch (method.getName()) {
-                case "createStatement" -> statement;
-                case "close" -> null;
-                case "toString" -> "RecordingConnection";
-                default -> throw new UnsupportedOperationException(method.getName());
-            }
-        );
-
-        return (DataSource) Proxy.newProxyInstance(
-            DataSource.class.getClassLoader(),
-            new Class<?>[]{DataSource.class},
-            (proxy, method, args) -> switch (method.getName()) {
-                case "getConnection" -> connection;
-                case "toString" -> "RecordingDataSource";
-                default -> throw new UnsupportedOperationException(method.getName());
-            }
-        );
     }
 }

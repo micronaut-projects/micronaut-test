@@ -44,85 +44,12 @@ final class SqlScriptStatementSplitter {
 
         List<String> statements = new ArrayList<>();
         StringBuilder currentStatement = new StringBuilder();
-        boolean inSingleQuote = false;
-        boolean inDoubleQuote = false;
-        boolean inLineComment = false;
-        boolean inBlockComment = false;
-
-        for (int i = 0; i < script.length(); i++) {
-            char current = script.charAt(i);
-            char next = i + 1 < script.length() ? script.charAt(i + 1) : '\0';
-
-            if (inLineComment) {
-                currentStatement.append(current);
-                if (current == '\n' || current == '\r') {
-                    inLineComment = false;
-                }
-                continue;
-            }
-            if (inBlockComment) {
-                currentStatement.append(current);
-                if (current == '*' && next == '/') {
-                    currentStatement.append(next);
-                    i++;
-                    inBlockComment = false;
-                }
-                continue;
-            }
-            if (inSingleQuote) {
-                currentStatement.append(current);
-                if (current == '\'') {
-                    if (next == '\'') {
-                        currentStatement.append(next);
-                        i++;
-                    } else {
-                        inSingleQuote = false;
-                    }
-                }
-                continue;
-            }
-            if (inDoubleQuote) {
-                currentStatement.append(current);
-                if (current == '"') {
-                    if (next == '"') {
-                        currentStatement.append(next);
-                        i++;
-                    } else {
-                        inDoubleQuote = false;
-                    }
-                }
-                continue;
-            }
-
-            if (current == '-' && next == '-') {
-                currentStatement.append(current).append(next);
-                i++;
-                inLineComment = true;
-                continue;
-            }
-            if (current == '/' && next == '*') {
-                currentStatement.append(current).append(next);
-                i++;
-                inBlockComment = true;
-                continue;
-            }
-            if (current == '\'') {
-                currentStatement.append(current);
-                inSingleQuote = true;
-                continue;
-            }
-            if (current == '"') {
-                currentStatement.append(current);
-                inDoubleQuote = true;
-                continue;
-            }
-            if (current == ';') {
+        StatementParser parser = new StatementParser(script);
+        while (parser.hasMore()) {
+            if (parser.readNext(currentStatement)) {
                 addStatement(statements, currentStatement);
                 currentStatement.setLength(0);
-                continue;
             }
-
-            currentStatement.append(current);
         }
 
         addStatement(statements, currentStatement);
@@ -132,7 +59,31 @@ final class SqlScriptStatementSplitter {
     private static boolean looksLikePlSqlBlock(String script) {
         String upper = firstNonCommentToken(script).toUpperCase(Locale.ROOT);
         boolean startsWithBlock = upper.startsWith("BEGIN") || upper.startsWith("DECLARE");
-        return startsWithBlock && script.toUpperCase(Locale.ROOT).matches("(?s).*\\bEND\\s*;?\\s*$");
+        return startsWithBlock && endsWithPlSqlBlockTerminator(script);
+    }
+
+    private static boolean endsWithPlSqlBlockTerminator(String script) {
+        int index = skipTrailingWhitespace(script, script.length());
+        if (index > 0 && script.charAt(index - 1) == ';') {
+            index = skipTrailingWhitespace(script, index - 1);
+        }
+        return endsWithWord(script, index, "END");
+    }
+
+    private static int skipTrailingWhitespace(String text, int index) {
+        int position = index;
+        while (position > 0 && Character.isWhitespace(text.charAt(position - 1))) {
+            position--;
+        }
+        return position;
+    }
+
+    private static boolean endsWithWord(String text, int endExclusive, String word) {
+        int start = endExclusive - word.length();
+        if (start < 0 || !text.regionMatches(true, start, word, 0, word.length())) {
+            return false;
+        }
+        return start == 0 || !Character.isLetterOrDigit(text.charAt(start - 1));
     }
 
     /**
@@ -140,67 +91,123 @@ final class SqlScriptStatementSplitter {
      * so that PL/SQL block detection works even when a script starts with comments.
      */
     private static String firstNonCommentToken(String script) {
-        int i = 0;
-        int len = script.length();
-        while (i < len) {
-            char c = script.charAt(i);
-            char next = i + 1 < len ? script.charAt(i + 1) : '\0';
-            if (Character.isWhitespace(c)) {
-                i++;
-            } else if (c == '-' && next == '-') {
-                // skip line comment
-                i += 2;
-                while (i < len && script.charAt(i) != '\n' && script.charAt(i) != '\r') {
-                    i++;
-                }
-            } else if (c == '/' && next == '*') {
-                // skip block comment
-                i += 2;
-                while (i + 1 < len && !(script.charAt(i) == '*' && script.charAt(i + 1) == '/')) {
-                    i++;
-                }
-                i = Math.min(i + 2, len); // skip closing */
-            } else {
+        int index = 0;
+        while (index < script.length()) {
+            int nextIndex = skipWhitespace(script, index);
+            if (nextIndex != index) {
+                index = nextIndex;
+                continue;
+            }
+            nextIndex = skipComment(script, index);
+            if (nextIndex == index) {
                 break;
             }
+            index = nextIndex;
         }
-        return script.substring(i);
+        return script.substring(index);
+    }
+
+    private static int skipWhitespace(String script, int index) {
+        int position = index;
+        while (position < script.length() && Character.isWhitespace(script.charAt(position))) {
+            position++;
+        }
+        return position;
+    }
+
+    private static int skipComment(String script, int index) {
+        if (startsWith(script, index, "--")) {
+            return skipLineComment(script, index);
+        }
+        if (startsWith(script, index, "/*")) {
+            return skipBlockComment(script, index);
+        }
+        return index;
+    }
+
+    private static int skipLineComment(String script, int index) {
+        int position = index + 2;
+        while (position < script.length() && !isLineBreak(script.charAt(position))) {
+            position++;
+        }
+        return position;
+    }
+
+    private static int skipBlockComment(String script, int index) {
+        int end = script.indexOf("*/", index + 2);
+        return end >= 0 ? end + 2 : script.length();
+    }
+
+    private static boolean startsWith(String script, int index, String token) {
+        return index + token.length() <= script.length() && script.startsWith(token, index);
+    }
+
+    private static boolean isLineBreak(char c) {
+        return c == '\n' || c == '\r';
     }
 
     private static void addStatement(List<String> statements, StringBuilder currentStatement) {
         String statement = currentStatement.toString().trim();
-        if (!statement.isEmpty() && !isCommentOnly(statement)) {
+        if (!statement.isEmpty() && !firstNonCommentToken(statement).isEmpty()) {
             statements.add(statement);
         }
     }
 
-    /**
-     * Returns true if the given statement contains only whitespace or SQL comments,
-     * with no actual SQL tokens.
-     */
-    private static boolean isCommentOnly(String statement) {
-        int i = 0;
-        int len = statement.length();
-        while (i < len) {
-            char c = statement.charAt(i);
-            char next = i + 1 < len ? statement.charAt(i + 1) : '\0';
-            if (Character.isWhitespace(c)) {
-                i++;
-            } else if (c == '-' && next == '-') {
-                i += 2;
-                while (i < len && statement.charAt(i) != '\n' && statement.charAt(i) != '\r') {
-                    i++;
-                }
-            } else if (c == '/' && next == '*') {
-                i += 2;
-                while (i + 1 < len && !(statement.charAt(i) == '*' && statement.charAt(i + 1) == '/')) {
-                    i++;
-                }
-                i = Math.min(i + 2, len); // skip closing */
-            } else {
+    private static final class StatementParser {
+        private final String script;
+        private int index;
+
+        private StatementParser(String script) {
+            this.script = script;
+        }
+
+        private boolean hasMore() {
+            return index < script.length();
+        }
+
+        private boolean readNext(StringBuilder currentStatement) {
+            if (startsWith(script, index, "--")) {
+                appendRange(currentStatement, skipLineComment(script, index));
                 return false;
             }
+            if (startsWith(script, index, "/*")) {
+                appendRange(currentStatement, skipBlockComment(script, index));
+                return false;
+            }
+
+            char current = script.charAt(index);
+            if (current == '\'' || current == '"') {
+                appendQuoted(currentStatement, current);
+                return false;
+            }
+
+            index++;
+            if (current == ';') {
+                return true;
+            }
+
+            currentStatement.append(current);
+            return false;
         }
-        return true;
+
+        private void appendQuoted(StringBuilder currentStatement, char quote) {
+            appendRange(currentStatement, index + 1);
+            while (index < script.length()) {
+                char current = script.charAt(index);
+                appendRange(currentStatement, index + 1);
+                if (current == quote) {
+                    if (index < script.length() && script.charAt(index) == quote) {
+                        appendRange(currentStatement, index + 1);
+                    } else {
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void appendRange(StringBuilder currentStatement, int endExclusive) {
+            currentStatement.append(script, index, endExclusive);
+            index = endExclusive;
+        }
     }
 }
