@@ -1632,7 +1632,7 @@ class PropertySourceMapTest implements TestPropertyProvider {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-When using <code>TestPropertyProvider</code> your test must be declared with JUnit&#8217;s <code>@TestInstance(TestInstance.Lifecycle.PER_CLASS)</code> annotation.
+When using <code>TestPropertyProvider</code> your test must use JUnit&#8217;s <code>PER_CLASS</code> test instance lifecycle, for example with <code>@TestInstance(TestInstance.Lifecycle.PER_CLASS)</code>. The properties are resolved from the test instance before the Micronaut context starts.
 </td>
 </tr>
 </table>
