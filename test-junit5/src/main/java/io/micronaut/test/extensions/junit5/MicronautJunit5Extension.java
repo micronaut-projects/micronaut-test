@@ -225,7 +225,6 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
-        injectEnclosingTestInstances(extensionContext);
         final Optional<Object> testInstance = extensionContext.getTestInstance();
         final Optional<? extends AnnotatedElement> testMethod = extensionContext.getTestMethod();
         List<Property> propertyAnnotations = null;
@@ -294,6 +293,11 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 testProperties.putAll(properties);
             }
         }
+    }
+
+    @Override
+    protected void beforeInjectTestInstance(ExtensionContext extensionContext, Object testInstance) {
+        injectEnclosingTestInstances(extensionContext);
     }
 
     @Override
