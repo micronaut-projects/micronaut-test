@@ -63,10 +63,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Abstract base class for both JUnit 5 and Spock.
@@ -288,6 +290,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 new ClassClassPathResourceLoader(testClass)
             ));
             final List<Property> ps = AnnotationUtils.findRepeatableAnnotations(testClass, Property.class);
+            validateUniquePropertyNames(ps, "test class " + testClass.getName());
             for (Property property : ps) {
                 testProperties.put(property.name(), property.value());
             }
@@ -417,6 +420,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
         if (method != null) {
             if (propertyAnnotations != null && !propertyAnnotations.isEmpty()) {
+                validateUniquePropertyNames(propertyAnnotations, "test method " + method);
                 for (Property property : propertyAnnotations) {
                     final String name = property.name();
                     oldValues.put(name,
@@ -453,6 +457,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 }
                 applicationContext.inject(testInstance);
                 alignMocks(context, testInstance);
+            }
+        }
+    }
+
+    private void validateUniquePropertyNames(List<Property> properties, String propertySourceDescription) {
+        Set<String> names = new HashSet<>(properties.size());
+        for (Property property : properties) {
+            String name = property.name();
+            if (!names.add(name)) {
+                throw new IllegalStateException("Duplicate @Property name [" + name + "] declared on " + propertySourceDescription);
             }
         }
     }
