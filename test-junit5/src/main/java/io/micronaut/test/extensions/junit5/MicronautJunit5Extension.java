@@ -374,6 +374,10 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 return false;
             }
 
+            if (isApplicationContextParameter(parameterContext)) {
+                return true;
+            }
+
             final Argument<?> argument = getArgument(parameterContext, applicationContext);
             if (argument != null) {
                 if (argument.isAnnotationPresent(Value.class) || argument.isAnnotationPresent(Property.class)) {
@@ -391,6 +395,10 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        if (isApplicationContextParameter(parameterContext)) {
+            return applicationContext;
+        }
+
         final Argument<?> argument = getArgument(parameterContext, applicationContext);
         if (argument != null) {
             Optional<String> v = argument.getAnnotationMetadata().stringValue(Value.class);
@@ -471,6 +479,10 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         extensionContext.getTestInstances().ifPresent(testInstances -> {
             testInstances.getEnclosingInstances().forEach(applicationContext::inject);
         });
+    }
+
+    private boolean isApplicationContextParameter(ParameterContext parameterContext) {
+        return ApplicationContext.class.isAssignableFrom(parameterContext.getParameter().getType());
     }
 
     private Argument<?> getArgument(ParameterContext parameterContext, ApplicationContext applicationContext) {
