@@ -249,7 +249,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         if (testInstance.isPresent()) {
 
             final Class<?> requiredTestClass = extensionContext.getRequiredTestClass();
-            if (applicationContext.containsBean(requiredTestClass) || isNestedTestClass(requiredTestClass)) {
+            if (applicationContext.containsBean(requiredTestClass) || specDefinition != null || isNestedTestClass(requiredTestClass)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
 
