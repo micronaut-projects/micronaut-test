@@ -2,6 +2,7 @@
 package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -26,5 +27,15 @@ public class ArgumentInjectionTest {
         assertNotNull(client);
 
         assertEquals("test", val);
+    }
+
+    @Test
+    void testValueArgumentInjected(@Value("${foo.bar}") String val) {
+        assertEquals("test", val);
+    }
+
+    @Test
+    void testExpressionValueArgumentInjected(@Value("#{1 + 1}") Integer val) {
+        assertEquals(2, val);
     }
 }

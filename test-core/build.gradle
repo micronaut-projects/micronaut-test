@@ -13,6 +13,9 @@ dependencies {
     api(mn.micronaut.inject)
 
     implementation(mn.micronaut.context)
+
+    testImplementation(libs.managed.junit.jupiter.api)
+    testRuntimeOnly(libs.managed.junit.jupiter.engine)
 }
 
 jar {

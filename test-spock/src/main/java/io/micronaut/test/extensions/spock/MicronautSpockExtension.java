@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.Callable;
 
 /**
  * Extension for Spock.
@@ -115,11 +116,23 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         );
 
         spec.addCleanupSpecInterceptor(invocation -> {
-            afterTestClass(buildContext(invocation, null));
-            afterClass(invocation);
-
-            invocation.proceed();
-            singletonMocks.clear();
+            Throwable primary = captureCleanupSpecFailure(invocation);
+            TestContext testContext = buildContext(invocation, primary);
+            primary = collectCleanupFailure(primary, () -> {
+                afterTestClass(testContext);
+                return null;
+            });
+            primary = collectCleanupFailure(primary, () -> {
+                afterClass(invocation);
+                return null;
+            });
+            primary = collectCleanupFailure(primary, () -> {
+                singletonMocks.clear();
+                return null;
+            });
+            if (primary != null) {
+                throw primary;
+            }
         });
 
         spec.addSetupInterceptor(invocation -> {
@@ -223,6 +236,36 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         } else {
             return null;
         }
+    }
+
+    private Throwable captureCleanupSpecFailure(IMethodInvocation invocation) throws Throwable {
+        try {
+            invocation.proceed();
+            return null;
+        } catch (Exception e) {
+            return e;
+        } catch (Error e) {
+            return e;
+        }
+    }
+
+    private Throwable collectCleanupFailure(Throwable primary, Callable<Void> cleanupStep) {
+        try {
+            cleanupStep.call();
+        } catch (Exception e) {
+            return addCleanupFailure(primary, e);
+        } catch (Error e) {
+            return addCleanupFailure(primary, e);
+        }
+        return primary;
+    }
+
+    private Throwable addCleanupFailure(Throwable primary, Throwable cleanupFailure) {
+        if (primary == null) {
+            return cleanupFailure;
+        }
+        primary.addSuppressed(cleanupFailure);
+        return primary;
     }
 
     private TestContext buildContext(IMethodInvocation invocation, Throwable exception) {

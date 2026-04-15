@@ -24,6 +24,7 @@ import io.r2dbc.spi.Result;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -44,16 +45,23 @@ public class ConnectionFactoryHandler implements SqlHandler<ConnectionFactory> {
 
     @Override
     public void handle(@NonNull ConnectionFactory connectionFactory, @NonNull String sql) {
-        List<Long> rowsUpdated = Mono.from(connectionFactory.create())
-            .flatMapMany(c -> {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("{}: Executing SQL: {}", connectionFactory, sql);
-                }
-                return c.createStatement(sql).execute();
-            })
-            .flatMap(Result::getRowsUpdated)
-            .collectList()
-            .block();
+        List<String> statements = SqlScriptStatementSplitter.split(sql);
+        if (statements.isEmpty()) {
+            return;
+        }
+        List<Long> rowsUpdated = Mono.usingWhen(
+            connectionFactory.create(),
+            c -> Flux.fromIterable(statements)
+                .concatMap(sqlStatement -> {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("{}: Executing SQL: {}", connectionFactory, sqlStatement);
+                    }
+                    return c.createStatement(sqlStatement).execute();
+                })
+                .flatMap(Result::getRowsUpdated)
+                .collectList(),
+            c -> Mono.from(c.close())
+        ).block();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("{}: Updated rows: {}", connectionFactory, rowsUpdated);

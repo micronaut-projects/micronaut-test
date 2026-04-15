@@ -50,6 +50,7 @@ import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionConfigurationException;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -78,16 +79,23 @@ import java.util.Optional;
  */
 public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor {
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
+    private static final String TEST_PROPERTY_PROVIDER_LIFECYCLE_MESSAGE = "Tests that implement TestPropertyProvider must use the PER_CLASS test instance lifecycle.";
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
+        final TestInstance.Lifecycle testInstanceLifecycle = extensionContext.getTestInstanceLifecycle().orElse(TestInstance.Lifecycle.PER_METHOD);
+        if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
+            if (testInstanceLifecycle != TestInstance.Lifecycle.PER_CLASS) {
+                throw new ExtensionConfigurationException(TEST_PROPERTY_PROVIDER_LIFECYCLE_MESSAGE);
+            }
+            extensionContext.getRequiredTestInstance();
+        }
         MicronautTestValue micronautTestValue = buildMicronautTestValue(testClass);
         beforeClass(extensionContext, testClass, micronautTestValue);
         getStore(extensionContext).put(ApplicationContext.class, applicationContext);
         if (specDefinition != null) {
-            TestInstance ti = AnnotationSupport.findAnnotation(testClass, TestInstance.class).orElse(null);
-            if (ti != null && ti.value() == TestInstance.Lifecycle.PER_CLASS) {
+            if (testInstanceLifecycle == TestInstance.Lifecycle.PER_CLASS) {
                 Object testInstance = extensionContext.getRequiredTestInstance();
                 if (specDefinition instanceof ProxyBeanDefinition<?>) {
                     // Proxy bean is not going to resolve bean definition, we need a small hack
@@ -387,11 +395,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         if (argument != null) {
             Optional<String> v = argument.getAnnotationMetadata().stringValue(Value.class);
             if (v.isPresent()) {
-                Optional<String> finalV = v;
-                return applicationContext.getEnvironment().getProperty(v.get(), argument)
-                    .orElseThrow(() ->
-                        new ParameterResolutionException("Unresolvable property specified to @Value: " + finalV.get())
-                    );
+                return resolveValueParameter(parameterContext, argument, v.get());
             } else {
                 v = argument.getAnnotationMetadata().stringValue(Property.class, "name");
                 if (v.isPresent()) {
@@ -407,6 +411,32 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         } else {
             return applicationContext.getBean(parameterContext.getParameter().getType());
         }
+    }
+
+    private Object resolveValueParameter(ParameterContext parameterContext, Argument<?> argument, String value) {
+        if (argument.getAnnotationMetadata().hasEvaluatedExpressions()) {
+            Object resolved = argument.getAnnotationMetadata().getValue(Value.class, argument).orElse(null);
+            if (resolved != null || argument.isDeclaredNullable()) {
+                return resolved;
+            }
+            throw new ParameterResolutionException("Unresolvable property specified to @Value: " + value);
+        }
+        BeanDefinition<?> beanDefinition = applicationContext
+            .findBeanDefinition(parameterContext.getDeclaringExecutable().getDeclaringClass())
+            .orElse(null);
+        if (beanDefinition == null) {
+            beanDefinition = specDefinition;
+        }
+        if (beanDefinition != null) {
+            try (DefaultBeanResolutionContext resolutionContext = new DefaultBeanResolutionContext(applicationContext, beanDefinition)) {
+                return resolutionContext.resolvePropertyValue(argument, value, null, true);
+            } catch (RuntimeException e) {
+                throw new ParameterResolutionException("Unresolvable property specified to @Value: " + value, e);
+            }
+        }
+        return applicationContext.resolvePlaceholders(value)
+            .flatMap(resolved -> applicationContext.getConversionService().convert(resolved, argument))
+            .orElseThrow(() -> new ParameterResolutionException("Unresolvable property specified to @Value: " + value));
     }
 
     /**

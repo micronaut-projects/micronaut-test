@@ -7,6 +7,10 @@ import org.spockframework.runtime.extension.IMethodInvocation
 import org.spockframework.runtime.model.SpecInfo
 import spock.lang.Specification
 
+import java.lang.reflect.Field
+import java.util.ArrayDeque
+import java.util.Queue
+
 @MicronautTest
 class FixtureWithAnnotationSpec extends Specification {
     static Boolean firstTestPassed = false
@@ -72,5 +76,94 @@ class FixtureWithAnnotationSpec extends Specification {
 
         then:
         1 * invocation.proceed()
+    }
+
+    def "CleanupSpec should retain the cleanupSpec failure and suppress teardown failures"() {
+        given:
+        SpecInfo specInfo = new SpecInfo()
+        IMethodInvocation invocation = Mock()
+        RuntimeException cleanupFailure = new RuntimeException("cleanupSpec failed")
+        Exception afterTestClassFailure = new Exception("afterTestClass failed")
+        RuntimeException afterClassFailure = new RuntimeException("afterClass failed")
+        RuntimeException singletonMocksFailure = new RuntimeException("singletonMocks.clear failed")
+        TestMicronautSpockExtension micronautSpockExtension = new TestMicronautSpockExtension(
+                afterTestClassFailure: afterTestClassFailure,
+                afterClassFailure: afterClassFailure
+        )
+        setSingletonMocks(micronautSpockExtension, new ThrowingQueue(failure: singletonMocksFailure))
+
+        when:
+        micronautSpockExtension.visitSpecAnnotation((MicronautTest) null, specInfo)
+        specInfo.cleanupSpecInterceptors[0].intercept(invocation)
+
+        then:
+        RuntimeException e = thrown()
+        e.is(cleanupFailure)
+        e.suppressed as List == [afterTestClassFailure, afterClassFailure, singletonMocksFailure]
+        1 * invocation.proceed() >> { throw cleanupFailure }
+    }
+
+    def "CleanupSpec should throw the first teardown failure when cleanupSpec succeeds"() {
+        given:
+        SpecInfo specInfo = new SpecInfo()
+        IMethodInvocation invocation = Mock()
+        Exception afterTestClassFailure = new Exception("afterTestClass failed")
+        RuntimeException afterClassFailure = new RuntimeException("afterClass failed")
+        RuntimeException singletonMocksFailure = new RuntimeException("singletonMocks.clear failed")
+        TestMicronautSpockExtension micronautSpockExtension = new TestMicronautSpockExtension(
+                afterTestClassFailure: afterTestClassFailure,
+                afterClassFailure: afterClassFailure
+        )
+        setSingletonMocks(micronautSpockExtension, new ThrowingQueue(failure: singletonMocksFailure))
+
+        when:
+        micronautSpockExtension.visitSpecAnnotation((MicronautTest) null, specInfo)
+        specInfo.cleanupSpecInterceptors[0].intercept(invocation)
+
+        then:
+        Exception e = thrown()
+        e.is(afterTestClassFailure)
+        e.suppressed as List == [afterClassFailure, singletonMocksFailure]
+        1 * invocation.proceed()
+    }
+
+    private static void setSingletonMocks(MicronautSpockExtension extension, Queue<Object> singletonMocks) {
+        Field field = MicronautSpockExtension.getDeclaredField("singletonMocks")
+        field.accessible = true
+        field.set(extension, singletonMocks)
+    }
+
+    static class TestMicronautSpockExtension extends MicronautSpockExtension {
+        Throwable afterTestClassFailure
+        Throwable afterClassFailure
+
+        @Override
+        void afterTestClass(io.micronaut.test.context.TestContext testContext) throws Exception {
+            throwFailure(afterTestClassFailure)
+        }
+
+        @Override
+        protected void afterClass(IMethodInvocation context) {
+            throwFailure(afterClassFailure)
+        }
+
+        private static void throwFailure(Throwable failure) throws Exception {
+            if (failure == null) {
+                return
+            }
+            if (failure instanceof Exception) {
+                throw (Exception) failure
+            }
+            throw (Error) failure
+        }
+    }
+
+    static class ThrowingQueue extends ArrayDeque<Object> {
+        RuntimeException failure
+
+        @Override
+        void clear() {
+            throw failure
+        }
     }
 }
