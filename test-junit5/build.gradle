@@ -84,5 +84,9 @@ tasks.named("test") {
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
 }
