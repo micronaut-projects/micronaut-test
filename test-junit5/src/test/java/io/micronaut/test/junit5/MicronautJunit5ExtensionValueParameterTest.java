@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,14 +36,15 @@ class MicronautJunit5ExtensionValueParameterTest {
     }
 
     @Test
-    void resolveValueParameterWrapsBeanResolutionFailures() throws Exception {
+    void resolveValueParameterWrapsBeanResolutionFailures() {
         try (ApplicationContext applicationContext = ApplicationContext.run()) {
             TestMicronautJunit5Extension extension = new TestMicronautJunit5Extension();
             extension.setApplicationContext(applicationContext);
+            ParameterContext parameterContext = parameterContextFor(declaredMethod(TestBean.class, "missingPropertyMethod", String.class));
 
             ParameterResolutionException exception = assertThrows(
                 ParameterResolutionException.class,
-                () -> extension.resolveParameter(parameterContextFor(TestBean.class.getDeclaredMethod("missingPropertyMethod", String.class)), null)
+                () -> extension.resolveParameter(parameterContext, null)
             );
 
             assertEquals("Unresolvable property specified to @Value: ${missing.property}", exception.getMessage());
@@ -69,12 +71,14 @@ class MicronautJunit5ExtensionValueParameterTest {
         try (ApplicationContext applicationContext = ApplicationContext.run()) {
             TestMicronautJunit5Extension extension = new TestMicronautJunit5Extension();
             extension.setApplicationContext(applicationContext);
+            ParameterContext parameterContext = parameterContextFor(declaredMethod(NonBeanExecutable.class, "placeholderMethod", String.class));
+            Argument<?> argument = expressionArgument(applicationContext, "nonNullableExpressionMethod");
 
             ParameterResolutionException exception = assertThrows(
                 ParameterResolutionException.class,
                 () -> extension.invokeResolveValueParameter(
-                    parameterContextFor(NonBeanExecutable.class.getDeclaredMethod("placeholderMethod", String.class)),
-                    expressionArgument(applicationContext, "nonNullableExpressionMethod"),
+                    parameterContext,
+                    argument,
                     "#{ null }"
                 )
             );
@@ -101,16 +105,18 @@ class MicronautJunit5ExtensionValueParameterTest {
     }
 
     @Test
-    void resolveValueParameterFailsWhenFallbackCannotResolvePlaceholder() throws Exception {
+    void resolveValueParameterFailsWhenFallbackCannotResolvePlaceholder() {
         try (ApplicationContext applicationContext = ApplicationContext.run()) {
             TestMicronautJunit5Extension extension = new TestMicronautJunit5Extension();
             extension.setApplicationContext(applicationContext);
+            ParameterContext parameterContext = parameterContextFor(declaredMethod(NonBeanExecutable.class, "placeholderMethod", String.class));
+            Argument<String> argument = Argument.of(String.class);
 
             ParameterResolutionException exception = assertThrows(
                 ParameterResolutionException.class,
                 () -> extension.invokeResolveValueParameter(
-                    parameterContextFor(NonBeanExecutable.class.getDeclaredMethod("placeholderMethod", String.class)),
-                    Argument.of(String.class),
+                    parameterContext,
+                    argument,
                     "${missing.property}"
                 )
             );
@@ -123,6 +129,14 @@ class MicronautJunit5ExtensionValueParameterTest {
         return new TestParameterContext(method, 0);
     }
 
+    private static Method declaredMethod(Class<?> type, String methodName, Class<?>... argumentTypes) {
+        try {
+            return type.getDeclaredMethod(methodName, argumentTypes);
+        } catch (NoSuchMethodException e) {
+            throw new AssertionError(e);
+        }
+    }
+
     private static Argument<?> expressionArgument(ApplicationContext applicationContext, String methodName) throws NoSuchMethodException {
         return applicationContext.getExecutableMethod(TestBean.class, methodName, String.class).getArguments()[0];
     }
@@ -131,27 +145,33 @@ class MicronautJunit5ExtensionValueParameterTest {
     static final class TestBean {
         @Executable
         void placeholderMethod(@Value("${foo.bar}") String value) {
+            // The method body is intentionally empty; the test only inspects parameter metadata.
         }
 
         @Executable
         void expressionMethod(@Value("#{1 + 1}") Integer value) {
+            // The method body is intentionally empty; the test only inspects parameter metadata.
         }
 
         @Executable
         void missingPropertyMethod(@Value("${missing.property}") String value) {
+            // The method body is intentionally empty; the test only inspects parameter metadata.
         }
 
         @Executable
         void nullableExpressionMethod(@Nullable @Value("#{ null }") String value) {
+            // The method body is intentionally empty; the test only inspects parameter metadata.
         }
 
         @Executable
         void nonNullableExpressionMethod(@Value("#{ null }") String value) {
+            // The method body is intentionally empty; the test only inspects parameter metadata.
         }
     }
 
     static final class NonBeanExecutable {
         void placeholderMethod(String value) {
+            Objects.requireNonNull(value, "value");
         }
     }
 
