@@ -5,7 +5,7 @@ import io.micronaut.test.extensions.junit5.MicronautJunit5Extension;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AnnotatedElement;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -18,26 +18,33 @@ class DuplicatePropertyNameValidationTest {
     void rejectsDuplicateClassLevelProperties() {
         TestMicronautJunit5Extension extension = new TestMicronautJunit5Extension();
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> extension.start(DuplicateClassLevelPropertyTest.class));
+        try {
+            IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> extension.start(DuplicateClassLevelPropertyFixture.class));
 
-        assertEquals(
-            "Duplicate @Property name [test.property] declared on test class io.micronaut.test.junit5.DuplicateClassLevelPropertyTest",
-            exception.getMessage()
-        );
+            assertEquals(
+                "Duplicate @Property name [test.property] declared on test class io.micronaut.test.junit5.DuplicateClassLevelPropertyFixture",
+                exception.getMessage()
+            );
+        } finally {
+            extension.stop();
+        }
     }
 
     @Test
     void rejectsDuplicateMethodLevelProperties() {
         TestMicronautJunit5Extension extension = new TestMicronautJunit5Extension();
-        extension.start(UniqueClassLevelPropertyTest.class);
+        extension.start(UniqueClassLevelPropertyFixture.class);
 
         try {
             IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> extension.beforeEach("duplicateMethodLevelProperty"));
+                () -> extension.beforeEach(
+                    "public void io.micronaut.test.junit5.UniqueClassLevelPropertyFixture.duplicateMethodLevelProperty()",
+                    DuplicateMethodLevelPropertySource.class
+                ));
 
             assertEquals(
-                "Duplicate @Property name [test.property] declared on test method void io.micronaut.test.junit5.UniqueClassLevelPropertyTest.duplicateMethodLevelProperty()",
+                "Duplicate @Property name [test.property] declared on test method public void io.micronaut.test.junit5.UniqueClassLevelPropertyFixture.duplicateMethodLevelProperty()",
                 exception.getMessage()
             );
         } finally {
@@ -48,10 +55,13 @@ class DuplicatePropertyNameValidationTest {
     @Test
     void allowsMethodLevelOverrideOfClassLevelProperty() {
         TestMicronautJunit5Extension extension = new TestMicronautJunit5Extension();
-        extension.start(UniqueClassLevelPropertyTest.class);
+        extension.start(UniqueClassLevelPropertyFixture.class);
 
         try {
-            assertDoesNotThrow(() -> extension.beforeEach("overrideClassLevelProperty"));
+            assertDoesNotThrow(() -> extension.beforeEach(
+                "public void io.micronaut.test.junit5.UniqueClassLevelPropertyFixture.overrideClassLevelProperty()",
+                OverrideMethodLevelPropertySource.class
+            ));
         } finally {
             extension.stop();
         }
@@ -62,13 +72,41 @@ class DuplicatePropertyNameValidationTest {
             beforeClass(null, testClass, buildMicronautTestValue(testClass));
         }
 
-        void beforeEach(String methodName) throws NoSuchMethodException {
-            Method method = UniqueClassLevelPropertyTest.class.getDeclaredMethod(methodName);
-            beforeEach(null, null, method, Arrays.asList(method.getAnnotationsByType(Property.class)));
+        void beforeEach(String methodDescription, Class<?> propertySource) {
+            beforeEach(
+                null,
+                null,
+                namedMethod(methodDescription),
+                Arrays.asList(propertySource.getAnnotationsByType(Property.class))
+            );
         }
 
         void stop() {
             afterClass(null);
+        }
+
+        private AnnotatedElement namedMethod(String methodDescription) {
+            return new AnnotatedElement() {
+                @Override
+                public <T extends java.lang.annotation.Annotation> T getAnnotation(Class<T> annotationClass) {
+                    return null;
+                }
+
+                @Override
+                public java.lang.annotation.Annotation[] getAnnotations() {
+                    return new java.lang.annotation.Annotation[0];
+                }
+
+                @Override
+                public java.lang.annotation.Annotation[] getDeclaredAnnotations() {
+                    return new java.lang.annotation.Annotation[0];
+                }
+
+                @Override
+                public String toString() {
+                    return methodDescription;
+                }
+            };
         }
     }
 }
@@ -76,19 +114,19 @@ class DuplicatePropertyNameValidationTest {
 @MicronautTest
 @Property(name = "test.property", value = "first")
 @Property(name = "test.property", value = "second")
-class DuplicateClassLevelPropertyTest {
+class DuplicateClassLevelPropertyFixture {
 }
 
 @MicronautTest
 @Property(name = "test.property", value = "class-level")
-class UniqueClassLevelPropertyTest {
+class UniqueClassLevelPropertyFixture {
+}
 
-    @Property(name = "test.property", value = "first")
-    @Property(name = "test.property", value = "second")
-    void duplicateMethodLevelProperty() {
-    }
+@Property(name = "test.property", value = "first")
+@Property(name = "test.property", value = "second")
+class DuplicateMethodLevelPropertySource {
+}
 
-    @Property(name = "test.property", value = "method-level")
-    void overrideClassLevelProperty() {
-    }
+@Property(name = "test.property", value = "method-level")
+class OverrideMethodLevelPropertySource {
 }
