@@ -50,6 +50,7 @@ import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ConditionEvaluationResult;
 import org.junit.jupiter.api.extension.ExecutionCondition;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionConfigurationException;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -78,16 +79,23 @@ import java.util.Optional;
  */
 public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor {
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
+    private static final String TEST_PROPERTY_PROVIDER_LIFECYCLE_MESSAGE = "Tests that implement TestPropertyProvider must use the PER_CLASS test instance lifecycle.";
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
+        final TestInstance.Lifecycle testInstanceLifecycle = extensionContext.getTestInstanceLifecycle().orElse(TestInstance.Lifecycle.PER_METHOD);
+        if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
+            if (testInstanceLifecycle != TestInstance.Lifecycle.PER_CLASS) {
+                throw new ExtensionConfigurationException(TEST_PROPERTY_PROVIDER_LIFECYCLE_MESSAGE);
+            }
+            extensionContext.getRequiredTestInstance();
+        }
         MicronautTestValue micronautTestValue = buildMicronautTestValue(testClass);
         beforeClass(extensionContext, testClass, micronautTestValue);
         getStore(extensionContext).put(ApplicationContext.class, applicationContext);
         if (specDefinition != null) {
-            TestInstance ti = AnnotationSupport.findAnnotation(testClass, TestInstance.class).orElse(null);
-            if (ti != null && ti.value() == TestInstance.Lifecycle.PER_CLASS) {
+            if (testInstanceLifecycle == TestInstance.Lifecycle.PER_CLASS) {
                 Object testInstance = extensionContext.getRequiredTestInstance();
                 if (specDefinition instanceof ProxyBeanDefinition<?>) {
                     // Proxy bean is not going to resolve bean definition, we need a small hack
