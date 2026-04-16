@@ -1,8 +1,7 @@
 plugins {
     id "io.micronaut.build.internal.micronaut-test-module"
     id 'io.micronaut.graalvm' // Required to configure Graal for nativeTest
-    id "org.jetbrains.kotlin.jvm"
-    id "com.google.devtools.ksp"
+    id("io.micronaut.build.internal.kotlin-ksp")
 }
 
 tasks.withType(Test).configureEach {
@@ -83,10 +82,3 @@ tasks.named("test") {
     systemProperty("mockito.test.enabled", "true")
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.release = 25
-}
