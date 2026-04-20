@@ -1,5 +1,7 @@
 When using `@MicronautTest` each `@Test` method will be wrapped in a transaction that will be rolled back when the test finishes. This behaviour can be changed by using the `transactional` and `rollback` properties.
 
+The default transactional behaviour can also be controlled through configuration. Set the `micronaut.test.transactional` property (for example in `application-test.properties` or as a system property) to `false` to disable transactions for all tests that do not explicitly specify the `transactional` member. Alternatively, set `micronaut.test.transactional-default=false` to require tests to opt in with `@MicronautTest(transactional = true)` while still allowing per-test overrides.
+
 To avoid creating a transaction:
 
 ```java
