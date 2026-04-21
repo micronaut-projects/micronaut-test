@@ -547,6 +547,9 @@ class MathServiceSpec extends Specification {
 <p>When using <code>@MicronautTest</code> each <code>@Test</code> method will be wrapped in a transaction that will be rolled back when the test finishes. This behaviour can be changed by using the <code>transactional</code> and <code>rollback</code> properties.</p>
 </div>
 <div class="paragraph">
+<p>The default transactional behaviour can also be controlled through configuration. Set the <code>micronaut.test.transactional</code> property (for example in <code>application-test.properties</code> or as a system property) to <code>false</code> to disable transactions for all tests that do not explicitly specify the <code>transactional</code> member. Alternatively, set <code>micronaut.test.transactional-default=false</code> to require tests to opt in with <code>@MicronautTest(transactional = true)</code> while still allowing per-test overrides.</p>
+</div>
+<div class="paragraph">
 <p>To avoid creating a transaction:</p>
 </div>
 <div class="listingblock">
@@ -1186,6 +1189,9 @@ class MathServiceTest {
 
 <div class="paragraph">
 <p>When using <code>@MicronautTest</code> each <code>@Test</code> method will be wrapped in a transaction that will be rolled back when the test finishes. This behaviour can be changed by using the <code>transactional</code> and <code>rollback</code> properties.</p>
+</div>
+<div class="paragraph">
+<p>The default transactional behaviour can also be controlled through configuration. Set the <code>micronaut.test.transactional</code> property (for example in <code>application-test.properties</code> or as a system property) to <code>false</code> to disable transactions for all tests that do not explicitly specify the <code>transactional</code> member. Alternatively, set <code>micronaut.test.transactional-default=false</code> to require tests to opt in with <code>@MicronautTest(transactional = true)</code> while still allowing per-test overrides.</p>
 </div>
 <div class="paragraph">
 <p>To avoid creating a transaction:</p>
@@ -2164,6 +2170,9 @@ class MathServiceTest(
 
 <div class="paragraph">
 <p>When using <code>@MicronautTest</code> each <code>@Test</code> method will be wrapped in a transaction that will be rolled back when the test finishes. This behaviour can be changed by using the <code>transactional</code> and <code>rollback</code> properties.</p>
+</div>
+<div class="paragraph">
+<p>The default transactional behaviour can also be controlled through configuration. Set the <code>micronaut.test.transactional</code> property (for example in <code>application-test.properties</code> or as a system property) to <code>false</code> to disable transactions for all tests that do not explicitly specify the <code>transactional</code> member. Alternatively, set <code>micronaut.test.transactional-default=false</code> to require tests to opt in with <code>@MicronautTest(transactional = true)</code> while still allowing per-test overrides.</p>
 </div>
 <div class="paragraph">
 <p>To avoid creating a transaction:</p>
