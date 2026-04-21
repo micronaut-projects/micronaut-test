@@ -27,6 +27,7 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.env.PropertySourceLoader;
 import io.micronaut.context.env.PropertySourcesLocator;
+import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.io.scan.ClassClassPathResourceLoader;
 import io.micronaut.core.io.scan.ClassPathResourceLoader;
@@ -81,6 +82,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     public static final String TEST_ROLLBACK = "micronaut.test.rollback";
     public static final String TEST_TRANSACTIONAL = "micronaut.test.transactional";
     public static final String TEST_TRANSACTION_MODE = "micronaut.test.transaction-mode";
+    public static final String TEST_TRANSACTIONAL_DEFAULT = "micronaut.test.transactional-default";
     public static final String DISABLED_MESSAGE = "Test is not bean. Either the test does not satisfy requirements defined by @Requires or annotation processing is not enabled. If the latter ensure annotation processing is enabled in your IDE.";
     public static final String MISCONFIGURED_MESSAGE = """
         @MicronautTest used on test but no bean definition for the test present. \
@@ -249,7 +251,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     /**
      * Actually fires the execution listener.
      *
-     * @param callback the execution listener callback
+     * @param callback    the execution listener callback
      * @param testContext the test context
      * @throws Exception allows any exception to propagate
      */
@@ -285,8 +287,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
             final Package aPackage = testClass.getPackage();
             builder.packages(aPackage.getName());
+            ClassPathResourceLoader classPathResourceLoader = ClassPathResourceLoader.defaultLoader(null);
+            ClassLoader classLoader = classPathResourceLoader.getClassLoader();
             builder.resourceResolver(CombinedClassPathResourceLoader.of(
-                ClassPathResourceLoader.defaultLoader(null),
+                classPathResourceLoader,
                 new ClassClassPathResourceLoader(testClass)
             ));
             final List<Property> ps = AnnotationUtils.findRepeatableAnnotations(testClass, Property.class);
@@ -297,7 +301,6 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
             testProperties.put(TestActiveCondition.ACTIVE_SPEC_CLAZZ, testClass);
             testProperties.put(TEST_ROLLBACK, String.valueOf(testAnnotationValue.rollback()));
-            testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
             testProperties.put(TEST_TRANSACTION_MODE, String.valueOf(testAnnotationValue.transactionMode()));
             testProperties.put(Environment.DEDUCE_ENVIRONMENT_PROPERTY, String.valueOf(testAnnotationValue.deduceEnvironment()));
             final Class<?> application = testAnnotationValue.application();
@@ -365,6 +368,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                             testProperties.putAll(provider.get());
                         }
                     }
+                    Object testTransactionalDefault = testProperties.get(TEST_TRANSACTIONAL_DEFAULT);
+                    if (testTransactionalDefault != null && !Boolean.parseBoolean(testTransactionalDefault.toString())) {
+                        if (isExplicitTransactionalValue(classLoader)) {
+                            testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
+                        } else {
+                            testProperties.put(TEST_TRANSACTIONAL, Boolean.FALSE.toString());
+                        }
+                    } else if (!testProperties.containsKey(TEST_TRANSACTIONAL)) {
+                        testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
+                    }
                     if (!testProperties.isEmpty()) {
                         loadedPropertySources.add(PropertySource.of(TEST_PROPERTY_SOURCE, testProperties));
                     }
@@ -392,6 +405,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         }
     }
 
+    private boolean isExplicitTransactionalValue(ClassLoader classLoader) {
+        try {
+            Class<?> beanDefinitionClass = classLoader.loadClass(testClass.getPackage().getName() + ".$" + testClass.getSimpleName() + "$Definition");
+            BeanDefinition<?> beanDefinition = (BeanDefinition<?>) beanDefinitionClass.getDeclaredConstructor().newInstance();
+            return isMicronautTestTransactionalDeclared(beanDefinition);
+        } catch (Exception ignore) {
+            return false;
+        }
+    }
+
     /**
      * Allows subclasses to customize the builder right before context initialization.
      *
@@ -403,18 +426,18 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     /**
      * Resolves any test properties.
      *
-     * @param context The test context
+     * @param context             The test context
      * @param testAnnotationValue The test annotation
-     * @param testProperties The test properties
+     * @param testProperties      The test properties
      */
     protected abstract void resolveTestProperties(C context, MicronautTestValue testAnnotationValue, Map<String, Object> testProperties);
 
     /**
      * To be called by the different implementations before each test method.
      *
-     * @param context The test context
-     * @param testInstance The test instance
-     * @param method The test method
+     * @param context             The test context
+     * @param testInstance        The test instance
+     * @param method              The test method
      * @param propertyAnnotations The {@code @Property} annotations found in the test method, if any
      */
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
@@ -509,6 +532,19 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         oldValues.clear();
     }
 
+    private static boolean isMicronautTestTransactionalDeclared(AnnotationMetadata metadata) {
+        for (String annotationName : metadata.getAnnotationNames()) {
+            if (!annotationName.endsWith(".MicronautTest")) {
+                continue;
+            }
+            Map<CharSequence, Object> declaredValues = metadata.getValues(annotationName);
+            if (declaredValues.containsKey("transactional")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Starts the application context.
      */
@@ -527,11 +563,11 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         String prefix = requiredTestClass.getPackage().getName() + ".$" + requiredTestClass.getSimpleName();
         final ClassLoader classLoader = requiredTestClass.getClassLoader();
         return ClassUtils.isPresent(prefix + "Definition", classLoader) ||
-               ClassUtils.isPresent(prefix + "$Definition", classLoader);
+            ClassUtils.isPresent(prefix + "$Definition", classLoader);
     }
 
     /**
-     * @param context The context
+     * @param context  The context
      * @param instance The mock instance to inject
      */
     protected abstract void alignMocks(C context, Object instance);
