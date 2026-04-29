@@ -10,6 +10,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import jakarta.inject.Inject;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @MicronautTest(startApplication = false, rebuildContext = true)
@@ -19,15 +20,20 @@ class DisableEmbeddedApplicationTest {
     @Inject
     private EmbeddedApplication<?> embeddedApplication;
 
+    @Inject
+    private ServerStartupEventListener serverStartupEventListener;
+
     @Test
     @Order(1)
     void embeddedApplicationIsNotStartedWhenContextIsStarted() {
         assertFalse(embeddedApplication.isRunning());
+        assertEquals(0, serverStartupEventListener.getInvocationCount());
     }
 
     @Test
     @Order(2)
     void embeddedApplicationIsNotStartedWhenContextIsRebuilt() {
         assertFalse(embeddedApplication.isRunning());
+        assertEquals(0, serverStartupEventListener.getInvocationCount());
     }
 }
