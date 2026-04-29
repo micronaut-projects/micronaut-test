@@ -9,7 +9,7 @@ managed-kotest = "6.1.9"
 managed-spock = "2.4-groovy-5.0"
 managed-bytebuddy = "1.18.7"
 graal-svm = "25.0.3"
-managed-testcontainers = "2.0.4"
+managed-testcontainers = "2.0.5"
 
 micronaut-platform = "4.10.11"
 micronaut = "5.0.0-M21"
