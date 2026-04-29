@@ -30,6 +30,7 @@ import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.FieldInjectionPoint;
 import io.micronaut.inject.InjectableBeanDefinition;
+import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.inject.ProxyBeanDefinition;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.MicronautTestValue;
@@ -311,23 +312,54 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         }
         findSpecInstance(context).ifPresent(specInstance -> {
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
-                final boolean isMock = applicationContext.resolveMetadata(injectedField.getType()).isAnnotationPresent(MockBean.class);
-                if (isMock) {
-                    final Field field = injectedField.getField();
-                    field.setAccessible(true);
-                    try {
-                        final Object mock = field.get(specInstance);
-                        if (mock instanceof InterceptedProxy) {
-                            InterceptedProxy ip = (InterceptedProxy) mock;
-                            final Object target = ip.interceptedTarget();
-                            field.set(specInstance, target);
-                        }
-                    } catch (IllegalAccessException e) {
-                        // continue
-                    }
+                if (applicationContext.resolveMetadata(injectedField.getType()).isAnnotationPresent(MockBean.class)) {
+                    findField(specInstance.getClass(), injectedField.getName()).ifPresent(field -> alignMock(specInstance, field));
+                }
+            }
+            for (MethodInjectionPoint<?, ?> injectedMethod : specDefinition.getInjectedMethods()) {
+                final Argument<?>[] arguments = injectedMethod.getArguments();
+                if (arguments.length == 1 && applicationContext.resolveMetadata(arguments[0].getType()).isAnnotationPresent(MockBean.class)) {
+                    findMethodInjectedField(specInstance.getClass(), injectedMethod, arguments[0])
+                        .ifPresent(field -> alignMock(specInstance, field));
                 }
             }
         });
+    }
+
+    private void alignMock(Object specInstance, Field field) {
+        field.setAccessible(true);
+        try {
+            final Object mock = field.get(specInstance);
+            if (mock instanceof InterceptedProxy) {
+                field.set(specInstance, ((InterceptedProxy) mock).interceptedTarget());
+            }
+        } catch (IllegalAccessException e) {
+            // continue
+        }
+    }
+
+    private Optional<Field> findField(Class<?> type, String name) {
+        Class<?> current = type;
+        while (current != null) {
+            try {
+                return Optional.of(current.getDeclaredField(name));
+            } catch (NoSuchFieldException e) {
+                current = current.getSuperclass();
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Optional<Field> findMethodInjectedField(Class<?> type, MethodInjectionPoint<?, ?> injectedMethod, Argument<?> argument) {
+        final String methodName = injectedMethod.getName();
+        if (methodName.startsWith("set") && methodName.length() > 3) {
+            final String fieldName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+            final Optional<Field> field = findField(type, fieldName);
+            if (field.isPresent()) {
+                return field;
+            }
+        }
+        return findField(type, argument.getName());
     }
 
     private Optional<?> findSpecInstance(ExtensionContext context) {
