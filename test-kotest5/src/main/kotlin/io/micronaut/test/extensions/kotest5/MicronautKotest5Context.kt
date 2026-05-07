@@ -30,6 +30,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 import kotlin.reflect.full.memberFunctions
 
 class MicronautKotest5Context(
@@ -97,7 +98,7 @@ class MicronautKotest5Context(
         testCase: TestCase,
         execute: suspend (TestCase) -> TestResult
     ): TestResult {
-        val kotestCoroutineContext = currentCoroutineContext()
+        val currentContext = coroutineContext
         return interceptTest(object : TestMethodInvocationContext<Any> {
             override fun getTestContext(): TestContext {
                 return buildInterceptContext(testCase)
@@ -106,11 +107,11 @@ class MicronautKotest5Context(
             override fun proceed(): Any {
                 val propagatedContext = PropagatedContext.find().orElse(null)
                 return if (propagatedContext == null) {
-                    runBlocking(kotestCoroutineContext) {
+                    runBlocking(currentContext) {
                         execute(testCase)
                     }
                 } else {
-                    runBlocking(kotestCoroutineContext + CoroutinePropagatedContext(propagatedContext)) {
+                    runBlocking(currentContext + CoroutinePropagatedContext(propagatedContext)) {
                         execute(testCase)
                     }
                 }
