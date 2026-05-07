@@ -50,12 +50,12 @@ class JpaNoRollbackTest(
     }
 
     override suspend fun afterSpec(spec: Spec) {
-        transactionOperations.executeWrite {
+        transactionOperations.executeWrite<Unit> {
             val criteriaBuilder = entityManager.criteriaBuilder
             val delete = criteriaBuilder.createCriteriaDelete(Book::class.java)
             delete.from(Book::class.java)
             entityManager.createQuery(delete).executeUpdate()
-            null
+            Unit
         }
     }
 }

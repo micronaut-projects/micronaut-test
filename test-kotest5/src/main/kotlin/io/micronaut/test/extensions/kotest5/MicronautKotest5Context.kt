@@ -19,14 +19,20 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.micronaut.context.annotation.Property
+import io.micronaut.core.propagation.PropagatedContext
 import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.context.TestContext
+import io.micronaut.test.context.TestMethodInvocationContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.TestPropertyProvider
+import kotlinx.coroutines.ThreadContextElement
+import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.full.memberFunctions
 
 class MicronautKotest5Context(
-    private val testClass: Class<Any>,
+    private val specClass: Class<Any>,
     private val micronautTestValue: MicronautTestValue,
     private val createBean: Boolean
 ) : AbstractMicronautExtension<Spec>() {
@@ -38,8 +44,8 @@ class MicronautKotest5Context(
     }
 
     val bean: Spec? = if (createBean) {
-        beforeClass(null, testClass, micronautTestValue)
-        applicationContext.findBean(testClass).orElse(null) as Spec?
+        beforeClass(null, specClass, micronautTestValue)
+        applicationContext.findBean(specClass).orElse(null) as Spec?
     } else {
         null
     }
@@ -53,7 +59,7 @@ class MicronautKotest5Context(
 
     fun beforeSpecClass(spec: Spec) {
         if (!createBean) {
-            beforeClass(spec, testClass, micronautTestValue)
+            beforeClass(spec, specClass, micronautTestValue)
             applicationContext.inject(spec)
         }
         beforeTestClass(buildContext(spec))
@@ -79,11 +85,35 @@ class MicronautKotest5Context(
     }
 
     fun beforeInvocation(testCase: TestCase) {
-        beforeTestExecution(buildContext(testCase, null))
+        beforeTestExecution(buildInterceptContext(testCase))
     }
 
     fun afterInvocation(testCase: TestCase) {
-        afterTestExecution(buildContext(testCase, null))
+        afterTestExecution(buildInterceptContext(testCase))
+    }
+
+    suspend fun interceptTestCase(
+        testCase: TestCase,
+        execute: suspend (TestCase) -> TestResult
+    ): TestResult {
+        return interceptTest(object : TestMethodInvocationContext<Any> {
+            override fun getTestContext(): TestContext {
+                return buildInterceptContext(testCase)
+            }
+
+            override fun proceed(): Any {
+                val propagatedContext = PropagatedContext.find().orElse(null)
+                return if (propagatedContext == null) {
+                    runBlocking {
+                        execute(testCase)
+                    }
+                } else {
+                    runBlocking(CoroutinePropagatedContext(propagatedContext)) {
+                        execute(testCase)
+                    }
+                }
+            }
+        }) as TestResult
     }
 
     fun getSpecDefinition() = specDefinition
@@ -118,5 +148,33 @@ class MicronautKotest5Context(
             testCase.name.name,
             false
         )
+    }
+
+    private fun buildInterceptContext(testCase: TestCase): TestContext {
+        return TestContext(
+            applicationContext,
+            testCase.spec.javaClass,
+            testCase.test.javaClass,
+            testCase.spec,
+            null,
+            testCase.name.name,
+            true
+        )
+    }
+
+    private class CoroutinePropagatedContext(
+        private val propagatedContext: PropagatedContext
+    ) : ThreadContextElement<PropagatedContext.Scope>, AbstractCoroutineContextElement(Key) {
+
+        companion object Key : CoroutineContext.Key<CoroutinePropagatedContext>
+
+        @Suppress("DEPRECATION")
+        override fun updateThreadContext(context: CoroutineContext): PropagatedContext.Scope {
+            return propagatedContext.propagate()
+        }
+
+        override fun restoreThreadContext(context: CoroutineContext, oldState: PropagatedContext.Scope) {
+            oldState.close()
+        }
     }
 }
