@@ -26,6 +26,7 @@ import io.micronaut.test.context.TestMethodInvocationContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.TestPropertyProvider
 import kotlinx.coroutines.ThreadContextElement
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
@@ -96,6 +97,7 @@ class MicronautKotest5Context(
         testCase: TestCase,
         execute: suspend (TestCase) -> TestResult
     ): TestResult {
+        val kotestCoroutineContext = currentCoroutineContext()
         return interceptTest(object : TestMethodInvocationContext<Any> {
             override fun getTestContext(): TestContext {
                 return buildInterceptContext(testCase)
@@ -104,11 +106,11 @@ class MicronautKotest5Context(
             override fun proceed(): Any {
                 val propagatedContext = PropagatedContext.find().orElse(null)
                 return if (propagatedContext == null) {
-                    runBlocking {
+                    runBlocking(kotestCoroutineContext) {
                         execute(testCase)
                     }
                 } else {
-                    runBlocking(CoroutinePropagatedContext(propagatedContext)) {
+                    runBlocking(kotestCoroutineContext + CoroutinePropagatedContext(propagatedContext)) {
                         execute(testCase)
                     }
                 }
