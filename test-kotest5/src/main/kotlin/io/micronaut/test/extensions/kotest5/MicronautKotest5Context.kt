@@ -26,7 +26,6 @@ import io.micronaut.test.context.TestMethodInvocationContext
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.support.TestPropertyProvider
 import kotlinx.coroutines.ThreadContextElement
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
