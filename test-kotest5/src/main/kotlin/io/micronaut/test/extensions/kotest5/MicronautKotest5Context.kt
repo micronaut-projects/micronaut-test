@@ -120,6 +120,11 @@ class MicronautKotest5Context(
 
     fun getSpecDefinition() = specDefinition
 
+    /**
+     * Builds a TestContext for spec-level lifecycle callbacks (beforeSpecClass, afterSpecClass).
+     * Sets supportsTestMethodInterceptors = false because these callbacks occur outside
+     * the test method interception chain and are used for Micronaut's beforeTestClass/afterTestClass.
+     */
     fun buildContext(spec: Spec): TestContext {
         return TestContext(
             applicationContext,
@@ -132,6 +137,11 @@ class MicronautKotest5Context(
         )
     }
 
+    /**
+     * Builds a TestContext for test-level lifecycle callbacks (beforeTest, afterTest).
+     * Sets supportsTestMethodInterceptors = false because these callbacks occur outside
+     * the test method interception chain and are used for Micronaut's beforeTestMethod/afterTestMethod.
+     */
     fun buildContext(testCase: TestCase, result: TestResult?): TestContext {
         val error = when (result) {
             is TestResult.Error -> result.cause
@@ -152,6 +162,11 @@ class MicronautKotest5Context(
         )
     }
 
+    /**
+     * Builds a TestContext for test execution interception (beforeTestExecution, afterTestExecution).
+     * Sets supportsTestMethodInterceptors = true because this context is used within
+     * the test method interception chain (interceptTest).
+     */
     private fun buildInterceptContext(testCase: TestCase): TestContext {
         return TestContext(
             applicationContext,
