@@ -12,7 +12,7 @@ import jakarta.persistence.EntityManager
 @DbProperties
 class JpaNoRollbackTest(
     private val entityManager: EntityManager,
-    private val transactionOperations: TransactionOperations<Any>
+    private val transactionOperations: TransactionOperations<*>
 ) : BehaviorSpec() {
 
     init {
