@@ -1,9 +1,7 @@
 package io.micronaut.test.junit5;
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import io.micronaut.transaction.SynchronousTransactionManager;
-import io.micronaut.transaction.TransactionStatus;
-import io.micronaut.transaction.support.DefaultTransactionDefinition;
+import io.micronaut.transaction.TransactionOperations;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -25,16 +23,17 @@ public class JpaNoRollbackTest {
     EntityManager entityManager;
 
     @Inject
-    SynchronousTransactionManager transactionManager;
+    TransactionOperations<?> transactionOperations;
 
     @AfterAll
     void cleanup() {
-        final TransactionStatus tx = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaDelete<Book> delete = criteriaBuilder.createCriteriaDelete(Book.class);
-        delete.from(Book.class);
-        entityManager.createQuery(delete).executeUpdate();
-        transactionManager.commit(tx);
+        transactionOperations.executeWrite(status -> {
+            final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            final CriteriaDelete<Book> delete = criteriaBuilder.createCriteriaDelete(Book.class);
+            delete.from(Book.class);
+            entityManager.createQuery(delete).executeUpdate();
+            return null;
+        });
     }
 
     @Test
@@ -61,4 +60,3 @@ public class JpaNoRollbackTest {
         assertEquals(2, entityManager.createQuery(query).getResultList().size());
     }
 }
-

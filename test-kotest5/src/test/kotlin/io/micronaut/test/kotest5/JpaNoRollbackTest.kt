@@ -5,15 +5,14 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
-import io.micronaut.transaction.SynchronousTransactionManager
-import io.micronaut.transaction.support.DefaultTransactionDefinition
+import io.micronaut.transaction.TransactionOperations
 import jakarta.persistence.EntityManager
 
 @MicronautTest(rollback = false)
 @DbProperties
 class JpaNoRollbackTest(
     private val entityManager: EntityManager,
-    private val transactionManager: SynchronousTransactionManager<Any>
+    private val transactionOperations: TransactionOperations<*>
 ) : BehaviorSpec() {
 
     init {
@@ -51,11 +50,12 @@ class JpaNoRollbackTest(
     }
 
     override suspend fun afterSpec(spec: Spec) {
-        val tx = transactionManager.getTransaction(DefaultTransactionDefinition())
-        val criteriaBuilder = entityManager.criteriaBuilder
-        val delete = criteriaBuilder.createCriteriaDelete(Book::class.java)
-        delete.from(Book::class.java)
-        entityManager.createQuery(delete).executeUpdate()
-        transactionManager.commit(tx)
+        transactionOperations.executeWrite<Unit> {
+            val criteriaBuilder = entityManager.criteriaBuilder
+            val delete = criteriaBuilder.createCriteriaDelete(Book::class.java)
+            delete.from(Book::class.java)
+            entityManager.createQuery(delete).executeUpdate()
+            Unit
+        }
     }
 }

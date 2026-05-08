@@ -39,7 +39,7 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
             TestResult.Ignored
         } else {
             // Not a MicronautTest test or the bean exists
-            execute(testCase)
+            context?.interceptTestCase(testCase, execute) ?: execute(testCase)
         }
     }
 
