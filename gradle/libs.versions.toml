@@ -11,7 +11,7 @@ managed-bytebuddy = "1.18.7"
 graal-svm = "25.0.3"
 managed-testcontainers = "2.0.5"
 
-micronaut-platform = "5.0.0-M3"
+micronaut-platform = "5.0.0-RC1"
 micronaut = "5.0.0"
 micronaut-data = "5.0.0-M7"
 micronaut-hibernate-validator = "5.0.0-RC1"
