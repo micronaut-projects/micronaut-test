@@ -1,10 +1,6 @@
 = Kotest 5 → 6 Breaking Changes
-:toc:
-:toc-title: Table of Contents
-:sectnums:
 
-== `TestName.testName` removed
-
+=== `TestName.testName` removed
 In Kotest 5, the test name was accessed via `testCase.name.testName`.
 In Kotest 6, `TestName` no longer has a `testName` property — it was replaced by `name`.
 
@@ -22,8 +18,7 @@ testCase.name.name
 
 ---
 
-== `TestResult` moved to `io.kotest.engine.test`
-
+=== `TestResult` moved to `io.kotest.engine.test`
 In Kotest 5, `TestResult` was imported from `io.kotest.core.test`.
 In Kotest 6, it lives in `io.kotest.engine.test`.
 
@@ -41,8 +36,7 @@ import io.kotest.engine.test.TestResult
 
 ---
 
-== Table-driven testing requires new dependency
-
+=== Table-driven testing requires new dependency
 In Kotest 5, `io.kotest.data.blocking.forAll` and `io.kotest.data.row` were included in the core framework.
 In Kotest 6, they were extracted into a separate artifact.
 
@@ -61,8 +55,7 @@ import io.kotest.data.row
 
 ---
 
-== `AbstractProjectConfig.extensions()` changed from function to property
-
+=== `AbstractProjectConfig.extensions()` changed from function to property
 In Kotest 5, extensions were registered by overriding a function.
 In Kotest 6, `extensions` is a `val` property.
 
@@ -78,8 +71,7 @@ override fun extensions() = listOf(MicronautKotest5Extension)
 override val extensions = listOf(MicronautKotest5Extension)
 ----
 
-== JUnit Runner artifact renamed
-
+=== JUnit Runner artifact renamed
 In Kotest 5, the JUnit 5 runner artifact was:
 
 [source,kotlin]
@@ -96,7 +88,6 @@ testImplementation("io.kotest:kotest-runner-junit6-jvm:<kotest6-version>")
 
 Make sure to update your build configuration accordingly when upgrading.
 
-== References
-
+=== References
 - Kotest 6.0 release notes: https://github.com/kotest/kotest/blob/master/documentation/docs/release_6.0.md
 - Kotest docs: https://kotest.io/docs/release6/
