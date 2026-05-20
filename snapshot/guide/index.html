@@ -50,21 +50,23 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#releaseHistory"><strong>2</strong><span>Release History</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#spock"><strong>3</strong><span>Testing with Spock</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#breaks"><strong>3</strong><span>Breaking Changes</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#junit5"><strong>4</strong><span>Testing with JUnit 5</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#spock"><strong>4</strong><span>Testing with Spock</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#kotest5"><strong>5</strong><span>Testing with Kotest</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#junit5"><strong>5</strong><span>Testing with JUnit 5</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#nettyLeak"><strong>6</strong><span>Netty Leak Detection</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#kotest5"><strong>6</strong><span>Testing with Kotest</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#restAssured"><strong>7</strong><span>REST Assured</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#nettyLeak"><strong>7</strong><span>Netty Leak Detection</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#sql"><strong>8</strong><span>Loading SQL before tests</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#restAssured"><strong>8</strong><span>REST Assured</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#typePollution"><strong>9</strong><span>Type pollution</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#sql"><strong>9</strong><span>Loading SQL before tests</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>10</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#typePollution"><strong>10</strong><span>Type pollution</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>11</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -99,83 +101,85 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-releaseHistory"><a href="#releaseHistory"><strong>2</strong><span>Release History</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-spock"><a href="#spock"><strong>3</strong><span>Testing with Spock</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-breaks"><a href="#breaks"><strong>3</strong><span>Breaking Changes</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-settingUpSpock"><a href="#settingUpSpock"><strong>3.1</strong><span>Setting up Spock</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-spock"><a href="#spock"><strong>4</strong><span>Testing with Spock</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-writingAMicronautTestWithSpock"><a href="#writingAMicronautTestWithSpock"><strong>3.2</strong><span>Writing a Micronaut Test with Spock</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-settingUpSpock"><a href="#settingUpSpock"><strong>4.1</strong><span>Setting up Spock</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-spockEnvironmentClasspathScanning"><a href="#spockEnvironmentClasspathScanning"><strong>3.3</strong><span>Environments, Classpath Scanning etc.</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-writingAMicronautTestWithSpock"><a href="#writingAMicronautTestWithSpock"><strong>4.2</strong><span>Writing a Micronaut Test with Spock</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-spockTransactionSemantics"><a href="#spockTransactionSemantics"><strong>3.4</strong><span>Transaction semantics</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-spockEnvironmentClasspathScanning"><a href="#spockEnvironmentClasspathScanning"><strong>4.3</strong><span>Environments, Classpath Scanning etc.</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-usingSpockMocks"><a href="#usingSpockMocks"><strong>3.5</strong><span>Using Spock Mocks</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-spockTransactionSemantics"><a href="#spockTransactionSemantics"><strong>4.4</strong><span>Transaction semantics</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-spockUsingCollaborators"><a href="#spockUsingCollaborators"><strong>3.6</strong><span>Mocking Collaborators</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-usingSpockMocks"><a href="#usingSpockMocks"><strong>4.5</strong><span>Using Spock Mocks</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-usingRequiresOnTests"><a href="#usingRequiresOnTests"><strong>3.7</strong><span>Using `@Requires` on Tests</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-spockUsingCollaborators"><a href="#spockUsingCollaborators"><strong>4.6</strong><span>Mocking Collaborators</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-definingAdditionalTestSpecificProperties"><a href="#definingAdditionalTestSpecificProperties"><strong>3.8</strong><span>Defining Additional Test Specific Properties</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-usingRequiresOnTests"><a href="#usingRequiresOnTests"><strong>4.7</strong><span>Using `@Requires` on Tests</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a href="#refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><strong>3.9</strong><span>Refreshing injected beans based on `@Requires` upon properties changes</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-definingAdditionalTestSpecificProperties"><a href="#definingAdditionalTestSpecificProperties"><strong>4.8</strong><span>Defining Additional Test Specific Properties</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-junit5"><a href="#junit5"><strong>4</strong><span>Testing with JUnit 5</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a href="#refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><strong>4.9</strong><span>Refreshing injected beans based on `@Requires` upon properties changes</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-settingUpJUnit5"><a href="#settingUpJUnit5"><strong>4.1</strong><span>Setting up JUnit 5</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-junit5"><a href="#junit5"><strong>5</strong><span>Testing with JUnit 5</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-writingAMicronautTestWithJUnit5"><a href="#writingAMicronautTestWithJUnit5"><strong>4.2</strong><span>Writing a Micronaut Test with JUnit 5</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-settingUpJUnit5"><a href="#settingUpJUnit5"><strong>5.1</strong><span>Setting up JUnit 5</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5EnvironmentClasspathScanning"><a href="#junit5EnvironmentClasspathScanning"><strong>4.3</strong><span>Environments, Classpath Scanning etc.</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-writingAMicronautTestWithJUnit5"><a href="#writingAMicronautTestWithJUnit5"><strong>5.2</strong><span>Writing a Micronaut Test with JUnit 5</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5TransactionSemantics"><a href="#junit5TransactionSemantics"><strong>4.4</strong><span>Transaction semantics</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5EnvironmentClasspathScanning"><a href="#junit5EnvironmentClasspathScanning"><strong>5.3</strong><span>Environments, Classpath Scanning etc.</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-usingMockitoMocks"><a href="#usingMockitoMocks"><strong>4.5</strong><span>Using Mockito Mocks</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5TransactionSemantics"><a href="#junit5TransactionSemantics"><strong>5.4</strong><span>Transaction semantics</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5MockingCollaborators"><a href="#junit5MockingCollaborators"><strong>4.6</strong><span>Mocking Collaborators</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-usingMockitoMocks"><a href="#usingMockitoMocks"><strong>5.5</strong><span>Using Mockito Mocks</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5UsingRequiresOnTests"><a href="#junit5UsingRequiresOnTests"><strong>4.7</strong><span>Using `@Requires` on Tests</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5MockingCollaborators"><a href="#junit5MockingCollaborators"><strong>5.6</strong><span>Mocking Collaborators</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5DefiningAdditionalTestSpecificProperties"><a href="#junit5DefiningAdditionalTestSpecificProperties"><strong>4.8</strong><span>Defining Additional Test Specific Properties</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5UsingRequiresOnTests"><a href="#junit5UsingRequiresOnTests"><strong>5.7</strong><span>Using `@Requires` on Tests</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a href="#junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><strong>4.9</strong><span>Refreshing injected beans based on `@Requires` upon properties changes</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5DefiningAdditionalTestSpecificProperties"><a href="#junit5DefiningAdditionalTestSpecificProperties"><strong>5.8</strong><span>Defining Additional Test Specific Properties</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5TestingExternalServers"><a href="#junit5TestingExternalServers"><strong>4.10</strong><span>Testing External Servers</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a href="#junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><strong>5.9</strong><span>Refreshing injected beans based on `@Requires` upon properties changes</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5TestMethodsInjection"><a href="#junit5TestMethodsInjection"><strong>4.11</strong><span>Test Methods Injection</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5TestingExternalServers"><a href="#junit5TestingExternalServers"><strong>5.10</strong><span>Testing External Servers</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-kotest5"><a href="#kotest5"><strong>5</strong><span>Testing with Kotest</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5TestMethodsInjection"><a href="#junit5TestMethodsInjection"><strong>5.11</strong><span>Test Methods Injection</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-settingUpKoTest5"><a href="#settingUpKoTest5"><strong>5.1</strong><span>Setting up Kotest</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-kotest5"><a href="#kotest5"><strong>6</strong><span>Testing with Kotest</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5BeforeYouBegin"><a href="#kotest5BeforeYouBegin"><strong>5.2</strong><span>Before You Begin</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-settingUpKoTest5"><a href="#settingUpKoTest5"><strong>6.1</strong><span>Setting up Kotest</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5WritingAMicronautTest"><a href="#kotest5WritingAMicronautTest"><strong>5.3</strong><span>Writing a Micronaut Test with Kotest</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5BeforeYouBegin"><a href="#kotest5BeforeYouBegin"><strong>6.2</strong><span>Before You Begin</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5EnvironmentClasspathScanning"><a href="#kotest5EnvironmentClasspathScanning"><strong>5.4</strong><span>Environments, Classpath Scanning etc.</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5WritingAMicronautTest"><a href="#kotest5WritingAMicronautTest"><strong>6.3</strong><span>Writing a Micronaut Test with Kotest</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5TransactionSemantics"><a href="#kotest5TransactionSemantics"><strong>5.5</strong><span>Transaction semantics</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5EnvironmentClasspathScanning"><a href="#kotest5EnvironmentClasspathScanning"><strong>6.4</strong><span>Environments, Classpath Scanning etc.</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-usingMockkMocks"><a href="#usingMockkMocks"><strong>5.6</strong><span>Using Mockk Mocks</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5TransactionSemantics"><a href="#kotest5TransactionSemantics"><strong>6.5</strong><span>Transaction semantics</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5MockingCollaborators"><a href="#kotest5MockingCollaborators"><strong>5.7</strong><span>Mocking Collaborators</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-usingMockkMocks"><a href="#usingMockkMocks"><strong>6.6</strong><span>Using Mockk Mocks</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-kotestUsingRequiresOnTests"><a href="#kotestUsingRequiresOnTests"><strong>5.8</strong><span>Using `@Requires` on Tests</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5MockingCollaborators"><a href="#kotest5MockingCollaborators"><strong>6.7</strong><span>Mocking Collaborators</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5DefiningAdditionalTestSpecificProperties"><a href="#kotest5DefiningAdditionalTestSpecificProperties"><strong>5.9</strong><span>Defining Additional Test Specific Properties</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-kotestUsingRequiresOnTests"><a href="#kotestUsingRequiresOnTests"><strong>6.8</strong><span>Using `@Requires` on Tests</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5ConstructorInjectionCaveats"><a href="#kotest5ConstructorInjectionCaveats"><strong>5.10</strong><span>Constructor Injection Caveats</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5DefiningAdditionalTestSpecificProperties"><a href="#kotest5DefiningAdditionalTestSpecificProperties"><strong>6.9</strong><span>Defining Additional Test Specific Properties</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a href="#kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><strong>5.11</strong><span>Refreshing injected beans based on `@Requires` upon properties changes</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5ConstructorInjectionCaveats"><a href="#kotest5ConstructorInjectionCaveats"><strong>6.10</strong><span>Constructor Injection Caveats</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-nettyLeak"><a href="#nettyLeak"><strong>6</strong><span>Netty Leak Detection</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a href="#kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><strong>6.11</strong><span>Refreshing injected beans based on `@Requires` upon properties changes</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-restAssured"><a href="#restAssured"><strong>7</strong><span>REST Assured</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-nettyLeak"><a href="#nettyLeak"><strong>7</strong><span>Netty Leak Detection</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-sql"><a href="#sql"><strong>8</strong><span>Loading SQL before tests</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-restAssured"><a href="#restAssured"><strong>8</strong><span>REST Assured</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-typePollution"><a href="#typePollution"><strong>9</strong><span>Type pollution</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-sql"><a href="#sql"><strong>9</strong><span>Loading SQL before tests</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>10</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-typePollution"><a href="#typePollution"><strong>10</strong><span>Type pollution</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>11</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -345,7 +349,132 @@ void testEagerSingleton() {
 <p><a href="https://github.com/micronaut-projects/micronaut-test/releases">https://github.com/micronaut-projects/micronaut-test/releases</a></p>
 </div>
 
-<h1 id="spock"><a class="anchor" href="#spock"></a>3 Testing with Spock</h1>
+<h1 id="breaks"><a class="anchor" href="#breaks"></a>3 Breaking Changes</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/breaks.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="sect2">
+<h3 id="_testname_testname_removed"><code>TestName.testName</code> removed</h3>
+<div class="paragraph">
+<p>In Kotest 5, the test name was accessed via <code>testCase.name.testName</code>.
+In Kotest 6, <code>TestName</code> no longer has a <code>testName</code> property — it was replaced by <code>name</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Before</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">testCase.name.testName</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">After</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">testCase.name.name</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_testresult_moved_to_io_kotest_engine_test"><code>TestResult</code> moved to <code>io.kotest.engine.test</code></h3>
+<div class="paragraph">
+<p>In Kotest 5, <code>TestResult</code> was imported from <code>io.kotest.core.test</code>.
+In Kotest 6, it lives in <code>io.kotest.engine.test</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Before</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.kotest.core.test.TestResult</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">After</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.kotest.engine.test.TestResult</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_table_driven_testing_requires_new_dependency">Table-driven testing requires new dependency</h3>
+<div class="paragraph">
+<p>In Kotest 5, <code>io.kotest.data.blocking.forAll</code> and <code>io.kotest.data.row</code> were included in the core framework.
+In Kotest 6, they were extracted into a separate artifact.</p>
+</div>
+<div class="listingblock">
+<div class="title">Add to build.gradle.kts</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">testImplementation("io.kotest:kotest-assertions-table:&lt;kotest6-version&gt;")</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Imports remain the same</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.kotest.data.blocking.forAll
+import io.kotest.data.row</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="_abstractprojectconfig_extensions_changed_from_function_to_property"><code>AbstractProjectConfig.extensions()</code> changed from function to property</h3>
+<div class="paragraph">
+<p>In Kotest 5, extensions were registered by overriding a function.
+In Kotest 6, <code>extensions</code> is a <code>val</code> property.</p>
+</div>
+<div class="listingblock">
+<div class="title">Before</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">override fun extensions() = listOf(MicronautKotest5Extension)</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">After</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">override val extensions = listOf(MicronautKotest5Extension)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_junit_runner_artifact_renamed">JUnit Runner artifact renamed</h3>
+<div class="paragraph">
+<p>In Kotest 5, the JUnit 5 runner artifact was:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">testImplementation("io.kotest:kotest-runner-junit5-jvm:&lt;kotest5-version&gt;")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In Kotest 6, the runner artifact was renamed to align with the new major version:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">testImplementation("io.kotest:kotest-runner-junit6-jvm:&lt;kotest6-version&gt;")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Make sure to update your build configuration accordingly when upgrading.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_references">References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Kotest 6.0 release notes: <a href="https://github.com/kotest/kotest/blob/master/documentation/docs/release_6.0.md" class="bare">https://github.com/kotest/kotest/blob/master/documentation/docs/release_6.0.md</a></p>
+</li>
+<li>
+<p>Kotest docs: <a href="https://kotest.io/docs/release6/" class="bare">https://kotest.io/docs/release6/</a></p>
+</li>
+</ul>
+</div>
+</div>
+
+<h1 id="spock"><a class="anchor" href="#spock"></a>4 Testing with Spock</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/spock.adoc"'>
@@ -356,7 +485,7 @@ void testEagerSingleton() {
 
 
 
-<h2 id="settingUpSpock"><a class="anchor" href="#settingUpSpock"></a>3.1 Setting up Spock</h2>
+<h2 id="settingUpSpock"><a class="anchor" href="#settingUpSpock"></a>4.1 Setting up Spock</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/spock/settingUpSpock.adoc"'>
@@ -403,7 +532,7 @@ If you plan to define mock beans you will also need <code>micronaut-inject-groov
 </div>
 </div>
 
-<h2 id="writingAMicronautTestWithSpock"><a class="anchor" href="#writingAMicronautTestWithSpock"></a>3.2 Writing a Micronaut Test with Spock</h2>
+<h2 id="writingAMicronautTestWithSpock"><a class="anchor" href="#writingAMicronautTestWithSpock"></a>4.2 Writing a Micronaut Test with Spock</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/spock/writingAMicronautTestWithSpock.adoc"'>
@@ -497,7 +626,7 @@ class MathServiceSpec extends Specification {
 </table>
 </div>
 
-<h2 id="spockEnvironmentClasspathScanning"><a class="anchor" href="#spockEnvironmentClasspathScanning"></a>3.3 Environments, Classpath Scanning etc.</h2>
+<h2 id="spockEnvironmentClasspathScanning"><a class="anchor" href="#spockEnvironmentClasspathScanning"></a>4.3 Environments, Classpath Scanning etc.</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/spock/spockEnvironmentClasspathScanning.adoc"'>
@@ -534,7 +663,7 @@ class MathServiceSpec extends Specification {
 <p>To ensure that entities can be found during classpath scanning.</p>
 </div>
 
-<h2 id="spockTransactionSemantics"><a class="anchor" href="#spockTransactionSemantics"></a>3.4 Transaction semantics</h2>
+<h2 id="spockTransactionSemantics"><a class="anchor" href="#spockTransactionSemantics"></a>4.4 Transaction semantics</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/spock/spockTransactionSemantics.adoc"'>
@@ -590,7 +719,7 @@ in separate transactions.</p>
 </ul>
 </div>
 
-<h2 id="usingSpockMocks"><a class="anchor" href="#usingSpockMocks"></a>3.5 Using Spock Mocks</h2>
+<h2 id="usingSpockMocks"><a class="anchor" href="#usingSpockMocks"></a>4.5 Using Spock Mocks</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/spock/usingSpockMocks.adoc"'>
@@ -663,7 +792,7 @@ class MathMockServiceSpec extends Specification {
 </table>
 </div>
 
-<h2 id="spockUsingCollaborators"><a class="anchor" href="#spockUsingCollaborators"></a>3.6 Mocking Collaborators</h2>
+<h2 id="spockUsingCollaborators"><a class="anchor" href="#spockUsingCollaborators"></a>4.6 Mocking Collaborators</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/spock/spockUsingCollaborators.adoc"'>
@@ -776,7 +905,7 @@ class MathCollaboratorSpec extends Specification {
 <p>The way this works is that <code>@MicronautTest</code> will inject the <code>Mock(..)</code> instance into the test, but the controller will have a proxy that points to the <code>Mock(..)</code> instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
 </div>
 
-<h2 id="usingRequiresOnTests"><a class="anchor" href="#usingRequiresOnTests"></a>3.7 Using `@Requires` on Tests</h2>
+<h2 id="usingRequiresOnTests"><a class="anchor" href="#usingRequiresOnTests"></a>4.7 Using `@Requires` on Tests</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/spock/usingRequiresOnTests.adoc"'>
@@ -801,7 +930,7 @@ class RequiresSpec extends Specification {
 <p>The above test will only run if <code>my-env</code> is active (you can activate it by passing the system property <code>micronaut.environments</code>).</p>
 </div>
 
-<h2 id="definingAdditionalTestSpecificProperties"><a class="anchor" href="#definingAdditionalTestSpecificProperties"></a>3.8 Defining Additional Test Specific Properties</h2>
+<h2 id="definingAdditionalTestSpecificProperties"><a class="anchor" href="#definingAdditionalTestSpecificProperties"></a>4.8 Defining Additional Test Specific Properties</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/spock/definingAdditionalTestSpecificProperties.adoc"'>
@@ -896,7 +1025,7 @@ class PropertySourceSpec extends Specification {
 </ul>
 </div>
 
-<h2 id="refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a class="anchor" href="#refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"></a>3.9 Refreshing injected beans based on `@Requires` upon properties changes</h2>
+<h2 id="refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a class="anchor" href="#refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"></a>4.9 Refreshing injected beans based on `@Requires` upon properties changes</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/spock/refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges.adoc"'>
@@ -968,7 +1097,7 @@ class MyServiceChanged implements MyService {}</code></pre>
 </div>
 </div>
 
-<h1 id="junit5"><a class="anchor" href="#junit5"></a>4 Testing with JUnit 5</h1>
+<h1 id="junit5"><a class="anchor" href="#junit5"></a>5 Testing with JUnit 5</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5.adoc"'>
@@ -979,7 +1108,7 @@ class MyServiceChanged implements MyService {}</code></pre>
 
 
 
-<h2 id="settingUpJUnit5"><a class="anchor" href="#settingUpJUnit5"></a>4.1 Setting up JUnit 5</h2>
+<h2 id="settingUpJUnit5"><a class="anchor" href="#settingUpJUnit5"></a>5.1 Setting up JUnit 5</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/settingUpJUnit5.adoc"'>
@@ -1045,7 +1174,7 @@ If you plan to define mock beans you will also need <code>inject-groovy</code> o
 </div>
 </div>
 
-<h2 id="writingAMicronautTestWithJUnit5"><a class="anchor" href="#writingAMicronautTestWithJUnit5"></a>4.2 Writing a Micronaut Test with JUnit 5</h2>
+<h2 id="writingAMicronautTestWithJUnit5"><a class="anchor" href="#writingAMicronautTestWithJUnit5"></a>5.2 Writing a Micronaut Test with JUnit 5</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/writingAMicronautTestWithJUnit5.adoc"'>
@@ -1141,7 +1270,7 @@ class MathServiceTest {
 </table>
 </div>
 
-<h2 id="junit5EnvironmentClasspathScanning"><a class="anchor" href="#junit5EnvironmentClasspathScanning"></a>4.3 Environments, Classpath Scanning etc.</h2>
+<h2 id="junit5EnvironmentClasspathScanning"><a class="anchor" href="#junit5EnvironmentClasspathScanning"></a>5.3 Environments, Classpath Scanning etc.</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/junit5EnvironmentClasspathScanning.adoc"'>
@@ -1178,7 +1307,7 @@ class MathServiceTest {
 <p>To ensure that entities can be found during classpath scanning.</p>
 </div>
 
-<h2 id="junit5TransactionSemantics"><a class="anchor" href="#junit5TransactionSemantics"></a>4.4 Transaction semantics</h2>
+<h2 id="junit5TransactionSemantics"><a class="anchor" href="#junit5TransactionSemantics"></a>5.4 Transaction semantics</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/junit5TransactionSemantics.adoc"'>
@@ -1234,7 +1363,7 @@ in separate transactions.</p>
 </ul>
 </div>
 
-<h2 id="usingMockitoMocks"><a class="anchor" href="#usingMockitoMocks"></a>4.5 Using Mockito Mocks</h2>
+<h2 id="usingMockitoMocks"><a class="anchor" href="#usingMockitoMocks"></a>5.5 Using Mockito Mocks</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/usingMockitoMocks.adoc"'>
@@ -1340,7 +1469,7 @@ class MathMockServiceTest {
 <p>Note that because the bean is an inner class of the test, it will be active only for the scope of the test. This approach allows you to define beans that are isolated per test class.</p>
 </div>
 
-<h2 id="junit5MockingCollaborators"><a class="anchor" href="#junit5MockingCollaborators"></a>4.6 Mocking Collaborators</h2>
+<h2 id="junit5MockingCollaborators"><a class="anchor" href="#junit5MockingCollaborators"></a>5.6 Mocking Collaborators</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/junit5MockingCollaborators.adoc"'>
@@ -1462,7 +1591,7 @@ class MathCollaboratorTest {
 <p>For Factory injected beans, you can use Factory Replacement to inject Mocks. Refer to the <a href="https://docs.micronaut.io/latest/guide/index.html#_factory_replacement">factory replacement documentation</a> for more information.</p>
 </div>
 
-<h2 id="junit5UsingRequiresOnTests"><a class="anchor" href="#junit5UsingRequiresOnTests"></a>4.7 Using `@Requires` on Tests</h2>
+<h2 id="junit5UsingRequiresOnTests"><a class="anchor" href="#junit5UsingRequiresOnTests"></a>5.7 Using `@Requires` on Tests</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/junit5UsingRequiresOnTests.adoc"'>
@@ -1487,7 +1616,7 @@ class RequiresTest {
 <p>The above test will only run if <code>my-env</code> is active (you can activate it by passing the system property <code>micronaut.environments</code>).</p>
 </div>
 
-<h2 id="junit5DefiningAdditionalTestSpecificProperties"><a class="anchor" href="#junit5DefiningAdditionalTestSpecificProperties"></a>4.8 Defining Additional Test Specific Properties</h2>
+<h2 id="junit5DefiningAdditionalTestSpecificProperties"><a class="anchor" href="#junit5DefiningAdditionalTestSpecificProperties"></a>5.8 Defining Additional Test Specific Properties</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/junit5DefiningAdditionalTestSpecificProperties.adoc"'>
@@ -1644,7 +1773,7 @@ When using <code>TestPropertyProvider</code> your test must use JUnit&#8217;s <c
 </table>
 </div>
 
-<h2 id="junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a class="anchor" href="#junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"></a>4.9 Refreshing injected beans based on `@Requires` upon properties changes</h2>
+<h2 id="junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a class="anchor" href="#junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"></a>5.9 Refreshing injected beans based on `@Requires` upon properties changes</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges.adoc"'>
@@ -1726,7 +1855,7 @@ class MyServiceChanged implements MyService {}</code></pre>
 </div>
 </div>
 
-<h2 id="junit5TestingExternalServers"><a class="anchor" href="#junit5TestingExternalServers"></a>4.10 Testing External Servers</h2>
+<h2 id="junit5TestingExternalServers"><a class="anchor" href="#junit5TestingExternalServers"></a>5.10 Testing External Servers</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/junit5TestingExternalServers.adoc"'>
@@ -1760,7 +1889,7 @@ class MyServiceChanged implements MyService {}</code></pre>
 <p>Alternatively if you have independently started an <code>EmbeddedServer</code> instance programmatically you can also specify the URL to the server with the <code>micronaut.test.server.url</code> property.</p>
 </div>
 
-<h2 id="junit5TestMethodsInjection"><a class="anchor" href="#junit5TestMethodsInjection"></a>4.11 Test Methods Injection</h2>
+<h2 id="junit5TestMethodsInjection"><a class="anchor" href="#junit5TestMethodsInjection"></a>5.11 Test Methods Injection</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/junit5/junit5TestMethodsInjection.adoc"'>
@@ -1828,7 +1957,7 @@ class DisableResolveParametersTest {
 </table>
 </div>
 
-<h1 id="kotest5"><a class="anchor" href="#kotest5"></a>5 Testing with Kotest</h1>
+<h1 id="kotest5"><a class="anchor" href="#kotest5"></a>6 Testing with Kotest</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5.adoc"'>
@@ -1839,7 +1968,7 @@ class DisableResolveParametersTest {
 
 
 
-<h2 id="settingUpKoTest5"><a class="anchor" href="#settingUpKoTest5"></a>5.1 Setting up Kotest</h2>
+<h2 id="settingUpKoTest5"><a class="anchor" href="#settingUpKoTest5"></a>6.1 Setting up Kotest</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/settingUpKoTest5.adoc"'>
@@ -2001,7 +2130,7 @@ test {
 </div>
 </div>
 
-<h2 id="kotest5BeforeYouBegin"><a class="anchor" href="#kotest5BeforeYouBegin"></a>5.2 Before You Begin</h2>
+<h2 id="kotest5BeforeYouBegin"><a class="anchor" href="#kotest5BeforeYouBegin"></a>6.2 Before You Begin</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/kotest5BeforeYouBegin.adoc"'>
@@ -2027,7 +2156,7 @@ object ProjectConfig : AbstractProjectConfig() {
 </div>
 </div>
 
-<h2 id="kotest5WritingAMicronautTest"><a class="anchor" href="#kotest5WritingAMicronautTest"></a>5.3 Writing a Micronaut Test with Kotest</h2>
+<h2 id="kotest5WritingAMicronautTest"><a class="anchor" href="#kotest5WritingAMicronautTest"></a>6.3 Writing a Micronaut Test with Kotest</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/kotest5WritingAMicronautTest.adoc"'>
@@ -2122,7 +2251,7 @@ class MathServiceTest(
 </table>
 </div>
 
-<h2 id="kotest5EnvironmentClasspathScanning"><a class="anchor" href="#kotest5EnvironmentClasspathScanning"></a>5.4 Environments, Classpath Scanning etc.</h2>
+<h2 id="kotest5EnvironmentClasspathScanning"><a class="anchor" href="#kotest5EnvironmentClasspathScanning"></a>6.4 Environments, Classpath Scanning etc.</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/kotest5EnvironmentClasspathScanning.adoc"'>
@@ -2159,7 +2288,7 @@ class MathServiceTest(
 <p>To ensure that entities can be found during classpath scanning.</p>
 </div>
 
-<h2 id="kotest5TransactionSemantics"><a class="anchor" href="#kotest5TransactionSemantics"></a>5.5 Transaction semantics</h2>
+<h2 id="kotest5TransactionSemantics"><a class="anchor" href="#kotest5TransactionSemantics"></a>6.5 Transaction semantics</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/kotest5TransactionSemantics.adoc"'>
@@ -2228,7 +2357,7 @@ no effect in Kotest.
 </table>
 </div>
 
-<h2 id="usingMockkMocks"><a class="anchor" href="#usingMockkMocks"></a>5.6 Using Mockk Mocks</h2>
+<h2 id="usingMockkMocks"><a class="anchor" href="#usingMockkMocks"></a>6.6 Using Mockk Mocks</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/usingMockkMocks.adoc"'>
@@ -2326,7 +2455,7 @@ Because Kotlin uses constructor injection, it&#8217;s not possible to automatica
 </table>
 </div>
 
-<h2 id="kotest5MockingCollaborators"><a class="anchor" href="#kotest5MockingCollaborators"></a>5.7 Mocking Collaborators</h2>
+<h2 id="kotest5MockingCollaborators"><a class="anchor" href="#kotest5MockingCollaborators"></a>6.7 Mocking Collaborators</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/kotest5MockingCollaborators.adoc"'>
@@ -2467,7 +2596,7 @@ class MathCollaboratorTest(
 <p>The way this works is that <code>@MicronautTest</code> will inject a proxy that points to the mock instance. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
 </div>
 
-<h2 id="kotestUsingRequiresOnTests"><a class="anchor" href="#kotestUsingRequiresOnTests"></a>5.8 Using `@Requires` on Tests</h2>
+<h2 id="kotestUsingRequiresOnTests"><a class="anchor" href="#kotestUsingRequiresOnTests"></a>6.8 Using `@Requires` on Tests</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/kotestUsingRequiresOnTests.adoc"'>
@@ -2492,7 +2621,7 @@ class RequiresTest {
 <p>The above test will only run if <code>my-env</code> is active (you can activate it by passing the system property <code>micronaut.environments</code>).</p>
 </div>
 
-<h2 id="kotest5DefiningAdditionalTestSpecificProperties"><a class="anchor" href="#kotest5DefiningAdditionalTestSpecificProperties"></a>5.9 Defining Additional Test Specific Properties</h2>
+<h2 id="kotest5DefiningAdditionalTestSpecificProperties"><a class="anchor" href="#kotest5DefiningAdditionalTestSpecificProperties"></a>6.9 Defining Additional Test Specific Properties</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/kotest5DefiningAdditionalTestSpecificProperties.adoc"'>
@@ -2599,7 +2728,7 @@ Because Kotlin doesn&#8217;t support multiple annotations, the <code>@PropertySo
 </table>
 </div>
 
-<h2 id="kotest5ConstructorInjectionCaveats"><a class="anchor" href="#kotest5ConstructorInjectionCaveats"></a>5.10 Constructor Injection Caveats</h2>
+<h2 id="kotest5ConstructorInjectionCaveats"><a class="anchor" href="#kotest5ConstructorInjectionCaveats"></a>6.10 Constructor Injection Caveats</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/kotest5ConstructorInjectionCaveats.adoc"'>
@@ -2622,7 +2751,7 @@ Because Kotlin doesn&#8217;t support multiple annotations, the <code>@PropertySo
 </ol>
 </div>
 
-<h2 id="kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a class="anchor" href="#kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"></a>5.11 Refreshing injected beans based on `@Requires` upon properties changes</h2>
+<h2 id="kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a class="anchor" href="#kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"></a>6.11 Refreshing injected beans based on `@Requires` upon properties changes</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/kotest5/kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges.adoc"'>
@@ -2693,7 +2822,7 @@ open class MyServiceChanged : MyService</code></pre>
 </div>
 </div>
 
-<h1 id="nettyLeak"><a class="anchor" href="#nettyLeak"></a>6 Netty Leak Detection</h1>
+<h1 id="nettyLeak"><a class="anchor" href="#nettyLeak"></a>7 Netty Leak Detection</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/nettyLeak.adoc"'>
@@ -2780,7 +2909,7 @@ public class LeakyTest {
 is added automatically.</p>
 </div>
 
-<h1 id="restAssured"><a class="anchor" href="#restAssured"></a>7 REST Assured</h1>
+<h1 id="restAssured"><a class="anchor" href="#restAssured"></a>8 REST Assured</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/restAssured.adoc"'>
@@ -2849,7 +2978,7 @@ See the guides for <a href="https://guides.micronaut.io/latest/micronaut-rest-as
 </table>
 </div>
 
-<h1 id="sql"><a class="anchor" href="#sql"></a>8 Loading SQL before tests</h1>
+<h1 id="sql"><a class="anchor" href="#sql"></a>9 Loading SQL before tests</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/sql.adoc"'>
@@ -3249,7 +3378,7 @@ class MySqlConnectionTest implements TestPropertyProvider {
 </div>
 </div>
 
-<h1 id="typePollution"><a class="anchor" href="#typePollution"></a>9 Type pollution</h1>
+<h1 id="typePollution"><a class="anchor" href="#typePollution"></a>10 Type pollution</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/typePollution.adoc"'>
@@ -3430,7 +3559,7 @@ static class Concrete implements A, B {
 </div>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>10 Repository</h1>
+<h1 id="repository"><a class="anchor" href="#repository"></a>11 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.0.x/src/main/docs/guide/repository.adoc"'>
