@@ -26,19 +26,20 @@ junit5:
   junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
   junit5TestingExternalServers: Testing External Servers
   junit5TestMethodsInjection: Test Methods Injection
-kotest5:
+kotest:
   title: Testing with Kotest
-  settingUpKoTest5: Setting up Kotest
-  kotest5BeforeYouBegin: Before You Begin
-  kotest5WritingAMicronautTest: Writing a Micronaut Test with Kotest
-  kotest5EnvironmentClasspathScanning: Environments, Classpath Scanning etc.
-  kotest5TransactionSemantics: Transaction semantics
+  settingUpKoTest: Setting up Kotest
+  kotestBeforeYouBegin: Before You Begin
+  kotestWritingAMicronautTest: Writing a Micronaut Test with Kotest
+  kotestEnvironmentClasspathScanning: Environments, Classpath Scanning etc.
+  kotestTransactionSemantics: Transaction semantics
   usingMockkMocks: Using Mockk Mocks
-  kotest5MockingCollaborators: Mocking Collaborators
+  kotestMockingCollaborators: Mocking Collaborators
   kotestUsingRequiresOnTests: Using `@Requires` on Tests
-  kotest5DefiningAdditionalTestSpecificProperties: Defining Additional Test Specific Properties
-  kotest5ConstructorInjectionCaveats: Constructor Injection Caveats
-  kotest5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
+  kotestDefiningAdditionalTestSpecificProperties: Defining Additional Test Specific Properties
+  kotestConstructorInjectionCaveats: Constructor Injection Caveats
+  kotestRefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
+  Concurrency: Concurrency with Kotest 6
 nettyLeak: Netty Leak Detection
 restAssured: REST Assured
 sql: Loading SQL before tests
