@@ -7,7 +7,7 @@ managed-junit = "6.0.3"
 managed-rest-assured = "6.0.0"
 managed-kotest = "6.1.9"
 managed-spock = "2.4-groovy-5.0"
-managed-bytebuddy = "1.18.8"
+managed-bytebuddy = "1.18.9"
 graal-svm = "25.0.3"
 managed-testcontainers = "2.0.5"
 
