@@ -180,6 +180,11 @@ final class SqlScriptStatementSplitter {
                 appendQuoted(currentStatement, current);
                 return false;
             }
+            if (current == '$') {
+                if (appendDollarQuoted(currentStatement)) {
+                    return false;
+                }
+            }
 
             index++;
             if (current == ';') {
@@ -203,6 +208,35 @@ final class SqlScriptStatementSplitter {
                     }
                 }
             }
+        }
+
+        private boolean appendDollarQuoted(StringBuilder currentStatement) {
+            int tagEnd = script.indexOf('$', index + 1);
+            if (tagEnd < 0 || !isDollarQuoteTag(index + 1, tagEnd)) {
+                return false;
+            }
+
+            String delimiter = script.substring(index, tagEnd + 1);
+            int closingDelimiterIndex = script.indexOf(delimiter, tagEnd + 1);
+            if (closingDelimiterIndex < 0) {
+                return false;
+            }
+
+            appendRange(currentStatement, closingDelimiterIndex + delimiter.length());
+            return true;
+        }
+
+        private boolean isDollarQuoteTag(int startInclusive, int endExclusive) {
+            for (int i = startInclusive; i < endExclusive; i++) {
+                char current = script.charAt(i);
+                if (i == startInclusive && Character.isDigit(current)) {
+                    return false;
+                }
+                if (current != '_' && !Character.isLetterOrDigit(current)) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void appendRange(StringBuilder currentStatement, int endExclusive) {

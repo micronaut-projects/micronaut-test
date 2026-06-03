@@ -61,6 +61,36 @@ class SqlScriptStatementSplitterTest {
     }
 
     @Test
+    void keepsSemicolonsInsidePostgresDollarQuotedBlocks() {
+        String block = """
+            DO
+            $$
+                BEGIN
+                    INSERT INTO dummy_table(id, text, other_text)
+                    VALUES ('1836e92e-5f78-4ce4-9d52-bd00b8643827','my text','my other text');
+                END
+            $$;
+            """;
+
+        assertEquals(List.of(block.trim().replaceFirst(";$", "")), SqlScriptStatementSplitter.split(block));
+    }
+
+    @Test
+    void keepsSemicolonsInsidePostgresTaggedDollarQuotedBlocks() {
+        assertEquals(List.of(
+            "CREATE FUNCTION test_function() RETURNS void AS $body$\nBEGIN\n    DELETE FROM foo;\nEND;\n$body$ LANGUAGE plpgsql",
+            "DELETE FROM bar"
+        ), SqlScriptStatementSplitter.split("""
+            CREATE FUNCTION test_function() RETURNS void AS $body$
+            BEGIN
+                DELETE FROM foo;
+            END;
+            $body$ LANGUAGE plpgsql;
+            DELETE FROM bar;
+            """));
+    }
+
+    @Test
     void leavesPlSqlBlocksIntact() {
         String block = """
             BEGIN
