@@ -1,5 +1,3 @@
-== Concurrency with Kotest 6
-
 Micronaut Test fully supports the concurrency features introduced in
 link:https://kotest.io/[Kotest 6].
 
