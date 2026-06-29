@@ -6,6 +6,7 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
+import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.*;
 
 @MicronautTest
 @Requires(property = "mockito.test.enabled", defaultValue = StringUtils.FALSE, value = StringUtils.TRUE)
-class MathCollaboratorBaseTest extends MathBaseTest {
+class MathCollaboratorBaseTest {
 
     @Inject MathService mathService;
 
@@ -35,4 +36,8 @@ class MathCollaboratorBaseTest extends MathBaseTest {
         verify(mathService).compute(10);
     }
 
+    @MockBean(MathServiceImpl.class)
+    MathService mathService() {
+        return mock(MathService.class);
+    }
 }
