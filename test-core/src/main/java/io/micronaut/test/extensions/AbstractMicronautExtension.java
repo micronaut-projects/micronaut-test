@@ -473,6 +473,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
         if (testInstance != null) {
             if (applicationContext != null) {
+                beforeInjectTestInstance(context, testInstance);
                 if (refreshScope != null) {
                     refreshScope.onRefreshEvent(new RefreshEvent(Collections.singletonMap(
                         TestActiveCondition.ACTIVE_MOCKS, "changed"
@@ -571,6 +572,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @param instance The mock instance to inject
      */
     protected abstract void alignMocks(C context, Object instance);
+
+    /**
+     * Allows implementations to inject enclosing or related test instances before the current
+     * test instance is injected and mock fields are aligned.
+     *
+     * @param context The context
+     * @param testInstance The current test instance
+     */
+    protected void beforeInjectTestInstance(C context, Object testInstance) {
+    }
 
     private void startEmbeddedApplication() {
         if (embeddedApplication != null) {
