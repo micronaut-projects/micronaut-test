@@ -79,6 +79,7 @@ import java.util.Set;
  * @since 1.0
  */
 public abstract class AbstractMicronautExtension<C> implements TestExecutionListener, TestMethodInterceptor<Object> {
+    public static final String NATIVE_IMAGE_CODE_PROPERTY = "org.graalvm.nativeimage.imagecode";
     public static final String TEST_ROLLBACK = "micronaut.test.rollback";
     public static final String TEST_TRANSACTIONAL = "micronaut.test.transactional";
     public static final String TEST_TRANSACTION_MODE = "micronaut.test.transaction-mode";
@@ -560,10 +561,17 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @return true if the te given class has a bean definition class in the classpath (ie: the annotation processor has been run correctly)
      */
     protected boolean isTestSuiteBeanPresent(Class<?> requiredTestClass) {
+        if (isNativeImageExecution()) {
+            return true;
+        }
         String prefix = requiredTestClass.getPackage().getName() + ".$" + requiredTestClass.getSimpleName();
         final ClassLoader classLoader = requiredTestClass.getClassLoader();
         return ClassUtils.isPresent(prefix + "Definition", classLoader) ||
             ClassUtils.isPresent(prefix + "$Definition", classLoader);
+    }
+
+    protected boolean isNativeImageExecution() {
+        return StringUtils.isNotEmpty(System.getProperty(NATIVE_IMAGE_CODE_PROPERTY));
     }
 
     /**
