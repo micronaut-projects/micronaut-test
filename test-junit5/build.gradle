@@ -35,18 +35,13 @@ tasks.withType(Jar).configureEach {
 }
 
 dependencies {
-
-
     api(projects.micronautTestCore)
     api(mn.micronaut.inject)
     api(libs.managed.junit.jupiter.api)
-
     implementation(mn.micronaut.context)
-
     ksp(mn.micronaut.inject.kotlin)
     testAnnotationProcessor(mn.micronaut.inject.java)
     testAnnotationProcessor(mn.micronaut.graal)
-
     testImplementation(libs.managed.junit.jupiter.params)
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
@@ -54,7 +49,6 @@ dependencies {
     testImplementation(libs.managed.hamcrest)
     testImplementation(mnData.micronaut.data.tx)
     testImplementation(mnData.micronaut.data.hibernate.jpa)
-
     testRuntimeOnly(mn.snakeyaml)
     testRuntimeOnly(mnLogging.logback.classic)
     testRuntimeOnly(mnSql.micronaut.jdbc.tomcat)
