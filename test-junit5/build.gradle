@@ -36,7 +36,6 @@ tasks.withType(Jar).configureEach {
 
 dependencies {
 
-    compileOnly(libs.graal.svm)
 
     api(projects.micronautTestCore)
     api(mn.micronaut.inject)
