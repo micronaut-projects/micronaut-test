@@ -36,6 +36,7 @@ tasks.withType(Jar).configureEach {
 
 dependencies {
     compileOnly(mn.graalvm.nativeimage)
+    testImplementation(mn.graalvm.nativeimage)
     api(projects.micronautTestCore)
     api(mn.micronaut.inject)
     api(libs.managed.junit.jupiter.api)
