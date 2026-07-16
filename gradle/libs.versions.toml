@@ -13,7 +13,7 @@ managed-testcontainers = "2.0.5"
 
 micronaut-platform = "5.0.4"
 micronaut = "5.1.6"
-micronaut-data = "5.0.5"
+micronaut-data = "5.1.0"
 micronaut-hibernate-validator = "5.1.0"
 micronaut-r2dbc = "7.1.0"
 micronaut-serde = "3.1.0"
