@@ -7,7 +7,7 @@ managed-junit = "6.1.2"
 managed-rest-assured = "6.0.1"
 managed-kotest = "6.1.11"
 managed-spock = "2.4-groovy-5.0"
-managed-bytebuddy = "1.18.10"
+managed-bytebuddy = "1.18.11"
 managed-testcontainers = "2.0.5"
 
 micronaut-platform = "5.0.4"
