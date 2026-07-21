@@ -11,7 +11,7 @@ managed-bytebuddy = "1.18.11"
 managed-testcontainers = "2.0.5"
 
 micronaut-platform = "5.0.5"
-micronaut = "5.1.7"
+micronaut = "5.1.9"
 micronaut-data = "5.1.0"
 micronaut-hibernate-validator = "5.1.0"
 micronaut-r2dbc = "7.1.0"
