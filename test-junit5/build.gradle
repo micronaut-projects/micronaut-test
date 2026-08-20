@@ -41,10 +41,11 @@ dependencies {
     api(mn.micronaut.inject)
     api(libs.managed.junit.jupiter.api)
     implementation(mn.micronaut.context)
-    ksp(mn.micronaut.inject.kotlin)
+    kspTest(mn.micronaut.inject.kotlin)
     testAnnotationProcessor(mn.micronaut.inject.java)
     testAnnotationProcessor(mn.micronaut.graal)
     testImplementation(libs.managed.junit.jupiter.params)
+    testImplementation(mn.kotlin.stdlib)
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
     testImplementation(libs.managed.mockito.junit.jupiter)
@@ -76,4 +77,3 @@ graalvmNative {
 tasks.named("test") {
     systemProperty("mockito.test.enabled", "true")
 }
-
