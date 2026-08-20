@@ -18,3 +18,15 @@ class PropertySourceTest {
         Assertions.assertEquals("foo", val);
     }
 }
+
+@MicronautTest(propertySources = "file:src/test/resources/io/micronaut/test/junit5/fileprops.properties")
+class FilePropertySourceTest {
+
+    @Property(name = "foo.file")
+    String val;
+
+    @Test
+    void testFilePropertySource() {
+        Assertions.assertEquals("file", val);
+    }
+}

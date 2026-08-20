@@ -29,6 +29,7 @@ import io.micronaut.context.env.PropertySourceLoader;
 import io.micronaut.context.env.PropertySourcesLocator;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.core.io.scan.ClassClassPathResourceLoader;
 import io.micronaut.core.io.scan.ClassPathResourceLoader;
 import io.micronaut.core.io.scan.CombinedClassPathResourceLoader;
@@ -326,6 +327,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 @Override
                 public Collection<PropertySource> load(Environment environment) {
                     List<PropertySource> loadedPropertySources = new ArrayList<>();
+                    ResourceResolver resourceResolver = new ResourceResolver();
                     for (String propertySourceName : testAnnotationValue.propertySources()) {
                         String ext = NameUtils.extension(propertySourceName);
                         if (StringUtils.isEmpty(ext)) {
@@ -336,7 +338,9 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                                 continue;
                             }
 
-                            environment.getResourceAsStream(propertySourceName).ifPresent(inputStream -> {
+                            resourceResolver.getResourceAsStream(propertySourceName)
+                                .or(() -> environment.getResourceAsStream(propertySourceName))
+                                .ifPresent(inputStream -> {
                                 try (inputStream) {
                                     String filename = NameUtils.filename(propertySourceName);
                                     try {
