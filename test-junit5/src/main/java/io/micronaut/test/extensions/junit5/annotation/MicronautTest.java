@@ -22,7 +22,9 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.test.annotation.TransactionMode;
 import io.micronaut.test.condition.TestActiveCondition;
 import io.micronaut.test.extensions.junit5.MicronautJunit5Extension;
+import io.micronaut.test.extensions.junit5.MicronautTestResourceLocksProvider;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -40,6 +42,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @ExtendWith(MicronautJunit5Extension.class)
+@ResourceLock(providers = MicronautTestResourceLocksProvider.class)
 @Factory
 @Inherited
 @Requires(condition = TestActiveCondition.class)
