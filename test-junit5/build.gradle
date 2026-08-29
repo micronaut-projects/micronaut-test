@@ -12,9 +12,10 @@ tasks.withType(Test).configureEach {
     reports.junitXml.required = true
 
     useJUnitPlatform {
-        // Fixtures under io.micronaut.test.junit5.parallel are only executed by
-        // MicronautTestParallelExecutionTest, through its own JUnit Platform launcher.
+        // Fixtures under io.micronaut.test.junit5.parallel and io.micronaut.test.junit5.lifecycle
+        // are executed only by the tests alongside them, through their own JUnit Platform launcher.
         excludeTags("parallel-fixture")
+        excludeTags("lifecycle-fixture")
     }
 }
 

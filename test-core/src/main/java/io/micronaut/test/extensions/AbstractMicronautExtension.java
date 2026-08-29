@@ -216,6 +216,30 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     }
 
     @Override
+    public void testDisabled(TestContext testContext, String reason) throws Exception {
+        if (listeners != null) {
+            for (int i = listeners.size() - 1; i >= 0; i--) {
+                listeners.get(i).testDisabled(testContext, reason);
+            }
+        }
+    }
+
+    @Override
+    public void testSuccessful(TestContext testContext) throws Exception {
+        fireListeners(TestExecutionListener::testSuccessful, testContext, true);
+    }
+
+    @Override
+    public void testAborted(TestContext testContext) throws Exception {
+        fireListeners(TestExecutionListener::testAborted, testContext, true);
+    }
+
+    @Override
+    public void testFailed(TestContext testContext) throws Exception {
+        fireListeners(TestExecutionListener::testFailed, testContext, true);
+    }
+
+    @Override
     public void afterTestClass(TestContext testContext) throws Exception {
         fireListeners(TestExecutionListener::afterTestClass, testContext, true);
         if (specDefinition != null && applicationContext != null) {
