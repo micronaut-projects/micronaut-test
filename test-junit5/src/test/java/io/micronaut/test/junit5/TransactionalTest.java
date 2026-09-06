@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @MicronautTest(transactional = true)
+@io.micronaut.context.annotation.Property(name = "datasources.default.url", value = "jdbc:h2:mem:TransactionalTest;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @DbProperties
 class TransactionalTest {
 

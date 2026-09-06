@@ -11,7 +11,11 @@ tasks.withType(Test).configureEach {
     reports.html.required = !System.getenv("GITHUB_ACTION")
     reports.junitXml.required = true
 
-    useJUnitPlatform()
+    useJUnitPlatform {
+        // Fixtures under io.micronaut.test.junit5.parallel are only executed by
+        // MicronautTestParallelExecutionTest, through its own JUnit Platform launcher.
+        excludeTags("parallel-fixture")
+    }
 }
 
 configurations {
@@ -45,6 +49,7 @@ dependencies {
     testAnnotationProcessor(mn.micronaut.inject.java)
     testAnnotationProcessor(mn.micronaut.graal)
     testImplementation(libs.managed.junit.jupiter.params)
+    testImplementation(libs.managed.junit.platform.testkit)
     testImplementation(mn.kotlin.stdlib)
     testImplementation(mn.micronaut.http.server.netty)
     testImplementation(mn.micronaut.http.client)
@@ -76,4 +81,12 @@ graalvmNative {
 
 tasks.named("test") {
     systemProperty("mockito.test.enabled", "true")
+    // Runs this module's own suite under JUnit parallel execution, to check the resource lock
+    // against real tests rather than only against the fixtures. For example:
+    //   ./gradlew :micronaut-test-junit5:test -PparallelMode=concurrent -PparallelClassesMode=concurrent
+    if (project.hasProperty("parallelMode")) {
+        systemProperty("junit.jupiter.execution.parallel.enabled", "true")
+        systemProperty("junit.jupiter.execution.parallel.mode.default", project.property("parallelMode"))
+        systemProperty("junit.jupiter.execution.parallel.mode.classes.default", project.hasProperty("parallelClassesMode") ? project.property("parallelClassesMode") : "same_thread")
+    }
 }

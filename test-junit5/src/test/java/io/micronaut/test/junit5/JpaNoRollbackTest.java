@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @MicronautTest(rollback = false)
+@io.micronaut.context.annotation.Property(name = "datasources.default.url", value = "jdbc:h2:mem:JpaNoRollbackTest;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @DbProperties
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class JpaNoRollbackTest {

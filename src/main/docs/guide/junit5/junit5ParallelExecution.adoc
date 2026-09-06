@@ -1,0 +1,72 @@
+JUnit 5 can run tests https://junit.org/junit5/docs/current/user-guide/#writing-tests-parallel-execution[in parallel]. Micronaut Test supports this by guaranteeing that:
+
+* different `@MicronautTest` classes run **at the same time**, each with its own application context and, where applicable, its own embedded server;
+* everything that shares **one** application context runs **one at a time**.
+
+The second guarantee is what makes the first one safe. A `@MicronautTest` class owns a single `ApplicationContext` for the whole class, so its beans - including every api:test.annotation.MockBean[] - are singletons shared by every method of that class. Method level `@Property` values, `rebuildContext = true`, `@Sql` phases and api:test.context.TestExecutionListener[] state are all held per class as well. Running two methods of the same class concurrently would race on all of it.
+
+Micronaut Test enforces this with a https://junit.org/junit5/docs/current/user-guide/#writing-tests-parallel-execution-synchronization[JUnit resource lock] that `@MicronautTest` declares for you. There is nothing to configure: the lock is keyed on the test class, so it never serialises unrelated classes.
+
+NOTE: `@Nested` classes reuse the extension instance of their outermost enclosing class, so they lock on that class - a nested test never runs alongside the methods of the class that encloses it.
+
+=== Enabling parallel execution
+
+Parallel execution is a JUnit setting, not a Micronaut one. Enable it in `src/test/resources/junit-platform.properties`:
+
+[source,properties]
+----
+junit.jupiter.execution.parallel.enabled=true
+junit.jupiter.execution.parallel.mode.default=same_thread
+junit.jupiter.execution.parallel.mode.classes.default=concurrent
+----
+
+This is the recommended configuration: test classes run concurrently, methods within a class do not. Setting `mode.default=concurrent` as well is harmless - the resource lock keeps each context single-threaded regardless - but it buys you nothing unless you also opt classes in, as described below.
+
+=== Making your tests parallel-safe
+
+The lock protects the state Micronaut Test owns. It cannot protect anything your tests share *between* classes, and that is where most failures come from:
+
+* **In-memory databases.** Two classes pointing at `jdbc:h2:mem:testdb` share one database. Give each test class its own URL, or use https://micronaut-projects.github.io/micronaut-test-resources/latest/guide/[Test Resources].
+* **Fixed ports.** Let `@MicronautTest` allocate a random port rather than pinning `micronaut.server.port`.
+* **Static mutable state**, temporary files with fixed names, and system properties set from test code.
+* **Shared external services** - a single Testcontainers instance, a stub server, a message broker topic.
+
+TIP: Every additional concurrent class is another live application context, connection pool and embedded server. Raising `junit.jupiter.execution.parallel.config.fixed.parallelism` past what the machine can hold will slow the build down rather than speed it up.
+
+=== Running the methods of one class concurrently
+
+If a test class genuinely is thread-safe - no mocks, no method level `@Property`, no transactional fixtures, no shared bean state - declare `@Execution(CONCURRENT)` on the class to opt it out of the lock:
+
+[source,java]
+----
+@MicronautTest
+@Execution(ExecutionMode.CONCURRENT) // <1>
+class ReadOnlyEndpointTest {
+
+    @ParameterizedTest
+    @ValueSource(strings = {"/one", "/two", "/three"})
+    void endpointResponds(String path) {
+        // ...
+    }
+}
+----
+<1> Declared directly on the class. An execution mode that only comes from a configuration parameter is *not* treated as an opt-out, because it says nothing about whether this particular class was written to be thread-safe.
+
+From that point the thread safety of the test class, of the beans it injects and of any `TestExecutionListener` on its classpath is yours to guarantee. In particular, Micronaut Data's transaction support keeps one transaction per context, so a class using `@Transactional` fixtures must not opt out.
+
+To opt out for a whole JVM - for example to reproduce a race - set the `micronaut.test.parallel.methods` system property:
+
+[source,groovy]
+----
+test {
+    systemProperty "micronaut.test.parallel.methods", "true"
+}
+----
+
+=== Limitations
+
+* **JUnit 5.12 or newer is required.** The lock is declared with `@ResourceLock(providers = ...)`, and `providers` was added in JUnit 5.12. On an older JUnit the Jupiter engine fails to execute *any* `@MicronautTest` class. Micronaut Test manages a supported version for you; only override `junit-bom` upwards.
+* **The opt-out is per class, not per method.** A class either serialises all of its methods or none of them.
+* **A `@TestFactory` holds the lock for all of its dynamic tests**, because they execute inside the factory node.
+* **This applies to JUnit 5 only.** The Spock and Kotest integrations share the same extension state and do not carry the resource lock, so parallel execution is not supported there. See <<Concurrency,Concurrency with Kotest 6>> for what Kotest 6 offers.
+* **The extension is not made thread-safe by this.** The lock stops JUnit from entering the extension concurrently; it does not make api:test.extensions.AbstractMicronautExtension[] safe to drive from threads you start yourself inside a test.

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest(transactionMode = TransactionMode.SINGLE_TRANSACTION)
+@io.micronaut.context.annotation.Property(name = "datasources.default.url", value = "jdbc:h2:mem:JpaSingleTransactionNoSetupTest;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE")
 @DbProperties
 public class JpaSingleTransactionNoSetupTest {
 
