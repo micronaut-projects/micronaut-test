@@ -147,7 +147,9 @@
         
         <div class="toc-item" style="margin-left:10px" id="toc-item-junit5TestMethodsInjection"><a href="#junit5TestMethodsInjection"><strong>5.11</strong><span>Test Methods Injection</span></a></div>
         
-        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5ParallelExecution"><a href="#junit5ParallelExecution"><strong>5.12</strong><span>Parallel Test Execution</span></a></div>
+        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5TestLifecycle"><a href="#junit5TestLifecycle"><strong>5.12</strong><span>Test Lifecycle and Outcomes</span></a></div>
+        
+        <div class="toc-item" style="margin-left:10px" id="toc-item-junit5ParallelExecution"><a href="#junit5ParallelExecution"><strong>5.13</strong><span>Parallel Test Execution</span></a></div>
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-kotest"><a href="#kotest"><strong>6</strong><span>Testing with Kotest</span></a></div>
         
@@ -1973,7 +1975,221 @@ class DisableResolveParametersTest {
 </table>
 </div>
 
-<h2 id="junit5ParallelExecution"><a class="anchor" href="#junit5ParallelExecution"></a>5.12 Parallel Test Execution</h2>
+<h2 id="junit5TestLifecycle"><a class="anchor" href="#junit5TestLifecycle"></a>5.12 Test Lifecycle and Outcomes</h2>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.2.x/src/main/docs/guide/junit5/junit5TestLifecycle.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="sect2">
+<h3 id="_observing_test_outcomes">Observing test outcomes</h3>
+<div class="paragraph">
+<p><a href="../api/io/micronaut/test/context/TestExecutionListener.html">TestExecutionListener</a> beans are notified as a test class runs. Alongside the <code>before*</code>/<code>after*</code> callbacks, four callbacks report how each test actually ended:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Singleton
+public class OutcomeListener implements TestExecutionListener {
+
+    @Override
+    public void testSuccessful(TestContext testContext) { }
+
+    @Override
+    public void testFailed(TestContext testContext) {       <i class="conum" data-value="1"></i><b>(1)</b>
+        report(testContext.getTestException());
+    }
+
+    @Override
+    public void testAborted(TestContext testContext) { }    <i class="conum" data-value="2"></i><b>(2)</b>
+
+    @Override
+    public void testDisabled(TestContext testContext, @Nullable String reason) { } <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>getTestException()</code> holds the failure.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A test aborted by a failed assumption is not a failure. <code>getTestException()</code> holds the throwable that aborted it.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A disabled test never runs, so this is the <strong>only</strong> callback it produces - <code>beforeTestMethod</code> and <code>afterTestMethod</code> are never called for it.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+These four callbacks are fired by the JUnit 5 integration. On Spock and Kotest they remain no-ops, so a listener shared across frameworks should not depend on them firing.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_test_instance_lifecycle">Test instance lifecycle</h3>
+<div class="paragraph">
+<p>The test instance is injected from the application context, so <code>@PostConstruct</code> on a test class is called. <code>@PreDestroy</code> is called too, once per test instance - after each test method under the default <code>PER_METHOD</code> lifecycle, and once after the class under <code>@TestInstance(PER_CLASS)</code>. A test class may therefore acquire a resource in <code>@PostConstruct</code> and release it in <code>@PreDestroy</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
+class ResourceTest {
+
+    private Path workspace;
+
+    @PostConstruct
+    void open() throws IOException {
+        workspace = Files.createTempDirectory("test");
+    }
+
+    @PreDestroy
+    void close() throws IOException {
+        Files.deleteIfExists(workspace);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+For a temporary directory specifically, prefer JUnit&#8217;s own <code>@TempDir</code> - it works on a <code>@MicronautTest</code> class as a field or a parameter, and mixes freely with Micronaut-injected parameters in the same method signature.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sharing_one_application_context_with_nested">Sharing one application context with <code>@Nested</code></h3>
+<div class="paragraph">
+<p>Every <code>@MicronautTest</code> class gets its own <a href="../api/io/micronaut/context/ApplicationContext.html">ApplicationContext</a>, started before the class and stopped after it. There is no context cache: two top-level classes with identical configuration get two contexts, and so does each subclass of an annotated base class.</p>
+</div>
+<div class="paragraph">
+<p><code>@Nested</code> is the way to run several groups of tests against a single context. A nested class reuses the application context - and the beans, mocks and properties in it - of its outermost enclosing class, so an expensive context is paid for once no matter how many nested groups a class contains:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
+class OrderServiceTest {
+
+    @Inject
+    OrderService orderService;   <i class="conum" data-value="1"></i><b>(1)</b>
+
+    @Nested
+    class Placing {
+
+        @Test
+        void placesAnOrder() {
+        }
+    }
+
+    @Nested
+    class Cancelling {
+
+        @Test
+        void cancelsAnOrder() {   <i class="conum" data-value="2"></i><b>(2)</b>
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Injected once, into the enclosing instance. Nested classes reach it through their enclosing instance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Runs against the same context, the same singletons and the same <code>@MockBean</code> instances as every other test in the class.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Nesting is also how the same context is kept single-threaded under parallel execution - see <a href="#junit5ParallelExecution">Parallel Test Execution</a>, where a nested class locks on its outermost enclosing class.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If the slow part of a test suite is a database or a container rather than the context itself, sharing that instead is usually the bigger win. See <a href="https://micronaut-projects.github.io/micronaut-test-resources/latest/guide/">Micronaut Test Resources</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuration_on_nested_classes">Configuration on <code>@Nested</code> classes</h3>
+<div class="paragraph">
+<p>Sharing the enclosing class&#8217;s context has a consequence: configuration declared on the nested class itself has nowhere to go, so declaring it is an error:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
+class OuterTest {
+
+    @Nested
+    @Property(name = "some.key", value = "value")  <i class="conum" data-value="1"></i><b>(1)</b>
+    class Inner {
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Rejected with an <code>ExtensionConfigurationException</code> naming both classes. The same applies to a second <code>@MicronautTest</code> on the nested class.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A <code>@Nested</code> class that declares no configuration of its own is unaffected, and still gets the enclosing class&#8217;s injected beans.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Before Micronaut Test 5.2.0 these annotations were silently ignored, so a nested class appeared to be configured when it was not. Tests that relied on the ignored annotation were already running against the enclosing class&#8217;s configuration; move the annotation to the enclosing class, or promote the nested class to a top-level test with its own <code>@MicronautTest</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+
+<h2 id="junit5ParallelExecution"><a class="anchor" href="#junit5ParallelExecution"></a>5.13 Parallel Test Execution</h2>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-test/edit/5.2.x/src/main/docs/guide/junit5/junit5ParallelExecution.adoc"'>

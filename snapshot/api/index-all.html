@@ -580,6 +580,8 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 <dd>
 <div class="block">Allows subclasses to customize the builder right before context initialization.</div>
 </dd>
+<dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#preDestroyTestInstance(org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">preDestroyTestInstance(ExtensionContext)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/context/TestMethodInvocationContext.html#proceed()" class="member-name-link">proceed()</a> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestMethodInvocationContext.html" title="interface in io.micronaut.test.context">TestMethodInvocationContext</a></dt>
 <dd>
 <div class="block">Proceed with the method invocation.</div>
@@ -756,6 +758,14 @@ i.e.</div>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#TEST_TRANSACTIONAL_DEFAULT" class="member-name-link">TEST_TRANSACTIONAL_DEFAULT</a> - Static variable in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/context/TestExecutionListener.html#testAborted(io.micronaut.test.context.TestContext)" class="member-name-link">testAborted(TestContext)</a> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context">TestExecutionListener</a></dt>
+<dd>
+<div class="block">Executed after a test was aborted, for example by a failed assumption.</div>
+</dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#testAborted(io.micronaut.test.context.TestContext)" class="member-name-link">testAborted(TestContext)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#testAborted(org.junit.jupiter.api.extension.ExtensionContext,java.lang.Throwable)" class="member-name-link">testAborted(ExtensionContext, Throwable)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/condition/TestActiveCondition.html" class="type-name-link" title="class in io.micronaut.test.condition">TestActiveCondition</a> - Class in <a href="io/micronaut/test/condition/package-summary.html">io.micronaut.test.condition</a></dt>
 <dd>
 <div class="block">A custom <code>Condition</code> that enables inner classes and <a href="io/micronaut/test/annotation/MockBean.html" title="annotation interface in io.micronaut.test.annotation"><code>MockBean</code></a> instances only for the scope of the test.</div>
@@ -771,6 +781,14 @@ i.e.</div>
 <div class="block">Test context used by <a href="io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context"><code>TestExecutionListener</code></a>s.</div>
 </dd>
 <dt><a href="io/micronaut/test/context/TestContext.html#%3Cinit%3E(io.micronaut.context.ApplicationContext,java.lang.Class,java.lang.reflect.AnnotatedElement,java.lang.Object,java.lang.Throwable,java.lang.String,boolean)" class="member-name-link">TestContext(ApplicationContext, Class, AnnotatedElement, Object, Throwable, String, boolean)</a> - Constructor for class io.micronaut.test.context.<a href="io/micronaut/test/context/TestContext.html" title="class in io.micronaut.test.context">TestContext</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/context/TestExecutionListener.html#testDisabled(io.micronaut.test.context.TestContext,java.lang.String)" class="member-name-link">testDisabled(TestContext, String)</a> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context">TestExecutionListener</a></dt>
+<dd>
+<div class="block">Executed when a test was never run because it was disabled.</div>
+</dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#testDisabled(io.micronaut.test.context.TestContext,java.lang.String)" class="member-name-link">testDisabled(TestContext, String)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#testDisabled(org.junit.jupiter.api.extension.ExtensionContext,java.util.Optional)" class="member-name-link">testDisabled(ExtensionContext, Optional)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/support/server/TestEmbeddedServer.html" class="type-name-link" title="class in io.micronaut.test.support.server">TestEmbeddedServer</a> - Class in <a href="io/micronaut/test/support/server/package-summary.html">io.micronaut.test.support.server</a></dt>
 <dd>
@@ -792,6 +810,14 @@ i.e.</div>
 <dd>
 <div class="block">Test execution listener.</div>
 </dd>
+<dt><a href="io/micronaut/test/context/TestExecutionListener.html#testFailed(io.micronaut.test.context.TestContext)" class="member-name-link">testFailed(TestContext)</a> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context">TestExecutionListener</a></dt>
+<dd>
+<div class="block">Executed after a test failed.</div>
+</dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#testFailed(io.micronaut.test.context.TestContext)" class="member-name-link">testFailed(TestContext)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#testFailed(org.junit.jupiter.api.extension.ExtensionContext,java.lang.Throwable)" class="member-name-link">testFailed(ExtensionContext, Throwable)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/context/TestMethodInterceptor.html" class="type-name-link" title="interface in io.micronaut.test.context">TestMethodInterceptor&lt;R&gt;</a> - Interface in <a href="io/micronaut/test/context/package-summary.html">io.micronaut.test.context</a></dt>
 <dd>
 <div class="block">Test method interceptor.</div>
@@ -816,6 +842,14 @@ setup, as any other <a href="io/micronaut/test/support/TestPropertyProvider.html
 <dd>
 <div class="block">Static helper class to handle <a href="io/micronaut/test/annotation/Sql.html" title="annotation interface in io.micronaut.test.annotation"><code>Sql</code></a> annotations.</div>
 </dd>
+<dt><a href="io/micronaut/test/context/TestExecutionListener.html#testSuccessful(io.micronaut.test.context.TestContext)" class="member-name-link">testSuccessful(TestContext)</a> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context">TestExecutionListener</a></dt>
+<dd>
+<div class="block">Executed after a test completed successfully.</div>
+</dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#testSuccessful(io.micronaut.test.context.TestContext)" class="member-name-link">testSuccessful(TestContext)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#testSuccessful(org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">testSuccessful(ExtensionContext)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/typepollution/ThresholdFocusListener.html" class="type-name-link" title="class in io.micronaut.test.typepollution">ThresholdFocusListener</a> - Class in <a href="io/micronaut/test/typepollution/package-summary.html">io.micronaut.test.typepollution</a></dt>
 <dd>
 <div class="block"><a href="io/micronaut/test/typepollution/FocusListener.html" title="interface in io.micronaut.test.typepollution"><code>FocusListener</code></a> implementation that counts and tracks all focus events, including stack
