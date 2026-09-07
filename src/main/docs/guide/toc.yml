@@ -26,6 +26,7 @@ junit5:
   junit5RefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
   junit5TestingExternalServers: Testing External Servers
   junit5TestMethodsInjection: Test Methods Injection
+  junit5TestLifecycle: Test Lifecycle and Outcomes
   junit5ParallelExecution: Parallel Test Execution
 kotest:
   title: Testing with Kotest

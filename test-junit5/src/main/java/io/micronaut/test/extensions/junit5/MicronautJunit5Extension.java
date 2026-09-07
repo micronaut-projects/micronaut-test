@@ -57,7 +57,9 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
+import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 import org.junit.jupiter.api.extension.TestInstantiationException;
+import org.junit.jupiter.api.extension.TestWatcher;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.lang.reflect.AnnotatedElement;
@@ -78,13 +80,21 @@ import java.util.Optional;
  * @author graemerocher
  * @since 1.0
  */
-public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor {
+public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor, TestInstancePreDestroyCallback, TestWatcher {
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
     private static final String TEST_PROPERTY_PROVIDER_LIFECYCLE_MESSAGE = "Tests that implement TestPropertyProvider must use the PER_CLASS test instance lifecycle.";
+    private static final String NESTED_CONFIGURATION_MESSAGE = """
+        %s cannot be declared on the @Nested class %s. \
+        A nested class shares the application context of its enclosing class %s, so this \
+        configuration would be ignored rather than applied. \
+        Move it to %s, or make %s a top-level test class with its own @MicronautTest.""";
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
         final Class<?> testClass = extensionContext.getRequiredTestClass();
+        if (isNestedTestClass(testClass)) {
+            validateNestedTestClass(testClass);
+        }
         final TestInstance.Lifecycle testInstanceLifecycle = extensionContext.getTestInstanceLifecycle().orElse(TestInstance.Lifecycle.PER_METHOD);
         if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
             if (testInstanceLifecycle != TestInstance.Lifecycle.PER_CLASS) {
@@ -222,6 +232,81 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         });
         afterCleanupTest(testContext);
+    }
+
+    /**
+     * A nested class reuses the extension instance, application context and configuration of its
+     * outermost enclosing class, so configuration declared on the nested class itself has nowhere
+     * to go. Rather than ignoring it, say so.
+     *
+     * @param testClass the nested test class
+     */
+    private void validateNestedTestClass(Class<?> testClass) {
+        Class<?> enclosingClass = testClass.getEnclosingClass();
+        if (enclosingClass == null) {
+            return;
+        }
+        String annotation = null;
+        if (testClass.getDeclaredAnnotation(MicronautTest.class) != null) {
+            annotation = "@MicronautTest";
+        } else if (testClass.getDeclaredAnnotationsByType(Property.class).length > 0) {
+            annotation = "@Property";
+        }
+        if (annotation != null) {
+            throw new ExtensionConfigurationException(NESTED_CONFIGURATION_MESSAGE.formatted(
+                annotation,
+                testClass.getName(),
+                enclosingClass.getName(),
+                enclosingClass.getSimpleName(),
+                testClass.getSimpleName()));
+        }
+    }
+
+    @Override
+    public void preDestroyTestInstance(ExtensionContext extensionContext) {
+        if (applicationContext == null || !applicationContext.isRunning()) {
+            return;
+        }
+        extensionContext.getTestInstance().ifPresent(applicationContext::destroyBean);
+    }
+
+    @Override
+    public void testDisabled(ExtensionContext extensionContext, Optional<String> reason) {
+        fireOutcome(extensionContext, null, context -> testDisabled(context, reason.orElse(null)));
+    }
+
+    @Override
+    public void testSuccessful(ExtensionContext extensionContext) {
+        fireOutcome(extensionContext, null, context -> testSuccessful(context));
+    }
+
+    @Override
+    public void testAborted(ExtensionContext extensionContext, Throwable cause) {
+        fireOutcome(extensionContext, cause, context -> testAborted(context));
+    }
+
+    @Override
+    public void testFailed(ExtensionContext extensionContext, Throwable cause) {
+        fireOutcome(extensionContext, cause, context -> testFailed(context));
+    }
+
+    /**
+     * {@link TestWatcher} callbacks cannot throw a checked exception, and are also reached for tests
+     * that never started a context - a disabled class never runs {@code beforeAll}.
+     *
+     * @param extensionContext the extension context
+     * @param cause            the throwable that ended the test, if any
+     * @param callback         the listener callback to fire
+     */
+    private void fireOutcome(ExtensionContext extensionContext, Throwable cause, OutcomeCallback callback) {
+        if (applicationContext == null) {
+            return;
+        }
+        try {
+            callback.apply(buildContext(extensionContext, cause));
+        } catch (Exception e) {
+            throw new ExtensionConfigurationException("Error firing test outcome to a TestExecutionListener", e);
+        }
     }
 
     @Override
@@ -389,12 +474,16 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     private TestContext buildContext(ExtensionContext context) {
+        return buildContext(context, null);
+    }
+
+    private TestContext buildContext(ExtensionContext context, Throwable cause) {
         return new TestContext(
             applicationContext,
             context.getTestClass().orElse(null),
             context.getTestMethod().orElse(null),
             context.getTestInstance().orElse(null),
-            context.getExecutionException().orElse(null),
+            cause != null ? cause : context.getExecutionException().orElse(null),
             context.getDisplayName(),
             true);
     }
@@ -578,5 +667,14 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             }
         }
         return null;
+    }
+
+    /**
+     * A single {@link io.micronaut.test.context.TestExecutionListener} outcome callback.
+     */
+    @FunctionalInterface
+    private interface OutcomeCallback {
+
+        void apply(TestContext testContext) throws Exception;
     }
 }

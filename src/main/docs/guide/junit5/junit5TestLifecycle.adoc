@@ -1,0 +1,113 @@
+=== Observing test outcomes
+
+api:test.context.TestExecutionListener[] beans are notified as a test class runs. Alongside the `before*`/`after*` callbacks, four callbacks report how each test actually ended:
+
+[source,java]
+----
+@Singleton
+public class OutcomeListener implements TestExecutionListener {
+
+    @Override
+    public void testSuccessful(TestContext testContext) { }
+
+    @Override
+    public void testFailed(TestContext testContext) {       // <1>
+        report(testContext.getTestException());
+    }
+
+    @Override
+    public void testAborted(TestContext testContext) { }    // <2>
+
+    @Override
+    public void testDisabled(TestContext testContext, @Nullable String reason) { } // <3>
+}
+----
+<1> `getTestException()` holds the failure.
+<2> A test aborted by a failed assumption is not a failure. `getTestException()` holds the throwable that aborted it.
+<3> A disabled test never runs, so this is the *only* callback it produces - `beforeTestMethod` and `afterTestMethod` are never called for it.
+
+NOTE: These four callbacks are fired by the JUnit 5 integration. On Spock and Kotest they remain no-ops, so a listener shared across frameworks should not depend on them firing.
+
+=== Test instance lifecycle
+
+The test instance is injected from the application context, so `@PostConstruct` on a test class is called. `@PreDestroy` is called too, once per test instance - after each test method under the default `PER_METHOD` lifecycle, and once after the class under `@TestInstance(PER_CLASS)`. A test class may therefore acquire a resource in `@PostConstruct` and release it in `@PreDestroy`:
+
+[source,java]
+----
+@MicronautTest
+class ResourceTest {
+
+    private Path workspace;
+
+    @PostConstruct
+    void open() throws IOException {
+        workspace = Files.createTempDirectory("test");
+    }
+
+    @PreDestroy
+    void close() throws IOException {
+        Files.deleteIfExists(workspace);
+    }
+}
+----
+
+TIP: For a temporary directory specifically, prefer JUnit's own `@TempDir` - it works on a `@MicronautTest` class as a field or a parameter, and mixes freely with Micronaut-injected parameters in the same method signature.
+
+=== Sharing one application context with `@Nested`
+
+Every `@MicronautTest` class gets its own api:context.ApplicationContext[], started before the class and stopped after it. There is no context cache: two top-level classes with identical configuration get two contexts, and so does each subclass of an annotated base class.
+
+`@Nested` is the way to run several groups of tests against a single context. A nested class reuses the application context - and the beans, mocks and properties in it - of its outermost enclosing class, so an expensive context is paid for once no matter how many nested groups a class contains:
+
+[source,java]
+----
+@MicronautTest
+class OrderServiceTest {
+
+    @Inject
+    OrderService orderService;   // <1>
+
+    @Nested
+    class Placing {
+
+        @Test
+        void placesAnOrder() {
+        }
+    }
+
+    @Nested
+    class Cancelling {
+
+        @Test
+        void cancelsAnOrder() {   // <2>
+        }
+    }
+}
+----
+<1> Injected once, into the enclosing instance. Nested classes reach it through their enclosing instance.
+<2> Runs against the same context, the same singletons and the same `@MockBean` instances as every other test in the class.
+
+NOTE: Nesting is also how the same context is kept single-threaded under parallel execution - see <<junit5ParallelExecution,Parallel Test Execution>>, where a nested class locks on its outermost enclosing class.
+
+TIP: If the slow part of a test suite is a database or a container rather than the context itself, sharing that instead is usually the bigger win. See https://micronaut-projects.github.io/micronaut-test-resources/latest/guide/[Micronaut Test Resources].
+
+=== Configuration on `@Nested` classes
+
+Sharing the enclosing class's context has a consequence: configuration declared on the nested class itself has nowhere to go, so declaring it is an error:
+
+[source,java]
+----
+@MicronautTest
+class OuterTest {
+
+    @Nested
+    @Property(name = "some.key", value = "value")  // <1>
+    class Inner {
+    }
+}
+----
+<1> Rejected with an `ExtensionConfigurationException` naming both classes. The same applies to a second `@MicronautTest` on the nested class.
+
+A `@Nested` class that declares no configuration of its own is unaffected, and still gets the enclosing class's injected beans.
+
+IMPORTANT: Before Micronaut Test 5.2.0 these annotations were silently ignored, so a nested class appeared to be configured when it was not. Tests that relied on the ignored annotation were already running against the enclosing class's configuration; move the annotation to the enclosing class, or promote the nested class to a top-level test with its own `@MicronautTest`.

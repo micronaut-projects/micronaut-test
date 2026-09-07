@@ -15,6 +15,8 @@
  */
 package io.micronaut.test.context;
 
+import io.micronaut.core.annotation.Nullable;
+
 /**
  * Test execution listener.
  *
@@ -121,6 +123,55 @@ public interface TestExecutionListener {
    * @throws Exception allows any exception to propagate
    */
   default void afterTestClass(TestContext testContext) throws Exception {
+
+  }
+
+  /**
+   * Executed when a test was never run because it was disabled.
+   *
+   * <p>None of the other callbacks fire for a disabled test, so this is the only notification a
+   * listener receives for it.</p>
+   *
+   * @param testContext the test context
+   * @param reason      the reason the test was disabled, if the test framework supplied one
+   * @throws Exception allows any exception to propagate
+   * @since 5.2.0
+   */
+  default void testDisabled(TestContext testContext, @Nullable String reason) throws Exception {
+
+  }
+
+  /**
+   * Executed after a test completed successfully.
+   *
+   * @param testContext the test context
+   * @throws Exception allows any exception to propagate
+   * @since 5.2.0
+   */
+  default void testSuccessful(TestContext testContext) throws Exception {
+
+  }
+
+  /**
+   * Executed after a test was aborted, for example by a failed assumption. An aborted test is not a
+   * failure; {@link TestContext#getTestException()} holds the throwable that aborted it.
+   *
+   * @param testContext the test context
+   * @throws Exception allows any exception to propagate
+   * @since 5.2.0
+   */
+  default void testAborted(TestContext testContext) throws Exception {
+
+  }
+
+  /**
+   * Executed after a test failed. {@link TestContext#getTestException()} holds the failure.
+   *
+   * @param testContext the test context
+   * @throws Exception allows any exception to propagate
+   * @since 5.2.0
+   */
+  default void testFailed(TestContext testContext) throws Exception {
 
   }
 
