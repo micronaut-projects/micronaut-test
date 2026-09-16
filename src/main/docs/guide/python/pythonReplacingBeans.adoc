@@ -1,0 +1,13 @@
+Now let's say you want to replace the implementation with a test double. Python has no compiled mocking library like Mockito, so the idiomatic approach is a hand-written class that records the calls it receives. The test double is a bean that replaces the real implementation with `@Replaces` and is only active for the test that declares it through a `@Requires` condition on a property that the test sets:
+
+snippet::io.micronaut.test.python.MathMockServiceTest[project="test-suite-python", language="python", title="The MathService specification"]
+
+<1> The test double is only active when the `spec.name` property has the given value
+<2> `@Replaces` replaces the real `MathServiceImpl` bean for the scope of the test
+<3> The test sets the property so that the test double is enabled
+<4> The test double is injected into the test as `MathService`
+<5> The recorded calls are used to verify the test double was called
+
+The real `MathServiceImpl` stays in place for every other test of the suite.
+
+NOTE: `@MockBean` methods, the way JUnit 5, Spock and Kotest tests declare mocks, are not yet supported for Python test doubles; use `@Replaces` as shown above.

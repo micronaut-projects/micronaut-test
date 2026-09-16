@@ -14,9 +14,6 @@ Test concurrency mode determines whether root tests within a spec are executed s
 
 The following example demonstrates running root tests concurrently:
 
-[source,kotlin]
-----
-include::{kotest5tests}/ConcurrentTestsSpec.kt[]
-----
+snippet::io.micronaut.test.kotest5.ConcurrentTestsSpec[project="test-kotest5", language="kotlin"]
 
 When `TestExecutionMode.Concurrent` is enabled, all root tests in the spec start at approximately the same time and execute in parallel. This can significantly reduce execution time.

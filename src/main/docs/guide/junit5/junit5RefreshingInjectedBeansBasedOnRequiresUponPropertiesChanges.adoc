@@ -1,7 +1,3 @@
 include::src/main/docs/guide/includes/refreshing-requires.adoc[]
 
-.Combining `@Requires` and `@Property` in a `@Refreshable` test class.
-[source,java]
-----
-include::{junit5tests}/PropertyValueRequiresTest.java[]
-----
+snippet::io.micronaut.test.junit5.PropertyValueRequiresTest[project="test-junit5", language="java", title="Combining `@Requires` and `@Property` in a `@Refreshable` test class."]

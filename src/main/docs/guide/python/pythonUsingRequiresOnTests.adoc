@@ -1,0 +1,5 @@
+Since `@MicronautTest` turns tests into beans themselves, it means you can use the `@Requires` annotation on the test to enable/disable tests. For example:
+
+snippet::io.micronaut.test.python.RequiresTest[project="test-suite-python", language="python"]
+
+The above test will only run if the `does.not.exist` property is defined; otherwise it is reported as skipped. Any `@Requires` condition works, for example `@Requires(env="my-env")` to run a test only when the `my-env` environment is active (you can activate it by passing the system property `micronaut.environments`).

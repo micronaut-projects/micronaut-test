@@ -1,18 +1,10 @@
 Note that in most cases you won't define a `@MockBean` and inject it, only to verify interaction with the Mock directly. Instead, the Mock will be a collaborator within your application. For example say you have a `MathController`:
 
-.The MathController
-[source,groovy]
-----
-include::{spocktests}/MathController.groovy[]
-----
+snippet::io.micronaut.test.spock.MathController[project="test-spock", language="groovy", title="The MathController"]
 
 The above controller uses the `MathService` to expose a `/math/compute/{number]` endpoint. See the following example for a test that tests interaction with the mock collaborator:
 
-.Mocking Collaborators
-[source,groovy]
-----
-include::{spocktests}/MathCollaboratorSpec.groovy[]
-----
+snippet::io.micronaut.test.spock.MathCollaboratorSpec[project="test-spock", language="groovy", title="Mocking Collaborators"]
 
 <1> Like the previous example a Mock is defined using `@MockBean`
 <2> This time we inject an instance of `HttpClient` to test the controller.

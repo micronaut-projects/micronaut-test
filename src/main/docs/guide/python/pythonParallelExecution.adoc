@@ -1,0 +1,7 @@
+Python tests are JUnit 5 tests, so everything described in <<junit5ParallelExecution,Parallel Test Execution>> applies unchanged: different `@MicronautTest` classes run concurrently once parallel execution is enabled in `junit-platform.properties`, while the methods of one class are serialised by the resource lock that `@MicronautTest` declares.
+
+A class that genuinely is thread-safe can opt out of the lock with `@Execution(ExecutionMode.CONCURRENT)`, which is copied to the compiled test class like every other JUnit decorator:
+
+snippet::io.micronaut.test.python.ReadOnlyEndpointTest[project="test-suite-python", language="python"]
+
+<1> Declared directly on the class. From that point the thread safety of the test class and of the beans it injects is yours to guarantee.

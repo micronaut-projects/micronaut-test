@@ -1,18 +1,10 @@
 You can define additional test specific properties using the `@Property` annotation. The following example demonstrates usage:
 
-.Using `@Property`
-[source,kotlin]
-----
-include::{kotest5tests}/PropertyValueTest.kt[]
-----
+snippet::io.micronaut.test.kotest5.PropertyValueTest[project="test-kotest5", language="kotlin", title="Using `@Property`"]
 
 Alternatively you can specify additional `propertySources` in any supported format (YAML, JSON, Java properties file etc.) using the `@MicronautTest` annotation:
 
-.Using `propertySources` stored in files
-[source,kotlin]
-----
-include::{kotest5tests}/PropertySourceTest.kt[]
-----
+snippet::io.micronaut.test.kotest5.PropertySourceTest[project="test-kotest5", language="kotlin", title="Using `propertySources` stored in files"]
 
 The above example expects a file located at `src/test/resources/io/micronaut/kotest/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
 
