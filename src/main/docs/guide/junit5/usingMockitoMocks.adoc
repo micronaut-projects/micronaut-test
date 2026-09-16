@@ -4,11 +4,7 @@ dependency:mockito-core[groupId="org.mockito",scope=test]
 
 Now, let's say you want to replace the implementation with a https://site.mockito.org[Mockito] Mock. You can do so by defining a method that returns a mock and is annotated with `@MockBean`, for example:
 
-.The MathService specification
-[source,java]
-----
-include::{junit5tests}/MathMockServiceTest.java[]
-----
+snippet::io.micronaut.test.junit5.MathMockServiceTest[project="test-junit5", language="java", title="The MathService specification"]
 
 <1> The `@MockBean` annotation is used to indicate the method returns a mock bean. The value to the method is the type being replaced.
 <2> Mockito's `mock(..)` method creates the actual mock

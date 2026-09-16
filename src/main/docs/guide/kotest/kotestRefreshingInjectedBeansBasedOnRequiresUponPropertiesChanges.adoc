@@ -1,7 +1,3 @@
 include::src/main/docs/guide/includes/refreshing-requires.adoc[]
 
-.Combining `@Requires` and `@Property` in a `@Refreshable` test class.
-[source,kotlin]
-----
-include::{kotest5tests}/PropertyValueRequiresTest.kt[]
-----
+snippet::io.micronaut.test.kotest5.PropertyValueRequiresTest[project="test-kotest5", language="kotlin", title="Combining `@Requires` and `@Property` in a `@Refreshable` test class."]

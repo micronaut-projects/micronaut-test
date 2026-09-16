@@ -1,0 +1,15 @@
+Python tests live in `src/test/python` and are compiled by the Micronaut Python compiler together with the JUnit 5 support for Python test classes, which you need as a test dependency:
+
+dependency:io.micronaut:micronaut-inject-python-test[scope="test"]
+
+In addition you need the JUnit 5 integration of Micronaut Test and the JUnit engine:
+
+dependency:micronaut-test-junit5[groupId="io.micronaut.test",scope="test"]
+
+dependency:junit-jupiter-engine[groupId="org.junit.jupiter",scope="testRuntimeOnly"]
+
+The build has to run the tests on the JUnit platform (`useJUnitPlatform()` with Gradle, or the Surefire plugin with Maven), just like a Java JUnit 5 test.
+
+A Python test class is any class that has methods decorated with `@Test` from `org.junit.jupiter.api`. The `@MicronautTest` decorator of the JUnit 5 integration, `micronaut.test.extensions.junit5.annotation.MicronautTest`, turns it into a Micronaut test. JUnit's own decorators (`@Test`, `@Disabled`, `@BeforeEach`, `@AfterEach`, `@Order`, `@TestMethodOrder`, `@Execution`, ...) are copied to the compiled test class, so JUnit runs the Python test exactly like a Java one.
+
+NOTE: Python tests need the GraalPy runtime and therefore a GraalVM JDK to run at full speed; see the https://docs.micronaut.io/latest/guide/#pythonRuntime[Python runtime] section of the Micronaut Framework documentation.

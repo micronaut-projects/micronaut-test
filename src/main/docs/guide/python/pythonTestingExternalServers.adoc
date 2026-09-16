@@ -1,0 +1,13 @@
+You can write integration tests that test external servers in the same ways as with <<junit5TestingExternalServers,JUnit 5>>.
+
+One way is with the `micronaut.test.server.executable` property that allows you to specify the location of an executable JAR or native image of a server that should be started and shutdown for the lifecycle of test.
+
+In this case Micronaut Test will replace the regular server with an instance of api:test.support.server.TestExecutableEmbeddedServer[] that executes the process to start the server and closes the process when the test ends.
+
+For example:
+
+snippet::io.micronaut.test.python.server.ProcessServerTest[project="test-suite-python", language="python", tags="executable", indent=0, title="Using `micronaut.test.server.executable`"]
+
+The test properties, including the other `@Property` values of the test, are passed to the process as system properties.
+
+Alternatively if you have independently started an `EmbeddedServer` instance programmatically you can also specify the URL to the server with the `micronaut.test.server.url` property.

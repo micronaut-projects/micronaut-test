@@ -1,0 +1,17 @@
+Let's take a look at an example using Python. Consider you have the following interface, an abstract base class in Python:
+
+snippet::io.micronaut.test.python.MathService[project="test-suite-python", language="python", title="The MathService Interface"]
+
+And a simple implementation that computes the value times 4 and is defined as a Micronaut bean:
+
+snippet::io.micronaut.test.python.MathServiceImpl[project="test-suite-python", language="python", title="The MathService implementation"]
+
+You can define the following test to test the implementation:
+
+snippet::io.micronaut.test.python.MathServiceTest[project="test-suite-python", language="python", title="The MathService specification"]
+
+<1> The test is declared as Micronaut test with `@MicronautTest`
+<2> The `@Inject` annotation is used to inject the bean, as an `Annotated` class attribute
+<3> The test itself tests the injected bean
+
+NOTE: JUnit's `@ParameterizedTest` (from `org.junit.jupiter.params`) is not available to Python tests; loop over the test data inside a `@Test` method instead, as shown above.

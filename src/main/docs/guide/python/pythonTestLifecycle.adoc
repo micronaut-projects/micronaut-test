@@ -1,0 +1,25 @@
+=== Observing test outcomes
+
+api:test.context.TestExecutionListener[] beans are notified as a test class runs, and the listener itself can be written in Python. Alongside the `before*`/`after*` callbacks, four callbacks report how each test actually ended:
+
+snippet::io.micronaut.test.python.OutcomeListener[project="test-suite-python", language="python"]
+
+<1> `getTestException()` holds the failure.
+<2> A test aborted by a failed assumption is not a failure. `getTestException()` holds the throwable that aborted it.
+<3> A disabled test never runs, so this is the *only* callback it produces - `beforeTestMethod` and `afterTestMethod` are never called for it.
+
+NOTE: The callbacks of `TestExecutionListener` are default methods of the Java interface, so the Python overrides must be decorated with `@Executable` to be visible to the framework. The listener above is a regular bean: the `@Requires` condition limits it to the test that sets the `spec.name` property.
+
+The following test verifies the listener, and shows JUnit's `@Order`, `@TestMethodOrder` and `@Disabled` in a Python test:
+
+snippet::io.micronaut.test.python.TestOutcomeListenerTest[project="test-suite-python", language="python"]
+
+=== Test instance lifecycle
+
+The test instance is injected from the application context, so `@PostConstruct` on a test class is called. `@PreDestroy` is called too, once per test instance - after each test method under the default `PER_METHOD` lifecycle, and once after the class under `@TestInstance(TestInstance.Lifecycle.PER_CLASS)`. A test class may therefore acquire a resource in `@PostConstruct` and release it in `@PreDestroy`:
+
+snippet::io.micronaut.test.python.ResourceTest[project="test-suite-python", language="python"]
+
+=== Nested test classes
+
+Every `@MicronautTest` class gets its own api:context.ApplicationContext[], started before the class and stopped after it. JUnit's `@Nested` classes, the way <<junit5TestLifecycle,JUnit 5 tests in Java>> share one context between several groups of tests, are not supported for Python test classes: a nested Python class is compiled to a separate top-level test class. Put each group of tests in its own `@MicronautTest` class instead.

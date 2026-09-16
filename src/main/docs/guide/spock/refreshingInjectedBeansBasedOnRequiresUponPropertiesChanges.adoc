@@ -1,7 +1,3 @@
 include::src/main/docs/guide/includes/refreshing-requires.adoc[]
 
-.Combining `@Requires` and `@Property` in a `@Refreshable` test class.
-[source,java]
-----
-include::{spocktests}/PropertyValueRequiresSpec.groovy[]
-----
+snippet::io.micronaut.test.spock.PropertyValueRequiresSpec[project="test-spock", language="groovy", title="Combining `@Requires` and `@Property` in a `@Refreshable` test class."]

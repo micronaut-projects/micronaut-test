@@ -1,0 +1,5 @@
+The `@MicronautTest` decorator supports specifying the environment names the test should run with:
+
+snippet::io.micronaut.test.python.EnvironmentsTest[project="test-suite-python", language="python"]
+
+The `application` and `packages` members described for <<junit5EnvironmentClasspathScanning,JUnit 5>> are available in the same way, for example `@MicronautTest(packages="foo.bar")`.
