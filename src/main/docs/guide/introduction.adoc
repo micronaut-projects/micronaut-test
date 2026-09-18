@@ -28,6 +28,7 @@ This is achieved through a set of annotations:
 ** `io.micronaut.test.extensions.junit5.annotation.MicronautTest` for JUnit 5.
 ** `io.micronaut.test.extensions.kotest.annotation.MicronautTest` for Kotest.
 ** `io.micronaut.test.extensions.kotest5.annotation.MicronautTest` for Kotest 5.
+** `micronaut.test.extensions.junit5.annotation.MicronautTest` for <<python,Python tests>>, which are compiled to JUnit 5 tests.
 * `io.micronaut.test.annotation.@MockBean` - Can be added to methods or inner classes of a test class to define mock beans that replace existing beans for the scope of the test.
 
 These annotations use internal Micronaut features and do not mock any part of Micronaut itself. When you run a test within `@MicronautTest` it is running your real application.
@@ -51,11 +52,7 @@ However, as tests annotated with `@MicronautTest` are implicitly in the `Singlet
 
 To avoid this, you can either disable eager singleton initialization for your tests, or you will need to manually get an instance of the bean you would normally inject.  As an example, to get an `HttpClient` you could do:
 
-[source,java]
-.Using an HttpClient in a test with eager singleton initialization enabled
-----
-include::test-junit5/src/test/java/io/micronaut/test/junit5/EagerInitializationTest.java[tags=eager, indent=0]
-----
+snippet::io.micronaut.test.junit5.EagerInitializationTest[project="test-junit5", language="java", tags="eager", indent=0, title="Using an HttpClient in a test with eager singleton initialization enabled"]
 
 <1> Inject the `EmbeddedServer` as normal
 <2> Create a `Supplier` that will create the `HttpClient` when it is first called

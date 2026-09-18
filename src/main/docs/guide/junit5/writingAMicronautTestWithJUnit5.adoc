@@ -1,26 +1,14 @@
 Let's take a look at an example using JUnit 5. Consider you have the following interface:
 
-.The MathService Interface
-[source,java]
-----
-include::{junit5tests}/MathService.java[]
-----
+snippet::io.micronaut.test.junit5.MathService[project="test-junit5", language="java", title="The MathService Interface"]
 
 And a simple implementation that computes the value times 4 and is defined as a Micronaut bean:
 
-.The MathService implementation
-[source,java]
-----
-include::{junit5tests}/MathServiceImpl.java[]
-----
+snippet::io.micronaut.test.junit5.MathServiceImpl[project="test-junit5", language="java", title="The MathService implementation"]
 
 You can define the following test to test the implementation:
 
-.The MathService specification
-[source,groovy]
-----
-include::{junit5tests}/MathServiceTest.java[]
-----
+snippet::io.micronaut.test.junit5.MathServiceTest[project="test-junit5", language="java", title="The MathService specification"]
 
 <1> The test is declared as Micronaut test with `@MicronautTest`
 <2> The `@Inject` annotation is used to inject the bean

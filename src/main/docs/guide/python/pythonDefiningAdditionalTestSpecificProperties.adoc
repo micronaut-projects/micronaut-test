@@ -1,0 +1,17 @@
+You can define additional test specific properties using the `@Property` annotation. The following example demonstrates usage:
+
+snippet::io.micronaut.test.python.PropertyValueTest[project="test-suite-python", language="python", title="Using `@Property`"]
+
+Note that when a `@Property` is defined at the test method level, it causes a `RefreshEvent` to be triggered which will update any `@ConfigurationProperties` related to the property. The value is restored for the following test methods.
+
+Alternatively you can specify additional `propertySources` in any supported format (YAML, JSON, Java properties file etc.) using the `@MicronautTest` annotation:
+
+snippet::io.micronaut.test.python.PropertySourceTest[project="test-suite-python", language="python", title="Using `propertySources` stored in files"]
+
+The first example expects a file located at `src/test/resources/micronaut/test/python/myprops.properties`, next to the compiled test class. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
+
+* `file:myprops.properties` - A relative path to a file somewhere on the file system
+* `classpath:myprops.properties` - A file relative to the root of the classpath
+* `myprops.properties` - A file relative on the classpath relative to the test being run.
+
+NOTE: The api:test.support.TestPropertyProvider[] interface is not supported for Python tests: its `getProperties()` method is called before the application context, and with it the Python runtime, exists. Use `@Property`, `propertySources` or a Java `TestPropertyProvider` for properties that need dynamic setup.
