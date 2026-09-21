@@ -31,6 +31,4 @@ dependencies {
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
     systemProperty "micronaut.python.pool.enabled", "false"
-    // A Truffle host-interop assertion trips on varargs overloads when JVM assertions are enabled
-    enableAssertions = false
 }

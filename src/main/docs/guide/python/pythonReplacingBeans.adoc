@@ -10,4 +10,4 @@ snippet::io.micronaut.test.python.MathMockServiceTest[project="test-suite-python
 
 The real `MathServiceImpl` stays in place for every other test of the suite.
 
-NOTE: `@MockBean` methods, the way JUnit 5, Spock and Kotest tests declare mocks, are not yet supported for Python test doubles; use `@Replaces` as shown above.
+NOTE: `@MockBean` methods, the way JUnit 5, Spock and Kotest tests declare mocks, work for Python test doubles too - see <<pythonMockingCollaborators,Mocking Collaborators>>.

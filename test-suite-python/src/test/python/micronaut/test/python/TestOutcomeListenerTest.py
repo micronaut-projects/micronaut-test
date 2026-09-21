@@ -10,7 +10,7 @@ from .OutcomeListener import OutcomeListener
 
 @MicronautTest
 @Property(name="spec.name", value="TestOutcomeListenerTest")
-@TestMethodOrder(value=MethodOrderer.OrderAnnotation)
+@TestMethodOrder(MethodOrderer.OrderAnnotation)
 class TestOutcomeListenerTest:
 
     listener: Annotated[OutcomeListener, Inject]
