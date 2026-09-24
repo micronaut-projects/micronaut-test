@@ -4,10 +4,6 @@ dependency:micronaut-test-rest-assured[groupId="io.micronaut.test",scope=test]
 
 You can then inject instances of https://www.javadoc.io/static/io.rest-assured/rest-assured/5.1.0/io/restassured/specification/RequestSpecification.html[RequestSpecification] into test fields or method parameters (parameters are only supported with JUnit 5):
 
-.REST-Assured Example
-[source,groovy]
-----
-include::{restassuredtests}/RestAssuredHelloWorldTest.java[]
-----
+snippet::io.micronaut.test.rest.assured.RestAssuredHelloWorldTest[project="test-rest-assured", language="java", title="REST-Assured Example"]
 
 TIP: See the guides for https://guides.micronaut.io/latest/micronaut-rest-assured.html[Using Micronaut Test REST-assured in a Micronaut Application] and https://guides.micronaut.io/latest/testing-rest-api-integrations-using-mockserver.html[Testing REST API Integrations Using Testcontainers with WireMock or MockServer] to learn more.

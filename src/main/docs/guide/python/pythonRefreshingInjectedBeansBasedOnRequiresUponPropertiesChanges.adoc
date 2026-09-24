@@ -1,0 +1,3 @@
+include::src/main/docs/guide/includes/refreshing-requires.adoc[]
+
+snippet::io.micronaut.test.python.PropertyValueRequiresTest[project="test-suite-python", language="python", title="Combining `@Requires` and `@Property` in a `@Refreshable` test class."]

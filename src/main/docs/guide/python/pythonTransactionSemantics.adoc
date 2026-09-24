@@ -1,0 +1,19 @@
+When using `@MicronautTest` each `@Test` method will be wrapped in a transaction that will be rolled back when the test finishes, exactly as described for <<junit5TransactionSemantics,JUnit 5>>: the `transactional`, `rollback` and `transactionMode` members of `@MicronautTest` and the `micronaut.test.transactional` / `micronaut.test.transactional-default` configuration properties all apply to Python tests.
+
+The following test runs against an H2 database with Micronaut Data's JDBC transaction management on the classpath, and verifies that a transaction is active around the test and its setup and cleanup methods:
+
+snippet::io.micronaut.test.python.TransactionalTest[project="test-suite-python", language="python", title="A transactional test"]
+
+<1> `transactional=True` is the default and could be omitted
+<2> `@BeforeEach` methods run in a transaction (their own one with the default `SEPARATE_TRANSACTIONS` mode, the test's one with `TransactionMode.SINGLE_TRANSACTION`)
+<3> So do `@AfterEach` methods
+<4> The test method runs inside a transaction that is rolled back afterwards
+
+To avoid creating a transaction:
+
+snippet::io.micronaut.test.python.NonTransactionalTest[project="test-suite-python", language="python", title="A non-transactional test"]
+
+<1> `transactional=False` disables the test transaction
+<2> No transaction is active
+
+Set `rollback=False` to keep the changes a test makes, and `transactionMode=TransactionMode.SINGLE_TRANSACTION` (from `micronaut.test.annotation`) to run setup methods in the same transaction as the test, see <<sql,Loading SQL before tests>> for an example.

@@ -1,21 +1,13 @@
 You can define additional test specific properties using the `@Property` annotation. The following example demonstrates usage:
 
-.Using `@Property`
-[source,java]
-----
-include::{spocktests}/PropertySpec.groovy[]
-----
+snippet::io.micronaut.test.spock.PropertySpec[project="test-spock", language="groovy", title="Using `@Property`"]
 
 Note that when a `@Property` is defined at the test method level, it causes a `RefreshEvent` to be triggered which will update any `@ConfigurationProperties` related  to the property.
 
 
 Alternatively you can specify additional `propertySources` in any supported format (YAML, JSON, Java properties file etc.) using the `@MicronautTest` annotation:
 
-.Using `propertySources` stored in files
-[source,java]
-----
-include::{spocktests}/PropertySourceSpec.groovy[]
-----
+snippet::io.micronaut.test.spock.PropertySourceSpec[project="test-spock", language="groovy", title="Using `propertySources` stored in files"]
 
 The above example expects a file located at `src/test/resources/io/micronaut/spock/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
 

@@ -6,10 +6,6 @@ In this case Micronaut Test will replace the regular server with an instance of 
 
 For example:
 
-.Using `micronaut.test.server.executable`
-[source,java]
-----
-include::{junit5tests}/server/ProcessServerTest.java[tags="executable"]
-----
+snippet::io.micronaut.test.junit5.server.ProcessServerTest[project="test-junit5", language="java", tags="executable", title="Using `micronaut.test.server.executable`"]
 
 Alternatively if you have independently started an `EmbeddedServer` instance programmatically you can also specify the URL to the server with the `micronaut.test.server.url` property.

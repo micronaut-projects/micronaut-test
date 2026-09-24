@@ -1,0 +1,10 @@
+By default, the parameters of a `@Test` method are resolved to beans if possible, exactly like with JUnit 5 in Java. The type hint of a parameter selects the bean, and `Annotated` adds qualifiers or `@Property` / `@Value` for configuration values:
+
+snippet::io.micronaut.test.python.ArgumentInjectionTest[project="test-suite-python", language="python", title="Injecting beans into test methods"]
+
+As this behaviour can be problematic in some cases, it can be disabled with `resolveParameters=False`:
+
+snippet::io.micronaut.test.python.DisableResolveParametersTest[project="test-suite-python", language="python"]
+
+<1> Runs, as it takes no parameters
+<2> Would throw an exception since method injection is completely disabled by `resolveParameters=False`

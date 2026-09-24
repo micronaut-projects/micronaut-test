@@ -1,0 +1,34 @@
+=== Observing test outcomes
+
+api:test.context.TestExecutionListener[] beans are notified as a test class runs, and the listener itself can be written in Python. Alongside the `before*`/`after*` callbacks, four callbacks report how each test actually ended:
+
+snippet::io.micronaut.test.python.OutcomeListener[project="test-suite-python", language="python"]
+
+<1> `getTestException()` holds the failure.
+<2> A test aborted by a failed assumption is not a failure. `getTestException()` holds the throwable that aborted it.
+<3> A disabled test never runs, so this is the *only* callback it produces - `beforeTestMethod` and `afterTestMethod` are never called for it.
+
+NOTE: The callbacks of `TestExecutionListener` are default methods of the Java interface; the Python class overrides the ones it needs. The listener above is a regular bean: the `@Requires` condition limits it to the test that sets the `spec.name` property.
+
+The following test verifies the listener, and shows JUnit's `@Order`, `@TestMethodOrder` and `@Disabled` in a Python test:
+
+snippet::io.micronaut.test.python.TestOutcomeListenerTest[project="test-suite-python", language="python"]
+
+=== Test instance lifecycle
+
+The test instance is injected from the application context, so `@PostConstruct` on a test class is called. `@PreDestroy` is called too, once per test instance - after each test method under the default `PER_METHOD` lifecycle, and once after the class under `@TestInstance(TestInstance.Lifecycle.PER_CLASS)`. A test class may therefore acquire a resource in `@PostConstruct` and release it in `@PreDestroy`:
+
+snippet::io.micronaut.test.python.ResourceTest[project="test-suite-python", language="python"]
+
+=== Nested test classes
+
+Every `@MicronautTest` class gets its own api:context.ApplicationContext[], started before the class and stopped after it. There is no context cache: two top-level classes with identical configuration get two contexts.
+
+JUnit's `@Nested` classes are the way to run several groups of tests against a single context, as for <<junit5TestLifecycle,JUnit 5 tests in Java>>: a class nested in a Python test class is compiled to an inner class of the generated test class, so JUnit runs it with the application context - and the beans, mocks and properties in it - of its outermost enclosing class, and injects its attributes:
+
+snippet::io.micronaut.test.python.OrderServiceTest[project="test-suite-python", language="python", title="Sharing one application context with @Nested"]
+
+<1> Injected into the enclosing instance; a nested class declares the attributes it needs itself, and they are injected from the same context.
+<2> Runs against the same context, the same singletons and the same `@MockBean` instances as every other test in the class.
+
+NOTE: Configuration declared on the nested class itself (`@Property`, a second `@MicronautTest`) has nowhere to go and is rejected with an `ExtensionConfigurationException`, as in Java.

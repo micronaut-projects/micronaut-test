@@ -1,0 +1,25 @@
+Note that in most cases you won't define a test double and inject it, only to verify interaction with it directly. Instead, the test double will be a collaborator within your application. For example say you have a `MathController`:
+
+snippet::io.micronaut.test.python.MathController[project="test-suite-python", language="python", title="The MathController"]
+
+The above controller uses the `MathService` to expose a `/math/compute/{number}` endpoint. See the following example for a test that tests interaction with the mock collaborator:
+
+snippet::io.micronaut.test.python.MathCollaboratorTest[project="test-suite-python", language="python", title="Mocking Collaborators"]
+
+<1> Like the previous example a test double is defined using `@Replaces`
+<2> This time we inject an instance of `HttpClient` to test the controller.
+<3> We invoke the controller and retrieve the result
+<4> The interaction with the mock collaborator is verified.
+
+The way this works is that the test double is a singleton for the scope of the test, so the instance injected into the test is the very instance the controller collaborates with.
+
+The test double can also be declared with a `@MockBean` method, the way JUnit 5, Spock and Kotest tests declare mocks:
+
+snippet::io.micronaut.test.python.MockBeanCollaboratorTest[project="test-suite-python", language="python", title="Mocking Collaborators with @MockBean"]
+
+<1> The `@MockBean` method replaces the `MathServiceImpl` bean with the test double it returns
+<2> An instance of `HttpClient` is injected to test the controller.
+<3> We invoke the controller and retrieve the result
+<4> The interaction with the mock collaborator is verified.
+
+The way this works is that `@MicronautTest` injects the test double into the test, but the controller has a proxy that points to the test double instance. For each iteration of the test the test double is refreshed (in fact it uses Micronaut's built in `RefreshScope`); the proxy is seen from Python as the test double itself, so its attributes (`result`, `calls`) are read and written through it.

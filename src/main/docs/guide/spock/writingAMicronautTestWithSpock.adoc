@@ -1,26 +1,18 @@
 Let's take a look at an example using Spock. Consider you have the following interface:
 
 .The MathService Interface
-[source,groovy]
+[source,java]
 ----
 include::{spocktests}/MathService.java[]
 ----
 
 And a simple implementation that computes the value times 4 and is defined as a Micronaut bean:
 
-.The MathService implementation
-[source,groovy]
-----
-include::{spocktests}/MathServiceImpl.groovy[]
-----
+snippet::io.micronaut.test.spock.MathServiceImpl[project="test-spock", language="groovy", title="The MathService implementation"]
 
 You can define the following test to test it:
 
-.The MathService specification
-[source,groovy]
-----
-include::{spocktests}/MathServiceSpec.groovy[]
-----
+snippet::io.micronaut.test.spock.MathServiceSpec[project="test-spock", language="groovy", title="The MathService specification"]
 
 <1> The test is declared as Micronaut test with `@MicronautTest`
 <2> The `@Inject` annotation is used to inject the bean

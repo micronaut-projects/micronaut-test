@@ -42,6 +42,21 @@ kotest:
   kotestConstructorInjectionCaveats: Constructor Injection Caveats
   kotestRefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
   Concurrency: Concurrency with Kotest 6
+python:
+  title: Testing with Python (JUnit 5 via micronaut-inject-python-test)
+  settingUpPython: Setting up Python tests
+  writingAMicronautTestWithPython: Writing a Micronaut Test with Python
+  pythonEnvironmentClasspathScanning: Environments, Classpath Scanning etc.
+  pythonTransactionSemantics: Transaction semantics
+  pythonReplacingBeans: Replacing Beans with Test Doubles
+  pythonMockingCollaborators: Mocking Collaborators
+  pythonUsingRequiresOnTests: Using `@Requires` on Tests
+  pythonDefiningAdditionalTestSpecificProperties: Defining Additional Test Specific Properties
+  pythonRefreshingInjectedBeansBasedOnRequiresUponPropertiesChanges: Refreshing injected beans based on `@Requires` upon properties changes
+  pythonTestingExternalServers: Testing External Servers
+  pythonTestMethodsInjection: Test Methods Injection
+  pythonTestLifecycle: Test Lifecycle and Outcomes
+  pythonParallelExecution: Parallel Test Execution
 nettyLeak: Netty Leak Detection
 restAssured: REST Assured
 sql: Loading SQL before tests
