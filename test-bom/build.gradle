@@ -12,5 +12,9 @@ micronautBom {
         acceptedLibraryRegressions.add("junit-platform-runner")
         acceptedLibraryRegressions.add("junit-platform-jfr")
         acceptedVersionRegressions.add("junit-platform")
+
+        // Kotest 6.2.5 declares these artifacts, but they are not published to Maven Central.
+        dependencies.add("io.kotest:kotest-assertions-jsoup:6.2.5")
+        dependencies.add("io.kotest:kotest-assertions-jsoup-jvm:6.2.5")
     }
 }
