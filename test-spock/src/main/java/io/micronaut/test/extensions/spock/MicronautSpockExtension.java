@@ -328,6 +328,9 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
 
     @Override
     protected void startApplicationContext() {
+        // mocks of a context that rebuildContext = true replaced must not be attached to the next test
+        singletonMocks.clear();
+        creatableMocks.clear();
         applicationContext.registerSingleton((BeanCreatedEventListener) event -> {
             final Object bean = event.getBean();
             if (mockUtil.isMock(bean)) {
@@ -345,6 +348,9 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
 
     @Override
     protected void alignMocks(IMethodInvocation context, Object instance) {
+        if (specDefinition == null) {
+            return;
+        }
         for (MethodInjectionPoint injectedMethod : specDefinition.getInjectedMethods()) {
             final Argument<?>[] args = injectedMethod.getArguments();
             if (args.length == 1) {
