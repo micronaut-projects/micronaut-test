@@ -416,20 +416,11 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             postProcessBuilder(builder);
             this.applicationContext = builder.build();
             startApplicationContext();
-            specDefinition = applicationContext.findBeanDefinition(testClass).orElse(null);
-            if (specDefinition instanceof ProxyBeanDefinition<?>) {
-                interceptors = new ArrayList<>(interceptors);
-                interceptors.add(new MicronautIntercepted(
-                    specDefinition,
-                    applicationContext.getBean(InterceptorRegistry.class),
-                    new ArrayList<>(applicationContext.getBeanRegistrations(Argument.of(Interceptor.class), null))
-                ));
-            }
+            resolveFromApplicationContext();
             if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
                 embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
                 embeddedApplication.start();
             }
-            refreshScope = applicationContext.findBean(RefreshScope.class).orElse(null);
         }
     }
 
@@ -487,13 +478,20 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 if (applicationContext.isRunning()) {
                     applicationContext.stop();
                 }
+                // Everything resolved from the stopped context is stale: drop it before the
+                // new context starts, so that nothing can reach the old context through it.
+                embeddedApplication = null;
+                refreshScope = null;
+                specDefinition = null;
                 applicationContext = builder.build();
                 startApplicationContext();
+                resolveFromApplicationContext();
                 if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
                     embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
                 }
                 startEmbeddedApplication();
-            } else if (!oldValues.isEmpty()) {
+                applicationContextRebuilt(context);
+            } else if (!oldValues.isEmpty() && refreshScope != null) {
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));
             }
@@ -581,6 +579,36 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         listeners = new ArrayList<>(applicationContext.getBeansOfType(TestExecutionListener.class));
         Collection collection = applicationContext.getBeansOfType(TestMethodInterceptor.class);
         interceptors = new ArrayList<>(collection);
+    }
+
+    /**
+     * Resolves the state the extension keeps from the application context: the test's bean
+     * definition, the Micronaut interceptors around its methods and the {@link RefreshScope}.
+     * Called after every start of a context, including one rebuilt for
+     * {@code rebuildContext = true}, so that none of it outlives the context it came from.
+     */
+    private void resolveFromApplicationContext() {
+        specDefinition = applicationContext.findBeanDefinition(testClass).orElse(null);
+        if (specDefinition instanceof ProxyBeanDefinition<?>) {
+            interceptors = new ArrayList<>(interceptors);
+            interceptors.add(new MicronautIntercepted(
+                specDefinition,
+                applicationContext.getBean(InterceptorRegistry.class),
+                new ArrayList<>(applicationContext.getBeanRegistrations(Argument.of(Interceptor.class), null))
+            ));
+        }
+        refreshScope = applicationContext.findBean(RefreshScope.class).orElse(null);
+    }
+
+    /**
+     * Called after {@code rebuildContext = true} replaced the application context before a test,
+     * once the new context, and its embedded application if any, have started. Subclasses that
+     * keep state from the previous context, beyond what this class resolves again, refresh it here.
+     *
+     * @param context The test context
+     * @since 5.2.1
+     */
+    protected void applicationContextRebuilt(C context) {
     }
 
     /**
