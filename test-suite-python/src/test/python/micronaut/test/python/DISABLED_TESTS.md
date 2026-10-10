@@ -6,7 +6,7 @@ Use it as the bug-fixing task list.
 
 ## Reconciliation
 
-- Last generated active `@Disabled` count: 1 class (plus `DisableResolveParametersTest.bar` and
+- Last generated active `@Disabled` count: 0 classes (plus `DisableResolveParametersTest.bar` and
   `TestOutcomeListenerTest.test_disabled`, which are disabled on purpose like the Java examples).
 - Last generated command: `rg -n "@Disabled\(" test-suite-python/src/test/python`.
 - Last full-suite command: `./gradlew :test-suite-python:test -Ppython-ci --max-workers=1`.
@@ -26,12 +26,17 @@ Use it as the bug-fixing task list.
   generated test class. The enclosing class needs a `@Test` method of its own: a `@MicronautTest` class whose tests all
   live in nested classes is generated with the constructors of an ordinary class and JUnit rejects it
   ("must declare a single constructor").
+- A test can implement `TestPropertyProvider` (`PropertySourceMapTest`) with the `PER_CLASS` lifecycle, as in Java. Its
+  Python object is created before the application context exists, in a GraalPy context that the application context
+  claims as its primary context once it starts (requires the micronaut-core fix for this). That context is built from
+  the default GraalPy configuration, so the `graalpy.context.*` and `graalpy.engine.*` settings of the application do
+  not apply to it.
 
 ## Active `@Disabled` Tests
 
 | Test | Reason |
 | --- | --- |
-| `micronaut.test.python.PropertySourceMapTest` | `TestPropertyProvider.getProperties()` is called by the extension before the application context (and with it the GraalPy runtime) exists: "GraalPy context has not been initialized" (`PropertySourceMapTest.getProperties` -> `asPolyglotValue` -> `PythonContextRuntime.newInstance`). |
+| None | |
 
 ## Intentionally Unsupported Snippet Targets
 
