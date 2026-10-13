@@ -534,6 +534,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         }
         embeddedApplication = null;
         applicationContext = null;
+        refreshScope = null;
+        specDefinition = null;
+        listeners = Collections.emptyList();
+        interceptors = Collections.emptyList();
     }
 
     /**
