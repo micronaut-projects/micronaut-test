@@ -332,6 +332,11 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     @Override
+    protected void applicationContextRebuilt(ExtensionContext extensionContext) {
+        getStore(extensionContext).put(ApplicationContext.class, applicationContext);
+    }
+
+    @Override
     public void afterEach(ExtensionContext extensionContext) throws Exception {
         super.afterEach(extensionContext);
         afterTestMethod(buildContext(extensionContext));
