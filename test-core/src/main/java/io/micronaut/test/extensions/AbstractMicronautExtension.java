@@ -23,6 +23,7 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.BeanRegistration;
 import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.env.PropertySourceLoader;
@@ -41,6 +42,7 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.ProxyBeanDefinition;
 import io.micronaut.runtime.EmbeddedApplication;
@@ -48,6 +50,7 @@ import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshScope;
 import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.annotation.MicronautTestValue;
+import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.annotation.Sql;
 import io.micronaut.test.condition.TestActiveCondition;
 import io.micronaut.test.context.TestContext;
@@ -417,6 +420,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         startApplicationContext();
         resolveFromApplicationContext();
         unusedClassContext = true;
+        warnAboutMockBeansWithoutTarget();
         if (specDefinition != null && specDefinition.getAnnotationMetadata().hasStereotype(CLIENT_FILTER_ANNOTATION)) {
             throw new IllegalStateException(CLIENT_FILTER_MESSAGE.formatted(testClass.getName()));
         }
@@ -704,6 +708,32 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             }
         }
         return false;
+    }
+
+    /**
+     * A {@code @MockBean} without a value does not replace anything, so a bean of the same type
+     * keeps being injected and the mock is silently ignored. Say so.
+     */
+    private void warnAboutMockBeansWithoutTarget() {
+        for (BeanDefinition<?> mock : applicationContext.getBeanDefinitions(Qualifiers.byStereotype(MockBean.class))) {
+            AnnotationMetadata metadata = mock.getAnnotationMetadata();
+            // @MockBean's members default to void.class and "", which declare nothing
+            boolean declaresBean = metadata.classValue(Replaces.class).filter(type -> type != void.class).isPresent()
+                || metadata.stringValue(Replaces.class, "named").filter(name -> !name.isEmpty()).isPresent();
+            if (declaresBean) {
+                continue;
+            }
+            // a mock is an @Around proxy: look for other beans of the type it proxies
+            Class<?> mockType = mock instanceof ProxyBeanDefinition<?> proxy ? proxy.getTargetType() : mock.getBeanType();
+            List<String> others = applicationContext.getBeanDefinitions(mockType).stream()
+                .filter(candidate -> !candidate.getAnnotationMetadata().hasStereotype(MockBean.class))
+                .map(candidate -> candidate.getBeanType().getName())
+                .toList();
+            if (!others.isEmpty()) {
+                LOG.warn("@MockBean of type {} in {} does not declare the bean it replaces, so {} can still be injected instead of the mock. Declare it, for example @MockBean({}.class).",
+                    mockType.getName(), testClass.getName(), others, mockType.getSimpleName());
+            }
+        }
     }
 
     /**
