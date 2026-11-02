@@ -46,6 +46,7 @@ public final class JupiterLeakPresenceExtension
 
     private static final Object SCOPE_KEY = new Object();
     private static final Object PREVIOUS_SCOPE_KEY = new Object();
+    private static final Object SCOPE_OWNER_KEY = new Object();
 
     static {
         WithTransferableScope.init();
@@ -55,10 +56,12 @@ public final class JupiterLeakPresenceExtension
     public void beforeAll(ExtensionContext context) {
         ExtensionContext.Store store = context.getStore(ExtensionContext.Namespace.GLOBAL);
         if (store.get(SCOPE_KEY) != null) {
-            throw new IllegalStateException("Weird context lifecycle");
+            // a @Nested class sees the scope of its enclosing class through the store, and shares it
+            return;
         }
         ScopeWrapper scope = new ScopeWrapper(new LeakPresenceDetector.ResourceScope(context.getDisplayName()));
         store.put(SCOPE_KEY, scope);
+        store.put(SCOPE_OWNER_KEY, context.getUniqueId());
 
         WithTransferableScope.SCOPE.set(scope.scope);
     }
@@ -95,8 +98,12 @@ public final class JupiterLeakPresenceExtension
 
     @Override
     public void afterAll(ExtensionContext context) throws InterruptedException {
-        ScopeWrapper scope =
-            (ScopeWrapper) context.getStore(ExtensionContext.Namespace.GLOBAL).get(SCOPE_KEY);
+        ExtensionContext.Store store = context.getStore(ExtensionContext.Namespace.GLOBAL);
+        if (!context.getUniqueId().equals(store.get(SCOPE_OWNER_KEY))) {
+            // a @Nested class: the enclosing class checks the shared scope once all of its classes finish
+            return;
+        }
+        ScopeWrapper scope = (ScopeWrapper) store.get(SCOPE_KEY);
 
         WithTransferableScope.closeWithGracePeriod(scope.scope);
     }

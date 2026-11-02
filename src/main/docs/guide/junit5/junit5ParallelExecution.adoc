@@ -63,6 +63,17 @@ test {
 }
 ----
 
+=== Limiting Active Contexts
+
+Running classes in parallel means one application context per running class, each with its own connection pools and other resources. If that exhausts a shared resource such as a database's connection limit, set the `micronaut.test.context.parallelism` system property to the most contexts that may be alive at once. A class waits in `beforeAll` until another class's context has stopped.
+
+[source,groovy]
+----
+test {
+    systemProperty "micronaut.test.context.parallelism", "4"
+}
+----
+
 === Limitations
 
 * **JUnit 5.12 or newer is required.** The lock is declared with `@ResourceLock(providers = ...)`, and `providers` was added in JUnit 5.12. On an older JUnit the Jupiter engine fails to execute *any* `@MicronautTest` class. Micronaut Test manages a supported version for you; only override `junit-bom` upwards.

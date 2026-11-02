@@ -39,6 +39,15 @@ class NestedConfigurationTest {
     }
 
     @Test
+    @DisplayName("a test class that is a @ClientFilter is rejected with an explanation")
+    void clientFilterTestClassIsRejected() {
+        String message = failureMessage(ClientFilterFixture.class);
+
+        assertTrue(message.contains("is annotated with @ClientFilter"), message);
+        assertTrue(message.contains(ClientFilterFixture.class.getName()), message);
+    }
+
+    @Test
     @DisplayName("a @Nested class that declares no configuration still works")
     void plainNestedClassesStillWork() {
         run(PlainNestedFixture.class).testEvents()

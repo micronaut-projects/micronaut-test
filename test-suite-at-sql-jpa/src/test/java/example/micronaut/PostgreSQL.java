@@ -1,6 +1,6 @@
 package example.micronaut;
 
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.Map;

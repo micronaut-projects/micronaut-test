@@ -98,11 +98,8 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
-        val micronautTestValue = testClass
-            .annotations
-            .filterIsInstance<MicronautTest>()
-            .map { micronautTest -> buildValueObject(micronautTest) }
-            .firstOrNull()
+        val micronautTestValue = findMicronautTest(testClass.annotations, mutableSetOf())
+            ?.let { micronautTest -> buildValueObject(micronautTest) }
         return if (micronautTestValue == null) {
             null
         } else {
@@ -115,6 +112,21 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
                 null
             }
         }
+    }
+
+    /**
+     * Finds [MicronautTest] among the given annotations or, recursively, on their meta-annotations.
+     */
+    private fun findMicronautTest(annotations: Array<Annotation>, visited: MutableSet<Class<*>>): MicronautTest? {
+        annotations.filterIsInstance<MicronautTest>().firstOrNull()?.let { return it }
+        for (annotation in annotations) {
+            val annotationType = annotation.annotationClass.java
+            if (annotationType.name.startsWith("java.lang.annotation.") || annotationType.name.startsWith("kotlin.") || !visited.add(annotationType)) {
+                continue
+            }
+            findMicronautTest(annotationType.annotations, visited)?.let { return it }
+        }
+        return null
     }
 
     private fun buildValueObject(micronautTest: MicronautTest): MicronautTestValue {

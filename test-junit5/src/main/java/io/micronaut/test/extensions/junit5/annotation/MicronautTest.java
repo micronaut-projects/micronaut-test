@@ -64,7 +64,8 @@ public @interface MicronautTest {
     String[] packages() default {};
 
     /**
-     * One or many references to classpath. For example: "classpath:mytest.yml"
+     * Property source files to load, for example "classpath:mytest.yml". A name without a prefix is looked up
+     * at the root of the classpath, then next to the test class. Use "file:" to read from the file system.
      *
      * @return The property sources
      */

@@ -105,23 +105,29 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         MicronautTestValue micronautTestValue = buildMicronautTestValue(testClass);
         beforeClass(extensionContext, testClass, micronautTestValue);
         getStore(extensionContext).put(ApplicationContext.class, applicationContext);
-        if (specDefinition != null) {
-            if (testInstanceLifecycle == TestInstance.Lifecycle.PER_CLASS) {
-                Object testInstance = extensionContext.getRequiredTestInstance();
-                if (specDefinition instanceof ProxyBeanDefinition<?>) {
-                    // Proxy bean is not going to resolve bean definition, we need a small hack
-                    if (specDefinition instanceof InjectableBeanDefinition injectableBeanDefinition) {
-                        injectableBeanDefinition.inject(
-                            new DefaultBeanResolutionContext(applicationContext, injectableBeanDefinition),
-                            applicationContext,
-                            testInstance);
-                    }
-                } else {
-                    applicationContext.inject(testInstance);
-                }
-            }
+        if (specDefinition != null && testInstanceLifecycle == TestInstance.Lifecycle.PER_CLASS) {
+            injectPerClassTestInstance(extensionContext, testClass);
         }
         beforeTestClass(buildContext(extensionContext));
+    }
+
+    private void injectPerClassTestInstance(ExtensionContext extensionContext, Class<?> testClass) {
+        Object testInstance = extensionContext.getRequiredTestInstance();
+        if (specDefinition instanceof ProxyBeanDefinition<?>) {
+            // Proxy bean is not going to resolve bean definition, we need a small hack
+            if (specDefinition instanceof InjectableBeanDefinition injectableBeanDefinition) {
+                injectableBeanDefinition.inject(
+                    new DefaultBeanResolutionContext(applicationContext, injectableBeanDefinition),
+                    applicationContext,
+                    testInstance);
+            }
+        } else {
+            applicationContext.inject(testInstance);
+        }
+        if (isNestedTestClass(testClass)) {
+            // @BeforeAll of a PER_CLASS nested class runs before any @BeforeEach would inject these
+            injectEnclosingTestInstances(extensionContext);
+        }
     }
 
     /**
@@ -206,6 +212,36 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 if (testContext == null) {
                     testContext = buildContext(extensionContext);
                 }
+                return testContext;
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return invocation.proceed();
+            }
+        });
+    }
+
+    @Override
+    public void interceptBeforeAllMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        interceptClassLifecycleMethod(invocation, invocationContext);
+    }
+
+    @Override
+    public void interceptAfterAllMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        interceptClassLifecycleMethod(invocation, invocationContext);
+    }
+
+    private void interceptClassLifecycleMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext) throws Throwable {
+        if (invocationContext.getTarget().isEmpty()) {
+            // a static method is not called on the test bean, so there is no advice to apply
+            invocation.proceed();
+            return;
+        }
+        TestContext testContext = buildContext(invocationContext);
+        interceptClassLifecycleMethod(new TestMethodInvocationContext<>() {
+            @Override
+            public TestContext getTestContext() {
                 return testContext;
             }
 
@@ -319,7 +355,6 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
-        injectEnclosingTestInstances(extensionContext);
         final Optional<Object> testInstance = extensionContext.getTestInstance();
         final Optional<? extends AnnotatedElement> testMethod = extensionContext.getTestMethod();
         List<Property> propertyAnnotations = null;
@@ -329,6 +364,11 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         }
         beforeEach(extensionContext, testInstance.orElse(null), testMethod.orElse(null), propertyAnnotations);
         beforeTestMethod(buildContext(extensionContext));
+    }
+
+    @Override
+    protected void applicationContextRebuilt(ExtensionContext extensionContext) {
+        getStore(extensionContext).put(ApplicationContext.class, applicationContext);
     }
 
     @Override
@@ -343,7 +383,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         if (testInstance.isPresent()) {
 
             final Class<?> requiredTestClass = extensionContext.getRequiredTestClass();
-            if (applicationContext.containsBean(requiredTestClass) || isNestedTestClass(requiredTestClass)) {
+            if (applicationContext.containsBean(requiredTestClass) || specDefinition != null || isNestedTestClass(requiredTestClass)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
 
@@ -391,24 +431,38 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     @Override
+    protected void beforeInjectTestInstance(ExtensionContext extensionContext, Object testInstance) {
+        injectEnclosingTestInstances(extensionContext);
+    }
+
+    @Override
     protected void alignMocks(ExtensionContext context, Object instance) {
         if (specDefinition == null) {
             return;
         }
         findSpecInstance(context).ifPresent(specInstance -> {
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
-                if (applicationContext.resolveMetadata(injectedField.getType()).isAnnotationPresent(MockBean.class)) {
+                if (injectedField.getAnnotationMetadata().isAnnotationPresent(MockBean.class) || isMockedInjectionPoint(injectedField.asArgument())) {
                     findField(specInstance.getClass(), injectedField.getName()).ifPresent(field -> alignMock(specInstance, field));
                 }
             }
             for (MethodInjectionPoint<?, ?> injectedMethod : specDefinition.getInjectedMethods()) {
                 final Argument<?>[] arguments = injectedMethod.getArguments();
-                if (arguments.length == 1 && applicationContext.resolveMetadata(arguments[0].getType()).isAnnotationPresent(MockBean.class)) {
+                if (arguments.length == 1 && isMockedInjectionPoint(arguments[0])) {
                     findMethodInjectedField(specInstance.getClass(), injectedMethod, arguments[0])
                         .ifPresent(field -> alignMock(specInstance, field));
                 }
             }
         });
+    }
+
+    private <T> boolean isMockedInjectionPoint(Argument<T> injectedArgument) {
+        // resolve by the full generic argument: resolving metadata by the erased type fails for generic beans
+        Qualifier<T> qualifier = resolveQualifier(injectedArgument);
+        return applicationContext.getBeanDefinitions(injectedArgument, qualifier)
+            .stream()
+            .filter(definition -> definition.isCandidateBean(injectedArgument))
+            .anyMatch(definition -> definition.getAnnotationMetadata().isAnnotationPresent(MockBean.class));
     }
 
     private void alignMock(Object specInstance, Field field) {

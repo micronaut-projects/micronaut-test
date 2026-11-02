@@ -15,7 +15,7 @@
  */
 package io.micronaut.test.typepollution;
 
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Public listener for responding to focus events.<p>

@@ -1,5 +1,6 @@
 package io.micronaut.test.junit5.parallel;
 
+import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.extensions.junit5.MicronautTestResourceLocksProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.DisabledInNativeImage;
@@ -182,6 +183,32 @@ class MicronautTestParallelExecutionTest {
             "the engine never ran two methods at once, so the serialization assertions prove nothing");
         assertTrue(ConcurrencyRecorder.distinctThreads(SharedContextFixture.KEY) > 1,
             "the engine never used a second thread, so the serialization assertions prove nothing");
+    }
+
+    @Test
+    @DisplayName("micronaut.test.context.parallelism caps the application contexts alive at once")
+    void contextParallelismLimitsActiveContexts() {
+        ActiveContextProbe.reset(false);
+
+        System.setProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY, "1");
+        try {
+            assertAllPassed(runInParallel(ContextParallelismFixtureOne.class, ContextParallelismFixtureTwo.class), 2);
+        } finally {
+            System.clearProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY);
+        }
+
+        assertEquals(1, ActiveContextProbe.maxActive(), "two application contexts were alive at once");
+    }
+
+    @Test
+    @DisplayName("without micronaut.test.context.parallelism the same contexts do overlap")
+    void contextParallelismAssertionIsNotVacuous() {
+        ActiveContextProbe.reset(true);
+
+        assertAllPassed(runInParallel(ContextParallelismFixtureOne.class, ContextParallelismFixtureTwo.class), 2);
+
+        assertEquals(2, ActiveContextProbe.maxActive(),
+            "the contexts never overlapped, so the parallelism limit assertion proves nothing");
     }
 
     private static EngineExecutionResults runInParallel(Class<?>... fixtures) {
