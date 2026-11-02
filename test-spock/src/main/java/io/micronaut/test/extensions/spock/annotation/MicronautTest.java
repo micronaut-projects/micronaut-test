@@ -59,8 +59,7 @@ public @interface MicronautTest {
     String[] packages() default {};
 
     /**
-     * Extra property sources for the spec, such as "classpath:mytest.yml". Names without a "classpath:" or
-     * "file:" prefix are searched for at the classpath root first and then in the package of the spec.
+     * One or many references to classpath. For example: "classpath:mytest.yml"
      *
      * @return The property sources
      */
