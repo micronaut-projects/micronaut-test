@@ -354,19 +354,20 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         for (MethodInjectionPoint injectedMethod : specDefinition.getInjectedMethods()) {
             final Argument<?>[] args = injectedMethod.getArguments();
             if (args.length == 1) {
-                final Optional<FieldInfo> fld = context.getSpec().getAllFields().stream().filter(f -> f.getName().equals(args[0].getName())).findFirst();
-                if (fld.isPresent()) {
-                    final FieldInfo fieldInfo = fld.get();
-                    final Object fieldInstance = fieldInfo.readValue(
-                        instance
-                    );
-                    if (fieldInstance instanceof InterceptedProxy) {
-                        Object interceptedTarget = ((InterceptedProxy) fieldInstance).interceptedTarget();
-                        if (mockUtil.isMock(interceptedTarget)) {
-                            fieldInfo.writeValue(instance, interceptedTarget);
-                        }
-                    }
-                }
+                context.getSpec().getAllFields().stream()
+                    .filter(f -> f.getName().equals(args[0].getName()))
+                    .findFirst()
+                    .ifPresent(fieldInfo -> alignMock(fieldInfo, instance));
+            }
+        }
+    }
+
+    private void alignMock(FieldInfo fieldInfo, Object instance) {
+        final Object fieldInstance = fieldInfo.readValue(instance);
+        if (fieldInstance instanceof InterceptedProxy interceptedProxy) {
+            Object interceptedTarget = interceptedProxy.interceptedTarget();
+            if (mockUtil.isMock(interceptedTarget)) {
+                fieldInfo.writeValue(instance, interceptedTarget);
             }
         }
     }
