@@ -3,7 +3,7 @@ package io.micronaut.test.junit5;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Executable;
 import io.micronaut.context.annotation.Value;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.core.type.Argument;
 import io.micronaut.test.extensions.junit5.MicronautJunit5Extension;
 import jakarta.inject.Singleton;
