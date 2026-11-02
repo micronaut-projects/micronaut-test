@@ -632,6 +632,12 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             ClassUtils.isPresent(prefix + "$Definition", classLoader);
     }
 
+    /**
+     * Whether the tests run inside a native image, where generated bean definition classes cannot be
+     * looked up by name. Override to change how a native image is detected.
+     *
+     * @return true if running inside a native image
+     */
     protected boolean isNativeImageExecution() {
         return StringUtils.isNotEmpty(System.getProperty(NATIVE_IMAGE_CODE_PROPERTY));
     }
