@@ -530,54 +530,59 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
         if (method != null) {
-            if (propertyAnnotations != null && !propertyAnnotations.isEmpty()) {
-                validateUniquePropertyNames(propertyAnnotations, "test method " + method);
-                for (Property property : propertyAnnotations) {
-                    final String name = property.name();
-                    oldValues.put(name,
-                        testProperties.put(name, property.value())
-                    );
-                }
-            } else {
-                testProperties.putAll(oldValues);
-            }
-
+            applyMethodProperties(method, propertyAnnotations);
             if (testAnnotationValue.rebuildContext()) {
-                stopEmbeddedApplication();
-                if (applicationContext.isRunning()) {
-                    applicationContext.stop();
-                }
-                // Everything resolved from the stopped context is stale: drop it before the
-                // new context starts, so that nothing can reach the old context through it.
-                embeddedApplication = null;
-                refreshScope = null;
-                specDefinition = null;
-                applicationContext = builder.build();
-                startApplicationContext();
-                resolveFromApplicationContext();
-                if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
-                    embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
-                }
-                startEmbeddedApplication();
-                applicationContextRebuilt(context);
+                rebuildApplicationContext(context);
             } else if (!oldValues.isEmpty() && refreshScope != null) {
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));
             }
         }
 
-        if (testInstance != null) {
-            if (applicationContext != null) {
-                beforeInjectTestInstance(context, testInstance);
-                if (refreshScope != null) {
-                    refreshScope.onRefreshEvent(new RefreshEvent(Collections.singletonMap(
-                        TestActiveCondition.ACTIVE_MOCKS, "changed"
-                    )));
-                }
-                applicationContext.inject(testInstance);
-                alignMocks(context, testInstance);
+        if (testInstance != null && applicationContext != null) {
+            beforeInjectTestInstance(context, testInstance);
+            if (refreshScope != null) {
+                refreshScope.onRefreshEvent(new RefreshEvent(Collections.singletonMap(
+                    TestActiveCondition.ACTIVE_MOCKS, "changed"
+                )));
             }
+            applicationContext.inject(testInstance);
+            alignMocks(context, testInstance);
         }
+    }
+
+    private void applyMethodProperties(AnnotatedElement method, @Nullable List<Property> propertyAnnotations) {
+        if (propertyAnnotations != null && !propertyAnnotations.isEmpty()) {
+            validateUniquePropertyNames(propertyAnnotations, "test method " + method);
+            for (Property property : propertyAnnotations) {
+                final String name = property.name();
+                oldValues.put(name,
+                    testProperties.put(name, property.value())
+                );
+            }
+        } else {
+            testProperties.putAll(oldValues);
+        }
+    }
+
+    private void rebuildApplicationContext(C context) {
+        stopEmbeddedApplication();
+        if (applicationContext.isRunning()) {
+            applicationContext.stop();
+        }
+        // Everything resolved from the stopped context is stale: drop it before the
+        // new context starts, so that nothing can reach the old context through it.
+        embeddedApplication = null;
+        refreshScope = null;
+        specDefinition = null;
+        applicationContext = builder.build();
+        startApplicationContext();
+        resolveFromApplicationContext();
+        if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
+            embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
+        }
+        startEmbeddedApplication();
+        applicationContextRebuilt(context);
     }
 
     private void validateUniquePropertyNames(List<Property> properties, String propertySourceDescription) {
