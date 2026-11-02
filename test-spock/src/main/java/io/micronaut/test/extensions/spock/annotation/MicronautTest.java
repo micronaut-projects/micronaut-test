@@ -59,8 +59,8 @@ public @interface MicronautTest {
     String[] packages() default {};
 
     /**
-     * Property source files to load, for example "classpath:mytest.yml". A name without a prefix is looked up
-     * at the root of the classpath, then next to the test class. Use "file:" to read from the file system.
+     * Extra property sources for the spec, such as "classpath:mytest.yml". Names without a "classpath:" or
+     * "file:" prefix are searched for at the classpath root first and then in the package of the spec.
      *
      * @return The property sources
      */
