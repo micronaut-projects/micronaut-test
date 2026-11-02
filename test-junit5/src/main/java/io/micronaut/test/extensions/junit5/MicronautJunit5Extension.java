@@ -119,6 +119,10 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 } else {
                     applicationContext.inject(testInstance);
                 }
+                if (isNestedTestClass(testClass)) {
+                    // @BeforeAll of a PER_CLASS nested class runs before any @BeforeEach would inject these
+                    injectEnclosingTestInstances(extensionContext);
+                }
             }
         }
         beforeTestClass(buildContext(extensionContext));
@@ -206,6 +210,36 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
                 if (testContext == null) {
                     testContext = buildContext(extensionContext);
                 }
+                return testContext;
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return invocation.proceed();
+            }
+        });
+    }
+
+    @Override
+    public void interceptBeforeAllMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        interceptClassLifecycleMethod(invocation, invocationContext);
+    }
+
+    @Override
+    public void interceptAfterAllMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        interceptClassLifecycleMethod(invocation, invocationContext);
+    }
+
+    private void interceptClassLifecycleMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext) throws Throwable {
+        if (invocationContext.getTarget().isEmpty()) {
+            // a static method is not called on the test bean, so there is no advice to apply
+            invocation.proceed();
+            return;
+        }
+        TestContext testContext = buildContext(invocationContext);
+        interceptClassLifecycleMethod(new TestMethodInvocationContext<>() {
+            @Override
+            public TestContext getTestContext() {
                 return testContext;
             }
 

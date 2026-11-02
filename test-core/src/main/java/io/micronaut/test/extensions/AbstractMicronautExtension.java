@@ -122,6 +122,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     private List<TestExecutionListener> listeners;
     private List<TestMethodInterceptor<Object>> interceptors;
     private TestContextParallelismLimiter.Lease contextParallelismLease;
+    private MicronautIntercepted micronautIntercepted;
 
     /**
      * @return True if there are interceptors
@@ -133,6 +134,22 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     @Override
     public Object interceptBeforeEach(TestMethodInvocationContext<Object> methodInvocationContext) throws Throwable {
         return interceptBeforeEach(methodInvocationContext, interceptors);
+    }
+
+    /**
+     * Applies the Micronaut around advice declared on a class level lifecycle method of the test
+     * instance, such as a non-static JUnit {@code @BeforeAll} method. {@link TestMethodInterceptor}s
+     * are not applied, because they have no class level callbacks.
+     *
+     * @param methodInvocationContext The invocation context
+     * @return The result of the method
+     * @throws Throwable if the method fails
+     */
+    protected Object interceptClassLifecycleMethod(TestMethodInvocationContext<Object> methodInvocationContext) throws Throwable {
+        if (micronautIntercepted == null) {
+            return methodInvocationContext.proceed();
+        }
+        return micronautIntercepted.intercept(methodInvocationContext);
     }
 
     @Override
@@ -580,6 +597,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         applicationContext = null;
         refreshScope = null;
         specDefinition = null;
+        micronautIntercepted = null;
         listeners = Collections.emptyList();
         interceptors = Collections.emptyList();
     }
@@ -639,13 +657,15 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     private void resolveFromApplicationContext() {
         specDefinition = applicationContext.findBeanDefinition(testClass).orElse(null);
+        micronautIntercepted = null;
         if (specDefinition instanceof ProxyBeanDefinition<?>) {
-            interceptors = new ArrayList<>(interceptors);
-            interceptors.add(new MicronautIntercepted(
+            micronautIntercepted = new MicronautIntercepted(
                 specDefinition,
                 applicationContext.getBean(InterceptorRegistry.class),
                 new ArrayList<>(applicationContext.getBeanRegistrations(Argument.of(Interceptor.class), null))
-            ));
+            );
+            interceptors = new ArrayList<>(interceptors);
+            interceptors.add(micronautIntercepted);
         }
         refreshScope = applicationContext.findBean(RefreshScope.class).orElse(null);
     }

@@ -72,12 +72,16 @@ class MicronautKotest5Context(
     }
 
     fun beforeTest(testCase: TestCase) {
-        val filter = testCase.spec::class.memberFunctions.filter { it.name == testCase.name.name }
-        var propertyAnnotations: List<Property>? = emptyList()
-        if (filter.isNotEmpty()) {
-            propertyAnnotations = filter.first().annotations.filterIsInstance<Property>()
+        // Nested test cases (the `when` and `then` of a BehaviorSpec) belong to their root test case.
+        // Running the per-test setup again for them would replace the mocks their container stubbed.
+        if (testCase.parent == null) {
+            val filter = testCase.spec::class.memberFunctions.filter { it.name == testCase.name.name }
+            var propertyAnnotations: List<Property>? = emptyList()
+            if (filter.isNotEmpty()) {
+                propertyAnnotations = filter.first().annotations.filterIsInstance<Property>()
+            }
+            beforeEach(testCase.spec, testCase.spec, testCase.test.javaClass, propertyAnnotations)
         }
-        beforeEach(testCase.spec, testCase.spec, testCase.test.javaClass, propertyAnnotations)
         beforeTestMethod(buildContext(testCase, null))
     }
 
