@@ -29,5 +29,5 @@ micronautBuild {
 
 tasks.withType(Test::class.java) {
     // these are run explicitly by LeakPresenceExtensionTest
-    exclude("io/micronaut/test/leak/LeakyTest.class", "io/micronaut/test/leak/LeakySpec.class")
+    exclude("io/micronaut/test/leak/LeakyTest.class", "io/micronaut/test/leak/LeakyNestedTest*.class", "io/micronaut/test/leak/LeakySpec.class")
 }

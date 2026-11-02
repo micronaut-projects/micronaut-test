@@ -89,7 +89,7 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                         invocation.proceed();
                         return;
                     }
-                    MicronautTest micronautTest = spec.getAnnotation(MicronautTest.class);
+                    MicronautTest micronautTest = MicronautTestMetaAnnotationExtension.findMicronautTest(spec.getReflection());
                     MicronautTestValue micronautTestValue =  buildValueObject(micronautTest);
                     beforeClass(invocation, spec.getReflection(), micronautTestValue);
                     if (specDefinition == null) {

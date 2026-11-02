@@ -21,6 +21,21 @@ class LeakPresenceExtensionTest {
     }
 
     @Test
+    public void jupiterNested() {
+        // the nested classes share the enclosing class's scope, so the leak fails only the enclosing class
+        EngineTestKit
+            .engine("junit-jupiter")
+            .selectors(selectClass(LeakyNestedTest.class))
+            .execute()
+            .containerEvents()
+            .assertStatistics(stats -> stats
+                .started(4)
+                .succeeded(3)
+                .failed(1)
+            );
+    }
+
+    @Test
     public void spock() {
         EngineTestKit
             .engine("spock")
