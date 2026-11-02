@@ -83,7 +83,6 @@ import java.util.Set;
  * @since 1.0
  */
 public abstract class AbstractMicronautExtension<C> implements TestExecutionListener, TestMethodInterceptor<Object> {
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractMicronautExtension.class);
     public static final String NATIVE_IMAGE_CODE_PROPERTY = "org.graalvm.nativeimage.imagecode";
     /**
      * System property limiting how many test application contexts may be active at the same time.
@@ -113,6 +112,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         and its @Client injection points need the filter again, which never ends. \
         Move the filter methods into their own @ClientFilter bean, for example a static nested class annotated with @Requires.""";
     private static final String CLIENT_FILTER_ANNOTATION = "io.micronaut.http.annotation.ClientFilter";
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractMicronautExtension.class);
     protected ApplicationContext applicationContext;
     protected EmbeddedApplication<?> embeddedApplication;
     protected RefreshScope refreshScope;
@@ -722,6 +722,12 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             ClassUtils.isPresent(prefix + "$Definition", classLoader);
     }
 
+    /**
+     * Whether the tests run inside a native image, where generated bean definition classes cannot be
+     * looked up by name. Override to change how a native image is detected.
+     *
+     * @return true if running inside a native image
+     */
     protected boolean isNativeImageExecution() {
         return StringUtils.isNotEmpty(System.getProperty(NATIVE_IMAGE_CODE_PROPERTY));
     }
