@@ -61,6 +61,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -405,70 +406,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         builder.propertySourcesLocator(new PropertySourcesLocator() {
             @Override
             public Collection<PropertySource> load(Environment environment) {
-                List<PropertySource> loadedPropertySources = new ArrayList<>();
-                ResourceResolver resourceResolver = new ResourceResolver();
-                for (String propertySourceName : testAnnotationValue.propertySources()) {
-                    String ext = NameUtils.extension(propertySourceName);
-                    if (StringUtils.isEmpty(ext)) {
-                        continue;
-                    }
-                    int loadedBefore = loadedPropertySources.size();
-                    for (PropertySourceLoader loader : environment.getPropertySourceLoaders()) {
-                        if (!loader.getExtensions().contains(ext)) {
-                            continue;
-                        }
-
-                        resourceResolver.getResourceAsStream(propertySourceName)
-                            .or(() -> environment.getResourceAsStream(propertySourceName))
-                            .ifPresent(inputStream -> {
-                            try (inputStream) {
-                                String filename = NameUtils.filename(propertySourceName);
-                                try {
-                                    loadedPropertySources.add(PropertySource.of(filename, loader.read(filename, inputStream)));
-                                } catch (IOException e) {
-                                    throw new RuntimeException("Error loading property source reference for @MicronautTest: " + filename);
-                                }
-                            } catch (IOException e) {
-                                // ignore
-                            }
-                        });
-                    }
-                    if (loadedPropertySources.size() == loadedBefore) {
-                        LOG.warn("@MicronautTest property source [{}] of {} was not found. A name without a prefix is looked up at the root of the classpath and next to the test class; use classpath: or file: to be explicit.", propertySourceName, testClass.getName());
-                    }
-                }
-                List<TestPropertyProviderFactory> testPropertyProviderFactories = SoftServiceLoader.load(TestPropertyProviderFactory.class).collectAll();
-                if (!testPropertyProviderFactories.isEmpty()) {
-                    var props = new HashMap<>(testProperties);
-                    for (PropertySource source : environment.getPropertySources()) {
-                        for (String key : source) {
-                            props.put(key, source.get(key));
-                        }
-                    }
-                    for (PropertySource source : loadedPropertySources) {
-                        for (String key : source) {
-                            props.put(key, source.get(key));
-                        }
-                    }
-                    for (TestPropertyProviderFactory factory : testPropertyProviderFactories) {
-                        var provider = factory.create(Collections.unmodifiableMap(props), testClass);
-                        testProperties.putAll(provider.get());
-                    }
-                }
-                Object testTransactionalDefault = testProperties.get(TEST_TRANSACTIONAL_DEFAULT);
-                if (testTransactionalDefault != null && !Boolean.parseBoolean(testTransactionalDefault.toString())) {
-                    if (isExplicitTransactionalValue(classLoader)) {
-                        testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
-                    } else {
-                        testProperties.put(TEST_TRANSACTIONAL, Boolean.FALSE.toString());
-                    }
-                } else if (!testProperties.containsKey(TEST_TRANSACTIONAL)) {
-                    testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
-                }
-                if (!testProperties.isEmpty()) {
-                    loadedPropertySources.add(PropertySource.of(TEST_PROPERTY_SOURCE, testProperties));
-                }
-                return loadedPropertySources;
+                return loadTestPropertySources(environment, testAnnotationValue, testClass, classLoader);
             }
         });
 
@@ -482,6 +420,83 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
             embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
             embeddedApplication.start();
+        }
+    }
+
+    private List<PropertySource> loadTestPropertySources(Environment environment, MicronautTestValue testAnnotationValue, Class<?> testClass, ClassLoader classLoader) {
+        List<PropertySource> loadedPropertySources = loadAnnotatedPropertySources(environment, testAnnotationValue.propertySources(), testClass);
+        applyTestPropertyProviderFactories(environment, loadedPropertySources, testClass);
+        applyTransactionalDefault(testAnnotationValue, classLoader);
+        if (!testProperties.isEmpty()) {
+            loadedPropertySources.add(PropertySource.of(TEST_PROPERTY_SOURCE, testProperties));
+        }
+        return loadedPropertySources;
+    }
+
+    private static List<PropertySource> loadAnnotatedPropertySources(Environment environment, String[] propertySourceNames, Class<?> testClass) {
+        List<PropertySource> loadedPropertySources = new ArrayList<>();
+        ResourceResolver resourceResolver = new ResourceResolver();
+        for (String propertySourceName : propertySourceNames) {
+            String ext = NameUtils.extension(propertySourceName);
+            if (StringUtils.isEmpty(ext)) {
+                continue;
+            }
+            int loadedBefore = loadedPropertySources.size();
+            for (PropertySourceLoader loader : environment.getPropertySourceLoaders()) {
+                if (loader.getExtensions().contains(ext)) {
+                    resourceResolver.getResourceAsStream(propertySourceName)
+                        .or(() -> environment.getResourceAsStream(propertySourceName))
+                        .ifPresent(inputStream -> loadedPropertySources.add(readPropertySource(loader, propertySourceName, inputStream)));
+                }
+            }
+            if (loadedPropertySources.size() == loadedBefore) {
+                LOG.warn("@MicronautTest property source [{}] of {} was not found. A name without a prefix is looked up at the root of the classpath and next to the test class; use classpath: or file: to be explicit.", propertySourceName, testClass.getName());
+            }
+        }
+        return loadedPropertySources;
+    }
+
+    private static PropertySource readPropertySource(PropertySourceLoader loader, String propertySourceName, InputStream inputStream) {
+        String filename = NameUtils.filename(propertySourceName);
+        try (inputStream) {
+            return PropertySource.of(filename, loader.read(filename, inputStream));
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading property source reference for @MicronautTest: " + filename);
+        }
+    }
+
+    private void applyTestPropertyProviderFactories(Environment environment, List<PropertySource> loadedPropertySources, Class<?> testClass) {
+        List<TestPropertyProviderFactory> testPropertyProviderFactories = SoftServiceLoader.load(TestPropertyProviderFactory.class).collectAll();
+        if (testPropertyProviderFactories.isEmpty()) {
+            return;
+        }
+        var props = new HashMap<>(testProperties);
+        for (PropertySource source : environment.getPropertySources()) {
+            for (String key : source) {
+                props.put(key, source.get(key));
+            }
+        }
+        for (PropertySource source : loadedPropertySources) {
+            for (String key : source) {
+                props.put(key, source.get(key));
+            }
+        }
+        for (TestPropertyProviderFactory factory : testPropertyProviderFactories) {
+            var provider = factory.create(Collections.unmodifiableMap(props), testClass);
+            testProperties.putAll(provider.get());
+        }
+    }
+
+    private void applyTransactionalDefault(MicronautTestValue testAnnotationValue, ClassLoader classLoader) {
+        Object testTransactionalDefault = testProperties.get(TEST_TRANSACTIONAL_DEFAULT);
+        if (testTransactionalDefault != null && !Boolean.parseBoolean(testTransactionalDefault.toString())) {
+            if (isExplicitTransactionalValue(classLoader)) {
+                testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
+            } else {
+                testProperties.put(TEST_TRANSACTIONAL, Boolean.FALSE.toString());
+            }
+        } else if (!testProperties.containsKey(TEST_TRANSACTIONAL)) {
+            testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
         }
     }
 
