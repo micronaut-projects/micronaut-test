@@ -57,6 +57,8 @@ import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.support.TestPropertyProvider;
 import io.micronaut.test.support.TestPropertyProviderFactory;
 import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
@@ -80,6 +82,7 @@ import java.util.Set;
  * @since 1.0
  */
 public abstract class AbstractMicronautExtension<C> implements TestExecutionListener, TestMethodInterceptor<Object> {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractMicronautExtension.class);
     public static final String NATIVE_IMAGE_CODE_PROPERTY = "org.graalvm.nativeimage.imagecode";
     /**
      * System property limiting how many test application contexts may be active at the same time.
@@ -409,6 +412,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                     if (StringUtils.isEmpty(ext)) {
                         continue;
                     }
+                    int loadedBefore = loadedPropertySources.size();
                     for (PropertySourceLoader loader : environment.getPropertySourceLoaders()) {
                         if (!loader.getExtensions().contains(ext)) {
                             continue;
@@ -428,6 +432,9 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                                 // ignore
                             }
                         });
+                    }
+                    if (loadedPropertySources.size() == loadedBefore) {
+                        LOG.warn("@MicronautTest property source [{}] of {} was not found. A name without a prefix is looked up at the root of the classpath and next to the test class; use classpath: or file: to be explicit.", propertySourceName, testClass.getName());
                     }
                 }
                 List<TestPropertyProviderFactory> testPropertyProviderFactories = SoftServiceLoader.load(TestPropertyProviderFactory.class).collectAll();

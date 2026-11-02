@@ -11,8 +11,10 @@ snippet::io.micronaut.test.junit5.PropertySourceTest[project="test-junit5", lang
 The above example expects a file located at `src/test/resources/io/micronaut/junit5/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
 
 * `file:myprops.properties` - A relative path to a file somewhere on the file system
-* `classpath:myprops.properties` - A file relative to the root of the classpath
-* `myprops.properties` - A file relative on the classpath relative to the test being run.
+* `classpath:myprops.properties` - A file at the root of the classpath, for example `src/test/resources/myprops.properties`.
+* `myprops.properties` - Looked up at the root of the classpath first, then next to the test class in the test's package.
+
+A property source that cannot be found is skipped, and a warning naming it is logged.
 
 If you need more dynamic property definition or the property you want to define requires some setup then you can implement the api:test.support.TestPropertyProvider[] interface in your test and do whatever setup is necessary then return the properties you want to expose the the application.
 
