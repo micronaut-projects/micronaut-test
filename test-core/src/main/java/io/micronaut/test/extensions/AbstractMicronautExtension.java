@@ -540,18 +540,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
         if (method != null) {
-            applyMethodProperties(method, propertyAnnotations);
             if (testAnnotationValue.rebuildContext()) {
-                boolean hasMethodProperties = propertyAnnotations != null && !propertyAnnotations.isEmpty();
-                // the context started for the class is already fresh, so the first test uses it
-                // instead of starting a second one, unless it needs its own method-level properties
-                if (!unusedClassContext || hasMethodProperties) {
-                    rebuildApplicationContext(context);
+                beforeEachWithRebuild(context, method, propertyAnnotations);
+            } else {
+                // reverts what a framework without an afterEach callback, such as Kotest, left behind
+                boolean reverted = revertMethodProperties();
+                applyMethodProperties(method, propertyAnnotations);
+                if ((reverted || !oldValues.isEmpty()) && refreshScope != null) {
+                    final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
+                    refreshScope.onRefreshEvent(new RefreshEvent(diff));
                 }
-                unusedClassContext = false;
-            } else if (!oldValues.isEmpty() && refreshScope != null) {
-                final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
-                refreshScope.onRefreshEvent(new RefreshEvent(diff));
             }
         }
 
@@ -576,12 +574,27 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                     testProperties.put(name, property.value())
                 );
             }
-        } else {
-            testProperties.putAll(oldValues);
         }
     }
 
-    private void rebuildApplicationContext(C context) {
+    private void beforeEachWithRebuild(C context, AnnotatedElement method, @Nullable List<Property> propertyAnnotations) {
+        boolean hasMethodProperties = propertyAnnotations != null && !propertyAnnotations.isEmpty();
+        // the context started for the class is already fresh, so the first test uses it instead of
+        // starting a second one, unless it needs its own method-level properties
+        boolean rebuild = !unusedClassContext || hasMethodProperties;
+        unusedClassContext = false;
+        if (rebuild) {
+            stopContextForRebuild();
+        }
+        // the previous test's method-level properties stay in force until its context has stopped
+        revertMethodProperties();
+        applyMethodProperties(method, propertyAnnotations);
+        if (rebuild) {
+            startRebuiltContext(context);
+        }
+    }
+
+    private void stopContextForRebuild() {
         stopEmbeddedApplication();
         if (applicationContext.isRunning()) {
             applicationContext.stop();
@@ -591,6 +604,9 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         embeddedApplication = null;
         refreshScope = null;
         specDefinition = null;
+    }
+
+    private void startRebuiltContext(C context) {
         applicationContext = builder.build();
         startApplicationContext();
         resolveFromApplicationContext();
@@ -636,6 +652,8 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         micronautIntercepted = null;
         listeners = Collections.emptyList();
         interceptors = Collections.emptyList();
+        // left by the last test under rebuildContext, now that its context has shut down
+        revertMethodProperties();
     }
 
     /**
@@ -645,21 +663,34 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @throws Exception allows any exception to propagate
      */
     public void afterEach(C context) throws Exception {
+        if (oldValues.isEmpty()) {
+            return;
+        }
+        if (testAnnotationValue != null && testAnnotationValue.rebuildContext()) {
+            // This test's context is still running and is replaced before the next test, so its
+            // method-level properties stay in force until it has shut down. They are reverted
+            // before the next context is built, or when the class finishes.
+            return;
+        }
+        revertMethodProperties();
         if (refreshScope != null) {
-            if (!oldValues.isEmpty()) {
-                for (Map.Entry<String, Object> entry : oldValues.entrySet()) {
-                    Object value = entry.getValue();
-                    if (value != null) {
-                        testProperties.put(entry.getKey(), value);
-                    } else {
-                        testProperties.remove(entry.getKey());
-                    }
-                }
-                final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
-                refreshScope.onRefreshEvent(new RefreshEvent(diff));
+            final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
+            refreshScope.onRefreshEvent(new RefreshEvent(diff));
+        }
+    }
+
+    private boolean revertMethodProperties() {
+        boolean reverted = !oldValues.isEmpty();
+        for (Map.Entry<String, Object> entry : oldValues.entrySet()) {
+            Object value = entry.getValue();
+            if (value != null) {
+                testProperties.put(entry.getKey(), value);
+            } else {
+                testProperties.remove(entry.getKey());
             }
         }
         oldValues.clear();
+        return reverted;
     }
 
     private static boolean isMicronautTestTransactionalDeclared(AnnotationMetadata metadata) {
