@@ -397,18 +397,27 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         }
         findSpecInstance(context).ifPresent(specInstance -> {
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
-                if (applicationContext.resolveMetadata(injectedField.getType()).isAnnotationPresent(MockBean.class)) {
+                if (injectedField.getAnnotationMetadata().isAnnotationPresent(MockBean.class) || isMockedInjectionPoint(injectedField.asArgument())) {
                     findField(specInstance.getClass(), injectedField.getName()).ifPresent(field -> alignMock(specInstance, field));
                 }
             }
             for (MethodInjectionPoint<?, ?> injectedMethod : specDefinition.getInjectedMethods()) {
                 final Argument<?>[] arguments = injectedMethod.getArguments();
-                if (arguments.length == 1 && applicationContext.resolveMetadata(arguments[0].getType()).isAnnotationPresent(MockBean.class)) {
+                if (arguments.length == 1 && isMockedInjectionPoint(arguments[0])) {
                     findMethodInjectedField(specInstance.getClass(), injectedMethod, arguments[0])
                         .ifPresent(field -> alignMock(specInstance, field));
                 }
             }
         });
+    }
+
+    private <T> boolean isMockedInjectionPoint(Argument<T> injectedArgument) {
+        // resolve by the full generic argument: resolving metadata by the erased type fails for generic beans
+        Qualifier<T> qualifier = resolveQualifier(injectedArgument);
+        return applicationContext.getBeanDefinitions(injectedArgument, qualifier)
+            .stream()
+            .filter(definition -> definition.isCandidateBean(injectedArgument))
+            .anyMatch(definition -> definition.getAnnotationMetadata().isAnnotationPresent(MockBean.class));
     }
 
     private void alignMock(Object specInstance, Field field) {
