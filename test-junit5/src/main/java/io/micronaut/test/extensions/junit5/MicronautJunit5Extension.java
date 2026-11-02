@@ -105,27 +105,29 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         MicronautTestValue micronautTestValue = buildMicronautTestValue(testClass);
         beforeClass(extensionContext, testClass, micronautTestValue);
         getStore(extensionContext).put(ApplicationContext.class, applicationContext);
-        if (specDefinition != null) {
-            if (testInstanceLifecycle == TestInstance.Lifecycle.PER_CLASS) {
-                Object testInstance = extensionContext.getRequiredTestInstance();
-                if (specDefinition instanceof ProxyBeanDefinition<?>) {
-                    // Proxy bean is not going to resolve bean definition, we need a small hack
-                    if (specDefinition instanceof InjectableBeanDefinition injectableBeanDefinition) {
-                        injectableBeanDefinition.inject(
-                            new DefaultBeanResolutionContext(applicationContext, injectableBeanDefinition),
-                            applicationContext,
-                            testInstance);
-                    }
-                } else {
-                    applicationContext.inject(testInstance);
-                }
-                if (isNestedTestClass(testClass)) {
-                    // @BeforeAll of a PER_CLASS nested class runs before any @BeforeEach would inject these
-                    injectEnclosingTestInstances(extensionContext);
-                }
-            }
+        if (specDefinition != null && testInstanceLifecycle == TestInstance.Lifecycle.PER_CLASS) {
+            injectPerClassTestInstance(extensionContext, testClass);
         }
         beforeTestClass(buildContext(extensionContext));
+    }
+
+    private void injectPerClassTestInstance(ExtensionContext extensionContext, Class<?> testClass) {
+        Object testInstance = extensionContext.getRequiredTestInstance();
+        if (specDefinition instanceof ProxyBeanDefinition<?>) {
+            // Proxy bean is not going to resolve bean definition, we need a small hack
+            if (specDefinition instanceof InjectableBeanDefinition injectableBeanDefinition) {
+                injectableBeanDefinition.inject(
+                    new DefaultBeanResolutionContext(applicationContext, injectableBeanDefinition),
+                    applicationContext,
+                    testInstance);
+            }
+        } else {
+            applicationContext.inject(testInstance);
+        }
+        if (isNestedTestClass(testClass)) {
+            // @BeforeAll of a PER_CLASS nested class runs before any @BeforeEach would inject these
+            injectEnclosingTestInstances(extensionContext);
+        }
     }
 
     /**
