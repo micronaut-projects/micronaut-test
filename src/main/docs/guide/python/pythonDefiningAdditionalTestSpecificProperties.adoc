@@ -14,6 +14,6 @@ The first example expects a file located at `src/test/resources/micronaut/test/p
 * `classpath:myprops.properties` - A file at the root of the classpath, for example `src/test/resources/myprops.properties`.
 * `myprops.properties` - Looked up at the root of the classpath first, then next to the test class in the test's package.
 
-A property source that cannot be found is skipped, and a warning naming it is logged.
+A property source that cannot be found, or whose file extension no property source loader handles, is skipped, and a warning naming it is logged.
 
 NOTE: The api:test.support.TestPropertyProvider[] interface is not supported for Python tests: its `getProperties()` method is called before the application context, and with it the Python runtime, exists. Use `@Property`, `propertySources` or a Java `TestPropertyProvider` for properties that need dynamic setup.
