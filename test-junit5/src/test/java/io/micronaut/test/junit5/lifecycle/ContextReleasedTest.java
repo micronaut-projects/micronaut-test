@@ -34,4 +34,19 @@ class ContextReleasedTest {
 
         assertNull(ContextRetentionFixture.context.get(), "the stopped application context is still reachable");
     }
+
+    @Test
+    @DisplayName("the application context is removed from the JUnit store once the test class has finished")
+    void contextIsRemovedFromTheStore() {
+        ContextStoreFixture.AFTER_ALL.set("not read");
+
+        EngineTestKit.engine("junit-jupiter")
+            .enableImplicitConfigurationParameters(false)
+            .selectors(DiscoverySelectors.selectClass(ContextStoreFixture.class))
+            .execute()
+            .testEvents()
+            .assertStatistics(stats -> stats.started(1).succeeded(1).failed(0));
+
+        assertNull(ContextStoreFixture.AFTER_ALL.get(), "the stopped application context is still in the store");
+    }
 }
