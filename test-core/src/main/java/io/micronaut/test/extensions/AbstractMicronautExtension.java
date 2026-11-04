@@ -24,6 +24,7 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.BeanRegistration;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.context.annotation.Secondary;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.env.PropertySourceLoader;
@@ -719,36 +720,72 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * keeps being injected and the mock is silently ignored. Say so.
      */
     private void warnAboutMockBeansWithoutTarget() {
-        for (BeanDefinition<?> mock : applicationContext.getBeanDefinitions(Qualifiers.byStereotype(MockBean.class))) {
-            AnnotationMetadata metadata = mock.getAnnotationMetadata();
-            // @MockBean's members default to void.class and "", which declare nothing
-            boolean declaresBean = metadata.classValue(Replaces.class).filter(type -> type != void.class).isPresent()
-                || metadata.stringValue(Replaces.class, "named").filter(name -> !name.isEmpty()).isPresent();
-            if (declaresBean) {
-                continue;
+        try {
+            for (BeanDefinition<?> mock : applicationContext.getBeanDefinitions(Qualifiers.byStereotype(MockBean.class))) {
+                warnIfMockBeanIsIgnored(mock);
             }
-            // a mock is an @Around proxy: look for other beans of the type it proxies
-            Class<?> mockType = mock instanceof ProxyBeanDefinition<?> proxy ? proxy.getTargetType() : mock.getBeanType();
-            List<String> others = findBeansCompetingWithMock(mock, mockType);
-            if (!others.isEmpty()) {
-                LOG.warn("@MockBean of type {} in {} does not declare the bean it replaces, so {} can still be injected instead of the mock. Declare it, for example @MockBean({}.class).",
-                    mockType.getName(), testClass.getName(), others, mockType.getSimpleName());
-            }
+        } catch (RuntimeException e) {
+            // only a diagnostic: its lookups load beans the test may never use, which must not fail the test
+            LOG.debug("Could not check the @MockBean declarations of {}", testClass.getName(), e);
+        }
+    }
+
+    private void warnIfMockBeanIsIgnored(BeanDefinition<?> mock) {
+        AnnotationMetadata metadata = mock.getAnnotationMetadata();
+        // @MockBean's members default to void.class and "", which declare nothing
+        boolean declaresBean = metadata.classValue(Replaces.class).filter(type -> type != void.class).isPresent()
+            || metadata.stringValue(Replaces.class, "named").filter(name -> !name.isEmpty()).isPresent();
+        if (declaresBean || mock.isPrimary()) {
+            return;
+        }
+        Class<?> mockType = beanClass(mock);
+        List<String> others = findBeansCompetingWithMock(mock, mockType);
+        if (!others.isEmpty()) {
+            LOG.warn("@MockBean of type {} in {} does not declare the bean it replaces, so {} can still be injected instead of the mock. Declare the bean to replace as the value of @MockBean.",
+                mockType.getName(), testClass.getName(), others);
         }
     }
 
     /**
      * Only a bean with a compatible generic type and the same qualifier can take the place of a mock
-     * at the injection point the mock was declared for.
+     * at the injection point the mock was declared for, and a {@code @Secondary} bean gives way to it.
      */
+    private List<String> findBeansCompetingWithMock(BeanDefinition<?> mock, Class<?> mockType) {
+        return typesReplacedByMock(mockType).stream()
+            .flatMap(type -> findBeansOfMockedType(mock, type).stream())
+            .filter(candidate -> !candidate.getAnnotationMetadata().hasStereotype(MockBean.class))
+            .filter(candidate -> !candidate.getAnnotationMetadata().hasStereotype(Secondary.class))
+            .<String>map(candidate -> beanClass(candidate).getName())
+            .distinct()
+            .toList();
+    }
+
     @SuppressWarnings("unchecked")
-    private <T> List<String> findBeansCompetingWithMock(BeanDefinition<T> mock, Class<?> mockType) {
-        Argument<T> type = (Argument<T>) Argument.of(mockType, mock.getTypeArguments(mockType).toArray(new Argument<?>[0]));
+    private <T> List<BeanDefinition<T>> findBeansOfMockedType(BeanDefinition<T> mock, Class<?> mockedType) {
+        Argument<T> type = (Argument<T>) Argument.of(mockedType, mock.getTypeArguments(mockedType).toArray(new Argument<?>[0]));
         return applicationContext.getBeanDefinitions(type, mock.getDeclaredQualifier()).stream()
             .filter(candidate -> candidate.isCandidateBean(type))
-            .filter(candidate -> !candidate.getAnnotationMetadata().hasStereotype(MockBean.class))
-            .map(candidate -> candidate.getBeanType().getName())
             .toList();
+    }
+
+    /**
+     * A mock declared on a method mocks the method's return type, while a mock declared on a class
+     * stands in for the types that class extends.
+     */
+    private static List<Class<?>> typesReplacedByMock(Class<?> mockType) {
+        if (!mockType.isAnnotationPresent(MockBean.class)) {
+            return List.of(mockType);
+        }
+        List<Class<?>> types = new ArrayList<>(List.of(mockType.getInterfaces()));
+        if (mockType.getSuperclass() != null && mockType.getSuperclass() != Object.class) {
+            types.add(mockType.getSuperclass());
+        }
+        return types;
+    }
+
+    private static Class<?> beanClass(BeanDefinition<?> definition) {
+        // an advised bean's type is the generated proxy, which means nothing to the reader
+        return definition instanceof ProxyBeanDefinition<?> proxy ? proxy.getTargetType() : definition.getBeanType();
     }
 
     /**
