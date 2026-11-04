@@ -316,7 +316,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     protected void beforeClass(C context, Class<?> testClass, @Nullable MicronautTestValue testAnnotationValue) {
         if (testAnnotationValue != null) {
-            if (contextParallelismLease == null) {
+            if (contextParallelismLease == null && !sharesContextParallelismPermit()) {
                 contextParallelismLease = TestContextParallelismLimiter.acquire();
             }
             boolean started = false;
@@ -333,6 +333,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 }
             }
         }
+    }
+
+    /**
+     * Whether this context runs under the {@link #CONTEXT_PARALLELISM_PROPERTY} permit of another
+     * context that stays active around it, and which it would otherwise wait for forever.
+     *
+     * @return true if no permit of its own should be acquired
+     */
+    protected boolean sharesContextParallelismPermit() {
+        return false;
     }
 
     private void startTestContext(C context, Class<?> testClass, MicronautTestValue testAnnotationValue) {

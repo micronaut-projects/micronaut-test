@@ -74,6 +74,8 @@ test {
 }
 ----
 
+WARNING: A class waits for its permit while JUnit already holds the class's own `@ResourceLock` locks. A class-level `@ResourceLock` can therefore deadlock with a class that holds a permit and needs the same resource in one of its methods. A warning is logged if a class waits for a permit for more than a minute. Use the same lock level on both classes, or a limit high enough for them to run together.
+
 === Limitations
 
 * **JUnit 5.12 or newer is required.** The lock is declared with `@ResourceLock(providers = ...)`, and `providers` was added in JUnit 5.12. On an older JUnit the Jupiter engine fails to execute *any* `@MicronautTest` class. Micronaut Test manages a supported version for you; only override `junit-bom` upwards.
