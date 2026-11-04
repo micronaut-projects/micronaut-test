@@ -583,6 +583,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
     private void beforeEachWithRebuild(C context, AnnotatedElement method, @Nullable List<Property> propertyAnnotations) {
         boolean hasMethodProperties = propertyAnnotations != null && !propertyAnnotations.isEmpty();
+        if (hasMethodProperties) {
+            // rejected before the running context is touched, so that the next test can still use it
+            validateUniquePropertyNames(propertyAnnotations, "test method " + method);
+        }
         // the context started for the class is already fresh, so the first test uses it instead of
         // starting a second one, unless it needs its own method-level properties
         boolean rebuild = !unusedClassContext || hasMethodProperties;

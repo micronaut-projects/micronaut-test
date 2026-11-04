@@ -21,4 +21,15 @@ class RebuildContextFailedStartTest {
             .testEvents()
             .assertStatistics(stats -> stats.started(2).succeeded(1).failed(1));
     }
+
+    @Test
+    @DisplayName("a test rejected for duplicate method properties leaves a usable context to the next test")
+    void nextTestRunsAfterDuplicateMethodProperties() {
+        EngineTestKit.engine("junit-jupiter")
+            .enableImplicitConfigurationParameters(false)
+            .selectors(DiscoverySelectors.selectClass(RebuildContextDuplicatePropertyFixture.class))
+            .execute()
+            .testEvents()
+            .assertStatistics(stats -> stats.started(3).succeeded(2).failed(1));
+    }
 }
