@@ -669,19 +669,19 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @throws Exception allows any exception to propagate
      */
     public void afterEach(C context) throws Exception {
-        if (refreshScope != null) {
-            if (!oldValues.isEmpty()) {
-                for (Map.Entry<String, Object> entry : oldValues.entrySet()) {
-                    Object value = entry.getValue();
-                    if (value != null) {
-                        testProperties.put(entry.getKey(), value);
-                    } else {
-                        testProperties.remove(entry.getKey());
-                    }
-                }
-                final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
-                refreshScope.onRefreshEvent(new RefreshEvent(diff));
+        // restored without a refresh scope too: a rebuild that failed to start leaves none, and the
+        // next rebuild must not pick up the failed test's properties
+        for (Map.Entry<String, Object> entry : oldValues.entrySet()) {
+            Object value = entry.getValue();
+            if (value != null) {
+                testProperties.put(entry.getKey(), value);
+            } else {
+                testProperties.remove(entry.getKey());
             }
+        }
+        if (refreshScope != null && !oldValues.isEmpty()) {
+            final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
+            refreshScope.onRefreshEvent(new RefreshEvent(diff));
         }
         oldValues.clear();
     }
