@@ -23,17 +23,36 @@ class MockBeanWarningFailureTest {
 
     @Test
     void theOtherMocksAreStillChecked() {
-        WarningCapture.assertReported(MockBeanWarningFailureTest.class, Concrete.class);
+        // the failing mock is named to be checked first today; the order is not guaranteed, so there are several others
+        WarningCapture.assertReported(MockBeanWarningFailureTest.class, ConcreteOne.class);
+        WarningCapture.assertReported(MockBeanWarningFailureTest.class, ConcreteTwo.class);
+        WarningCapture.assertReported(MockBeanWarningFailureTest.class, ConcreteThree.class);
+        WarningCapture.assertReported(MockBeanWarningFailureTest.class, ConcreteFour.class);
     }
 
     @MockBean
-    Service service() {
+    Service aFailingService() {
         return new Service() { };
     }
 
     @MockBean
-    Concrete concrete() {
-        return new Concrete();
+    ConcreteOne concreteOne() {
+        return new ConcreteOne();
+    }
+
+    @MockBean
+    ConcreteTwo concreteTwo() {
+        return new ConcreteTwo();
+    }
+
+    @MockBean
+    ConcreteThree concreteThree() {
+        return new ConcreteThree();
+    }
+
+    @MockBean
+    ConcreteFour concreteFour() {
+        return new ConcreteFour();
     }
 
     interface Service {
@@ -41,7 +60,22 @@ class MockBeanWarningFailureTest {
 
     @Singleton
     @Requires(property = "spec.name", value = SPEC)
-    static class Concrete {
+    static class ConcreteOne {
+    }
+
+    @Singleton
+    @Requires(property = "spec.name", value = SPEC)
+    static class ConcreteTwo {
+    }
+
+    @Singleton
+    @Requires(property = "spec.name", value = SPEC)
+    static class ConcreteThree {
+    }
+
+    @Singleton
+    @Requires(property = "spec.name", value = SPEC)
+    static class ConcreteFour {
     }
 
     @Singleton
