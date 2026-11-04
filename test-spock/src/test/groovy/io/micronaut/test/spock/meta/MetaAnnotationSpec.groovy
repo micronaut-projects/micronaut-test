@@ -1,6 +1,7 @@
 package io.micronaut.test.spock.meta
 
 import io.micronaut.context.ApplicationContext
+import io.micronaut.test.annotation.AnnotationUtils
 import io.micronaut.test.extensions.AbstractMicronautExtension
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
@@ -28,5 +29,25 @@ class MetaAnnotationSpec extends Specification {
         applicationContext != null
         applicationContext.environment.activeNames.contains("meta")
         applicationContext.getProperty(AbstractMicronautExtension.TEST_TRANSACTIONAL, Boolean).orElse(null) == false
+    }
+}
+
+@NonTransactionalMicronautTest
+abstract class MetaAnnotatedBase {
+}
+
+class MetaAnnotatedSubclass extends MetaAnnotatedBase {
+}
+
+class MetaAnnotationLookupSpec extends Specification {
+
+    void "a meta-annotation on a base class is found although it is not itself inherited"() {
+        expect:
+        AnnotationUtils.findAnnotation(MetaAnnotatedSubclass, MicronautTest).get().environments() == ["meta"] as String[]
+    }
+
+    void "a class without the annotation has none"() {
+        expect:
+        !AnnotationUtils.findAnnotation(MetaAnnotationLookupSpec, MicronautTest).isPresent()
     }
 }
