@@ -42,6 +42,11 @@ class MicronautKotest5Context @JvmOverloads constructor(
 
     override fun sharesContextParallelismPermit() = sharesPermit
 
+    /**
+     * The instance this context belongs to, for a spec without constructor parameters.
+     */
+    internal var claimedBy: Spec? = null
+
     override fun resolveTestProperties(context: Spec?, testAnnotationValue: MicronautTestValue, testProperties: MutableMap<String, Any>?) {
         if (context is TestPropertyProvider) {
             testProperties?.putAll(context.properties)
