@@ -25,20 +25,21 @@ class DefaultSharedMockService : SharedMockService {
 }
 
 /**
- * Mocks are refreshed once per root test case: everything nested in a root shares its mock and
- * stubs, including sibling branches, and the next root starts with a new mock.
+ * A BehaviorSpec refreshes mocks once per root test case: everything nested in a root shares its
+ * mock and stubs, including sibling branches, and the next root starts with a new mock.
  */
 @MicronautTest
 @io.micronaut.context.annotation.Property(name = "spec.name", value = "MockSharingAcrossTestCasesTest")
 class MockSharingAcrossTestCasesTest(
     private val service: SharedMockService
 ) : BehaviorSpec({
-    lateinit var firstRootMock: SharedMockService
+    var firstRootMock: SharedMockService? = null
 
     given("a first root") {
         `when`("the first branch stubs the mock") {
-            firstRootMock = getMock(service)
-            every { firstRootMock.compute(any()) } returns 9
+            val mock = getMock(service)
+            firstRootMock = mock
+            every { mock.compute(any()) } returns 9
 
             then("the stubbing applies in that branch") {
                 service.compute(1) shouldBe 9
@@ -56,7 +57,7 @@ class MockSharingAcrossTestCasesTest(
     given("a second root") {
         `when`("nothing stubs the mock") {
             then("it has a new mock without the stubs of the first root") {
-                getMock(service) shouldNotBeSameInstanceAs firstRootMock
+                firstRootMock?.let { getMock(service) shouldNotBeSameInstanceAs it }
                 shouldThrow<MockKException> { service.compute(1) }
             }
         }

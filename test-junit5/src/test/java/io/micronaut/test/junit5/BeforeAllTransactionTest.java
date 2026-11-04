@@ -42,14 +42,13 @@ class BeforeAllTransactionTest {
     }
 
     @AfterAll
+    @Transactional
     void deleteSharedData() {
-        transactionOperations.executeWrite(status -> {
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaDelete<Book> delete = criteriaBuilder.createCriteriaDelete(Book.class);
-            delete.from(Book.class);
-            entityManager.createQuery(delete).executeUpdate();
-            return null;
-        });
+        assertTrue(transactionOperations.findTransactionStatus().isPresent(), "@AfterAll runs in a transaction");
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaDelete<Book> delete = criteriaBuilder.createCriteriaDelete(Book.class);
+        delete.from(Book.class);
+        entityManager.createQuery(delete).executeUpdate();
     }
 
     @Test

@@ -21,6 +21,7 @@ class WhenStubbedCaller(private val service: WhenStubbedService) {
 }
 
 @Singleton
+@Requires(property = "spec.name", value = "MockStubbedInWhenTest")
 class DefaultWhenStubbedService : WhenStubbedService {
     override fun compute(num: Int) = num * 4
 }
