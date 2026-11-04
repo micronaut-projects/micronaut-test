@@ -33,11 +33,14 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.reflect.full.memberFunctions
 
-class MicronautKotest5Context(
+class MicronautKotest5Context @JvmOverloads constructor(
     private val specClass: Class<Any>,
     private val micronautTestValue: MicronautTestValue,
-    private val createBean: Boolean
+    private val createBean: Boolean,
+    private val sharesPermit: Boolean = false
 ) : AbstractMicronautExtension<Spec>() {
+
+    override fun sharesContextParallelismPermit() = sharesPermit
 
     override fun resolveTestProperties(context: Spec?, testAnnotationValue: MicronautTestValue, testProperties: MutableMap<String, Any>?) {
         if (context is TestPropertyProvider) {
@@ -47,7 +50,13 @@ class MicronautKotest5Context(
 
     val bean: Spec? = if (createBean) {
         beforeClass(null, specClass, micronautTestValue)
-        applicationContext.findBean(specClass).orElse(null) as Spec?
+        try {
+            applicationContext.findBean(specClass).orElse(null) as Spec?
+        } catch (e: Throwable) {
+            // this context never reaches Kotest, so nothing else would stop it and release its permit
+            stopAfterFailure(null, e)
+            throw e
+        }
     } else {
         null
     }
@@ -60,11 +69,33 @@ class MicronautKotest5Context(
     }
 
     fun beforeSpecClass(spec: Spec) {
-        if (!createBean) {
-            beforeClass(spec, specClass, micronautTestValue)
-            applicationContext.inject(spec)
+        try {
+            if (!createBean) {
+                beforeClass(spec, specClass, micronautTestValue)
+                applicationContext.inject(spec)
+            }
+            beforeTestClass(buildContext(spec))
+        } catch (e: Throwable) {
+            // Kotest does not call afterSpec after a failing beforeSpec
+            stopAfterFailure(spec, e)
+            throw e
         }
-        beforeTestClass(buildContext(spec))
+    }
+
+    private fun stopAfterFailure(spec: Spec?, failure: Throwable) {
+        try {
+            afterClass(spec)
+        } catch (e: Throwable) {
+            failure.addSuppressed(e)
+        }
+    }
+
+    /**
+     * Stops the context and releases its parallelism permit, for a spec that Kotest instantiated
+     * but never ran, in which case it does not call afterSpec.
+     */
+    fun stopIfRunning() {
+        afterClass(null)
     }
 
     fun afterSpecClass(spec: Spec) {
