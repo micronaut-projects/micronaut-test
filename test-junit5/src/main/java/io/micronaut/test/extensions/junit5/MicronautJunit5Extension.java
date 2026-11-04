@@ -29,9 +29,7 @@ import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.FieldInjectionPoint;
-import io.micronaut.inject.InjectableBeanDefinition;
 import io.micronaut.inject.MethodInjectionPoint;
-import io.micronaut.inject.ProxyBeanDefinition;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.annotation.MockBean;
@@ -213,9 +211,8 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     private void adviseClassLifecycleMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext) throws Throwable {
-        if (Modifier.isStatic(invocationContext.getExecutable().getModifiers()) || isNestedTestClass(invocationContext.getTargetClass())) {
-            // only the methods of the outermost test bean are advised: a static method is not called
-            // on it, and the advice of a nested class is not in its bean definition
+        if (Modifier.isStatic(invocationContext.getExecutable().getModifiers())) {
+            // a static method is not called on the test bean, so there is no advice to apply
             invocation.proceed();
             return;
         }
@@ -634,21 +631,6 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         extensionContext.getTestInstances().ifPresent(testInstances -> {
             testInstances.getEnclosingInstances().forEach(this::injectTestInstance);
         });
-    }
-
-    private void injectTestInstance(Object testInstance) {
-        // specDefinition is the outermost test class's, which a nested class's instance is not an instance of
-        if (specDefinition instanceof ProxyBeanDefinition<?> proxyDefinition
-            && proxyDefinition.getTargetType().isInstance(testInstance)
-            && specDefinition instanceof InjectableBeanDefinition injectableBeanDefinition) {
-            // Proxy bean is not going to resolve bean definition, we need a small hack
-            injectableBeanDefinition.inject(
-                new DefaultBeanResolutionContext(applicationContext, injectableBeanDefinition),
-                applicationContext,
-                testInstance);
-        } else {
-            applicationContext.inject(testInstance);
-        }
     }
 
     private boolean isApplicationContextParameter(ParameterContext parameterContext) {
