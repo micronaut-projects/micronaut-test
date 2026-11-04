@@ -25,7 +25,7 @@ class DefaultNestedSetupService : NestedSetupService {
 }
 
 /**
- * Outside a BehaviorSpec each nested test starts with a new mock.
+ * Each nested test starts with a new mock.
  */
 @MicronautTest
 @io.micronaut.context.annotation.Property(name = "spec.name", value = "NestedTestsGetNewMocksTest")
