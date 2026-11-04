@@ -35,27 +35,27 @@ class GenericMethodMockBeanSpec extends Specification {
     BarService barService() {
         Mock(BarService)
     }
-}
 
-interface Command<R> {
-    R execute()
-}
-
-interface BarService {
-    public <R, C extends Command<R>> R send(C command)
-}
-
-@Singleton
-@Requires(property = "spec.name", value = "GenericMethodMockBeanSpec")
-class FooService {
-    private final BarService barService
-
-    FooService(BarService barService) {
-        this.barService = barService
+    interface Command<R> {
+        R execute()
     }
 
-    boolean alwaysTrue() {
-        barService.send(null)
-        true
+    interface BarService {
+        public <R, C extends Command<R>> R send(C command)
+    }
+
+    @Singleton
+    @Requires(property = "spec.name", value = "GenericMethodMockBeanSpec")
+    static class FooService {
+        private final BarService barService
+
+        FooService(BarService barService) {
+            this.barService = barService
+        }
+
+        boolean alwaysTrue() {
+            barService.send(null)
+            true
+        }
     }
 }

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * A @MockBean can supply a bean the application only provides in other environments.
+ * A @MockBean can supply a bean that has no implementation in the application.
  */
 @MicronautTest
 @Property(name = "spec.name", value = "MockOnlyBeanTest")

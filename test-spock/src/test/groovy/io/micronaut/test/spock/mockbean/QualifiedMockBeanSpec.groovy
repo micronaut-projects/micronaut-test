@@ -44,39 +44,39 @@ class QualifiedMockBeanSpec extends Specification {
         Mock(PlainHandler)
     }
     // end::mock[]
-}
 
-@Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-@Target([ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD])
-@interface Handler {
-    String value()
-}
-
-interface PlainHandler {
-    String handle()
-}
-
-@Singleton
-@Handler("plain")
-@Requires(property = "spec.name", value = "QualifiedMockBeanSpec")
-class DefaultPlainHandler implements PlainHandler {
-    @Override
-    String handle() {
-        "real"
-    }
-}
-
-@Singleton
-@Requires(property = "spec.name", value = "QualifiedMockBeanSpec")
-class PlainConsumer {
-    private final PlainHandler handler
-
-    PlainConsumer(@Handler("plain") PlainHandler handler) {
-        this.handler = handler
+    @Qualifier
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target([ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD])
+    @interface Handler {
+        String value()
     }
 
-    String handle() {
-        handler.handle()
+    interface PlainHandler {
+        String handle()
+    }
+
+    @Singleton
+    @Handler("plain")
+    @Requires(property = "spec.name", value = "QualifiedMockBeanSpec")
+    static class DefaultPlainHandler implements PlainHandler {
+        @Override
+        String handle() {
+            "real"
+        }
+    }
+
+    @Singleton
+    @Requires(property = "spec.name", value = "QualifiedMockBeanSpec")
+    static class PlainConsumer {
+        private final PlainHandler handler
+
+        PlainConsumer(@Handler("plain") PlainHandler handler) {
+            this.handler = handler
+        }
+
+        String handle() {
+            handler.handle()
+        }
     }
 }
