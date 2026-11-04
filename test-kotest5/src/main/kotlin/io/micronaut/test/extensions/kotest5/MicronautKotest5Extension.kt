@@ -17,6 +17,7 @@ package io.micronaut.test.extensions.kotest5
 
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
@@ -27,7 +28,7 @@ import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
-object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseExtension {
+object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseExtension, FinalizeSpecListener {
 
     override suspend fun intercept(
         testCase: TestCase,
@@ -61,6 +62,11 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
 
     override suspend fun beforeSpec(spec: Spec) {
         spec.context()?.beforeSpecClass(spec)
+    }
+
+    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+        // Kotest skips beforeSpec and afterSpec for a spec without enabled tests
+        contexts.remove(kclass.java.name)?.forEach { it.stopIfRunning() }
     }
 
     override suspend fun afterSpec(spec: Spec) {
@@ -110,7 +116,9 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
             null
         } else {
             val createBean = constructor != null && constructor.parameters.isNotEmpty()
-            val context = MicronautKotest5Context(testClass, micronautTestValue, createBean)
+            // the isolation modes create further instances while the first is running, on its thread
+            val sharesPermit = contexts[testClass.name]?.isNotEmpty() == true
+            val context = MicronautKotest5Context(testClass, micronautTestValue, createBean, sharesPermit)
             contexts.getOrPut(testClass.name, ::mutableListOf).add(context)
             if (createBean) {
                 context.bean
