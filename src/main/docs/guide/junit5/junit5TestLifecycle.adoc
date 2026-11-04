@@ -84,16 +84,18 @@ The test transaction described in <<junit5TransactionSemantics,Transaction seman
 class BookQueryTest {
 
     @Inject
-    BookRepository bookRepository;
+    EntityManager entityManager;
 
     @BeforeAll
     @Transactional // <1>
     void insertBooks() {
-        bookRepository.save(new Book("The Stand"));
+        entityManager.persist(new Book("The Stand"));
     }
 }
 ----
 <1> Committed before the first test. Each test still runs in its own transaction, which is rolled back without touching this data. Delete the data in an `@AfterAll` method if later classes share the database.
+
+Around advice applies only to the `@BeforeAll` and `@AfterAll` methods of the top-level test class, not to those of a `@Nested` class. As on test methods, an interceptor can see the method's arguments but not their values.
 
 === Sharing one application context with `@Nested`
 
