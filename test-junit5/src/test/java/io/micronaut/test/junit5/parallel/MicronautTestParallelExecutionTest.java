@@ -7,13 +7,16 @@ import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.platform.engine.DiscoverySelector;
+import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.testkit.engine.EngineExecutionResults;
 import org.junit.platform.testkit.engine.EngineTestKit;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -209,6 +212,34 @@ class MicronautTestParallelExecutionTest {
 
         assertEquals(2, ActiveContextProbe.maxActive(),
             "the contexts never overlapped, so the parallelism limit assertion proves nothing");
+    }
+
+    @Test
+    @DisplayName("a failing afterTestClass listener still releases its micronaut.test.context.parallelism permit")
+    void failedClassCleanupReleasesContextParallelismPermit() {
+        ActiveContextProbe.reset(false);
+
+        System.setProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY, "1");
+        try {
+            // A permit that is never released blocks the second class forever, so bound the run
+            EngineExecutionResults results = assertTimeoutPreemptively(Duration.ofSeconds(60), () ->
+                EngineTestKit.engine("junit-jupiter")
+                    .enableImplicitConfigurationParameters(false)
+                    .selectors(
+                        DiscoverySelectors.selectClass(ContextParallelismFailingCleanupFixture.class),
+                        DiscoverySelectors.selectClass(ContextParallelismFixtureOne.class))
+                    .configurationParameter("junit.jupiter.testclass.order.default", "org.junit.jupiter.api.ClassOrderer$ClassName")
+                    .execute());
+
+            results.testEvents().assertStatistics(stats -> stats.started(2).succeeded(2).failed(0));
+            results.containerEvents().assertStatistics(stats -> stats.failed(1));
+            Throwable failure = results.containerEvents().failed().list().get(0)
+                .getRequiredPayload(TestExecutionResult.class).getThrowable().orElseThrow();
+            assertEquals(ContextParallelismFailingCleanupFixture.FailingCleanupListener.MESSAGE, failure.getMessage(),
+                "the listener failure was not the one reported");
+        } finally {
+            System.clearProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY);
+        }
     }
 
     private static EngineExecutionResults runInParallel(Class<?>... fixtures) {
