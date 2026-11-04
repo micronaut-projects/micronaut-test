@@ -19,8 +19,10 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -44,17 +46,28 @@ final class TestContextParallelismLimiter {
         int maxActiveContexts = parseLimit(value);
         Semaphore semaphore = SEMAPHORES.computeIfAbsent(maxActiveContexts, permits -> new Semaphore(permits, true));
         try {
-            if (!semaphore.tryAcquire(WARN_AFTER_SECONDS, TimeUnit.SECONDS)) {
-                // not an error, since other classes can legitimately hold the permits for this long
-                LOG.warn("Waited {} seconds for a test context permit with {}={}. If this never ends, another test class may be holding a permit while it waits for a resource this class has locked, such as with a class-level @ResourceLock.",
-                    WARN_AFTER_SECONDS, CONTEXT_PARALLELISM_PROPERTY, maxActiveContexts);
-                semaphore.acquire();
+            if (!semaphore.tryAcquire(0, TimeUnit.SECONDS)) {
+                acquireWithWarning(semaphore, maxActiveContexts);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Interrupted while waiting for a Micronaut test context permit", e);
         }
         return semaphore::release;
+    }
+
+    private static void acquireWithWarning(Semaphore semaphore, int maxActiveContexts) throws InterruptedException {
+        // warns from a timer, since leaving a timed wait would give up this waiter's place in the fair queue.
+        // Not an error, because other classes can legitimately hold the permits for this long.
+        Executor afterDelay = CompletableFuture.delayedExecutor(WARN_AFTER_SECONDS, TimeUnit.SECONDS);
+        CompletableFuture<Void> warning = CompletableFuture.runAsync(() ->
+            LOG.warn("Waited {} seconds for a test context permit with {}={}. If this never ends, another test class may be holding a permit while it waits for a resource this class has locked, such as with a class-level @ResourceLock.",
+                WARN_AFTER_SECONDS, CONTEXT_PARALLELISM_PROPERTY, maxActiveContexts), afterDelay);
+        try {
+            semaphore.acquire();
+        } finally {
+            warning.cancel(false);
+        }
     }
 
     private static int parseLimit(String value) {

@@ -6,6 +6,10 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.TestEngineLauncher
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Context
+import jakarta.annotation.PreDestroy
+import jakarta.inject.Inject
+import java.util.concurrent.atomic.AtomicInteger
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlinx.coroutines.runBlocking
 import kotlin.concurrent.thread
@@ -27,6 +31,7 @@ import java.util.concurrent.FutureTask
 import java.util.concurrent.TimeUnit
 
 private const val SPEC_NAME = "ContextParallelismCleanupFailure"
+private const val PROBE_SPEC_NAME = "ContextParallelismLiveContextProbe"
 private const val SETUP_SPEC_NAME = "ContextParallelismSetupFailure"
 private const val CONSTRUCTOR_SPEC_NAME = "ContextParallelismConstructorFailure"
 private const val FAILURE = "afterTestClass failed"
@@ -90,6 +95,38 @@ class MultipleInstancesFixture(private val context: ApplicationContext) : String
     init {
         "first root" { context.isRunning shouldBe true }
         "second root" { context.isRunning shouldBe true }
+    }
+}
+
+/** Each instance of a spec without constructor parameters has its own context, all of them stopped. */
+@MicronautTest
+@Property(name = "spec.name", value = PROBE_SPEC_NAME)
+class MultipleInstancesWithoutConstructorFixture : StringSpec() {
+    @Inject
+    lateinit var context: ApplicationContext
+
+    override fun isolationMode() = IsolationMode.InstancePerRoot
+
+    init {
+        "first root" { context.isRunning shouldBe true }
+        "second root" { context.isRunning shouldBe true }
+    }
+}
+
+@Context
+@Requires(property = "spec.name", value = PROBE_SPEC_NAME)
+class LiveContextProbe {
+    init {
+        LIVE.incrementAndGet()
+    }
+
+    @PreDestroy
+    fun close() {
+        LIVE.decrementAndGet()
+    }
+
+    companion object {
+        val LIVE = AtomicInteger()
     }
 }
 
@@ -178,6 +215,15 @@ class ContextParallelismCleanupFailureTest : StringSpec({
         val spec = this.testCase.spec
         atLimitOne {
             runSpec(MultipleInstancesFixture::class)
+            assertPermitIsFree(spec)
+        }
+    }
+
+    "the instances of a spec without constructor parameters stop their own contexts" {
+        val spec = this.testCase.spec
+        atLimitOne {
+            runSpec(MultipleInstancesWithoutConstructorFixture::class)
+            LiveContextProbe.LIVE.get() shouldBe 0
             assertPermitIsFree(spec)
         }
     }
