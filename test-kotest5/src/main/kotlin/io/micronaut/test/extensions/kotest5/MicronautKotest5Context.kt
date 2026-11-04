@@ -16,6 +16,7 @@
 package io.micronaut.test.extensions.kotest5
 
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.micronaut.context.annotation.Property
@@ -74,9 +75,11 @@ class MicronautKotest5Context(
     }
 
     fun beforeTest(testCase: TestCase) {
-        // Nested test cases (the `when` and `then` of a BehaviorSpec) belong to their root test case.
-        // Running the per-test setup again for them would replace the mocks their container stubbed.
-        if (testCase.parent == null) {
+        // The `given` and `when` of a BehaviorSpec stub mocks for the `then` nested in them, so running
+        // the per-test setup for those nested cases would replace the mocks their container stubbed.
+        // With rebuildContext every test case gets its own context, as it does in the other styles.
+        val sharesRootSetup = testCase.parent != null && testCase.spec is BehaviorSpec && !micronautTestValue.rebuildContext()
+        if (!sharesRootSetup) {
             val filter = testCase.spec::class.memberFunctions.filter { it.name == testCase.name.name }
             var propertyAnnotations: List<Property>? = emptyList()
             if (filter.isNotEmpty()) {
