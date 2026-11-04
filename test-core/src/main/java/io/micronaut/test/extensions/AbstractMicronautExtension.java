@@ -791,13 +791,15 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
 
     /**
      * Only a bean with a compatible generic type and the same qualifier can take the place of a mock
-     * at the injection point the mock was declared for, and a {@code @Secondary} bean gives way to it.
+     * at the injection point the mock was declared for, and a {@code @Secondary} bean gives way to
+     * a mock that is not secondary itself.
      */
     private List<String> findBeansCompetingWithMock(BeanDefinition<?> mock, Class<?> mockType) {
+        boolean mockIsSecondary = mock.getAnnotationMetadata().hasStereotype(Secondary.class);
         return typesReplacedByMock(mockType).stream()
             .flatMap(type -> findBeansOfMockedType(mock, type).stream())
             .filter(candidate -> !candidate.getAnnotationMetadata().hasStereotype(MockBean.class))
-            .filter(candidate -> !candidate.getAnnotationMetadata().hasStereotype(Secondary.class))
+            .filter(candidate -> mockIsSecondary || !candidate.getAnnotationMetadata().hasStereotype(Secondary.class))
             .<String>map(candidate -> beanClass(candidate).getName())
             .distinct()
             .toList();

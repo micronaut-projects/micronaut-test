@@ -1,16 +1,21 @@
 package io.micronaut.test.junit5.mockbean;
 
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Secondary;
+import io.micronaut.core.annotation.Order;
 import io.micronaut.runtime.context.scope.Refreshable;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * The cases the warning about a @MockBean without a value has to get right, beyond the type and
@@ -22,6 +27,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 class MockBeanWarningCasesTest {
 
     static final String SPEC = "MockBeanWarningCasesTest";
+
+    @Inject
+    ApplicationContext applicationContext;
 
     @Test
     void mocksDeclaringTheBeanTheyReplaceAreNotReported() {
@@ -38,6 +46,12 @@ class MockBeanWarningCasesTest {
     @Test
     void aSecondaryBeanIsNotReported() {
         WarningCapture.assertNotReported(MockBeanWarningCasesTest.class, RealIsSecondary.class);
+    }
+
+    @Test
+    void aSecondaryBeanIsReportedAgainstASecondaryMock() {
+        assertEquals("real", applicationContext.getBean(BothSecondary.class).value(), "the higher priority real bean is selected");
+        WarningCapture.assertReported(MockBeanWarningCasesTest.class, RealBothSecondary.class);
     }
 
     @Test
@@ -79,6 +93,13 @@ class MockBeanWarningCasesTest {
     }
 
     @MockBean
+    @Secondary
+    @Order(0)
+    BothSecondary bothSecondary() {
+        return () -> "mock";
+    }
+
+    @MockBean
     Advised advised() {
         return new Advised();
     }
@@ -112,6 +133,21 @@ class MockBeanWarningCasesTest {
     @Secondary
     @Requires(property = "spec.name", value = SPEC)
     static class RealIsSecondary {
+    }
+
+    interface BothSecondary {
+        String value();
+    }
+
+    @Singleton
+    @Secondary
+    @Order(-1)
+    @Requires(property = "spec.name", value = SPEC)
+    static class RealBothSecondary implements BothSecondary {
+        @Override
+        public String value() {
+            return "real";
+        }
     }
 
     @Singleton
