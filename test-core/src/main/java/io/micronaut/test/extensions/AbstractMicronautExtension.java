@@ -545,10 +545,12 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                 boolean hasMethodProperties = propertyAnnotations != null && !propertyAnnotations.isEmpty();
                 // the context started for the class is already fresh, so the first test uses it
                 // instead of starting a second one, unless it needs its own method-level properties
-                if (!unusedClassContext || hasMethodProperties) {
+                boolean reuseClassContext = unusedClassContext && !hasMethodProperties;
+                // cleared first: after a failed rebuild the next test must not use the failed context
+                unusedClassContext = false;
+                if (!reuseClassContext) {
                     rebuildApplicationContext(context);
                 }
-                unusedClassContext = false;
             } else if (!oldValues.isEmpty() && refreshScope != null) {
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));
