@@ -317,6 +317,19 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     @Override
+    protected void afterClass(ExtensionContext extensionContext) {
+        ApplicationContext classContext = applicationContext;
+        try {
+            super.afterClass(extensionContext);
+        } finally {
+            // the store outlives the class. Classes running in parallel share it, so leave another class's entry
+            if (extensionContext != null && getStore(extensionContext).get(ApplicationContext.class) == classContext) {
+                getStore(extensionContext).remove(ApplicationContext.class);
+            }
+        }
+    }
+
+    @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
         final Optional<Object> testInstance = extensionContext.getTestInstance();
         final Optional<? extends AnnotatedElement> testMethod = extensionContext.getTestMethod();
