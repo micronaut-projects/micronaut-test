@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * A mock should stand in for a concrete bean that @Requires disables in tests. See MockOnlyBeanTest
  * for what works today.
  */
-@Disabled("https://github.com/micronaut-projects/micronaut-test/issues/428: the mock's bean definition inherits the @Requires of the class it produces, so it is disabled along with that class, which needs a change in micronaut-core.")
+@Disabled("https://github.com/micronaut-projects/micronaut-test/issues/428: the mock's bean definition inherits the @Requires of the class it produces, so it is disabled along with that class, which needs a change in micronaut-core: https://github.com/micronaut-projects/micronaut-core/issues/14267")
 @MicronautTest
 class DisabledBeanMockBeanTest {
 

@@ -23,7 +23,7 @@ class GenericMethodMockBeanJavaInterfaceSpec extends Specification {
     @Inject
     JavaCommandBus commandBus
 
-    @PendingFeature(exceptions = NoSuchMethodError, reason = "https://github.com/micronaut-projects/micronaut-test/issues/1523: the Groovy visitor erases a bounded type variable of a compiled class to Object rather than its bound, so the proxy does not override the method, which needs a change in micronaut-core.")
+    @PendingFeature(exceptions = NoSuchMethodError, reason = "https://github.com/micronaut-projects/micronaut-test/issues/1523: the Groovy visitor erases a bounded type variable of a compiled class to Object rather than its bound, so the proxy does not override the method, which needs a change in micronaut-core: https://github.com/micronaut-projects/micronaut-core/issues/14269")
     void "a generic method mock is created and used"() {
         when:
         def result = caller.alwaysTrue()
