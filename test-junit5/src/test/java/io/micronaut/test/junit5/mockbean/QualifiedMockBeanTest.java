@@ -21,8 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * A mock replacing a qualified bean declares the same qualifier, so qualified injection points find it.
  */
 @MicronautTest
-@Property(name = "spec.name", value = "QualifiedMockBeanTest")
+@Property(name = "spec.name", value = QualifiedMockBeanTest.SPEC)
 class QualifiedMockBeanTest {
+
+    static final String SPEC = "QualifiedMockBeanTest";
 
     @Inject
     BeanContext beanContext;
@@ -32,8 +34,9 @@ class QualifiedMockBeanTest {
         assertEquals("mock", beanContext.getBean(PlainConsumer.class).handle());
     }
 
+    // tag::mock[]
     @MockBean(PlainHandler.class)
-    @Handler("plain")
+    @Handler("plain") // <1>
     PlainHandler plainHandler() {
         return new PlainHandler() {
             @Override
@@ -42,6 +45,7 @@ class QualifiedMockBeanTest {
             }
         };
     }
+    // end::mock[]
 
     @Qualifier
     @Retention(RetentionPolicy.RUNTIME)
@@ -52,7 +56,7 @@ class QualifiedMockBeanTest {
 
     @Singleton
     @Handler("plain")
-    @Requires(property = "spec.name", value = "QualifiedMockBeanTest")
+    @Requires(property = "spec.name", value = SPEC)
     static class PlainHandler {
         public String handle() {
             return "real";
@@ -60,7 +64,7 @@ class QualifiedMockBeanTest {
     }
 
     @Singleton
-    @Requires(property = "spec.name", value = "QualifiedMockBeanTest")
+    @Requires(property = "spec.name", value = SPEC)
     static class PlainConsumer {
         private final PlainHandler handler;
 

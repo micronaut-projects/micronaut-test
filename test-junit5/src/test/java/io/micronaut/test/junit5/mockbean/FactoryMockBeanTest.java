@@ -34,7 +34,9 @@ class FactoryMockBeanTest {
 
     @Test
     void injectedIntoAnotherBean() {
+        // the consumer goes through the generated proxy, which a test field does not after alignMocks
         assertEquals("mock", consumer.call());
+        assertEquals("mock-array", consumer.callArray());
     }
 
     @MockBean(Overloaded.class)
@@ -92,6 +94,10 @@ class FactoryMockBeanTest {
 
         String call() {
             return overloaded.call("x");
+        }
+
+        String callArray() {
+            return overloaded.call(new Object[]{"x"});
         }
     }
 }
