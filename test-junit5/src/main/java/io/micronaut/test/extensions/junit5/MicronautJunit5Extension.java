@@ -425,13 +425,11 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         }
         findSpecInstance(context).ifPresent(specInstance -> {
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
-                if (injectedField.getAnnotationMetadata().isAnnotationPresent(MockBean.class) || isMockedInjectionPoint(injectedField.asArgument())) {
-                    findField(specInstance.getClass(), injectedField.getName()).ifPresent(field -> alignMock(specInstance, field));
-                }
+                findField(specInstance.getClass(), injectedField.getName()).ifPresent(field -> alignMock(specInstance, field));
             }
             for (MethodInjectionPoint<?, ?> injectedMethod : specDefinition.getInjectedMethods()) {
                 final Argument<?>[] arguments = injectedMethod.getArguments();
-                if (arguments.length == 1 && isMockedInjectionPoint(arguments[0])) {
+                if (arguments.length == 1) {
                     findMethodInjectedField(specInstance.getClass(), injectedMethod, arguments[0])
                         .ifPresent(field -> alignMock(specInstance, field));
                 }
@@ -439,21 +437,19 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         });
     }
 
-    private <T> boolean isMockedInjectionPoint(Argument<T> injectedArgument) {
-        // resolve by the full generic argument: resolving metadata by the erased type fails for generic beans.
-        // Only the selected bean counts: another mock candidate must not unwrap a real scoped proxy.
-        Qualifier<T> qualifier = resolveQualifier(injectedArgument);
-        return applicationContext.findBeanDefinition(injectedArgument, qualifier)
-            .filter(definition -> definition.getAnnotationMetadata().isAnnotationPresent(MockBean.class))
-            .isPresent();
+    private boolean isMockProxy(Object injected) {
+        // judged by what was injected: resolving the injection point again could select another bean
+        return injected instanceof InterceptedProxy
+            && applicationContext.getBeanDefinitions(injected.getClass()).stream()
+                .anyMatch(definition -> definition.getAnnotationMetadata().hasStereotype(MockBean.class));
     }
 
     private void alignMock(Object specInstance, Field field) {
         field.setAccessible(true);
         try {
-            final Object mock = field.get(specInstance);
-            if (mock instanceof InterceptedProxy) {
-                field.set(specInstance, ((InterceptedProxy) mock).interceptedTarget());
+            final Object injected = field.get(specInstance);
+            if (isMockProxy(injected)) {
+                field.set(specInstance, ((InterceptedProxy<?>) injected).interceptedTarget());
             }
         } catch (IllegalAccessException e) {
             // continue
