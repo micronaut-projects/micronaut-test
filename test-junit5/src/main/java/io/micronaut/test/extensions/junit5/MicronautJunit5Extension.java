@@ -311,9 +311,13 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public void afterAll(ExtensionContext extensionContext) throws Exception {
-        afterTestClass(buildContext(extensionContext));
-        if (!extensionContext.getTestClass().filter(this::isNestedTestClass).isPresent()) {
-            afterClass(extensionContext);
+        // A failing listener or @Sql script must not keep the context running or its parallelism permit held
+        try (AutoCloseable ignored = () -> {
+            if (!extensionContext.getTestClass().filter(this::isNestedTestClass).isPresent()) {
+                afterClass(extensionContext);
+            }
+        }) {
+            afterTestClass(buildContext(extensionContext));
         }
     }
 
