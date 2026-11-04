@@ -725,15 +725,26 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             }
             // a mock is an @Around proxy: look for other beans of the type it proxies
             Class<?> mockType = mock instanceof ProxyBeanDefinition<?> proxy ? proxy.getTargetType() : mock.getBeanType();
-            List<String> others = applicationContext.getBeanDefinitions(mockType).stream()
-                .filter(candidate -> !candidate.getAnnotationMetadata().hasStereotype(MockBean.class))
-                .map(candidate -> candidate.getBeanType().getName())
-                .toList();
+            List<String> others = findBeansCompetingWithMock(mock, mockType);
             if (!others.isEmpty()) {
                 LOG.warn("@MockBean of type {} in {} does not declare the bean it replaces, so {} can still be injected instead of the mock. Declare it, for example @MockBean({}.class).",
                     mockType.getName(), testClass.getName(), others, mockType.getSimpleName());
             }
         }
+    }
+
+    /**
+     * Only a bean with a compatible generic type and the same qualifier can take the place of a mock
+     * at the injection point the mock was declared for.
+     */
+    @SuppressWarnings("unchecked")
+    private <T> List<String> findBeansCompetingWithMock(BeanDefinition<T> mock, Class<?> mockType) {
+        Argument<T> type = (Argument<T>) Argument.of(mockType, mock.getTypeArguments(mockType).toArray(new Argument<?>[0]));
+        return applicationContext.getBeanDefinitions(type, mock.getDeclaredQualifier()).stream()
+            .filter(candidate -> candidate.isCandidateBean(type))
+            .filter(candidate -> !candidate.getAnnotationMetadata().hasStereotype(MockBean.class))
+            .map(candidate -> candidate.getBeanType().getName())
+            .toList();
     }
 
     /**
