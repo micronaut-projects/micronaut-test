@@ -446,16 +446,18 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         ResourceResolver resourceResolver = new ResourceResolver();
         for (String propertySourceName : propertySourceNames) {
             String ext = NameUtils.extension(propertySourceName);
-            if (StringUtils.isEmpty(ext)) {
+            List<PropertySourceLoader> loaders = environment.getPropertySourceLoaders().stream()
+                .filter(loader -> !StringUtils.isEmpty(ext) && loader.getExtensions().contains(ext))
+                .toList();
+            if (loaders.isEmpty()) {
+                LOG.warn("@MicronautTest property source [{}] of {} was skipped because no property source loader handles its file extension. Check that the name has an extension such as .properties or .yml, and that the library for that format, such as SnakeYAML, is on the classpath.", propertySourceName, testClass.getName());
                 continue;
             }
             int loadedBefore = loadedPropertySources.size();
-            for (PropertySourceLoader loader : environment.getPropertySourceLoaders()) {
-                if (loader.getExtensions().contains(ext)) {
-                    resourceResolver.getResourceAsStream(propertySourceName)
-                        .or(() -> environment.getResourceAsStream(propertySourceName))
-                        .ifPresent(inputStream -> loadedPropertySources.add(readPropertySource(loader, propertySourceName, inputStream)));
-                }
+            for (PropertySourceLoader loader : loaders) {
+                resourceResolver.getResourceAsStream(propertySourceName)
+                    .or(() -> environment.getResourceAsStream(propertySourceName))
+                    .ifPresent(inputStream -> loadedPropertySources.add(readPropertySource(loader, propertySourceName, inputStream)));
             }
             if (loadedPropertySources.size() == loadedBefore) {
                 LOG.warn("@MicronautTest property source [{}] of {} was not found. A name without a prefix is looked up at the root of the classpath and next to the test class; use classpath: or file: to be explicit.", propertySourceName, testClass.getName());

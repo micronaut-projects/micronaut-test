@@ -28,4 +28,4 @@ The following transaction modes are supported:
 * `SINGLE_TRANSACTION` - All setup methods are wrapped in the same transaction as the test. Cleanup methods are wrapped
   in separate transactions.
 
-NOTE: The test transaction is opened through a synchronous transaction manager, as used by JDBC and JPA. Reactive data access such as R2DBC runs in reactive transactions that cannot be wrapped around a blocking test method, so its changes are not rolled back. For R2DBC tests, set `transactional = false` (or `micronaut.test.transactional-default=false`) and clean up the data yourself, for example in `@AfterEach`. Support is tracked in https://github.com/micronaut-projects/micronaut-data/issues/4232[micronaut-data#4232].
+NOTE: With R2DBC, the default `SEPARATE_TRANSACTIONS` mode wraps and rolls back the test like JDBC and JPA. `SINGLE_TRANSACTION` is not supported with a reactive transaction manager and fails when the context starts.
