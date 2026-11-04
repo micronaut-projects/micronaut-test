@@ -22,6 +22,7 @@ import io.micronaut.aop.chain.MethodInterceptorChain;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.BeanRegistration;
+import io.micronaut.context.DefaultBeanResolutionContext;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Secondary;
@@ -43,6 +44,7 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.InjectableBeanDefinition;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.ProxyBeanDefinition;
@@ -565,9 +567,31 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                     TestActiveCondition.ACTIVE_MOCKS, "changed"
                 )));
             }
-            applicationContext.inject(testInstance);
+            injectTestInstance(testInstance);
             alignMocks(context, testInstance);
         }
+    }
+
+    /**
+     * Injects an instance of the test class, or of a class nested in it, from the running context.
+     *
+     * @param testInstance The test instance
+     */
+    protected void injectTestInstance(Object testInstance) {
+        // specDefinition is the outermost test class's, which a nested class's instance is not an instance of
+        if (specDefinition instanceof ProxyBeanDefinition<?> proxyDefinition
+            && proxyDefinition.getTargetType().isInstance(testInstance)
+            && specDefinition instanceof InjectableBeanDefinition<?> injectableBeanDefinition) {
+            // Proxy bean is not going to resolve bean definition, we need a small hack
+            injectInto(injectableBeanDefinition, testInstance);
+        } else {
+            applicationContext.inject(testInstance);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void injectInto(InjectableBeanDefinition<T> definition, Object testInstance) {
+        definition.inject(new DefaultBeanResolutionContext(applicationContext, definition), applicationContext, (T) testInstance);
     }
 
     private void applyMethodProperties(AnnotatedElement method, @Nullable List<Property> propertyAnnotations) {
@@ -921,7 +945,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         private Object intercept(TestMethodInvocationContext<Object> methodInvocationContext) {
             TestContext testContext = methodInvocationContext.getTestContext();
             AnnotatedElement testMethod = testContext.getTestMethod();
-            if (testMethod instanceof Method executable) {
+            if (testMethod instanceof Method executable && isInstanceOfTestBean(testContext.getTestInstance())) {
                 Optional<? extends ExecutableMethod<?, Object>> method = specDefinition.findMethod(executable.getName(), executable.getParameterTypes());
                 if (method.isPresent()) {
                     ExecutableMethod<Object, ?> executableMethod = (ExecutableMethod<Object, ?>) method.get();
@@ -952,6 +976,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             } catch (Throwable e) {
                 return sneakyThrow(e);
             }
+        }
+
+        /**
+         * The advice is that of the outermost test class's methods, which a method of a nested
+         * class with the same name and parameters must not pick up.
+         */
+        private boolean isInstanceOfTestBean(@Nullable Object testInstance) {
+            return testInstance == null
+                || !(specDefinition instanceof ProxyBeanDefinition<?> proxyDefinition)
+                || proxyDefinition.getTargetType().isInstance(testInstance);
         }
 
         @SuppressWarnings("unchecked")
