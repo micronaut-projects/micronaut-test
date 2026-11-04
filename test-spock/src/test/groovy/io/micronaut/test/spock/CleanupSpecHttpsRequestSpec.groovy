@@ -23,6 +23,7 @@ class CleanupSpecHttpsRequestSpec extends Specification {
         [
             "micronaut.server.port": -1,
             "micronaut.server.ssl.enabled": true,
+            "micronaut.server.ssl.port": -1,
             "micronaut.server.ssl.build-self-signed": true
         ]
     )
