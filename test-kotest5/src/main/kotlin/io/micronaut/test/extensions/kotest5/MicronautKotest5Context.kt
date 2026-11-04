@@ -32,6 +32,7 @@ import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.reflect.full.memberFunctions
+import kotlin.time.Duration
 
 class MicronautKotest5Context @JvmOverloads constructor(
     private val specClass: Class<Any>,
@@ -111,6 +112,10 @@ class MicronautKotest5Context @JvmOverloads constructor(
     }
 
     fun beforeTest(testCase: TestCase) {
+        beforeTestMethod(buildContext(testCase, null))
+    }
+
+    private fun prepareTest(testCase: TestCase) {
         // The `given` and `when` of a BehaviorSpec stub mocks for the `then` nested in them, so running
         // the per-test setup for those nested cases would replace the mocks their container stubbed.
         // With rebuildContext every test case gets its own context, as it does in the other styles.
@@ -123,7 +128,6 @@ class MicronautKotest5Context @JvmOverloads constructor(
             }
             beforeEach(testCase.spec, testCase.spec, testCase.test.javaClass, propertyAnnotations)
         }
-        beforeTestMethod(buildContext(testCase, null))
     }
 
     fun afterTest(testCase: TestCase, result: TestResult) {
@@ -143,6 +147,13 @@ class MicronautKotest5Context @JvmOverloads constructor(
         execute: suspend (TestCase) -> TestResult
     ): TestResult {
         val currentContext = coroutineContext
+        // before interceptTest, so that the test runs inside the interceptors of the context it uses
+        try {
+            prepareTest(testCase)
+        } catch (e: Throwable) {
+            // Kotest would fail the whole spec for an exception thrown by a test case extension
+            return TestResult.Error(Duration.ZERO, e)
+        }
         return interceptTest(object : TestMethodInvocationContext<Any> {
             override fun getTestContext(): TestContext {
                 return buildInterceptContext(testCase)
