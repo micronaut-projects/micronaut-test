@@ -17,3 +17,5 @@ snippet::io.micronaut.test.kotest5.MathCollaboratorTest[project="test-kotest5", 
 
 The way this works is that `@MicronautTest` will inject a proxy that points to the mock instance. For each iteration of the test the mock is refreshed (in fact it uses Micronaut's built in `RefreshScope`).
 
+The mock is refreshed once per root test case, such as a `given` in a `BehaviorSpec`. Everything nested in that root, including sibling `when` branches, shares the same mock and its stubs, so stubbing in a container applies to the tests nested in it. The next root test case starts with a new mock.
+
