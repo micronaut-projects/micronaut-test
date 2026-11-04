@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.platform.engine.DiscoverySelector;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
@@ -16,6 +18,7 @@ import java.time.Duration;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -195,12 +198,44 @@ class MicronautTestParallelExecutionTest {
 
         System.setProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY, "1");
         try {
-            assertAllPassed(runInParallel(ContextParallelismFixtureOne.class, ContextParallelismFixtureTwo.class), 2);
+            // A permit leaked by another test blocks these classes forever, so bound the run
+            assertAllPassed(assertTimeoutPreemptively(Duration.ofSeconds(60), () ->
+                runInParallel(ContextParallelismFixtureOne.class, ContextParallelismFixtureTwo.class)), 2);
         } finally {
             System.clearProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY);
         }
 
         assertEquals(1, ActiveContextProbe.maxActive(), "two application contexts were alive at once");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"four", "", "0", "-1"})
+    @DisplayName("an invalid micronaut.test.context.parallelism fails the class")
+    void invalidContextParallelismIsRejected(String value) {
+        System.setProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY, value);
+        try {
+            EngineExecutionResults results = runInParallel(ContextParallelismFixtureOne.class);
+
+            Throwable failure = results.containerEvents().failed().list().get(0)
+                .getRequiredPayload(TestExecutionResult.class).getThrowable().orElseThrow();
+            assertInstanceOf(IllegalArgumentException.class, failure);
+        } finally {
+            System.clearProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY);
+        }
+    }
+
+    @Test
+    @DisplayName("micronaut.test.context.parallelism may have surrounding whitespace")
+    void contextParallelismIsTrimmed() {
+        ActiveContextProbe.reset(false);
+
+        System.setProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY, " 3 ");
+        try {
+            assertAllPassed(assertTimeoutPreemptively(Duration.ofSeconds(60), () ->
+                runInParallel(ContextParallelismFixtureOne.class)), 1);
+        } finally {
+            System.clearProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY);
+        }
     }
 
     @Test
