@@ -746,11 +746,20 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     private void warnAboutMockBeansWithoutTarget() {
         try {
             for (BeanDefinition<?> mock : applicationContext.getBeanDefinitions(Qualifiers.byStereotype(MockBean.class))) {
-                warnIfMockBeanIsIgnored(mock);
+                checkMockBean(mock);
             }
         } catch (RuntimeException e) {
-            // only a diagnostic: its lookups load beans the test may never use, which must not fail the test
             LOG.debug("Could not check the @MockBean declarations of {}", testClass.getName(), e);
+        }
+    }
+
+    private void checkMockBean(BeanDefinition<?> mock) {
+        try {
+            warnIfMockBeanIsIgnored(mock);
+        } catch (RuntimeException e) {
+            // only a diagnostic: its lookups load beans the test may never use, which must not fail
+            // the test or stop the other mocks being checked
+            LOG.debug("Could not check the @MockBean {} of {}", mock, testClass.getName(), e);
         }
     }
 

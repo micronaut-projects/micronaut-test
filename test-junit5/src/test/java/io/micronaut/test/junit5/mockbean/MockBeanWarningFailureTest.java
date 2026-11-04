@@ -8,13 +8,13 @@ import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Singleton;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * The warning about a @MockBean without a value is only a diagnostic: its lookup failing on a bean
- * the test never uses must not fail the test.
+ * the test never uses must not fail the test, or stop the other mocks being checked.
  */
+@ExtendWith(WarningCapture.class)
 @MicronautTest
 @Property(name = "spec.name", value = MockBeanWarningFailureTest.SPEC)
 class MockBeanWarningFailureTest {
@@ -22,8 +22,8 @@ class MockBeanWarningFailureTest {
     static final String SPEC = "MockBeanWarningFailureTest";
 
     @Test
-    void theTestStillRuns() {
-        assertTrue(true);
+    void theOtherMocksAreStillChecked() {
+        WarningCapture.assertReported(MockBeanWarningFailureTest.class, Concrete.class);
     }
 
     @MockBean
@@ -31,7 +31,17 @@ class MockBeanWarningFailureTest {
         return new Service() { };
     }
 
+    @MockBean
+    Concrete concrete() {
+        return new Concrete();
+    }
+
     interface Service {
+    }
+
+    @Singleton
+    @Requires(property = "spec.name", value = SPEC)
+    static class Concrete {
     }
 
     @Singleton
