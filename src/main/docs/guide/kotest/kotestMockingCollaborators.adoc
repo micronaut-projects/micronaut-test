@@ -17,3 +17,4 @@ snippet::io.micronaut.test.kotest5.MathCollaboratorTest[project="test-kotest5", 
 
 The way this works is that `@MicronautTest` will inject a proxy that points to the mock instance. The mock is refreshed for each test case (in fact it uses Micronaut's built in `RefreshScope`), including each nested test of styles such as `DescribeSpec` or `FunSpec`.
 
+A `BehaviorSpec` is different, so that a mock stubbed in a `given` or `when` can be used by the `then` nested in it: the mock is refreshed once per `given`. Everything nested in that `given`, including sibling `when` branches, shares the same mock, its stubs and its recorded calls, and the next `given` starts with a new mock. With `rebuildContext = true` every test case gets a new context and new mocks in all styles, including `BehaviorSpec`.
