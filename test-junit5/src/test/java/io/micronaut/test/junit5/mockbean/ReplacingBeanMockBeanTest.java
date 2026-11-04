@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * A mock can replace a bean that itself replaces an interface.
  */
-@Disabled("https://github.com/micronaut-projects/micronaut-test/issues/1521: the mock and the bean it replaces, which itself replaces the interface, remove each other, which needs a change in micronaut-core.")
+@Disabled("https://github.com/micronaut-projects/micronaut-test/issues/1521: the mock and the bean it replaces, which itself replaces the interface, remove each other, which needs a change in micronaut-core: https://github.com/micronaut-projects/micronaut-core/issues/14232")
 @MicronautTest
 @Property(name = "spec.name", value = "ReplacingBeanMockBeanTest")
 class ReplacingBeanMockBeanTest {

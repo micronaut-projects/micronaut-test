@@ -15,14 +15,8 @@ The way this works is that `@MicronautTest` will inject the `Mock(..)` instance 
 
 For Factory injected beans, you can use Factory Replacement to inject Mocks. Refer to the https://docs.micronaut.io/latest/guide/index.html#_factory_replacement[factory replacement documentation] for more information.
 
-If the bean you replace has a qualifier, such as `@Named` or your own `@Qualifier` annotation, and is injected through it, declare the same qualifier on the `@MockBean`. A mock does not take on the qualifiers of the bean it replaces, so without it the qualified injection point finds no bean:
+If the bean you replace has a qualifier, such as `@Named` or your own `@Qualifier` annotation, and is injected through it, declare the same qualifier annotation on the `@MockBean`. A mock does not take on the qualifiers of the bean it replaces, so without it the qualified injection point finds no bean. The `named` member of `@MockBean` only selects which bean to replace and does not qualify the mock. The qualifier's `@Target` must include `METHOD`, or `FIELD` for a mock declared on a field:
 
-[source,java]
-----
-@MockBean(TransferHandler.class)
-@Handler("transfer") // <1>
-TransferHandler transferHandler() {
-    return mock(TransferHandler.class);
-}
-----
-<1> The qualifier `TransferHandler` is declared and injected with.
+snippet::io.micronaut.test.junit5.mockbean.QualifiedMockBeanTest[project="test-junit5", language="java", tags="mock", indent=0, title="Mocking a qualified bean"]
+
+<1> The same qualifier, `@Handler("plain")`, that the replaced bean declares and the injection point uses.
