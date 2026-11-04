@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -48,6 +49,12 @@ class ClassLifecycleAdviceTest {
         assertEquals(ClassLifecycleAdviceTest.class, RecordingInterceptor.TARGETS.get("adviseMe"));
     }
 
+    @Test
+    @Recorded
+    void sharedName() {
+        assertEquals(ClassLifecycleAdviceTest.class, RecordingInterceptor.TARGETS.get("sharedName"));
+    }
+
     @Nested
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class PerClassNested {
@@ -67,6 +74,12 @@ class ClassLifecycleAdviceTest {
         void isInjectedWithAProxiedEnclosingClass() {
             assertNotNull(ownMathService);
             assertEquals(8, computedInBeforeAll);
+        }
+
+        @Test
+        void sharedName() {
+            // same name as an advised test of the enclosing class, whose advice must not apply here
+            assertNotEquals(PerClassNested.class, RecordingInterceptor.TARGETS.get("sharedName"));
         }
 
         @Test
