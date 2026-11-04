@@ -46,8 +46,13 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
 
     val contexts: MutableMap<String, MutableList<MicronautKotest5Context>> = mutableMapOf()
 
-    private fun Spec.context() =
-        contexts[javaClass.name]?.find { it.bean == this } ?: contexts[javaClass.name]?.find { it.bean == null }
+    private fun Spec.context(): MicronautKotest5Context? {
+        val specContexts = contexts[javaClass.name] ?: return null
+        // Kotest creates an instance without constructor parameters itself, so the instance is only
+        // known here. Each one takes the next unclaimed context, since each has its own.
+        return specContexts.find { it.bean == this || it.claimedBy == this }
+            ?: specContexts.find { it.bean == null && it.claimedBy == null }?.also { it.claimedBy = this }
+    }
 
     /**
      * Removes the context from the [contexts] map
