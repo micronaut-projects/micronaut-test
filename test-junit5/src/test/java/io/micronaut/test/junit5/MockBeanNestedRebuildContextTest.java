@@ -1,20 +1,18 @@
 package io.micronaut.test.junit5;
 
+import io.micronaut.aop.InterceptedProxy;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.junit.jupiter.api.ClassOrderer;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.condition.DisabledInNativeImage;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockingDetails;
@@ -23,36 +21,45 @@ import static org.mockito.Mockito.mockingDetails;
 @Requires(property = "mockito.test.enabled", defaultValue = StringUtils.FALSE, value = StringUtils.TRUE)
 // the @Requires above does not stop the nested classes running, and Mockito cannot mock inside a native image
 @DisabledInNativeImage
-@TestClassOrder(ClassOrderer.OrderAnnotation.class)
 class MockBeanNestedRebuildContextTest {
+
+    @Inject
+    ApplicationContext context;
 
     @Inject
     SomeBean someBean;
 
-    static SomeBean firstMock;
+    private void assertTheMockOfTheRunningContextIsInjected() {
+        assertTrue(mockingDetails(someBean).isMock(), "someBean should be a Mockito mock");
+        Object current = context.getBean(SomeBean.class);
+        Object target = current instanceof InterceptedProxy<?> proxy ? proxy.interceptedTarget() : current;
+        assertSame(target, someBean, "someBean should be the running context's mock, not a stale one");
+    }
 
     @Nested
-    @Order(1)
     class FirstNestedClass {
 
         @Test
         void mockIsAvailable() {
-            assertNotNull(someBean);
-            assertTrue(mockingDetails(someBean).isMock(), "someBean should be a Mockito mock");
-            firstMock = someBean;
+            assertTheMockOfTheRunningContextIsInjected();
         }
     }
 
     @Nested
-    @Order(2)
     class SecondNestedClass {
 
         @Test
         void mockIsStillAvailable() {
-            assertNotNull(someBean);
-            assertTrue(mockingDetails(someBean).isMock(), "someBean should be a Mockito mock");
-            assertNotNull(firstMock, "FirstNestedClass should have run first and recorded its mock");
-            assertNotSame(firstMock, someBean, "someBean should be a fresh mock after context rebuild, not a stale proxy");
+            assertTheMockOfTheRunningContextIsInjected();
+        }
+
+        @Nested
+        class DeeperNestedClass {
+
+            @Test
+            void mockIsAvailableTwoLevelsDown() {
+                assertTheMockOfTheRunningContextIsInjected();
+            }
         }
     }
 
