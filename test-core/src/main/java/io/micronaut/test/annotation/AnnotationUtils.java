@@ -16,6 +16,7 @@
 package io.micronaut.test.annotation;
 
 import io.micronaut.core.reflect.ReflectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
@@ -28,6 +29,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
@@ -38,6 +40,64 @@ import static java.util.Arrays.asList;
  */
 public final class AnnotationUtils {
     private AnnotationUtils() {
+    }
+
+    /**
+     * Finds an annotation that is directly present or meta-present on the given class or on an
+     * interface it implements. If the annotation type is {@link Inherited @Inherited}, superclasses
+     * are searched as well, including through a composed annotation that is not itself inherited.
+     *
+     * @param type           the class to search on
+     * @param annotationType the annotation type to search for
+     * @param <A>            the annotation type
+     * @return the annotation, if there is one
+     * @since 5.2.1
+     */
+    public static <A extends Annotation> Optional<A> findAnnotation(Class<?> type, Class<A> annotationType) {
+        Annotation found = findAnnotation(type.getDeclaredAnnotations(), annotationType.getName(), new HashSet<>());
+        if (found != null) {
+            return Optional.of(annotationType.cast(found));
+        }
+        for (Class<?> ifc : type.getInterfaces()) {
+            Optional<A> onInterface = findAnnotation(ifc, annotationType);
+            if (onInterface.isPresent()) {
+                return onInterface;
+            }
+        }
+        Class<?> superclass = type.getSuperclass();
+        if (superclass != null && superclass != Object.class && annotationType.isAnnotationPresent(Inherited.class)) {
+            return findAnnotation(superclass, annotationType);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Checks whether an annotation is directly present or meta-present on the given class, for an
+     * annotation type that may not be on the classpath.
+     *
+     * @param type           the class to search on
+     * @param annotationName the fully qualified name of the annotation type
+     * @return true if the annotation is present
+     * @since 5.2.1
+     */
+    public static boolean isAnnotated(Class<?> type, String annotationName) {
+        return findAnnotation(type.getDeclaredAnnotations(), annotationName, new HashSet<>()) != null;
+    }
+
+    private static @Nullable Annotation findAnnotation(Annotation[] candidates, String annotationName, Set<Class<?>> visited) {
+        for (Annotation candidate : candidates) {
+            Class<? extends Annotation> candidateType = candidate.annotationType();
+            if (candidateType.getName().equals(annotationName)) {
+                return candidate;
+            }
+            if (!isInJavaLangAnnotationPackage(candidateType) && !candidateType.getName().startsWith("kotlin.") && visited.add(candidateType)) {
+                Annotation found = findAnnotation(candidateType.getDeclaredAnnotations(), annotationName, visited);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
     }
 
     /**
