@@ -16,19 +16,20 @@
 package io.micronaut.test.extensions.spock;
 
 import io.micronaut.core.annotation.Internal;
-import org.jspecify.annotations.Nullable;
+import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
 import org.spockframework.runtime.extension.IGlobalExtension;
 import org.spockframework.runtime.model.SpecInfo;
-
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Applies {@link MicronautSpockExtension} to specs that carry {@link MicronautTest} through a
  * meta-annotation. Spock only runs an annotation-driven extension for an annotation declared
  * directly on the spec.
+ *
+ * <p>Spock runs global extensions before annotation-driven ones and in the order their service
+ * files are found on the classpath, so the interceptors of a meta-annotated spec can sit outside
+ * those of another global extension, where those of a direct {@link MicronautTest} are always
+ * inside them.
  *
  * @since 5.2.1
  */
@@ -42,39 +43,10 @@ public final class MicronautTestMetaAnnotationExtension implements IGlobalExtens
             // Spock already applies the extension for a direct annotation
             return;
         }
-        MicronautTest micronautTest = findMicronautTest(specClass);
-        if (micronautTest != null) {
+        AnnotationUtils.findAnnotation(specClass, MicronautTest.class).ifPresent(micronautTest -> {
             MicronautSpockExtension<MicronautTest> extension = new MicronautSpockExtension<>();
             extension.visitSpecAnnotation(micronautTest, spec);
             extension.visitSpec(spec);
-        }
-    }
-
-    /**
-     * Finds {@link MicronautTest} declared directly on the given class or on one of its meta-annotations.
-     *
-     * @param type The spec class
-     * @return The annotation, or null if there is none
-     */
-    static @Nullable MicronautTest findMicronautTest(Class<?> type) {
-        MicronautTest direct = type.getAnnotation(MicronautTest.class);
-        return direct != null ? direct : findMetaAnnotation(type.getAnnotations(), new HashSet<>());
-    }
-
-    private static @Nullable MicronautTest findMetaAnnotation(Annotation[] annotations, Set<Class<?>> visited) {
-        for (Annotation annotation : annotations) {
-            Class<? extends Annotation> annotationType = annotation.annotationType();
-            if (annotationType.getName().startsWith("java.lang.annotation.") || !visited.add(annotationType)) {
-                continue;
-            }
-            MicronautTest micronautTest = annotationType.getAnnotation(MicronautTest.class);
-            if (micronautTest == null) {
-                micronautTest = findMetaAnnotation(annotationType.getAnnotations(), visited);
-            }
-            if (micronautTest != null) {
-                return micronautTest;
-            }
-        }
-        return null;
+        });
     }
 }
