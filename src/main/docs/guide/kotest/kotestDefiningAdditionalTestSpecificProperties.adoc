@@ -6,12 +6,12 @@ Alternatively you can specify additional `propertySources` in any supported form
 
 snippet::io.micronaut.test.kotest5.PropertySourceTest[project="test-kotest5", language="kotlin", title="Using `propertySources` stored in files"]
 
-The above example expects a file located at `src/test/resources/io/micronaut/kotest/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
+The above example expects a file located at `src/test/resources/io/micronaut/test/kotest5/myprops.properties`. You can however use a prefix to indicate where the file should be searched for. The following are valid values:
 
 * `file:myprops.properties` - A relative path to a file somewhere on the file system
 * `classpath:myprops.properties` - A file at the root of the classpath, for example `src/test/resources/myprops.properties`.
 * `myprops.properties` - Looked up at the root of the classpath first, then next to the test class in the test's package.
 
-A property source that cannot be found is skipped, and a warning naming it is logged.
+A property source that cannot be found, or whose file extension no property source loader handles, is skipped, and a warning naming it is logged.
 
 NOTE: Because Kotlin doesn't support multiple annotations, the `@PropertySource` annotation must be used to define multiple properties.
