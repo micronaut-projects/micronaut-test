@@ -67,8 +67,10 @@ class MicronautKotest5Context(
     }
 
     fun afterSpecClass(spec: Spec) {
-        afterTestClass(buildContext(spec))
-        afterClass(spec)
+        // A failing listener or @Sql script must not keep the context running or its parallelism permit held
+        AutoCloseable { afterClass(spec) }.use {
+            afterTestClass(buildContext(spec))
+        }
     }
 
     fun beforeTest(testCase: TestCase) {
