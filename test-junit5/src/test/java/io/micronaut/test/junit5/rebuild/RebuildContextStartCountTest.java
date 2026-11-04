@@ -4,10 +4,8 @@ import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,19 +17,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @MicronautTest(rebuildContext = true)
 @Property(name = "spec.name", value = "RebuildContextStartCountTest")
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RebuildContextStartCountTest {
 
-    @Test
-    @Order(1)
-    void firstTestUsesTheFirstContext() {
-        assertEquals(1, EagerBean.CREATED.get());
+    private static final AtomicInteger TESTS_RUN = new AtomicInteger();
+
+    @AfterAll
+    static void resetCounters() {
+        TESTS_RUN.set(0);
+        EagerBean.CREATED.set(0);
     }
 
     @Test
-    @Order(2)
-    void secondTestGetsASecondContext() {
-        assertEquals(2, EagerBean.CREATED.get());
+    void aTestGetsOneContext() {
+        assertEquals(TESTS_RUN.incrementAndGet(), EagerBean.CREATED.get());
+    }
+
+    @Test
+    void anotherTestGetsOneContext() {
+        assertEquals(TESTS_RUN.incrementAndGet(), EagerBean.CREATED.get());
     }
 
     @Context
