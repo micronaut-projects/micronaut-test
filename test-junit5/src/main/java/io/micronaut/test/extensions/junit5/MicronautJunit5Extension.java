@@ -62,6 +62,7 @@ import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.junit.jupiter.api.extension.TestWatcher;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
@@ -247,7 +248,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             return;
         }
         String annotation = null;
-        if (testClass.getDeclaredAnnotation(MicronautTest.class) != null) {
+        if (Arrays.stream(testClass.getDeclaredAnnotations()).anyMatch(MicronautJunit5Extension::isOrComposesMicronautTest)) {
             annotation = "@MicronautTest";
         } else if (testClass.getDeclaredAnnotationsByType(Property.class).length > 0) {
             annotation = "@Property";
@@ -496,6 +497,10 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
         beforeTestExecution(buildContext(context));
+    }
+
+    private static boolean isOrComposesMicronautTest(Annotation annotation) {
+        return annotation instanceof MicronautTest || AnnotationSupport.isAnnotated(annotation.annotationType(), MicronautTest.class);
     }
 
     private TestContext buildContext(ReflectiveInvocationContext<?> context) {

@@ -22,6 +22,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.micronaut.aop.InterceptedProxy
+import io.micronaut.test.annotation.AnnotationUtils
 import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlin.reflect.KClass
@@ -101,8 +102,9 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
-        val micronautTestValue = findMicronautTest(testClass.annotations, mutableSetOf())
-            ?.let { micronautTest -> buildValueObject(micronautTest) }
+        val micronautTestValue = AnnotationUtils.findAnnotation(testClass, MicronautTest::class.java)
+            .map { micronautTest -> buildValueObject(micronautTest) }
+            .orElse(null)
         return if (micronautTestValue == null) {
             null
         } else {
@@ -115,21 +117,6 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
                 null
             }
         }
-    }
-
-    /**
-     * Finds [MicronautTest] among the given annotations or, recursively, on their meta-annotations.
-     */
-    private fun findMicronautTest(annotations: Array<Annotation>, visited: MutableSet<Class<*>>): MicronautTest? {
-        annotations.filterIsInstance<MicronautTest>().firstOrNull()?.let { return it }
-        for (annotation in annotations) {
-            val annotationType = annotation.annotationClass.java
-            if (annotationType.name.startsWith("java.lang.annotation.") || annotationType.name.startsWith("kotlin.") || !visited.add(annotationType)) {
-                continue
-            }
-            findMicronautTest(annotationType.annotations, visited)?.let { return it }
-        }
-        return null
     }
 
     private fun buildValueObject(micronautTest: MicronautTest): MicronautTestValue {
