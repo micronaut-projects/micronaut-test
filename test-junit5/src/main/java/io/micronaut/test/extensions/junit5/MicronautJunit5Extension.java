@@ -421,12 +421,12 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     private <T> boolean isMockedInjectionPoint(Argument<T> injectedArgument) {
-        // resolve by the full generic argument: resolving metadata by the erased type fails for generic beans
+        // resolve by the full generic argument: resolving metadata by the erased type fails for generic beans.
+        // Only the selected bean counts: another mock candidate must not unwrap a real scoped proxy.
         Qualifier<T> qualifier = resolveQualifier(injectedArgument);
-        return applicationContext.getBeanDefinitions(injectedArgument, qualifier)
-            .stream()
-            .filter(definition -> definition.isCandidateBean(injectedArgument))
-            .anyMatch(definition -> definition.getAnnotationMetadata().isAnnotationPresent(MockBean.class));
+        return applicationContext.findBeanDefinition(injectedArgument, qualifier)
+            .filter(definition -> definition.getAnnotationMetadata().isAnnotationPresent(MockBean.class))
+            .isPresent();
     }
 
     private void alignMock(Object specInstance, Field field) {
