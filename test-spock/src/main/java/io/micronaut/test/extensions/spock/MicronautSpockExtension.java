@@ -230,7 +230,7 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
      * Applies the method-level properties and rebuilds the context if required, before the test
      * listeners and interceptors are resolved from it. The instance is injected later, in setup.
      */
-    @SuppressWarnings("java:S112") // Throwable is what we deal with here
+    @SuppressWarnings({"java:S112", "java:S1181"}) // Throwable is what we deal with here, and any failure must restore the properties
     private void prepareApplicationContext(IMethodInvocation invocation) throws Throwable {
         if (contextPrepared) {
             // a spec and its parent can both be annotated, which adds this interceptor twice
