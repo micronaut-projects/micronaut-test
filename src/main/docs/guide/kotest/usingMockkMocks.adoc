@@ -11,3 +11,7 @@ snippet::io.micronaut.test.kotest5.MathMockServiceTest[project="test-kotest5", l
 Note that because the bean is a method of the test, it will be active only for the scope of the test. This approach allows you to define beans that are isolated per test class.
 
 IMPORTANT: Because Kotlin uses constructor injection, it's not possible to automatically replace the mock proxy with the mock implementation as is done with the other test implementations. The `getMock` method was created to make retrieving the underlying mock object easier.
+
+NOTE: Prefer mocking interfaces. A `@MockBean` replaces the real bean with a proxy that subclasses the mocked type, and Kotlin classes and their functions are final by default. To mock a class, declare it and the functions you stub `open`, or apply the Kotlin `allopen` compiler plugin (for example through `kotlin("plugin.allopen")` configured with `annotation("jakarta.inject.Singleton")`). This includes `suspend` functions.
+
+NOTE: Give `@MockBean` the type it replaces, for example `@MockBean(MathServiceImpl::class)`. Without it the mock replaces nothing, so another bean of the same type can still be injected. Micronaut Test logs a warning when that happens.

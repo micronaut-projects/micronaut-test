@@ -12,3 +12,5 @@ snippet::io.micronaut.test.junit5.MathMockServiceTest[project="test-junit5", lan
 <4> Mockito is used to verify the mock is called
 
 Note that because the bean is an inner class of the test, it will be active only for the scope of the test. This approach allows you to define beans that are isolated per test class.
+
+NOTE: Give `@MockBean` the type it replaces, for example `@MockBean(MathServiceImpl.class)`. Without it the mock replaces nothing, so another bean of the same type can still be injected. Micronaut Test logs a warning when that happens.
