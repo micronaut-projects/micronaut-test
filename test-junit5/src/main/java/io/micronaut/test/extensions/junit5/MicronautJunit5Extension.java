@@ -24,6 +24,7 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.AnnotationUtil;
+import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.BeanDefinition;
@@ -456,14 +457,9 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     private void alignMock(Object specInstance, Field field) {
-        field.setAccessible(true);
-        try {
-            final Object injected = field.get(specInstance);
-            if (isMockProxy(injected)) {
-                field.set(specInstance, ((InterceptedProxy<?>) injected).interceptedTarget());
-            }
-        } catch (IllegalAccessException e) {
-            // continue
+        final Object injected = ReflectionUtils.getField(field.getDeclaringClass(), field.getName(), specInstance);
+        if (isMockProxy(injected)) {
+            ReflectionUtils.setField(field, specInstance, ((InterceptedProxy<?>) injected).interceptedTarget());
         }
     }
 
