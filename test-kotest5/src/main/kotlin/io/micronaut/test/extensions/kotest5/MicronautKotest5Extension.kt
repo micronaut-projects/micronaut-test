@@ -36,7 +36,7 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
         execute: suspend (TestCase) -> TestResult,
     ): TestResult {
         val context = testCase.spec.context()
-        return if (context != null && context.getSpecDefinition() == null) {
+        return if (context != null && context.isSpecBeanMissing()) {
             // It's a MicronautTest test where the bean doesn't exist
             TestResult.Ignored
         } else {

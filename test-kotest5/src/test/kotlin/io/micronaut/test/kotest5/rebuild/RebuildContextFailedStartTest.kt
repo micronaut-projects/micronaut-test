@@ -50,6 +50,25 @@ class RebuildContextFailedStartFixture : AnnotationSpec() {
     }
 }
 
+/**
+ * The context starts, but disables the bean of the spec, so there is nothing to run a test against.
+ */
+@EnabledIf(FailedStartFixtureEnabled::class)
+@Requires(property = "rebuild.no-bean-fixture-bean")
+@MicronautTest(rebuildContext = true)
+class RebuildContextNoBeanFixture : AnnotationSpec() {
+
+    @Test
+    fun firstTest() {
+        throw IllegalStateException("must not run without a bean")
+    }
+
+    @Test
+    fun secondTest() {
+        throw IllegalStateException("must not run without a bean")
+    }
+}
+
 @Context
 @Requires(property = FAIL_STARTUP, value = "true")
 class RebuildFailedStartBean {
@@ -77,7 +96,29 @@ class RebuildContextFailedStartTest : StringSpec({
             val results = collector.tests.mapKeys { it.key.name.name }
             results.keys shouldBe setOf("contextFailsToStart", "nextTestStillRuns")
             results.getValue("contextFailsToStart").isErrorOrFailure shouldBe true
-            results.getValue("nextTestStillRuns").isErrorOrFailure shouldBe false
+            results.getValue("nextTestStillRuns").isSuccess shouldBe true
+        } finally {
+            System.clearProperty(ENABLED)
+        }
+    }
+
+    "a spec without a bean is still ignored when it rebuilds its context" {
+        System.setProperty(ENABLED, "true")
+        try {
+            val collector = CollectingTestEngineListener()
+            CompletableFuture.supplyAsync {
+                runBlocking {
+                    TestEngineLauncher()
+                        .withListener(collector)
+                        .withProjectConfig(ProjectConfig)
+                        .withSpecRefs(SpecRef.Reference(RebuildContextNoBeanFixture::class))
+                        .execute()
+                }
+            }.get(60, TimeUnit.SECONDS)
+
+            val results = collector.tests.mapKeys { it.key.name.name }
+            results.keys shouldBe setOf("firstTest", "secondTest")
+            results.values.all { it.isIgnored } shouldBe true
         } finally {
             System.clearProperty(ENABLED)
         }
