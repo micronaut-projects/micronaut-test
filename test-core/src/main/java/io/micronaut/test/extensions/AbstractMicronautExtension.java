@@ -125,6 +125,8 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     private List<TestExecutionListener> listeners;
     private List<TestMethodInterceptor<Object>> interceptors;
     private TestContextParallelismLimiter.Lease contextParallelismLease;
+    // true while the context started for the class has not been used by a test yet
+    private boolean unusedClassContext;
     private MicronautIntercepted micronautIntercepted;
 
     /**
@@ -427,6 +429,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         this.applicationContext = builder.build();
         startApplicationContext();
         resolveFromApplicationContext();
+        unusedClassContext = true;
         if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
             embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
             embeddedApplication.start();
@@ -551,7 +554,15 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         if (method != null) {
             applyMethodProperties(method, propertyAnnotations);
             if (testAnnotationValue.rebuildContext()) {
-                rebuildApplicationContext(context);
+                boolean hasMethodProperties = propertyAnnotations != null && !propertyAnnotations.isEmpty();
+                // the context started for the class is already fresh, so the first test uses it
+                // instead of starting a second one, unless it needs its own method-level properties
+                boolean reuseClassContext = unusedClassContext && !hasMethodProperties;
+                // cleared first: after a failed rebuild the next test must not use the failed context
+                unusedClassContext = false;
+                if (!reuseClassContext) {
+                    rebuildApplicationContext(context);
+                }
             } else if (!oldValues.isEmpty() && refreshScope != null) {
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));

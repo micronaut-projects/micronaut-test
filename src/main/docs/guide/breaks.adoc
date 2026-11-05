@@ -1,3 +1,14 @@
+= Micronaut Test 5.3 Breaking Changes
+
+=== `rebuildContext = true` no longer starts a second context for the first test
+The context started for the class now serves the first test, so `@Context` beans no longer run twice before any test. Every later test still gets a new context, and a first test with method-level `@Property` values still gets its own.
+
+The class context is built before the class's own setup, such as a `@BeforeAll` method or Spock's `setupSpec`. Anything that setup publishes for the context, for example a system property or the URL of a container it starts, is therefore no longer visible to the first test. Provide such values through `TestPropertyProvider`, which is resolved before the class context is built (with JUnit 5 this requires `@TestInstance(TestInstance.Lifecycle.PER_CLASS)`).
+
+Conversely, changes that setup makes to beans of the class context, for example in a `@BeforeAll` method of a `PER_CLASS` test, are now visible to the first test, while every later test starts from a new context.
+
+---
+
 = Kotest 5 → 6 Breaking Changes
 
 === `TestName.testName` removed
