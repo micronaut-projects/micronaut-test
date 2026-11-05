@@ -47,6 +47,11 @@ class MicronautKotest5Context @JvmOverloads constructor(
      */
     internal var claimedBy: Spec? = null
 
+    /**
+     * Whether a test of this spec got as far as being prepared, which only happens if the bean exists.
+     */
+    private var testPrepared = false
+
     override fun resolveTestProperties(context: Spec?, testAnnotationValue: MicronautTestValue, testProperties: MutableMap<String, Any>?) {
         if (context is TestPropertyProvider) {
             testProperties?.putAll(context.properties)
@@ -140,6 +145,7 @@ class MicronautKotest5Context @JvmOverloads constructor(
         execute: suspend (TestCase) -> TestResult
     ): TestResult {
         val currentContext = coroutineContext
+        testPrepared = true
         // before interceptTest, so that the test runs inside the interceptors of the context it uses
         try {
             prepareTest(testCase)
@@ -168,6 +174,13 @@ class MicronautKotest5Context @JvmOverloads constructor(
     }
 
     fun getSpecDefinition() = specDefinition
+
+    /**
+     * Whether the spec has no bean in the context. Once a test has been prepared that is no longer what
+     * a missing definition means: a rebuild that failed to start leaves none either, and the next test
+     * must still get its own rebuild.
+     */
+    internal fun isSpecBeanMissing() = specDefinition == null && !testPrepared
 
     /**
      * Builds a TestContext for spec-level lifecycle callbacks (beforeSpecClass, afterSpecClass).
