@@ -15,7 +15,7 @@
  */
 package io.micronaut.test.extensions;
 
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

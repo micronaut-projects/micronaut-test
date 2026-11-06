@@ -15,8 +15,8 @@
  */
 package io.micronaut.test.annotation;
 
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.reflect.ReflectionUtils;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;

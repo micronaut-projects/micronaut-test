@@ -29,7 +29,7 @@ import io.micronaut.context.env.PropertySource;
 import io.micronaut.context.env.PropertySourceLoader;
 import io.micronaut.context.env.PropertySourcesLocator;
 import io.micronaut.core.annotation.AnnotationMetadata;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.core.io.scan.ClassClassPathResourceLoader;
 import io.micronaut.core.io.scan.ClassPathResourceLoader;

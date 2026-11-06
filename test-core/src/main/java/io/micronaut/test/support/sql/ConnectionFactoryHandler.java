@@ -18,7 +18,7 @@ package io.micronaut.test.support.sql;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.Result;
 import jakarta.inject.Singleton;
