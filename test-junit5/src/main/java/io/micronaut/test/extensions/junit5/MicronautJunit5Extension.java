@@ -24,6 +24,7 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.AnnotationUtil;
+import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.BeanDefinition;
@@ -397,13 +398,11 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         }
         findSpecInstance(context).ifPresent(specInstance -> {
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
-                if (applicationContext.resolveMetadata(injectedField.getType()).isAnnotationPresent(MockBean.class)) {
-                    findField(specInstance.getClass(), injectedField.getName()).ifPresent(field -> alignMock(specInstance, field));
-                }
+                findField(specInstance.getClass(), injectedField.getName()).ifPresent(field -> alignMock(specInstance, field));
             }
             for (MethodInjectionPoint<?, ?> injectedMethod : specDefinition.getInjectedMethods()) {
                 final Argument<?>[] arguments = injectedMethod.getArguments();
-                if (arguments.length == 1 && applicationContext.resolveMetadata(arguments[0].getType()).isAnnotationPresent(MockBean.class)) {
+                if (arguments.length == 1) {
                     findMethodInjectedField(specInstance.getClass(), injectedMethod, arguments[0])
                         .ifPresent(field -> alignMock(specInstance, field));
                 }
@@ -411,15 +410,17 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         });
     }
 
+    private boolean isMockProxy(Object injected) {
+        // judged by what was injected: resolving the injection point again could select another bean
+        return injected instanceof InterceptedProxy
+            && applicationContext.getBeanDefinitions(injected.getClass()).stream()
+                .anyMatch(definition -> definition.getAnnotationMetadata().hasStereotype(MockBean.class));
+    }
+
     private void alignMock(Object specInstance, Field field) {
-        field.setAccessible(true);
-        try {
-            final Object mock = field.get(specInstance);
-            if (mock instanceof InterceptedProxy) {
-                field.set(specInstance, ((InterceptedProxy) mock).interceptedTarget());
-            }
-        } catch (IllegalAccessException e) {
-            // continue
+        final Object injected = ReflectionUtils.getField(field.getDeclaringClass(), field.getName(), specInstance);
+        if (isMockProxy(injected)) {
+            ReflectionUtils.setField(field, specInstance, ((InterceptedProxy<?>) injected).interceptedTarget());
         }
     }
 
