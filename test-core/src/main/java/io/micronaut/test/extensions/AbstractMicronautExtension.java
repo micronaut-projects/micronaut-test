@@ -59,6 +59,8 @@ import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.support.TestPropertyProvider;
 import io.micronaut.test.support.TestPropertyProviderFactory;
 import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,6 +111,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         and its @Client injection points need the filter again, which never ends. \
         Move the filter methods into their own @ClientFilter bean, for example a static nested class annotated with @Requires.""";
     private static final String CLIENT_FILTER_ANNOTATION = "io.micronaut.http.annotation.ClientFilter";
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractMicronautExtension.class);
     protected ApplicationContext applicationContext;
     protected EmbeddedApplication<?> embeddedApplication;
     protected RefreshScope refreshScope;
@@ -431,7 +434,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     }
 
     private List<PropertySource> loadTestPropertySources(Environment environment, MicronautTestValue testAnnotationValue, Class<?> testClass, ClassLoader classLoader) {
-        List<PropertySource> loadedPropertySources = loadAnnotatedPropertySources(environment, testAnnotationValue.propertySources());
+        List<PropertySource> loadedPropertySources = loadAnnotatedPropertySources(environment, testAnnotationValue.propertySources(), testClass);
         applyTestPropertyProviderFactories(environment, loadedPropertySources, testClass);
         applyTransactionalDefault(testAnnotationValue, classLoader);
         if (!testProperties.isEmpty()) {
@@ -440,20 +443,26 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         return loadedPropertySources;
     }
 
-    private static List<PropertySource> loadAnnotatedPropertySources(Environment environment, String[] propertySourceNames) {
+    private static List<PropertySource> loadAnnotatedPropertySources(Environment environment, String[] propertySourceNames, Class<?> testClass) {
         List<PropertySource> loadedPropertySources = new ArrayList<>();
         ResourceResolver resourceResolver = new ResourceResolver();
         for (String propertySourceName : propertySourceNames) {
             String ext = NameUtils.extension(propertySourceName);
-            if (StringUtils.isEmpty(ext)) {
+            List<PropertySourceLoader> loaders = environment.getPropertySourceLoaders().stream()
+                .filter(loader -> !StringUtils.isEmpty(ext) && loader.getExtensions().contains(ext))
+                .toList();
+            if (loaders.isEmpty()) {
+                LOG.warn("@MicronautTest property source [{}] of {} was skipped because no property source loader handles its file extension. Check that the name has an extension such as .properties or .yml, and that the library for that format, such as SnakeYAML, is on the classpath.", propertySourceName, testClass.getName());
                 continue;
             }
-            for (PropertySourceLoader loader : environment.getPropertySourceLoaders()) {
-                if (loader.getExtensions().contains(ext)) {
-                    resourceResolver.getResourceAsStream(propertySourceName)
-                        .or(() -> environment.getResourceAsStream(propertySourceName))
-                        .ifPresent(inputStream -> loadedPropertySources.add(readPropertySource(loader, propertySourceName, inputStream)));
-                }
+            int loadedBefore = loadedPropertySources.size();
+            for (PropertySourceLoader loader : loaders) {
+                resourceResolver.getResourceAsStream(propertySourceName)
+                    .or(() -> environment.getResourceAsStream(propertySourceName))
+                    .ifPresent(inputStream -> loadedPropertySources.add(readPropertySource(loader, propertySourceName, inputStream)));
+            }
+            if (loadedPropertySources.size() == loadedBefore) {
+                LOG.warn("@MicronautTest property source [{}] of {} was not found. A name without a prefix is looked up at the root of the classpath and next to the test class; use classpath: or file: to be explicit.", propertySourceName, testClass.getName());
             }
         }
         return loadedPropertySources;
