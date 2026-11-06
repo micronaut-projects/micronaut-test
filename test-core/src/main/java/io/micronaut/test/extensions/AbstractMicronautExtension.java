@@ -22,6 +22,7 @@ import io.micronaut.aop.chain.MethodInterceptorChain;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.BeanRegistration;
+import io.micronaut.context.DefaultBeanResolutionContext;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
@@ -41,6 +42,7 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.InjectableBeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.ProxyBeanDefinition;
 import io.micronaut.runtime.EmbeddedApplication;
@@ -120,6 +122,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     private List<TestExecutionListener> listeners;
     private List<TestMethodInterceptor<Object>> interceptors;
     private TestContextParallelismLimiter.Lease contextParallelismLease;
+    private MicronautIntercepted micronautIntercepted;
 
     /**
      * @return True if there are interceptors
@@ -131,6 +134,22 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     @Override
     public Object interceptBeforeEach(TestMethodInvocationContext<Object> methodInvocationContext) throws Throwable {
         return interceptBeforeEach(methodInvocationContext, interceptors);
+    }
+
+    /**
+     * Applies the Micronaut around advice declared on a class level lifecycle method of the test
+     * instance, such as a non-static JUnit {@code @BeforeAll} method. {@link TestMethodInterceptor}s
+     * are not applied, because they have no class level callbacks.
+     *
+     * @param methodInvocationContext The invocation context
+     * @return The result of the method
+     * @throws Throwable if the method fails
+     */
+    protected Object interceptClassLifecycleMethod(TestMethodInvocationContext<Object> methodInvocationContext) throws Throwable {
+        if (micronautIntercepted == null) {
+            return methodInvocationContext.proceed();
+        }
+        return micronautIntercepted.intercept(methodInvocationContext);
     }
 
     @Override
@@ -537,9 +556,31 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
                     TestActiveCondition.ACTIVE_MOCKS, "changed"
                 )));
             }
-            applicationContext.inject(testInstance);
+            injectTestInstance(testInstance);
             alignMocks(context, testInstance);
         }
+    }
+
+    /**
+     * Injects an instance of the test class, or of a class nested in it, from the running context.
+     *
+     * @param testInstance The test instance
+     */
+    protected void injectTestInstance(Object testInstance) {
+        // specDefinition is the outermost test class's, which a nested class's instance is not an instance of
+        if (specDefinition instanceof ProxyBeanDefinition<?> proxyDefinition
+            && proxyDefinition.getTargetType().isInstance(testInstance)
+            && specDefinition instanceof InjectableBeanDefinition<?> injectableBeanDefinition) {
+            // Proxy bean is not going to resolve bean definition, we need a small hack
+            injectInto(injectableBeanDefinition, testInstance);
+        } else {
+            applicationContext.inject(testInstance);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void injectInto(InjectableBeanDefinition<T> definition, Object testInstance) {
+        definition.inject(new DefaultBeanResolutionContext(applicationContext, definition), applicationContext, (T) testInstance);
     }
 
     private void applyMethodProperties(AnnotatedElement method, @Nullable List<Property> propertyAnnotations) {
@@ -608,6 +649,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         applicationContext = null;
         refreshScope = null;
         specDefinition = null;
+        micronautIntercepted = null;
         listeners = Collections.emptyList();
         interceptors = Collections.emptyList();
     }
@@ -667,13 +709,15 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     private void resolveFromApplicationContext() {
         specDefinition = applicationContext.findBeanDefinition(testClass).orElse(null);
+        micronautIntercepted = null;
         if (specDefinition instanceof ProxyBeanDefinition<?>) {
-            interceptors = new ArrayList<>(interceptors);
-            interceptors.add(new MicronautIntercepted(
+            micronautIntercepted = new MicronautIntercepted(
                 specDefinition,
                 applicationContext.getBean(InterceptorRegistry.class),
                 new ArrayList<>(applicationContext.getBeanRegistrations(Argument.of(Interceptor.class), null))
-            ));
+            );
+            interceptors = new ArrayList<>(interceptors);
+            interceptors.add(micronautIntercepted);
         }
         refreshScope = applicationContext.findBean(RefreshScope.class).orElse(null);
     }
@@ -780,7 +824,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         private Object intercept(TestMethodInvocationContext<Object> methodInvocationContext) {
             TestContext testContext = methodInvocationContext.getTestContext();
             AnnotatedElement testMethod = testContext.getTestMethod();
-            if (testMethod instanceof Method executable) {
+            if (testMethod instanceof Method executable && isInstanceOfTestBean(testContext.getTestInstance())) {
                 Optional<? extends ExecutableMethod<?, Object>> method = specDefinition.findMethod(executable.getName(), executable.getParameterTypes());
                 if (method.isPresent()) {
                     ExecutableMethod<Object, ?> executableMethod = (ExecutableMethod<Object, ?>) method.get();
@@ -811,6 +855,16 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             } catch (Throwable e) {
                 return sneakyThrow(e);
             }
+        }
+
+        /**
+         * The advice is that of the outermost test class's methods, which a method of a nested
+         * class with the same name and parameters must not pick up.
+         */
+        private boolean isInstanceOfTestBean(@Nullable Object testInstance) {
+            return testInstance == null
+                || !(specDefinition instanceof ProxyBeanDefinition<?> proxyDefinition)
+                || proxyDefinition.getTargetType().isInstance(testInstance);
         }
 
         @SuppressWarnings("unchecked")

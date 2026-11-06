@@ -61,7 +61,6 @@ class RebuildContextInterceptedTest {
     @InterceptorBean(Recorded.class)
     @Requires(property = "spec.name", value = "RebuildContextInterceptedTest")
     static class RecordingInterceptor implements MethodInterceptor<Object, Object> {
-        // the test instance of a proxied test class is not injected, so the calls are kept statically
         static final List<String> CALLS = new CopyOnWriteArrayList<>();
 
         private final ApplicationContext applicationContext;
