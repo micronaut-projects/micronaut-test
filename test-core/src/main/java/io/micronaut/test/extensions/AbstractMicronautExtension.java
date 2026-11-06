@@ -417,20 +417,11 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
             postProcessBuilder(builder);
             this.applicationContext = builder.build();
             startApplicationContext();
-            specDefinition = applicationContext.findBeanDefinition(testClass).orElse(null);
-            if (specDefinition instanceof ProxyBeanDefinition<?>) {
-                interceptors = new ArrayList<>(interceptors);
-                interceptors.add(new MicronautIntercepted(
-                    specDefinition,
-                    applicationContext.getBean(InterceptorRegistry.class),
-                    new ArrayList<>(applicationContext.getBeanRegistrations(Argument.of(Interceptor.class), null))
-                ));
-            }
+            resolveFromApplicationContext();
             if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
                 embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
                 embeddedApplication.start();
             }
-            refreshScope = applicationContext.findBean(RefreshScope.class).orElse(null);
         }
     }
 
@@ -471,47 +462,59 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     protected void beforeEach(C context, @Nullable Object testInstance, @Nullable AnnotatedElement method, List<Property> propertyAnnotations) {
         if (method != null) {
-            if (propertyAnnotations != null && !propertyAnnotations.isEmpty()) {
-                validateUniquePropertyNames(propertyAnnotations, "test method " + method);
-                for (Property property : propertyAnnotations) {
-                    final String name = property.name();
-                    oldValues.put(name,
-                        testProperties.put(name, property.value())
-                    );
-                }
-            } else {
-                testProperties.putAll(oldValues);
-            }
-
+            applyMethodProperties(method, propertyAnnotations);
             if (testAnnotationValue.rebuildContext()) {
-                stopEmbeddedApplication();
-                if (applicationContext.isRunning()) {
-                    applicationContext.stop();
-                }
-                applicationContext = builder.build();
-                startApplicationContext();
-                if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
-                    embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
-                }
-                startEmbeddedApplication();
-            } else if (!oldValues.isEmpty()) {
+                rebuildApplicationContext(context);
+            } else if (!oldValues.isEmpty() && refreshScope != null) {
                 final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
                 refreshScope.onRefreshEvent(new RefreshEvent(diff));
             }
         }
 
-        if (testInstance != null) {
-            if (applicationContext != null) {
-                beforeInjectTestInstance(context, testInstance);
-                if (refreshScope != null) {
-                    refreshScope.onRefreshEvent(new RefreshEvent(Collections.singletonMap(
-                        TestActiveCondition.ACTIVE_MOCKS, "changed"
-                    )));
-                }
-                applicationContext.inject(testInstance);
-                alignMocks(context, testInstance);
+        if (testInstance != null && applicationContext != null) {
+            beforeInjectTestInstance(context, testInstance);
+            if (refreshScope != null) {
+                refreshScope.onRefreshEvent(new RefreshEvent(Collections.singletonMap(
+                    TestActiveCondition.ACTIVE_MOCKS, "changed"
+                )));
             }
+            applicationContext.inject(testInstance);
+            alignMocks(context, testInstance);
         }
+    }
+
+    private void applyMethodProperties(AnnotatedElement method, @Nullable List<Property> propertyAnnotations) {
+        if (propertyAnnotations != null && !propertyAnnotations.isEmpty()) {
+            validateUniquePropertyNames(propertyAnnotations, "test method " + method);
+            for (Property property : propertyAnnotations) {
+                final String name = property.name();
+                oldValues.put(name,
+                    testProperties.put(name, property.value())
+                );
+            }
+        } else {
+            testProperties.putAll(oldValues);
+        }
+    }
+
+    private void rebuildApplicationContext(C context) {
+        stopEmbeddedApplication();
+        if (applicationContext.isRunning()) {
+            applicationContext.stop();
+        }
+        // Everything resolved from the stopped context is stale: drop it before the
+        // new context starts, so that nothing can reach the old context through it.
+        embeddedApplication = null;
+        refreshScope = null;
+        specDefinition = null;
+        applicationContext = builder.build();
+        startApplicationContext();
+        resolveFromApplicationContext();
+        if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
+            embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
+        }
+        startEmbeddedApplication();
+        applicationContextRebuilt(context);
     }
 
     private void validateUniquePropertyNames(List<Property> properties, String propertySourceDescription) {
@@ -545,19 +548,19 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @throws Exception allows any exception to propagate
      */
     public void afterEach(C context) throws Exception {
-        if (refreshScope != null) {
-            if (!oldValues.isEmpty()) {
-                for (Map.Entry<String, Object> entry : oldValues.entrySet()) {
-                    Object value = entry.getValue();
-                    if (value != null) {
-                        testProperties.put(entry.getKey(), value);
-                    } else {
-                        testProperties.remove(entry.getKey());
-                    }
-                }
-                final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
-                refreshScope.onRefreshEvent(new RefreshEvent(diff));
+        // restored without a refresh scope too: a rebuild that failed to start leaves none, and the
+        // next rebuild must not pick up the failed test's properties
+        for (Map.Entry<String, Object> entry : oldValues.entrySet()) {
+            Object value = entry.getValue();
+            if (value != null) {
+                testProperties.put(entry.getKey(), value);
+            } else {
+                testProperties.remove(entry.getKey());
             }
+        }
+        if (refreshScope != null && !oldValues.isEmpty()) {
+            final Map<String, Object> diff = applicationContext.getEnvironment().refreshAndDiff();
+            refreshScope.onRefreshEvent(new RefreshEvent(diff));
         }
         oldValues.clear();
     }
@@ -583,6 +586,36 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
         listeners = new ArrayList<>(applicationContext.getBeansOfType(TestExecutionListener.class));
         Collection collection = applicationContext.getBeansOfType(TestMethodInterceptor.class);
         interceptors = new ArrayList<>(collection);
+    }
+
+    /**
+     * Resolves the state the extension keeps from the application context: the test's bean
+     * definition, the Micronaut interceptors around its methods and the {@link RefreshScope}.
+     * Called after every start of a context, including one rebuilt for
+     * {@code rebuildContext = true}, so that none of it outlives the context it came from.
+     */
+    private void resolveFromApplicationContext() {
+        specDefinition = applicationContext.findBeanDefinition(testClass).orElse(null);
+        if (specDefinition instanceof ProxyBeanDefinition<?>) {
+            interceptors = new ArrayList<>(interceptors);
+            interceptors.add(new MicronautIntercepted(
+                specDefinition,
+                applicationContext.getBean(InterceptorRegistry.class),
+                new ArrayList<>(applicationContext.getBeanRegistrations(Argument.of(Interceptor.class), null))
+            ));
+        }
+        refreshScope = applicationContext.findBean(RefreshScope.class).orElse(null);
+    }
+
+    /**
+     * Called after {@code rebuildContext = true} replaced the application context before a test,
+     * once the new context, and its embedded application if any, have started. Subclasses that
+     * keep state from the previous context, beyond what this class resolves again, refresh it here.
+     *
+     * @param context The test context
+     * @since 5.2.1
+     */
+    protected void applicationContextRebuilt(C context) {
     }
 
     /**
