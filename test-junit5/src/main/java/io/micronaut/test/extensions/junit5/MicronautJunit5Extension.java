@@ -83,6 +83,7 @@ import java.util.Optional;
  */
 public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor, TestInstancePreDestroyCallback, TestWatcher {
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
+    private static final Object STORE_LOCK = new Object();
     private static final String TEST_PROPERTY_PROVIDER_LIFECYCLE_MESSAGE = "Tests that implement TestPropertyProvider must use the PER_CLASS test instance lifecycle.";
     private static final String NESTED_CONFIGURATION_MESSAGE = """
         %s cannot be declared on the @Nested class %s. \
@@ -105,7 +106,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         }
         MicronautTestValue micronautTestValue = buildMicronautTestValue(testClass);
         beforeClass(extensionContext, testClass, micronautTestValue);
-        getStore(extensionContext).put(ApplicationContext.class, applicationContext);
+        publishApplicationContext(extensionContext);
         if (specDefinition != null) {
             if (testInstanceLifecycle == TestInstance.Lifecycle.PER_CLASS) {
                 Object testInstance = extensionContext.getRequiredTestInstance();
@@ -319,6 +320,30 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     @Override
+    protected void afterClass(ExtensionContext extensionContext) {
+        ApplicationContext classContext = applicationContext;
+        try {
+            super.afterClass(extensionContext);
+        } finally {
+            // the store outlives the class. Classes running in parallel share it, so leave another class's entry
+            if (extensionContext != null) {
+                synchronized (STORE_LOCK) {
+                    ExtensionContext.Store store = getStore(extensionContext);
+                    if (store.get(ApplicationContext.class) == classContext) {
+                        store.remove(ApplicationContext.class);
+                    }
+                }
+            }
+        }
+    }
+
+    private void publishApplicationContext(ExtensionContext extensionContext) {
+        synchronized (STORE_LOCK) {
+            getStore(extensionContext).put(ApplicationContext.class, applicationContext);
+        }
+    }
+
+    @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
         final Optional<Object> testInstance = extensionContext.getTestInstance();
         final Optional<? extends AnnotatedElement> testMethod = extensionContext.getTestMethod();
@@ -333,7 +358,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     protected void applicationContextRebuilt(ExtensionContext extensionContext) {
-        getStore(extensionContext).put(ApplicationContext.class, applicationContext);
+        publishApplicationContext(extensionContext);
     }
 
     @Override
