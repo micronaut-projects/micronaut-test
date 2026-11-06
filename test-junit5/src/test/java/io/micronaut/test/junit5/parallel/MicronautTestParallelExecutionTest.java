@@ -1,18 +1,25 @@
 package io.micronaut.test.junit5.parallel;
 
+import io.micronaut.test.extensions.AbstractMicronautExtension;
 import io.micronaut.test.extensions.junit5.MicronautTestResourceLocksProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.platform.engine.DiscoverySelector;
+import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.testkit.engine.EngineExecutionResults;
 import org.junit.platform.testkit.engine.EngineTestKit;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -182,6 +189,92 @@ class MicronautTestParallelExecutionTest {
             "the engine never ran two methods at once, so the serialization assertions prove nothing");
         assertTrue(ConcurrencyRecorder.distinctThreads(SharedContextFixture.KEY) > 1,
             "the engine never used a second thread, so the serialization assertions prove nothing");
+    }
+
+    @Test
+    @DisplayName("micronaut.test.context.parallelism caps the application contexts alive at once")
+    void contextParallelismLimitsActiveContexts() {
+        ActiveContextProbe.reset(false);
+
+        System.setProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY, "1");
+        try {
+            // A permit leaked by another test blocks these classes forever, so bound the run
+            assertAllPassed(assertTimeoutPreemptively(Duration.ofSeconds(60), () ->
+                runInParallel(ContextParallelismFixtureOne.class, ContextParallelismFixtureTwo.class)), 2);
+        } finally {
+            System.clearProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY);
+        }
+
+        assertEquals(1, ActiveContextProbe.maxActive(), "two application contexts were alive at once");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"four", "", "0", "-1"})
+    @DisplayName("an invalid micronaut.test.context.parallelism fails the class")
+    void invalidContextParallelismIsRejected(String value) {
+        System.setProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY, value);
+        try {
+            EngineExecutionResults results = runInParallel(ContextParallelismFixtureOne.class);
+
+            Throwable failure = results.containerEvents().failed().list().get(0)
+                .getRequiredPayload(TestExecutionResult.class).getThrowable().orElseThrow();
+            assertInstanceOf(IllegalArgumentException.class, failure);
+        } finally {
+            System.clearProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY);
+        }
+    }
+
+    @Test
+    @DisplayName("micronaut.test.context.parallelism may have surrounding whitespace")
+    void contextParallelismIsTrimmed() {
+        ActiveContextProbe.reset(false);
+
+        System.setProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY, " 3 ");
+        try {
+            assertAllPassed(assertTimeoutPreemptively(Duration.ofSeconds(60), () ->
+                runInParallel(ContextParallelismFixtureOne.class)), 1);
+        } finally {
+            System.clearProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY);
+        }
+    }
+
+    @Test
+    @DisplayName("without micronaut.test.context.parallelism the same contexts do overlap")
+    void contextParallelismAssertionIsNotVacuous() {
+        ActiveContextProbe.reset(true);
+
+        assertAllPassed(runInParallel(ContextParallelismFixtureOne.class, ContextParallelismFixtureTwo.class), 2);
+
+        assertEquals(2, ActiveContextProbe.maxActive(),
+            "the contexts never overlapped, so the parallelism limit assertion proves nothing");
+    }
+
+    @Test
+    @DisplayName("a failing afterTestClass listener still releases its micronaut.test.context.parallelism permit")
+    void failedClassCleanupReleasesContextParallelismPermit() {
+        ActiveContextProbe.reset(false);
+
+        System.setProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY, "1");
+        try {
+            // A permit that is never released blocks the second class forever, so bound the run
+            EngineExecutionResults results = assertTimeoutPreemptively(Duration.ofSeconds(60), () ->
+                EngineTestKit.engine("junit-jupiter")
+                    .enableImplicitConfigurationParameters(false)
+                    .selectors(
+                        DiscoverySelectors.selectClass(ContextParallelismFailingCleanupFixture.class),
+                        DiscoverySelectors.selectClass(ContextParallelismFixtureOne.class))
+                    .configurationParameter("junit.jupiter.testclass.order.default", "org.junit.jupiter.api.ClassOrderer$ClassName")
+                    .execute());
+
+            results.testEvents().assertStatistics(stats -> stats.started(2).succeeded(2).failed(0));
+            results.containerEvents().assertStatistics(stats -> stats.failed(1));
+            Throwable failure = results.containerEvents().failed().list().get(0)
+                .getRequiredPayload(TestExecutionResult.class).getThrowable().orElseThrow();
+            assertEquals(ContextParallelismFailingCleanupFixture.FailingCleanupListener.MESSAGE, failure.getMessage(),
+                "the listener failure was not the one reported");
+        } finally {
+            System.clearProperty(AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY);
+        }
     }
 
     private static EngineExecutionResults runInParallel(Class<?>... fixtures) {

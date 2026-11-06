@@ -59,6 +59,7 @@ import io.micronaut.test.support.TestPropertyProviderFactory;
 import io.micronaut.test.support.sql.TestSqlAnnotationHandler;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -81,6 +82,10 @@ import java.util.Set;
  */
 public abstract class AbstractMicronautExtension<C> implements TestExecutionListener, TestMethodInterceptor<Object> {
     public static final String NATIVE_IMAGE_CODE_PROPERTY = "org.graalvm.nativeimage.imagecode";
+    /**
+     * System property limiting how many test application contexts may be active at the same time.
+     */
+    public static final String CONTEXT_PARALLELISM_PROPERTY = "micronaut.test.context.parallelism";
     public static final String TEST_ROLLBACK = "micronaut.test.rollback";
     public static final String TEST_TRANSACTIONAL = "micronaut.test.transactional";
     public static final String TEST_TRANSACTION_MODE = "micronaut.test.transaction-mode";
@@ -108,6 +113,7 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     private ApplicationContextBuilder builder = ApplicationContext.builder();
     private List<TestExecutionListener> listeners;
     private List<TestMethodInterceptor<Object>> interceptors;
+    private TestContextParallelismLimiter.Lease contextParallelismLease;
 
     /**
      * @return True if there are interceptors
@@ -304,124 +310,167 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      */
     protected void beforeClass(C context, Class<?> testClass, @Nullable MicronautTestValue testAnnotationValue) {
         if (testAnnotationValue != null) {
-            Class<? extends ApplicationContextBuilder>[] cb = testAnnotationValue.contextBuilder();
-            if (ArrayUtils.isNotEmpty(cb)) {
-                this.builder = InstantiationUtils.instantiate(cb[0]);
+            if (contextParallelismLease == null && !sharesContextParallelismPermit()) {
+                contextParallelismLease = TestContextParallelismLimiter.acquire();
             }
-            this.testAnnotationValue = testAnnotationValue;
-            this.testClass = testClass;
-
-            final Package aPackage = testClass.getPackage();
-            builder.packages(aPackage.getName());
-            ClassPathResourceLoader classPathResourceLoader = ClassPathResourceLoader.defaultLoader(null);
-            ClassLoader classLoader = classPathResourceLoader.getClassLoader();
-            builder.resourceResolver(CombinedClassPathResourceLoader.of(
-                classPathResourceLoader,
-                new ClassClassPathResourceLoader(testClass)
-            ));
-            final List<Property> ps = AnnotationUtils.findRepeatableAnnotations(testClass, Property.class);
-            validateUniquePropertyNames(ps, "test class " + testClass.getName());
-            for (Property property : ps) {
-                testProperties.put(property.name(), property.value());
-            }
-
-            testProperties.put(TestActiveCondition.ACTIVE_SPEC_CLAZZ, testClass);
-            testProperties.put(TEST_ROLLBACK, String.valueOf(testAnnotationValue.rollback()));
-            testProperties.put(TEST_TRANSACTION_MODE, String.valueOf(testAnnotationValue.transactionMode()));
-            testProperties.put(Environment.DEDUCE_ENVIRONMENT_PROPERTY, String.valueOf(testAnnotationValue.deduceEnvironment()));
-            final Class<?> application = testAnnotationValue.application();
-            if (application != void.class) {
-                builder.mainClass(application);
-            }
-            String[] environments = testAnnotationValue.environments();
-            if (environments.length == 0) {
-                environments = new String[]{"test"};
-            }
-            builder.packages(testAnnotationValue.packages())
-                .environments(environments);
-            if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
-                resolveTestProperties(context, testAnnotationValue, testProperties);
-            }
-            PropertySource testPropertySource = PropertySource.of(
-                TEST_PROPERTY_SOURCE,
-                testProperties
-            );
-            builder.propertySources(testPropertySource);
-
-            builder.propertySourcesLocator(new PropertySourcesLocator() {
-                @Override
-                public Collection<PropertySource> load(Environment environment) {
-                    List<PropertySource> loadedPropertySources = new ArrayList<>();
-                    ResourceResolver resourceResolver = new ResourceResolver();
-                    for (String propertySourceName : testAnnotationValue.propertySources()) {
-                        String ext = NameUtils.extension(propertySourceName);
-                        if (StringUtils.isEmpty(ext)) {
-                            continue;
-                        }
-                        for (PropertySourceLoader loader : environment.getPropertySourceLoaders()) {
-                            if (!loader.getExtensions().contains(ext)) {
-                                continue;
-                            }
-
-                            resourceResolver.getResourceAsStream(propertySourceName)
-                                .or(() -> environment.getResourceAsStream(propertySourceName))
-                                .ifPresent(inputStream -> {
-                                try (inputStream) {
-                                    String filename = NameUtils.filename(propertySourceName);
-                                    try {
-                                        loadedPropertySources.add(PropertySource.of(filename, loader.read(filename, inputStream)));
-                                    } catch (IOException e) {
-                                        throw new RuntimeException("Error loading property source reference for @MicronautTest: " + filename);
-                                    }
-                                } catch (IOException e) {
-                                    // ignore
-                                }
-                            });
-                        }
+            boolean started = false;
+            try {
+                startTestContext(context, testClass, testAnnotationValue);
+                started = true;
+            } finally {
+                if (!started) {
+                    try {
+                        stopTestContext();
+                    } finally {
+                        releaseContextParallelismLease();
                     }
-                    List<TestPropertyProviderFactory> testPropertyProviderFactories = SoftServiceLoader.load(TestPropertyProviderFactory.class).collectAll();
-                    if (!testPropertyProviderFactories.isEmpty()) {
-                        var props = new HashMap<>(testProperties);
-                        for (PropertySource source : environment.getPropertySources()) {
-                            for (String key : source) {
-                                props.put(key, source.get(key));
-                            }
-                        }
-                        for (PropertySource source : loadedPropertySources) {
-                            for (String key : source) {
-                                props.put(key, source.get(key));
-                            }
-                        }
-                        for (TestPropertyProviderFactory factory : testPropertyProviderFactories) {
-                            var provider = factory.create(Collections.unmodifiableMap(props), testClass);
-                            testProperties.putAll(provider.get());
-                        }
-                    }
-                    Object testTransactionalDefault = testProperties.get(TEST_TRANSACTIONAL_DEFAULT);
-                    if (testTransactionalDefault != null && !Boolean.parseBoolean(testTransactionalDefault.toString())) {
-                        if (isExplicitTransactionalValue(classLoader)) {
-                            testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
-                        } else {
-                            testProperties.put(TEST_TRANSACTIONAL, Boolean.FALSE.toString());
-                        }
-                    } else if (!testProperties.containsKey(TEST_TRANSACTIONAL)) {
-                        testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
-                    }
-                    if (!testProperties.isEmpty()) {
-                        loadedPropertySources.add(PropertySource.of(TEST_PROPERTY_SOURCE, testProperties));
-                    }
-                    return loadedPropertySources;
                 }
-            });
-
-            postProcessBuilder(builder);
-            this.applicationContext = builder.build();
-            startApplicationContext();
-            resolveFromApplicationContext();
-            if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
-                embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
-                embeddedApplication.start();
             }
+        }
+    }
+
+    /**
+     * Whether this context runs under the {@link #CONTEXT_PARALLELISM_PROPERTY} permit of another
+     * context that stays active around it, and which it would otherwise wait for forever.
+     *
+     * @return true if no permit of its own should be acquired
+     */
+    protected boolean sharesContextParallelismPermit() {
+        return false;
+    }
+
+    private void startTestContext(C context, Class<?> testClass, MicronautTestValue testAnnotationValue) {
+        Class<? extends ApplicationContextBuilder>[] cb = testAnnotationValue.contextBuilder();
+        if (ArrayUtils.isNotEmpty(cb)) {
+            this.builder = InstantiationUtils.instantiate(cb[0]);
+        }
+        this.testAnnotationValue = testAnnotationValue;
+        this.testClass = testClass;
+
+        final Package aPackage = testClass.getPackage();
+        builder.packages(aPackage.getName());
+        ClassPathResourceLoader classPathResourceLoader = ClassPathResourceLoader.defaultLoader(null);
+        ClassLoader classLoader = classPathResourceLoader.getClassLoader();
+        builder.resourceResolver(CombinedClassPathResourceLoader.of(
+            classPathResourceLoader,
+            new ClassClassPathResourceLoader(testClass)
+        ));
+        final List<Property> ps = AnnotationUtils.findRepeatableAnnotations(testClass, Property.class);
+        validateUniquePropertyNames(ps, "test class " + testClass.getName());
+        for (Property property : ps) {
+            testProperties.put(property.name(), property.value());
+        }
+
+        testProperties.put(TestActiveCondition.ACTIVE_SPEC_CLAZZ, testClass);
+        testProperties.put(TEST_ROLLBACK, String.valueOf(testAnnotationValue.rollback()));
+        testProperties.put(TEST_TRANSACTION_MODE, String.valueOf(testAnnotationValue.transactionMode()));
+        testProperties.put(Environment.DEDUCE_ENVIRONMENT_PROPERTY, String.valueOf(testAnnotationValue.deduceEnvironment()));
+        final Class<?> application = testAnnotationValue.application();
+        if (application != void.class) {
+            builder.mainClass(application);
+        }
+        String[] environments = testAnnotationValue.environments();
+        if (environments.length == 0) {
+            environments = new String[]{"test"};
+        }
+        builder.packages(testAnnotationValue.packages())
+            .environments(environments);
+        if (TestPropertyProvider.class.isAssignableFrom(testClass)) {
+            resolveTestProperties(context, testAnnotationValue, testProperties);
+        }
+        PropertySource testPropertySource = PropertySource.of(
+            TEST_PROPERTY_SOURCE,
+            testProperties
+        );
+        builder.propertySources(testPropertySource);
+
+        builder.propertySourcesLocator(new PropertySourcesLocator() {
+            @Override
+            public Collection<PropertySource> load(Environment environment) {
+                return loadTestPropertySources(environment, testAnnotationValue, testClass, classLoader);
+            }
+        });
+
+        postProcessBuilder(builder);
+        this.applicationContext = builder.build();
+        startApplicationContext();
+        resolveFromApplicationContext();
+        if (testAnnotationValue.startApplication() && applicationContext.containsBean(EmbeddedApplication.class)) {
+            embeddedApplication = applicationContext.getBean(EmbeddedApplication.class);
+            embeddedApplication.start();
+        }
+    }
+
+    private List<PropertySource> loadTestPropertySources(Environment environment, MicronautTestValue testAnnotationValue, Class<?> testClass, ClassLoader classLoader) {
+        List<PropertySource> loadedPropertySources = loadAnnotatedPropertySources(environment, testAnnotationValue.propertySources());
+        applyTestPropertyProviderFactories(environment, loadedPropertySources, testClass);
+        applyTransactionalDefault(testAnnotationValue, classLoader);
+        if (!testProperties.isEmpty()) {
+            loadedPropertySources.add(PropertySource.of(TEST_PROPERTY_SOURCE, testProperties));
+        }
+        return loadedPropertySources;
+    }
+
+    private static List<PropertySource> loadAnnotatedPropertySources(Environment environment, String[] propertySourceNames) {
+        List<PropertySource> loadedPropertySources = new ArrayList<>();
+        ResourceResolver resourceResolver = new ResourceResolver();
+        for (String propertySourceName : propertySourceNames) {
+            String ext = NameUtils.extension(propertySourceName);
+            if (StringUtils.isEmpty(ext)) {
+                continue;
+            }
+            for (PropertySourceLoader loader : environment.getPropertySourceLoaders()) {
+                if (loader.getExtensions().contains(ext)) {
+                    resourceResolver.getResourceAsStream(propertySourceName)
+                        .or(() -> environment.getResourceAsStream(propertySourceName))
+                        .ifPresent(inputStream -> loadedPropertySources.add(readPropertySource(loader, propertySourceName, inputStream)));
+                }
+            }
+        }
+        return loadedPropertySources;
+    }
+
+    private static PropertySource readPropertySource(PropertySourceLoader loader, String propertySourceName, InputStream inputStream) {
+        String filename = NameUtils.filename(propertySourceName);
+        try (inputStream) {
+            return PropertySource.of(filename, loader.read(filename, inputStream));
+        } catch (IOException e) {
+            throw new RuntimeException("Error loading property source reference for @MicronautTest: " + filename);
+        }
+    }
+
+    private void applyTestPropertyProviderFactories(Environment environment, List<PropertySource> loadedPropertySources, Class<?> testClass) {
+        List<TestPropertyProviderFactory> testPropertyProviderFactories = SoftServiceLoader.load(TestPropertyProviderFactory.class).collectAll();
+        if (testPropertyProviderFactories.isEmpty()) {
+            return;
+        }
+        var props = new HashMap<>(testProperties);
+        for (PropertySource source : environment.getPropertySources()) {
+            for (String key : source) {
+                props.put(key, source.get(key));
+            }
+        }
+        for (PropertySource source : loadedPropertySources) {
+            for (String key : source) {
+                props.put(key, source.get(key));
+            }
+        }
+        for (TestPropertyProviderFactory factory : testPropertyProviderFactories) {
+            var provider = factory.create(Collections.unmodifiableMap(props), testClass);
+            testProperties.putAll(provider.get());
+        }
+    }
+
+    private void applyTransactionalDefault(MicronautTestValue testAnnotationValue, ClassLoader classLoader) {
+        Object testTransactionalDefault = testProperties.get(TEST_TRANSACTIONAL_DEFAULT);
+        if (testTransactionalDefault != null && !Boolean.parseBoolean(testTransactionalDefault.toString())) {
+            if (isExplicitTransactionalValue(classLoader)) {
+                testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
+            } else {
+                testProperties.put(TEST_TRANSACTIONAL, Boolean.FALSE.toString());
+            }
+        } else if (!testProperties.containsKey(TEST_TRANSACTIONAL)) {
+            testProperties.put(TEST_TRANSACTIONAL, String.valueOf(testAnnotationValue.transactional()));
         }
     }
 
@@ -533,6 +582,14 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * @param context the context
      */
     protected void afterClass(C context) {
+        try {
+            stopTestContext();
+        } finally {
+            releaseContextParallelismLease();
+        }
+    }
+
+    private void stopTestContext() {
         stopEmbeddedApplication();
         if (applicationContext != null && applicationContext.isRunning()) {
             applicationContext.stop();
@@ -671,6 +728,13 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     private void stopEmbeddedApplication() {
         if (embeddedApplication != null) {
             embeddedApplication.stop();
+        }
+    }
+
+    private void releaseContextParallelismLease() {
+        if (contextParallelismLease != null) {
+            contextParallelismLease.release();
+            contextParallelismLease = null;
         }
     }
 
