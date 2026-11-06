@@ -31,6 +31,7 @@ import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.reflect.full.memberFunctions
+import kotlin.time.Duration
 
 class MicronautKotest5Context @JvmOverloads constructor(
     private val specClass: Class<Any>,
@@ -45,6 +46,11 @@ class MicronautKotest5Context @JvmOverloads constructor(
      * The instance this context belongs to, for a spec without constructor parameters.
      */
     internal var claimedBy: Spec? = null
+
+    /**
+     * Whether a test of this spec got as far as being prepared, which only happens if the bean exists.
+     */
+    private var testPrepared = false
 
     override fun resolveTestProperties(context: Spec?, testAnnotationValue: MicronautTestValue, testProperties: MutableMap<String, Any>?) {
         if (context is TestPropertyProvider) {
@@ -110,13 +116,16 @@ class MicronautKotest5Context @JvmOverloads constructor(
     }
 
     fun beforeTest(testCase: TestCase) {
+        beforeTestMethod(buildContext(testCase, null))
+    }
+
+    private fun prepareTest(testCase: TestCase) {
         val filter = testCase.spec::class.memberFunctions.filter { it.name == testCase.name.name }
         var propertyAnnotations: List<Property>? = emptyList()
         if (filter.isNotEmpty()) {
             propertyAnnotations = filter.first().annotations.filterIsInstance<Property>()
         }
         beforeEach(testCase.spec, testCase.spec, testCase.test.javaClass, propertyAnnotations)
-        beforeTestMethod(buildContext(testCase, null))
     }
 
     fun afterTest(testCase: TestCase, result: TestResult) {
@@ -136,6 +145,14 @@ class MicronautKotest5Context @JvmOverloads constructor(
         execute: suspend (TestCase) -> TestResult
     ): TestResult {
         val currentContext = coroutineContext
+        testPrepared = true
+        // before interceptTest, so that the test runs inside the interceptors of the context it uses
+        try {
+            prepareTest(testCase)
+        } catch (e: Throwable) {
+            // Kotest would fail the whole spec for an exception thrown by a test case extension
+            return TestResult.Error(Duration.ZERO, e)
+        }
         return interceptTest(object : TestMethodInvocationContext<Any> {
             override fun getTestContext(): TestContext {
                 return buildInterceptContext(testCase)
@@ -157,6 +174,13 @@ class MicronautKotest5Context @JvmOverloads constructor(
     }
 
     fun getSpecDefinition() = specDefinition
+
+    /**
+     * Whether the spec has no bean in the context. Once a test has been prepared that is no longer what
+     * a missing definition means: a rebuild that failed to start leaves none either, and the next test
+     * must still get its own rebuild.
+     */
+    internal fun isSpecBeanMissing() = specDefinition == null && !testPrepared
 
     /**
      * Builds a TestContext for spec-level lifecycle callbacks (beforeSpecClass, afterSpecClass).
