@@ -56,6 +56,8 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
+<li><a href="#findAnnotation(java.lang.Class,java.lang.Class)" tabindex="0">findAnnotation(Class, Class)</a></li>
+<li><a href="#isAnnotated(java.lang.Class,java.lang.String)" tabindex="0">isAnnotated(Class, String)</a></li>
 <li><a href="#findRepeatableAnnotations(java.lang.reflect.AnnotatedElement,java.lang.Class)" tabindex="0">findRepeatableAnnotations(AnnotatedElement, Class)</a></li>
 </ol>
 </li>
@@ -94,13 +96,27 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;A extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>&gt;<br><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;A&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#findRepeatableAnnotations(java.lang.reflect.AnnotatedElement,java.lang.Class)" class="member-name-link">findRepeatableAnnotations</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link">AnnotatedElement</a>&nbsp;element,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;A extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>&gt;<br><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;A&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#findAnnotation(java.lang.Class,java.lang.Class)" class="member-name-link">findAnnotation</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;type,
  <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;A&gt;&nbsp;annotationType)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Finds an annotation that is directly present or meta-present on the given class or on an
+interface it implements.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;A extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>&gt;<br><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;A&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#findRepeatableAnnotations(java.lang.reflect.AnnotatedElement,java.lang.Class)" class="member-name-link">findRepeatableAnnotations</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link">AnnotatedElement</a>&nbsp;element,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;A&gt;&nbsp;annotationType)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Find all <em>repeatable</em> <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">annotations</a> of
 <code>annotationType</code> that are either <em>present</em>, <em>indirectly
 present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/AnnotatedElement.html" title="class or interface in java.lang.reflect" class="external-link"><code>AnnotatedElement</code></a>.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#isAnnotated(java.lang.Class,java.lang.String)" class="member-name-link">isAnnotated</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;type,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;annotationName)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Checks whether an annotation is directly present or meta-present on the given class, for an
+annotation type that may not be on the classpath.</div>
 </div>
 </div>
 </div>
@@ -119,6 +135,49 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="findAnnotation(java.lang.Class,java.lang.Class)">
+<h3>findAnnotation</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;A extends <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;A&gt;</span>&nbsp;<span class="element-name">findAnnotation</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;type,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;A&gt;&nbsp;annotationType)</span></div>
+<div class="block">Finds an annotation that is directly present or meta-present on the given class or on an
+interface it implements. If the annotation type is <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/Inherited.html" title="class or interface in java.lang.annotation" class="external-link"><code>@Inherited</code></a>, superclasses
+are searched as well, including through a composed annotation that is not itself inherited.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><span id="findAnnotation(java.lang.Class,java.lang.Class)-type-param-A"><code>A</code> - the annotation type</span></dd>
+<dt>Parameters:</dt>
+<dd><code>type</code> - the class to search on</dd>
+<dd><code>annotationType</code> - the annotation type to search for</dd>
+<dt>Returns:</dt>
+<dd>the annotation, if there is one</dd>
+<dt>Since:</dt>
+<dd>5.2.1</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="isAnnotated(java.lang.Class,java.lang.String)">
+<h3>isAnnotated</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isAnnotated</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;type,
+ <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;annotationName)</span></div>
+<div class="block">Checks whether an annotation is directly present or meta-present on the given class, for an
+annotation type that may not be on the classpath.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>type</code> - the class to search on</dd>
+<dd><code>annotationName</code> - the fully qualified name of the annotation type</dd>
+<dt>Returns:</dt>
+<dd>true if the annotation is present</dd>
+<dt>Since:</dt>
+<dd>5.2.1</dd>
+</dl>
+</div>
+</section>
+</li>
 <li>
 <section class="detail" id="findRepeatableAnnotations(java.lang.reflect.AnnotatedElement,java.lang.Class)">
 <h3>findRepeatableAnnotations</h3>

@@ -329,6 +329,22 @@ ApplicationContext context //refers to the current application context within th
 </div>
 </div>
 <div class="sect2">
+<h3 id="_limiting_active_test_contexts">Limiting Active Test Contexts</h3>
+<div class="paragraph">
+<p>If your build runs tests in parallel and each <code>@MicronautTest</code> starts its own datasource, connection pool, or other expensive shared resource, you can limit how many Micronaut test application contexts are active at the same time with the <code>micronaut.test.context.parallelism</code> JVM system property.</p>
+</div>
+<div class="paragraph">
+<p>The value must be a number greater than <code>0</code> and applies across Micronaut Test integrations such as JUnit 5, Spock, and Kotest. The limit is per test JVM, so with Gradle&#8217;s <code>maxParallelForks</code> or Maven&#8217;s <code>forkCount</code> each fork gets its own limit. The instances that Kotest&#8217;s isolation modes create for one spec share a single permit. A class that waits for a context for longer than <code>micronaut.test.context.parallelism.timeout</code> seconds, 600 by default, fails with an error, so raise it if your classes are slow enough to reach it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">test {
+    systemProperty "micronaut.test.context.parallelism", "1"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_eager_singleton_initialization">Eager Singleton Initialization</h3>
 <div class="paragraph">
 <p>If you enable <a href="https://docs.micronaut.io/latest/guide/index.html#eagerInit">eager singleton initialization</a> in your application, the Micronaut Framework eagerly initializes all singletons at startup time. This can be useful for applications that need to perform some initialization at startup time, such as registering a bean with a third party library.</p>
@@ -757,6 +773,18 @@ in separate transactions.</p>
 </li>
 </ul>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+With R2DBC, the default <code>SEPARATE_TRANSACTIONS</code> mode wraps and rolls back the test like JDBC and JPA. <code>SINGLE_TRANSACTION</code> is not supported with a reactive transaction manager and fails when the context starts.
+</td>
+</tr>
+</table>
+</div>
 
 <h2 id="usingSpockMocks"><a class="anchor" href="#usingSpockMocks"></a>4.5 Using Spock Mocks</h2>
 
@@ -1048,7 +1076,7 @@ class PropertySourceSpec extends Specification {
 </div>
 </div>
 <div class="paragraph">
-<p>The above example expects a file located at <code>src/test/resources/io/micronaut/spock/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
+<p>The above example expects a file located at <code>src/test/resources/io/micronaut/test/spock/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1056,12 +1084,15 @@ class PropertySourceSpec extends Specification {
 <p><code>file:myprops.properties</code> - A relative path to a file somewhere on the file system.</p>
 </li>
 <li>
-<p><code>classpath:myprops.properties</code> - A file relative to the root of the classpath.</p>
+<p><code>classpath:myprops.properties</code> - A file at the root of the classpath, for example <code>src/test/resources/myprops.properties</code>.</p>
 </li>
 <li>
-<p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
+<p><code>myprops.properties</code> - Looked up at the root of the classpath first, then next to the test class in the test&#8217;s package.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>A property source that cannot be found, or whose file extension no property source loader handles, is skipped, and a warning naming it is logged.</p>
 </div>
 
 <h2 id="refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"><a class="anchor" href="#refreshingInjectedBeansBasedOnRequiresUponPropertiesChanges"></a>4.9 Refreshing injected beans based on `@Requires` upon properties changes</h2>
@@ -1400,6 +1431,18 @@ the test. This transaction is always committed.</p>
 in separate transactions.</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+With R2DBC, the default <code>SEPARATE_TRANSACTIONS</code> mode wraps and rolls back the test like JDBC and JPA. <code>SINGLE_TRANSACTION</code> is not supported with a reactive transaction manager and fails when the context starts.
+</td>
+</tr>
+</table>
 </div>
 
 <h2 id="usingMockitoMocks"><a class="anchor" href="#usingMockitoMocks"></a>5.5 Using Mockito Mocks</h2>
@@ -1762,7 +1805,7 @@ class FilePropertySourceTest {
 </div>
 </div>
 <div class="paragraph">
-<p>The above example expects a file located at <code>src/test/resources/io/micronaut/junit5/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
+<p>The above example expects a file located at <code>src/test/resources/io/micronaut/test/junit5/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1770,12 +1813,15 @@ class FilePropertySourceTest {
 <p><code>file:myprops.properties</code> - A relative path to a file somewhere on the file system</p>
 </li>
 <li>
-<p><code>classpath:myprops.properties</code> - A file relative to the root of the classpath</p>
+<p><code>classpath:myprops.properties</code> - A file at the root of the classpath, for example <code>src/test/resources/myprops.properties</code>.</p>
 </li>
 <li>
-<p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
+<p><code>myprops.properties</code> - Looked up at the root of the classpath first, then next to the test class in the test&#8217;s package.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>A property source that cannot be found, or whose file extension no property source loader handles, is skipped, and a warning naming it is logged.</p>
 </div>
 <div class="paragraph">
 <p>If you need more dynamic property definition or the property you want to define requires some setup then you can implement the <a href="../api/io/micronaut/test/support/TestPropertyProvider.html">TestPropertyProvider</a> interface in your test and do whatever setup is necessary then return the properties you want to expose the the application.</p>
@@ -1789,7 +1835,7 @@ class FilePropertySourceTest {
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">package io.micronaut.test.junit5;
 
 import io.micronaut.context.annotation.Property;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
@@ -2119,6 +2165,75 @@ For a temporary directory specifically, prefer JUnit&#8217;s own <code>@TempDir<
 </div>
 </div>
 <div class="sect2">
+<h3 id="_setting_up_once_with_beforeall">Setting up once with <code>@BeforeAll</code></h3>
+<div class="paragraph">
+<p>The application context is started before any <code>@BeforeAll</code> method runs, so class-level setup can use beans in two ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <code>static</code> <code>@BeforeAll</code> method has no test instance, so its fields are not injected yet. Declare the beans it needs as method parameters instead.</p>
+</li>
+<li>
+<p>Under <code>@TestInstance(PER_CLASS)</code> the instance is injected before <code>@BeforeAll</code>, so a non-static <code>@BeforeAll</code> method can use injected fields. This also holds for a <code>PER_CLASS</code> <code>@Nested</code> class, which can use the fields of its enclosing instance.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
+class ReportTest {
+
+    static Report report;
+
+    @BeforeAll
+    static void buildReport(ReportService reportService) { <i class="conum" data-value="1"></i><b>(1)</b>
+        report = reportService.build();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>ReportService</code> is resolved from the application context.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The test transaction described in <a href="#junit5TransactionSemantics">Transaction semantics</a> wraps each test method and is rolled back after it, so it does not cover <code>@BeforeAll</code> or <code>@AfterAll</code>: data written there would otherwise be rolled back by the first test. To write data once for the whole class, give a non-static <code>@BeforeAll</code> or <code>@AfterAll</code> method its own transaction with <code>io.micronaut.transaction.annotation.Transactional</code>, or use <code>TransactionOperations</code> directly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@MicronautTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class BookQueryTest {
+
+    @Inject
+    EntityManager entityManager;
+
+    @BeforeAll
+    @Transactional <i class="conum" data-value="1"></i><b>(1)</b>
+    void insertBooks() {
+        entityManager.persist(new Book("The Stand"));
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Committed before the first test. Each test still runs in its own transaction, which is rolled back without touching this data. Delete the data in an <code>@AfterAll</code> method if later classes share the database.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Around advice applies only to the <code>@BeforeAll</code> and <code>@AfterAll</code> methods of the top-level test class, not to those of a <code>@Nested</code> class. As on test methods, an interceptor can see the method&#8217;s arguments but not their values.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_sharing_one_application_context_with_nested">Sharing one application context with <code>@Nested</code></h3>
 <div class="paragraph">
 <p>Every <code>@MicronautTest</code> class gets its own <a href="../api/io/micronaut/context/ApplicationContext.html">ApplicationContext</a>, started before the class and stopped after it. There is no context cache: two top-level classes with identical configuration get two contexts, and so does each subclass of an annotated base class.</p>
@@ -2360,6 +2475,31 @@ class ReadOnlyEndpointTest {
     systemProperty "micronaut.test.parallel.methods", "true"
 }</code></pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_limiting_active_contexts">Limiting Active Contexts</h3>
+<div class="paragraph">
+<p>Running classes in parallel means one application context per running class, each with its own connection pools and other resources. If that exhausts a shared resource such as a database&#8217;s connection limit, set the <code>micronaut.test.context.parallelism</code> system property to the most contexts that may be alive at once. A class waits in <code>beforeAll</code> until another class&#8217;s context has stopped.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">test {
+    systemProperty "micronaut.test.context.parallelism", "4"
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+A class waits for its permit while JUnit already holds the class&#8217;s own <code>@ResourceLock</code> locks. A class-level <code>@ResourceLock</code> can therefore deadlock with a class that holds a permit and needs the same resource in one of its methods. A warning is logged if a class waits for more than a minute, and it fails after <code>micronaut.test.context.parallelism.timeout</code> seconds, 600 by default. Use the same lock level on both classes, or a limit high enough for them to run together.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -2778,6 +2918,18 @@ in separate transactions.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
+With R2DBC, the default <code>SEPARATE_TRANSACTIONS</code> mode wraps and rolls back the test like JDBC and JPA. <code>SINGLE_TRANSACTION</code> is not supported with a reactive transaction manager and fails when the context starts.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 Setup and cleanup methods are not wrapped in transactions in Kotest currently. As a result, transaction modes have
 no effect in Kotest.
 </td>
@@ -3030,7 +3182,7 @@ class MathCollaboratorTest(
 </table>
 </div>
 <div class="paragraph">
-<p>The way this works is that <code>@MicronautTest</code> will inject a proxy that points to the mock instance. For each iteration of the test the mock is refreshed (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>).</p>
+<p>The way this works is that <code>@MicronautTest</code> will inject a proxy that points to the mock instance. The mock is refreshed for each test case (in fact it uses Micronaut&#8217;s built in <code>RefreshScope</code>), including each nested test of styles such as <code>DescribeSpec</code> or <code>FunSpec</code>.</p>
 </div>
 
 <h2 id="kotestUsingRequiresOnTests"><a class="anchor" href="#kotestUsingRequiresOnTests"></a>6.8 Using `@Requires` on Tests</h2>
@@ -3137,7 +3289,7 @@ class PropertySourceTest(@Property(name = "foo.bar") val value: String,
 </div>
 </div>
 <div class="paragraph">
-<p>The above example expects a file located at <code>src/test/resources/io/micronaut/kotest/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
+<p>The above example expects a file located at <code>src/test/resources/io/micronaut/test/kotest5/myprops.properties</code>. You can however use a prefix to indicate where the file should be searched for. The following are valid values:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -3145,12 +3297,15 @@ class PropertySourceTest(@Property(name = "foo.bar") val value: String,
 <p><code>file:myprops.properties</code> - A relative path to a file somewhere on the file system</p>
 </li>
 <li>
-<p><code>classpath:myprops.properties</code> - A file relative to the root of the classpath</p>
+<p><code>classpath:myprops.properties</code> - A file at the root of the classpath, for example <code>src/test/resources/myprops.properties</code>.</p>
 </li>
 <li>
-<p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
+<p><code>myprops.properties</code> - Looked up at the root of the classpath first, then next to the test class in the test&#8217;s package.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>A property source that cannot be found, or whose file extension no property source loader handles, is skipped, and a warning naming it is logged.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -4118,12 +4273,15 @@ class FilePropertySourceTest:
 <p><code>file:myprops.properties</code> - A relative path to a file somewhere on the file system</p>
 </li>
 <li>
-<p><code>classpath:myprops.properties</code> - A file relative to the root of the classpath</p>
+<p><code>classpath:myprops.properties</code> - A file at the root of the classpath, for example <code>src/test/resources/myprops.properties</code>.</p>
 </li>
 <li>
-<p><code>myprops.properties</code> - A file relative on the classpath relative to the test being run.</p>
+<p><code>myprops.properties</code> - Looked up at the root of the classpath first, then next to the test class in the test&#8217;s package.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>A property source that cannot be found, or whose file extension no property source loader handles, is skipped, and a warning naming it is logged.</p>
 </div>
 <div class="admonitionblock note">
 <table>

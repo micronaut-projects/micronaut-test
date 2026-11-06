@@ -78,6 +78,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Executed after the class is complete.</div>
 </dd>
+<dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#afterClass(org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">afterClass(ExtensionContext)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/context/TestExecutionListener.html#afterCleanupTest(io.micronaut.test.context.TestContext)" class="member-name-link">afterCleanupTest(TestContext)</a> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context">TestExecutionListener</a></dt>
 <dd>
 <div class="block">Executed after the setup method of a test method.</div>
@@ -137,6 +139,13 @@ iterations).</div>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#applicationContext" class="member-name-link">applicationContext</a> - Variable in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#applicationContextRebuilt(C)" class="member-name-link">applicationContextRebuilt(C)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>
+<div class="block">Called after <code>rebuildContext = true</code> replaced the application context before a test,
+once the new context, and its embedded application if any, have started.</div>
+</dd>
+<dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#applicationContextRebuilt(org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">applicationContextRebuilt(ExtensionContext)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:B">B</h2>
 <dl class="index">
@@ -171,6 +180,13 @@ iterations).</div>
 <dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#beforeEach(org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">beforeEach(ExtensionContext)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/leak/JupiterLeakPresenceExtension.html#beforeEach(org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">beforeEach(ExtensionContext)</a> - Method in class io.micronaut.test.leak.<a href="io/micronaut/test/leak/JupiterLeakPresenceExtension.html" title="class in io.micronaut.test.leak">JupiterLeakPresenceExtension</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#beforeInjectTestInstance(C,java.lang.Object)" class="member-name-link">beforeInjectTestInstance(C, Object)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>
+<div class="block">Allows implementations to inject enclosing or related test instances before the current
+test instance is injected and mock fields are aligned.</div>
+</dd>
+<dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#beforeInjectTestInstance(org.junit.jupiter.api.extension.ExtensionContext,java.lang.Object)" class="member-name-link">beforeInjectTestInstance(ExtensionContext, Object)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/context/TestExecutionListener.html#beforeSetupTest(io.micronaut.test.context.TestContext)" class="member-name-link">beforeSetupTest(TestContext)</a> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestExecutionListener.html" title="interface in io.micronaut.test.context">TestExecutionListener</a></dt>
 <dd>
@@ -216,6 +232,10 @@ class.</div>
 </dd>
 <dt><a href="io/micronaut/test/support/sql/ConnectionFactoryHandler.html#%3Cinit%3E()" class="member-name-link">ConnectionFactoryHandler()</a> - Constructor for class io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/ConnectionFactoryHandler.html" title="class in io.micronaut.test.support.sql">ConnectionFactoryHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#CONTEXT_PARALLELISM_PROPERTY" class="member-name-link">CONTEXT_PARALLELISM_PROPERTY</a> - Static variable in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>
+<div class="block">System property limiting how many test application contexts may be active at the same time.</div>
+</dd>
 <dt><a href="io/micronaut/test/annotation/MicronautTestValue.html#contextBuilder()" class="member-name-link">contextBuilder()</a> - Method in class io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></dt>
 <dd>
 <div class="block">The application context builder to use to construct the context.</div>
@@ -294,6 +314,11 @@ known, i.e.</div>
 </dl>
 <h2 class="title" id="I:F">F</h2>
 <dl class="index">
+<dt><a href="io/micronaut/test/annotation/AnnotationUtils.html#findAnnotation(java.lang.Class,java.lang.Class)" class="member-name-link">findAnnotation(Class, Class)</a> - Static method in class io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/AnnotationUtils.html" title="class in io.micronaut.test.annotation">AnnotationUtils</a></dt>
+<dd>
+<div class="block">Finds an annotation that is directly present or meta-present on the given class or on an
+interface it implements.</div>
+</dd>
 <dt><a href="io/micronaut/test/annotation/AnnotationUtils.html#findRepeatableAnnotations(java.lang.reflect.AnnotatedElement,java.lang.Class)" class="member-name-link">findRepeatableAnnotations(AnnotatedElement, Class)</a> - Static method in class io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/AnnotationUtils.html" title="class in io.micronaut.test.annotation">AnnotationUtils</a></dt>
 <dd>
 <div class="block">Find all <em>repeatable</em> <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">annotations</a> of
@@ -360,6 +385,10 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 </dl>
 <h2 class="title" id="I:H">H</h2>
 <dl class="index">
+<dt><a href="io/micronaut/test/support/sql/SqlHandler.html#handle(T,java.lang.String)" class="member-name-link">handle(T, String)</a> - Method in interface io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/SqlHandler.html" title="interface in io.micronaut.test.support.sql">SqlHandler</a></dt>
+<dd>
+<div class="block">Given a data source and SQL, execute the SQL.</div>
+</dd>
 <dt><a href="io/micronaut/test/support/sql/TestSqlAnnotationHandler.html#handle(io.micronaut.inject.BeanDefinition,io.micronaut.context.ApplicationContext,io.micronaut.test.annotation.Sql.Phase)" class="member-name-link">handle(BeanDefinition, ApplicationContext, Sql.Phase)</a> - Static method in class io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/TestSqlAnnotationHandler.html" title="class in io.micronaut.test.support.sql">TestSqlAnnotationHandler</a></dt>
 <dd>
 <div class="block">Given a spec definition and application context, find and process all <a href="io/micronaut/test/annotation/Sql.html" title="annotation interface in io.micronaut.test.annotation"><code>Sql</code></a> annotations.</div>
@@ -370,10 +399,6 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/support/sql/DelegatingDataSourceSqlHandler.html#handle(javax.sql.DataSource,java.lang.String)" class="member-name-link">handle(DataSource, String)</a> - Method in class io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/DelegatingDataSourceSqlHandler.html" title="class in io.micronaut.test.support.sql">DelegatingDataSourceSqlHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/test/support/sql/SqlHandler.html#handle(T,java.lang.String)" class="member-name-link">handle(T, String)</a> - Method in interface io.micronaut.test.support.sql.<a href="io/micronaut/test/support/sql/SqlHandler.html" title="interface in io.micronaut.test.support.sql">SqlHandler</a></dt>
-<dd>
-<div class="block">Given a data source and SQL, execute the SQL.</div>
-</dd>
 <dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#hasExpectedAnnotations(java.lang.Class)" class="member-name-link">hasExpectedAnnotations(Class)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#hasInterceptors()" class="member-name-link">hasInterceptors()</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
@@ -385,10 +410,16 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 </dl>
 <h2 class="title" id="I:I">I</h2>
 <dl class="index">
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#injectTestInstance(java.lang.Object)" class="member-name-link">injectTestInstance(Object)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>
+<div class="block">Injects an instance of the test class, or of a class nested in it, from the running context.</div>
+</dd>
 <dt><a href="io/micronaut/test/typepollution/TypePollutionTransformer.html#install(java.lang.instrument.Instrumentation)" class="member-name-link">install(Instrumentation)</a> - Static method in class io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/TypePollutionTransformer.html" title="class in io.micronaut.test.typepollution">TypePollutionTransformer</a></dt>
 <dd>
 <div class="block">Install this transformer into the given <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.instrument/java/lang/instrument/Instrumentation.html" title="class or interface in java.lang.instrument" class="external-link"><code>Instrumentation</code></a>.</div>
 </dd>
+<dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptAfterAllMethod(org.junit.jupiter.api.extension.InvocationInterceptor.Invocation,org.junit.jupiter.api.extension.ReflectiveInvocationContext,org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">interceptAfterAllMethod(InvocationInterceptor.Invocation, ReflectiveInvocationContext, ExtensionContext)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#interceptAfterEach(io.micronaut.test.context.TestMethodInvocationContext)" class="member-name-link">interceptAfterEach(TestMethodInvocationContext)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/context/TestMethodInterceptor.html#interceptAfterEach(io.micronaut.test.context.TestMethodInvocationContext)" class="member-name-link">interceptAfterEach(TestMethodInvocationContext)</a> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestMethodInterceptor.html" title="interface in io.micronaut.test.context">TestMethodInterceptor</a></dt>
@@ -396,6 +427,8 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 <div class="block">Intercepts after each test invocation.</div>
 </dd>
 <dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptAfterEachMethod(org.junit.jupiter.api.extension.InvocationInterceptor.Invocation,org.junit.jupiter.api.extension.ReflectiveInvocationContext,org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">interceptAfterEachMethod(InvocationInterceptor.Invocation, ReflectiveInvocationContext, ExtensionContext)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptBeforeAllMethod(org.junit.jupiter.api.extension.InvocationInterceptor.Invocation,org.junit.jupiter.api.extension.ReflectiveInvocationContext,org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">interceptBeforeAllMethod(InvocationInterceptor.Invocation, ReflectiveInvocationContext, ExtensionContext)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#interceptBeforeEach(io.micronaut.test.context.TestMethodInvocationContext)" class="member-name-link">interceptBeforeEach(TestMethodInvocationContext)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
 <dd>&nbsp;</dd>
@@ -405,6 +438,11 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 </dd>
 <dt><a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html#interceptBeforeEachMethod(org.junit.jupiter.api.extension.InvocationInterceptor.Invocation,org.junit.jupiter.api.extension.ReflectiveInvocationContext,org.junit.jupiter.api.extension.ExtensionContext)" class="member-name-link">interceptBeforeEachMethod(InvocationInterceptor.Invocation, ReflectiveInvocationContext, ExtensionContext)</a> - Method in class io.micronaut.test.extensions.junit5.<a href="io/micronaut/test/extensions/junit5/MicronautJunit5Extension.html" title="class in io.micronaut.test.extensions.junit5">MicronautJunit5Extension</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#interceptClassLifecycleMethod(io.micronaut.test.context.TestMethodInvocationContext)" class="member-name-link">interceptClassLifecycleMethod(TestMethodInvocationContext)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>
+<div class="block">Applies the Micronaut around advice declared on a class level lifecycle method of the test
+instance, such as a non-static JUnit <code>@BeforeAll</code> method.</div>
+</dd>
 <dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#interceptTest(io.micronaut.test.context.TestMethodInvocationContext)" class="member-name-link">interceptTest(TestMethodInvocationContext)</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/context/TestMethodInterceptor.html#interceptTest(io.micronaut.test.context.TestMethodInvocationContext)" class="member-name-link">interceptTest(TestMethodInvocationContext)</a> - Method in interface io.micronaut.test.context.<a href="io/micronaut/test/context/TestMethodInterceptor.html" title="interface in io.micronaut.test.context">TestMethodInterceptor</a></dt>
@@ -447,6 +485,16 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/typepollution/package-summary.html">io.micronaut.test.typepollution</a> - package io.micronaut.test.typepollution</dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/annotation/AnnotationUtils.html#isAnnotated(java.lang.Class,java.lang.String)" class="member-name-link">isAnnotated(Class, String)</a> - Static method in class io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/AnnotationUtils.html" title="class in io.micronaut.test.annotation">AnnotationUtils</a></dt>
+<dd>
+<div class="block">Checks whether an annotation is directly present or meta-present on the given class, for an
+annotation type that may not be on the classpath.</div>
+</dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#isNativeImageExecution()" class="member-name-link">isNativeImageExecution()</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>
+<div class="block">Whether the tests run inside a native image, where generated bean definition classes cannot be
+looked up by name.</div>
+</dd>
 <dt><a href="io/micronaut/test/annotation/MicronautTestValue.html#isResolveParameters()" class="member-name-link">isResolveParameters()</a> - Method in class io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/MicronautTestValue.html" title="class in io.micronaut.test.annotation">MicronautTestValue</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/support/server/TestEmbeddedServer.html#isRunning()" class="member-name-link">isRunning()</a> - Method in class io.micronaut.test.support.server.<a href="io/micronaut/test/support/server/TestEmbeddedServer.html" title="class in io.micronaut.test.support.server">TestEmbeddedServer</a></dt>
@@ -505,6 +553,13 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/info/MicronautTestKotest5ModuleInfo.html#%3Cinit%3E()" class="member-name-link">MicronautTestKotest5ModuleInfo()</a> - Constructor for class io.micronaut.test.info.<a href="io/micronaut/test/info/MicronautTestKotest5ModuleInfo.html" title="class in io.micronaut.test.info">MicronautTestKotest5ModuleInfo</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/spock/MicronautTestMetaAnnotationExtension.html" class="type-name-link" title="class in io.micronaut.test.extensions.spock">MicronautTestMetaAnnotationExtension</a> - Class in <a href="io/micronaut/test/extensions/spock/package-summary.html">io.micronaut.test.extensions.spock</a></dt>
+<dd>
+<div class="block">Applies <a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html" title="class in io.micronaut.test.extensions.spock"><code>MicronautSpockExtension</code></a> to specs that carry <a href="io/micronaut/test/extensions/spock/annotation/MicronautTest.html" title="annotation interface in io.micronaut.test.extensions.spock.annotation"><code>MicronautTest</code></a> through a
+meta-annotation.</div>
+</dd>
+<dt><a href="io/micronaut/test/extensions/spock/MicronautTestMetaAnnotationExtension.html#%3Cinit%3E()" class="member-name-link">MicronautTestMetaAnnotationExtension()</a> - Constructor for class io.micronaut.test.extensions.spock.<a href="io/micronaut/test/extensions/spock/MicronautTestMetaAnnotationExtension.html" title="class in io.micronaut.test.extensions.spock">MicronautTestMetaAnnotationExtension</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/info/MicronautTestNettyLeakModuleInfo.html" class="type-name-link" title="class in io.micronaut.test.info">MicronautTestNettyLeakModuleInfo</a> - Class in <a href="io/micronaut/test/info/package-summary.html">io.micronaut.test.info</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/info/MicronautTestNettyLeakModuleInfo.html#%3Cinit%3E()" class="member-name-link">MicronautTestNettyLeakModuleInfo()</a> - Constructor for class io.micronaut.test.info.<a href="io/micronaut/test/info/MicronautTestNettyLeakModuleInfo.html" title="class in io.micronaut.test.info">MicronautTestNettyLeakModuleInfo</a></dt>
@@ -548,6 +603,8 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 <dd>
 <div class="block">The name of the bean to replace in the case of multiple beans.</div>
 </dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#NATIVE_IMAGE_CODE_PROPERTY" class="member-name-link">NATIVE_IMAGE_CODE_PROPERTY</a> - Static variable in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:O">O</h2>
 <dl class="index">
@@ -683,6 +740,11 @@ present</em>, or <em>meta-present</em> on the supplied <a href="https://docs.ora
 <dt><a href="io/micronaut/test/typepollution/FocusListener.html#setFocusListener(io.micronaut.test.typepollution.FocusListener)" class="member-name-link">setFocusListener(FocusListener)</a> - Static method in interface io.micronaut.test.typepollution.<a href="io/micronaut/test/typepollution/FocusListener.html" title="interface in io.micronaut.test.typepollution">FocusListener</a></dt>
 <dd>
 <div class="block">Set the global focus listener, or <code>null</code> to disable listening for focus events.</div>
+</dd>
+<dt><a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#sharesContextParallelismPermit()" class="member-name-link">sharesContextParallelismPermit()</a> - Method in class io.micronaut.test.extensions.<a href="io/micronaut/test/extensions/AbstractMicronautExtension.html" title="class in io.micronaut.test.extensions">AbstractMicronautExtension</a></dt>
+<dd>
+<div class="block">Whether this context runs under the <a href="io/micronaut/test/extensions/AbstractMicronautExtension.html#CONTEXT_PARALLELISM_PROPERTY"><code>AbstractMicronautExtension.CONTEXT_PARALLELISM_PROPERTY</code></a> permit of another
+context that stays active around it, and which it would otherwise wait for forever.</div>
 </dd>
 <dt><a href="io/micronaut/test/annotation/TransactionMode.html#SINGLE_TRANSACTION" class="member-name-link">SINGLE_TRANSACTION</a> - Enum constant in enum class io.micronaut.test.annotation.<a href="io/micronaut/test/annotation/TransactionMode.html" title="enum class in io.micronaut.test.annotation">TransactionMode</a></dt>
 <dd>
@@ -926,6 +988,8 @@ the order they are declared.</div>
 <dt><a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html#visitFixtureAnnotation(T,org.spockframework.runtime.model.MethodInfo)" class="member-name-link">visitFixtureAnnotation(T, MethodInfo)</a> - Method in class io.micronaut.test.extensions.spock.<a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html" title="class in io.micronaut.test.extensions.spock">MicronautSpockExtension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html#visitSpec(org.spockframework.runtime.model.SpecInfo)" class="member-name-link">visitSpec(SpecInfo)</a> - Method in class io.micronaut.test.extensions.spock.<a href="io/micronaut/test/extensions/spock/MicronautSpockExtension.html" title="class in io.micronaut.test.extensions.spock">MicronautSpockExtension</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/test/extensions/spock/MicronautTestMetaAnnotationExtension.html#visitSpec(org.spockframework.runtime.model.SpecInfo)" class="member-name-link">visitSpec(SpecInfo)</a> - Method in class io.micronaut.test.extensions.spock.<a href="io/micronaut/test/extensions/spock/MicronautTestMetaAnnotationExtension.html" title="class in io.micronaut.test.extensions.spock">MicronautTestMetaAnnotationExtension</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/test/leak/SpockLeakPresenceExtension.html#visitSpec(org.spockframework.runtime.model.SpecInfo)" class="member-name-link">visitSpec(SpecInfo)</a> - Method in class io.micronaut.test.leak.<a href="io/micronaut/test/leak/SpockLeakPresenceExtension.html" title="class in io.micronaut.test.leak">SpockLeakPresenceExtension</a></dt>
 <dd>&nbsp;</dd>
