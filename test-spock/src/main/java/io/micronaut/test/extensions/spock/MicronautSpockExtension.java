@@ -23,6 +23,7 @@ import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
+import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
@@ -89,8 +90,10 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                         invocation.proceed();
                         return;
                     }
-                    MicronautTest micronautTest = spec.getAnnotation(MicronautTest.class);
-                    MicronautTestValue micronautTestValue =  buildValueObject(micronautTest);
+                    MicronautTest micronautTest = annotation instanceof MicronautTest direct
+                        ? direct
+                        : AnnotationUtils.findAnnotation(spec.getReflection(), MicronautTest.class).orElse(null);
+                    MicronautTestValue micronautTestValue = buildValueObject(micronautTest);
                     beforeClass(invocation, spec.getReflection(), micronautTestValue);
                     if (specDefinition == null) {
                         if (!isTestSuiteBeanPresent(spec.getReflection())) {

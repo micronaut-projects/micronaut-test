@@ -101,6 +101,12 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
      * The name of the property source that contains test properties.
      */
     public static final String TEST_PROPERTY_SOURCE = "test-properties";
+    private static final String CLIENT_FILTER_MESSAGE = """
+        The test class %s is annotated with @ClientFilter. \
+        A filter is created as a separate bean, so it would be a second instance of the test class, \
+        and its @Client injection points need the filter again, which never ends. \
+        Move the filter methods into their own @ClientFilter bean, for example a static nested class annotated with @Requires.""";
+    private static final String CLIENT_FILTER_ANNOTATION = "io.micronaut.http.annotation.ClientFilter";
     protected ApplicationContext applicationContext;
     protected EmbeddedApplication<?> embeddedApplication;
     protected RefreshScope refreshScope;
@@ -340,6 +346,10 @@ public abstract class AbstractMicronautExtension<C> implements TestExecutionList
     }
 
     private void startTestContext(C context, Class<?> testClass, MicronautTestValue testAnnotationValue) {
+        // before the context exists, since anything creating the filter during startup would recurse
+        if (AnnotationUtils.isAnnotated(testClass, CLIENT_FILTER_ANNOTATION)) {
+            throw new IllegalStateException(CLIENT_FILTER_MESSAGE.formatted(testClass.getName()));
+        }
         Class<? extends ApplicationContextBuilder>[] cb = testAnnotationValue.contextBuilder();
         if (ArrayUtils.isNotEmpty(cb)) {
             this.builder = InstantiationUtils.instantiate(cb[0]);

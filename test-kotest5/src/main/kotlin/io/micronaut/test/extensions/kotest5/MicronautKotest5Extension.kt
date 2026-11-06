@@ -23,6 +23,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.micronaut.aop.InterceptedProxy
+import io.micronaut.test.annotation.AnnotationUtils
 import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlin.reflect.KClass
@@ -126,11 +127,9 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
-        val micronautTestValue = testClass
-            .annotations
-            .filterIsInstance<MicronautTest>()
+        val micronautTestValue = AnnotationUtils.findAnnotation(testClass, MicronautTest::class.java)
             .map { micronautTest -> buildValueObject(micronautTest) }
-            .firstOrNull()
+            .orElse(null)
         return if (micronautTestValue == null) {
             null
         } else {
