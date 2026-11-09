@@ -30,12 +30,38 @@ class NestedConfigurationTest {
     }
 
     @Test
+    @DisplayName("a composed @MicronautTest on a @Nested class is rejected with an explanation")
+    void nestedComposedMicronautTestIsRejected() {
+        String message = failureMessage(NestedComposedMicronautTestFixture.class);
+
+        assertTrue(message.contains("@MicronautTest cannot be declared on the @Nested class"), message);
+        assertTrue(message.contains(NestedComposedMicronautTestFixture.Inner.class.getName()), message);
+    }
+
+    @Test
+    @DisplayName("a @ClientFilter test class is rejected before a @Context bean can create the filter")
+    void clientFilterTestClassIsRejectedBeforeStartup() {
+        String message = failureMessage(ClientFilterEagerBeanFixture.class);
+
+        assertTrue(message.contains("is annotated with @ClientFilter"), message);
+    }
+
+    @Test
     @DisplayName("@Property on a @Nested class is rejected with an explanation")
     void nestedPropertyIsRejected() {
         String message = failureMessage(NestedPropertyFixture.class);
 
         assertTrue(message.contains("@Property cannot be declared on the @Nested class"), message);
         assertTrue(message.contains(NestedPropertyFixture.Inner.class.getName()), message);
+    }
+
+    @Test
+    @DisplayName("a test class that is a @ClientFilter is rejected with an explanation")
+    void clientFilterTestClassIsRejected() {
+        String message = failureMessage(ClientFilterFixture.class);
+
+        assertTrue(message.contains("is annotated with @ClientFilter"), message);
+        assertTrue(message.contains(ClientFilterFixture.class.getName()), message);
     }
 
     @Test

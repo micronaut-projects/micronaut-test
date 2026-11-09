@@ -15,7 +15,7 @@
  */
 package io.micronaut.test.support;
 
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
 import java.util.function.Supplier;

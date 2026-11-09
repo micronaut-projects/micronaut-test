@@ -31,3 +31,9 @@ dependencies {
     testRuntimeOnly(mnSql.h2)
     testRuntimeOnly(testFixtures(projects.micronautTestCore))
 }
+
+configurations.named("testRuntimeClasspath") {
+    // the build plugin adds this module to its own test classpath as a jar, next to the main output.
+    // Spock then loads the global extension service file twice and refuses to start.
+    exclude(group: "io.micronaut.test", module: "micronaut-test-spock")
+}

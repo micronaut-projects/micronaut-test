@@ -15,7 +15,7 @@
  */
 package io.micronaut.test.context;
 
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Test execution listener.

@@ -17,17 +17,19 @@ package io.micronaut.test.extensions.kotest5
 
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.micronaut.aop.InterceptedProxy
+import io.micronaut.test.annotation.AnnotationUtils
 import io.micronaut.test.annotation.MicronautTestValue
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
-object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseExtension {
+object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseExtension, FinalizeSpecListener {
 
     override suspend fun intercept(
         testCase: TestCase,
@@ -45,17 +47,36 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
 
     val contexts: MutableMap<String, MutableList<MicronautKotest5Context>> = mutableMapOf()
 
-    private fun Spec.context() =
-        contexts[javaClass.name]?.find { it.bean == this } ?: contexts[javaClass.name]?.find { it.bean == null }
+    private fun Spec.context(): MicronautKotest5Context? = synchronized(contexts) {
+        val specContexts = contexts[javaClass.name] ?: return null
+        // Kotest creates an instance without constructor parameters itself, so the instance is only
+        // known here. Each one takes the next unclaimed context, since each has its own. Instances
+        // can run their callbacks on separate threads, so claiming one has to be atomic.
+        specContexts.find { it.bean == this || it.claimedBy == this }
+            ?: specContexts.find { it.bean == null && it.claimedBy == null }?.also {
+                beforeContextClaim()
+                it.claimedBy = this
+            }
+    }
+
+    internal fun contextOf(spec: Spec) = spec.context()
+
+    /**
+     * Lets a test hold a thread between finding an unclaimed context and claiming it.
+     */
+    @Volatile
+    internal var beforeContextClaim: () -> Unit = {}
 
     /**
      * Removes the context from the [contexts] map
      */
     private fun MicronautKotest5Context.cleanupContext() {
         val specClassName: String? = this.bean?.javaClass?.name
-        contexts[specClassName]?.let {
-            it.remove(this)
-            if (it.isEmpty()) contexts.remove(specClassName)
+        synchronized(contexts) {
+            contexts[specClassName]?.let {
+                it.remove(this)
+                if (it.isEmpty()) contexts.remove(specClassName)
+            }
         }
     }
 
@@ -63,10 +84,18 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
         spec.context()?.beforeSpecClass(spec)
     }
 
+    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+        // Kotest skips beforeSpec and afterSpec for a spec without enabled tests
+        synchronized(contexts) { contexts.remove(kclass.java.name) }?.forEach { it.stopIfRunning() }
+    }
+
     override suspend fun afterSpec(spec: Spec) {
         spec.context()?.let {
-            it.afterSpecClass(spec)
-            it.cleanupContext()
+            try {
+                it.afterSpecClass(spec)
+            } finally {
+                it.cleanupContext()
+            }
         }
     }
 
@@ -98,17 +127,17 @@ object MicronautKotest5Extension : TestListener, ConstructorExtension, TestCaseE
     override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
         val constructor = clazz.primaryConstructor
         val testClass: Class<Any> = clazz.java as Class<Any>
-        val micronautTestValue = testClass
-            .annotations
-            .filterIsInstance<MicronautTest>()
+        val micronautTestValue = AnnotationUtils.findAnnotation(testClass, MicronautTest::class.java)
             .map { micronautTest -> buildValueObject(micronautTest) }
-            .firstOrNull()
+            .orElse(null)
         return if (micronautTestValue == null) {
             null
         } else {
             val createBean = constructor != null && constructor.parameters.isNotEmpty()
-            val context = MicronautKotest5Context(testClass, micronautTestValue, createBean)
-            contexts.getOrPut(testClass.name, ::mutableListOf).add(context)
+            // the isolation modes create further instances while the first is running, on its thread
+            val sharesPermit = synchronized(contexts) { contexts[testClass.name]?.isNotEmpty() == true }
+            val context = MicronautKotest5Context(testClass, micronautTestValue, createBean, sharesPermit)
+            synchronized(contexts) { contexts.getOrPut(testClass.name, ::mutableListOf).add(context) }
             if (createBean) {
                 context.bean
             } else {

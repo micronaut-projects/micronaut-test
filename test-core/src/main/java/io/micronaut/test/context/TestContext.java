@@ -16,7 +16,7 @@
 package io.micronaut.test.context;
 
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.AnnotatedElement;
 

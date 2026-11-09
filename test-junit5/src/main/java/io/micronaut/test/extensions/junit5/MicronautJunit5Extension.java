@@ -24,14 +24,13 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.AnnotationUtil;
+import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.inject.FieldInjectionPoint;
-import io.micronaut.inject.InjectableBeanDefinition;
 import io.micronaut.inject.MethodInjectionPoint;
-import io.micronaut.inject.ProxyBeanDefinition;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.annotation.MockBean;
@@ -62,11 +61,13 @@ import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.junit.jupiter.api.extension.TestWatcher;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -82,6 +83,7 @@ import java.util.Optional;
  */
 public class MicronautJunit5Extension extends AbstractMicronautExtension<ExtensionContext> implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback, ExecutionCondition, BeforeTestExecutionCallback, AfterTestExecutionCallback, ParameterResolver, InvocationInterceptor, TestInstancePreDestroyCallback, TestWatcher {
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(MicronautJunit5Extension.class);
+    private static final Object STORE_LOCK = new Object();
     private static final String TEST_PROPERTY_PROVIDER_LIFECYCLE_MESSAGE = "Tests that implement TestPropertyProvider must use the PER_CLASS test instance lifecycle.";
     private static final String NESTED_CONFIGURATION_MESSAGE = """
         %s cannot be declared on the @Nested class %s. \
@@ -104,24 +106,19 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         }
         MicronautTestValue micronautTestValue = buildMicronautTestValue(testClass);
         beforeClass(extensionContext, testClass, micronautTestValue);
-        getStore(extensionContext).put(ApplicationContext.class, applicationContext);
-        if (specDefinition != null) {
-            if (testInstanceLifecycle == TestInstance.Lifecycle.PER_CLASS) {
-                Object testInstance = extensionContext.getRequiredTestInstance();
-                if (specDefinition instanceof ProxyBeanDefinition<?>) {
-                    // Proxy bean is not going to resolve bean definition, we need a small hack
-                    if (specDefinition instanceof InjectableBeanDefinition injectableBeanDefinition) {
-                        injectableBeanDefinition.inject(
-                            new DefaultBeanResolutionContext(applicationContext, injectableBeanDefinition),
-                            applicationContext,
-                            testInstance);
-                    }
-                } else {
-                    applicationContext.inject(testInstance);
-                }
-            }
+        publishApplicationContext(extensionContext);
+        if (specDefinition != null && testInstanceLifecycle == TestInstance.Lifecycle.PER_CLASS) {
+            injectPerClassTestInstance(extensionContext, testClass);
         }
         beforeTestClass(buildContext(extensionContext));
+    }
+
+    private void injectPerClassTestInstance(ExtensionContext extensionContext, Class<?> testClass) {
+        injectTestInstance(extensionContext.getRequiredTestInstance());
+        if (isNestedTestClass(testClass)) {
+            // @BeforeAll of a PER_CLASS nested class runs before any @BeforeEach would inject these
+            injectEnclosingTestInstances(extensionContext);
+        }
     }
 
     /**
@@ -141,17 +138,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     public void interceptBeforeEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
         TestContext testContext = buildContext(invocationContext);
         beforeSetupTest(testContext);
-        interceptBeforeEach(new TestMethodInvocationContext<>() {
-            @Override
-            public TestContext getTestContext() {
-                return testContext;
-            }
-
-            @Override
-            public Object proceed() throws Throwable {
-                return invocation.proceed();
-            }
-        });
+        interceptBeforeEach(invocationContext(testContext, invocation));
         afterSetupTest(testContext);
     }
 
@@ -217,20 +204,30 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     @Override
+    public void interceptBeforeAllMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        adviseClassLifecycleMethod(invocation, invocationContext);
+    }
+
+    @Override
+    public void interceptAfterAllMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
+        adviseClassLifecycleMethod(invocation, invocationContext);
+    }
+
+    private void adviseClassLifecycleMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext) throws Throwable {
+        if (Modifier.isStatic(invocationContext.getExecutable().getModifiers())) {
+            // a static method is not called on the test bean, so there is no advice to apply
+            invocation.proceed();
+            return;
+        }
+        TestContext testContext = buildContext(invocationContext);
+        interceptClassLifecycleMethod(invocationContext(testContext, invocation));
+    }
+
+    @Override
     public void interceptAfterEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext, ExtensionContext extensionContext) throws Throwable {
         TestContext testContext = buildContext(invocationContext);
         beforeCleanupTest(testContext);
-        interceptAfterEach(new TestMethodInvocationContext<Object>() {
-            @Override
-            public TestContext getTestContext() {
-                return testContext;
-            }
-
-            @Override
-            public Object proceed() throws Throwable {
-                return invocation.proceed();
-            }
-        });
+        interceptAfterEach(invocationContext(testContext, invocation));
         afterCleanupTest(testContext);
     }
 
@@ -247,7 +244,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
             return;
         }
         String annotation = null;
-        if (testClass.getDeclaredAnnotation(MicronautTest.class) != null) {
+        if (Arrays.stream(testClass.getDeclaredAnnotations()).anyMatch(MicronautJunit5Extension::isOrComposesMicronautTest)) {
             annotation = "@MicronautTest";
         } else if (testClass.getDeclaredAnnotationsByType(Property.class).length > 0) {
             annotation = "@Property";
@@ -311,15 +308,43 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     @Override
     public void afterAll(ExtensionContext extensionContext) throws Exception {
-        afterTestClass(buildContext(extensionContext));
-        if (!extensionContext.getTestClass().filter(this::isNestedTestClass).isPresent()) {
-            afterClass(extensionContext);
+        // A failing listener or @Sql script must not keep the context running or its parallelism permit held
+        AutoCloseable stopContext = () -> {
+            if (!extensionContext.getTestClass().filter(this::isNestedTestClass).isPresent()) {
+                afterClass(extensionContext);
+            }
+        };
+        try (stopContext) {
+            afterTestClass(buildContext(extensionContext));
+        }
+    }
+
+    @Override
+    protected void afterClass(ExtensionContext extensionContext) {
+        ApplicationContext classContext = applicationContext;
+        try {
+            super.afterClass(extensionContext);
+        } finally {
+            // the store outlives the class. Classes running in parallel share it, so leave another class's entry
+            if (extensionContext != null) {
+                synchronized (STORE_LOCK) {
+                    ExtensionContext.Store store = getStore(extensionContext);
+                    if (store.get(ApplicationContext.class) == classContext) {
+                        store.remove(ApplicationContext.class);
+                    }
+                }
+            }
+        }
+    }
+
+    private void publishApplicationContext(ExtensionContext extensionContext) {
+        synchronized (STORE_LOCK) {
+            getStore(extensionContext).put(ApplicationContext.class, applicationContext);
         }
     }
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
-        injectEnclosingTestInstances(extensionContext);
         final Optional<Object> testInstance = extensionContext.getTestInstance();
         final Optional<? extends AnnotatedElement> testMethod = extensionContext.getTestMethod();
         List<Property> propertyAnnotations = null;
@@ -329,6 +354,11 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         }
         beforeEach(extensionContext, testInstance.orElse(null), testMethod.orElse(null), propertyAnnotations);
         beforeTestMethod(buildContext(extensionContext));
+    }
+
+    @Override
+    protected void applicationContextRebuilt(ExtensionContext extensionContext) {
+        publishApplicationContext(extensionContext);
     }
 
     @Override
@@ -343,7 +373,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         if (testInstance.isPresent()) {
 
             final Class<?> requiredTestClass = extensionContext.getRequiredTestClass();
-            if (applicationContext.containsBean(requiredTestClass) || isNestedTestClass(requiredTestClass)) {
+            if (applicationContext.containsBean(requiredTestClass) || specDefinition != null || isNestedTestClass(requiredTestClass)) {
                 return ConditionEvaluationResult.enabled("Test bean active");
             } else {
 
@@ -391,19 +421,22 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
     }
 
     @Override
+    protected void beforeInjectTestInstance(ExtensionContext extensionContext, Object testInstance) {
+        injectEnclosingTestInstances(extensionContext);
+    }
+
+    @Override
     protected void alignMocks(ExtensionContext context, Object instance) {
         if (specDefinition == null) {
             return;
         }
         findSpecInstance(context).ifPresent(specInstance -> {
             for (FieldInjectionPoint injectedField : specDefinition.getInjectedFields()) {
-                if (applicationContext.resolveMetadata(injectedField.getType()).isAnnotationPresent(MockBean.class)) {
-                    findField(specInstance.getClass(), injectedField.getName()).ifPresent(field -> alignMock(specInstance, field));
-                }
+                findField(specInstance.getClass(), injectedField.getName()).ifPresent(field -> alignMock(specInstance, field));
             }
             for (MethodInjectionPoint<?, ?> injectedMethod : specDefinition.getInjectedMethods()) {
                 final Argument<?>[] arguments = injectedMethod.getArguments();
-                if (arguments.length == 1 && applicationContext.resolveMetadata(arguments[0].getType()).isAnnotationPresent(MockBean.class)) {
+                if (arguments.length == 1) {
                     findMethodInjectedField(specInstance.getClass(), injectedMethod, arguments[0])
                         .ifPresent(field -> alignMock(specInstance, field));
                 }
@@ -411,15 +444,17 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         });
     }
 
+    private boolean isMockProxy(Object injected) {
+        // judged by what was injected: resolving the injection point again could select another bean
+        return injected instanceof InterceptedProxy
+            && applicationContext.getBeanDefinitions(injected.getClass()).stream()
+                .anyMatch(definition -> definition.getAnnotationMetadata().hasStereotype(MockBean.class));
+    }
+
     private void alignMock(Object specInstance, Field field) {
-        field.setAccessible(true);
-        try {
-            final Object mock = field.get(specInstance);
-            if (mock instanceof InterceptedProxy) {
-                field.set(specInstance, ((InterceptedProxy) mock).interceptedTarget());
-            }
-        } catch (IllegalAccessException e) {
-            // continue
+        final Object injected = ReflectionUtils.getField(field.getDeclaringClass(), field.getName(), specInstance);
+        if (isMockProxy(injected)) {
+            ReflectionUtils.setField(field, specInstance, ((InterceptedProxy<?>) injected).interceptedTarget());
         }
     }
 
@@ -462,12 +497,30 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
         beforeTestExecution(buildContext(context));
     }
 
+    private static TestMethodInvocationContext<Object> invocationContext(TestContext testContext, Invocation<?> invocation) {
+        return new TestMethodInvocationContext<>() {
+            @Override
+            public TestContext getTestContext() {
+                return testContext;
+            }
+
+            @Override
+            public Object proceed() throws Throwable {
+                return invocation.proceed();
+            }
+        };
+    }
+
+    private static boolean isOrComposesMicronautTest(Annotation annotation) {
+        return annotation instanceof MicronautTest || AnnotationSupport.isAnnotated(annotation.annotationType(), MicronautTest.class);
+    }
+
     private TestContext buildContext(ReflectiveInvocationContext<?> context) {
         return new TestContext(
             applicationContext,
             context.getTargetClass(),
             context.getExecutable(),
-            context.getTarget(),
+            context.getTarget().orElse(null),
             null,
             context.getExecutable().getName(),
             true);
@@ -598,7 +651,7 @@ public class MicronautJunit5Extension extends AbstractMicronautExtension<Extensi
 
     private void injectEnclosingTestInstances(ExtensionContext extensionContext) {
         extensionContext.getTestInstances().ifPresent(testInstances -> {
-            testInstances.getEnclosingInstances().forEach(applicationContext::inject);
+            testInstances.getEnclosingInstances().forEach(this::injectTestInstance);
         });
     }
 

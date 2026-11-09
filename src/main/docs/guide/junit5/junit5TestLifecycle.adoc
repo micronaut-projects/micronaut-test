@@ -53,6 +53,50 @@ class ResourceTest {
 
 TIP: For a temporary directory specifically, prefer JUnit's own `@TempDir` - it works on a `@MicronautTest` class as a field or a parameter, and mixes freely with Micronaut-injected parameters in the same method signature.
 
+=== Setting up once with `@BeforeAll`
+
+The application context is started before any `@BeforeAll` method runs, so class-level setup can use beans in two ways:
+
+* A `static` `@BeforeAll` method has no test instance, so its fields are not injected yet. Declare the beans it needs as method parameters instead.
+* Under `@TestInstance(PER_CLASS)` the instance is injected before `@BeforeAll`, so a non-static `@BeforeAll` method can use injected fields. This also holds for a `PER_CLASS` `@Nested` class, which can use the fields of its enclosing instance.
+
+[source,java]
+----
+@MicronautTest
+class ReportTest {
+
+    static Report report;
+
+    @BeforeAll
+    static void buildReport(ReportService reportService) { // <1>
+        report = reportService.build();
+    }
+}
+----
+<1> `ReportService` is resolved from the application context.
+
+The test transaction described in <<junit5TransactionSemantics,Transaction semantics>> wraps each test method and is rolled back after it, so it does not cover `@BeforeAll` or `@AfterAll`: data written there would otherwise be rolled back by the first test. To write data once for the whole class, give a non-static `@BeforeAll` or `@AfterAll` method its own transaction with `io.micronaut.transaction.annotation.Transactional`, or use `TransactionOperations` directly:
+
+[source,java]
+----
+@MicronautTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class BookQueryTest {
+
+    @Inject
+    EntityManager entityManager;
+
+    @BeforeAll
+    @Transactional // <1>
+    void insertBooks() {
+        entityManager.persist(new Book("The Stand"));
+    }
+}
+----
+<1> Committed before the first test. Each test still runs in its own transaction, which is rolled back without touching this data. Delete the data in an `@AfterAll` method if later classes share the database.
+
+Around advice applies only to the `@BeforeAll` and `@AfterAll` methods of the top-level test class, not to those of a `@Nested` class. As on test methods, an interceptor can see the method's arguments but not their values.
+
 === Sharing one application context with `@Nested`
 
 Every `@MicronautTest` class gets its own api:context.ApplicationContext[], started before the class and stopped after it. There is no context cache: two top-level classes with identical configuration get two contexts, and so does each subclass of an annotated base class.

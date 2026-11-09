@@ -23,6 +23,7 @@ import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.inject.MethodInjectionPoint;
 import io.micronaut.test.context.TestMethodInvocationContext;
 import io.micronaut.test.extensions.spock.annotation.MicronautTest;
+import io.micronaut.test.annotation.AnnotationUtils;
 import io.micronaut.test.annotation.MicronautTestValue;
 import io.micronaut.test.context.TestContext;
 import io.micronaut.test.extensions.AbstractMicronautExtension;
@@ -89,8 +90,10 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                         invocation.proceed();
                         return;
                     }
-                    MicronautTest micronautTest = spec.getAnnotation(MicronautTest.class);
-                    MicronautTestValue micronautTestValue =  buildValueObject(micronautTest);
+                    MicronautTest micronautTest = annotation instanceof MicronautTest direct
+                        ? direct
+                        : AnnotationUtils.findAnnotation(spec.getReflection(), MicronautTest.class).orElse(null);
+                    MicronautTestValue micronautTestValue = buildValueObject(micronautTest);
                     beforeClass(invocation, spec.getReflection(), micronautTestValue);
                     if (specDefinition == null) {
                         if (!isTestSuiteBeanPresent(spec.getReflection())) {
@@ -328,6 +331,9 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
 
     @Override
     protected void startApplicationContext() {
+        // mocks of a context that rebuildContext = true replaced must not be attached to the next test
+        singletonMocks.clear();
+        creatableMocks.clear();
         applicationContext.registerSingleton((BeanCreatedEventListener) event -> {
             final Object bean = event.getBean();
             if (mockUtil.isMock(bean)) {
@@ -345,22 +351,26 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
 
     @Override
     protected void alignMocks(IMethodInvocation context, Object instance) {
+        if (specDefinition == null) {
+            return;
+        }
         for (MethodInjectionPoint injectedMethod : specDefinition.getInjectedMethods()) {
             final Argument<?>[] args = injectedMethod.getArguments();
             if (args.length == 1) {
-                final Optional<FieldInfo> fld = context.getSpec().getAllFields().stream().filter(f -> f.getName().equals(args[0].getName())).findFirst();
-                if (fld.isPresent()) {
-                    final FieldInfo fieldInfo = fld.get();
-                    final Object fieldInstance = fieldInfo.readValue(
-                        instance
-                    );
-                    if (fieldInstance instanceof InterceptedProxy) {
-                        Object interceptedTarget = ((InterceptedProxy) fieldInstance).interceptedTarget();
-                        if (mockUtil.isMock(interceptedTarget)) {
-                            fieldInfo.writeValue(instance, interceptedTarget);
-                        }
-                    }
-                }
+                context.getSpec().getAllFields().stream()
+                    .filter(f -> f.getName().equals(args[0].getName()))
+                    .findFirst()
+                    .ifPresent(fieldInfo -> alignMock(fieldInfo, instance));
+            }
+        }
+    }
+
+    private void alignMock(FieldInfo fieldInfo, Object instance) {
+        final Object fieldInstance = fieldInfo.readValue(instance);
+        if (fieldInstance instanceof InterceptedProxy interceptedProxy) {
+            Object interceptedTarget = interceptedProxy.interceptedTarget();
+            if (mockUtil.isMock(interceptedTarget)) {
+                fieldInfo.writeValue(instance, interceptedTarget);
             }
         }
     }
