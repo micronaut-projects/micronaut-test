@@ -202,10 +202,11 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         });
     }
 
-    @SuppressWarnings("java:S112") // Throwable is what we deal with here
+    @SuppressWarnings({"java:S112", "java:S1181"}) // Throwable is what we deal with here, and any failure must restore the properties
     private void getInvocationInterceptor(IMethodInvocation invocation) throws Throwable {
         prepareApplicationContext(invocation);
         TestContext testContext = buildContext(invocation, null);
+        Throwable failure = null;
         try {
             beforeTestMethod(testContext);
             interceptTest(new TestMethodInvocationContext<>() {
@@ -220,9 +221,24 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     return null;
                 }
             });
-        } finally {
+        } catch (Throwable e) {
+            failure = e;
+        }
+        if (contextPrepared) {
+            // cleanup resets the flag, so setup was never reached, as when a listener or @Sql script
+            // failed before it, and Spock will not run cleanup to restore the properties
             contextPrepared = false;
+            failure = collectCleanupFailure(failure, () -> {
+                afterEach(invocation);
+                return null;
+            });
+        }
+        failure = collectCleanupFailure(failure, () -> {
             afterTestMethod(testContext);
+            return null;
+        });
+        if (failure != null) {
+            throw failure;
         }
     }
 
