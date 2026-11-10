@@ -6,3 +6,5 @@ snippet::io.micronaut.test.spock.MathMockServiceSpec[project="test-spock", langu
 <2> Spock's `Mock(..)` method creates the actual mock
 <3> The Mock is injected into the test
 <4> Spock is used to verify the mock is called
+
+NOTE: Give `@MockBean` the type it replaces, for example `@MockBean(MathServiceImpl)`. Without it the mock replaces nothing, so another bean of the same type can still be injected. Micronaut Test logs a warning when that happens.
