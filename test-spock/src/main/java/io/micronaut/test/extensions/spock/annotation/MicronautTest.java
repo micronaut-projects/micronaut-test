@@ -80,6 +80,8 @@ public @interface MicronautTest {
 
     /**
      * Whether to rebuild the application context before each test method.
+     * The first test uses the context started for the class, which is built before the class's own
+     * setup runs, unless that test declares method-level {@code @Property} values.
      * @return true if the application context should be rebuilt for each test method
      */
     boolean rebuildContext() default false;
