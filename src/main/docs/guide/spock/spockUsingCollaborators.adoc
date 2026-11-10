@@ -13,3 +13,9 @@ snippet::io.micronaut.test.spock.MathCollaboratorSpec[project="test-spock", lang
 
 The way this works is that `@MicronautTest` will inject the `Mock(..)` instance into the test, but the controller will have a proxy that points to the `Mock(..)` instance injected. For each iteration of the test the mock is refreshed (in fact it uses Micronaut's built in `RefreshScope`).
 
+
+If the bean you replace has a qualifier, such as `@Named` or your own `@Qualifier` annotation, and is injected through it, declare the same qualifier annotation on the `@MockBean`. A mock does not take on the qualifiers of the bean it replaces, so without it the qualified injection point finds no bean. The `named` member of `@MockBean` only selects which bean to replace and does not qualify the mock. The qualifier's `@Target` must include `METHOD`, or `FIELD` for a mock declared on a field:
+
+snippet::io.micronaut.test.spock.mockbean.QualifiedMockBeanSpec[project="test-spock", language="groovy", tags="mock", indent=0, title="Mocking a qualified bean"]
+
+<1> The same qualifier, `@Handler("plain")`, that the replaced bean declares and the injection point uses.
