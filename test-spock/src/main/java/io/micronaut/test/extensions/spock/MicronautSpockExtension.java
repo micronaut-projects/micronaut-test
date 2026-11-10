@@ -61,6 +61,7 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
     private Queue<Object> creatableMocks = new ConcurrentLinkedDeque<>();
     private Queue<Object> singletonMocks = new ConcurrentLinkedDeque<>();
     private MockUtil mockUtil = new MockUtil();
+    private boolean contextPrepared;
 
     @Override
     public void visitSpecAnnotation(T annotation, SpecInfo spec) {
@@ -142,7 +143,8 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
             final Object instance = invocation.getInstance();
             final Method method = invocation.getFeature().getFeatureMethod().getReflection();
             List<Property> propertyAnnotations = Arrays.asList(method.getAnnotationsByType(Property.class));
-            beforeEach(invocation, instance, method, propertyAnnotations);
+            // only a setup run again by a retry finds the context not prepared
+            beforeEach(invocation, instance, contextPrepared ? null : method, propertyAnnotations);
             for (Object mock : creatableMocks) {
                 mockUtil.attachMock(mock, (Specification) instance);
             }
@@ -177,6 +179,7 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                 mockUtil.detachMock(mock);
             }
             creatableMocks.clear();
+            contextPrepared = false;
             afterEach(invocation);
             TestContext testContext = buildContext(invocation, null);
             try {
@@ -199,9 +202,11 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
         });
     }
 
-    @SuppressWarnings("java:S112") // Throwable is what we deal with here
+    @SuppressWarnings({"java:S112", "java:S1181"}) // Throwable is what we deal with here, and any failure must restore the properties
     private void getInvocationInterceptor(IMethodInvocation invocation) throws Throwable {
+        prepareApplicationContext(invocation);
         TestContext testContext = buildContext(invocation, null);
+        Throwable failure = null;
         try {
             beforeTestMethod(testContext);
             interceptTest(new TestMethodInvocationContext<>() {
@@ -216,8 +221,47 @@ public class MicronautSpockExtension<T extends Annotation> extends AbstractMicro
                     return null;
                 }
             });
-        } finally {
+        } catch (Throwable e) {
+            failure = e;
+        }
+        if (contextPrepared) {
+            // cleanup resets the flag, so setup was never reached, as when a listener or @Sql script
+            // failed before it, and Spock will not run cleanup to restore the properties
+            contextPrepared = false;
+            failure = collectCleanupFailure(failure, () -> {
+                afterEach(invocation);
+                return null;
+            });
+        }
+        failure = collectCleanupFailure(failure, () -> {
             afterTestMethod(testContext);
+            return null;
+        });
+        if (failure != null) {
+            throw failure;
+        }
+    }
+
+    /**
+     * Applies the method-level properties and rebuilds the context if required, before the test
+     * listeners and interceptors are resolved from it. The instance is injected later, in setup.
+     */
+    @SuppressWarnings({"java:S112", "java:S1181"}) // Throwable is what we deal with here, and any failure must restore the properties
+    private void prepareApplicationContext(IMethodInvocation invocation) throws Throwable {
+        if (contextPrepared) {
+            // a spec and its parent can both be annotated, which adds this interceptor twice
+            return;
+        }
+        final Method method = invocation.getFeature().getFeatureMethod().getReflection();
+        try {
+            beforeEach(invocation, null, method, Arrays.asList(method.getAnnotationsByType(Property.class)));
+            contextPrepared = true;
+        } catch (Throwable e) {
+            // Spock only runs cleanup once setup was reached, so the properties are restored here
+            throw collectCleanupFailure(e, () -> {
+                afterEach(invocation);
+                return null;
+            });
         }
     }
 
