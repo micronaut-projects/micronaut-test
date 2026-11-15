@@ -37,7 +37,7 @@ managed-assertj-core = { module = "org.assertj:assertj-core", version.ref = "man
 managed-hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "managed-hamcrest" }
 managed-mockito-core = { module = "org.mockito:mockito-core", version.ref = "managed-mockito" }
 managed-mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "managed-mockito" }
-managed-mockk = "1.14.12"
+managed-mockk = { module = "io.mockk:mockk", version.ref = "managed-mockk" }
 # TODO kotest libs should stop be directly managed, boms-kotest should define the versions
 managed-kotest-assertions-core-jvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "managed-kotest" }
 managed-kotest-runner-junit5-jvm = { module = "io.kotest:kotest-runner-junit6-jvm", version.ref = "managed-kotest" }
